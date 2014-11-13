@@ -45,6 +45,7 @@ UVAtasTool\
     directory structure:
         .\DirectXTex\DirectXTex
         .\DirectXMesh\DirectXMesh
+        .\DirectXMesh\Utilities
         .\UVAtlas\UVAtlas
         .\UVAtlas\UVAtlasTool
 
