@@ -23,9 +23,9 @@ using namespace GeodesicDist ;
 using namespace DirectX;
 
 // define the macro to 1 to use the exact algorithm, otherwise the fast approximate algorithm is employed    
-#if _USE_EXACT_ALGORITHM    
+#if _USE_EXACT_ALGORITHM
 #define ONE_TO_ALL_ENGINE m_ExactOneToAllEngine
-#else    
+#else
 #define ONE_TO_ALL_ENGINE m_ApproximateOneToAllEngine
 #endif
 
@@ -519,10 +519,15 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexNewGeoDist(
     uint32_t dwSourceVertID,
     uint32_t* pdwFarestPeerVertID)
 {
-    HRESULT hr = S_OK ;
-
-    ONE_TO_ALL_ENGINE.SetSrcVertexIdx( dwSourceVertID ) ;    
-    ONE_TO_ALL_ENGINE.Run() ;
+    try
+    {
+        ONE_TO_ALL_ENGINE.SetSrcVertexIdx( dwSourceVertID ) ;    
+        ONE_TO_ALL_ENGINE.Run() ;
+    }
+    catch (std::bad_alloc&)
+    {
+        return E_OUTOFMEMORY;
+    }
 
     uint32_t dwFarestVertID = 0;
     double dGeoFarest = 0.0 ;
@@ -544,7 +549,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexNewGeoDist(
         *pdwFarestPeerVertID = dwFarestVertID ;
     }
 
-    return hr ;
+    return S_OK;
 }
 
 // See more detail in [KS98]

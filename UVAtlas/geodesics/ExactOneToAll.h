@@ -58,21 +58,11 @@ namespace GeodesicDist
 
         CExactOneToAll() ;
 
-        // make the class prepared to operate on the specified mesh
-        void Init(void* pVertices, size_t dwNumVertices, size_t dwNumBytesPerVertex,
-            uint32_t* pIndices, size_t dwNumFaces, uint32_t *pAdj);
-
-        // init internal structures after a mesh is set and possibly scaled
-        void InitInternalStructures() ;
-
         // set the source vertex index before run
         void SetSrcVertexIdx(const uint32_t dwSrcVertexIdx);
 
         // run the algorithm
         void Run() ;
-
-        // after run, this method constructs a geodesic trace from the middle point of a specified edge back to the source vertex on the mesh
-        void ConstructGeodesicPathFromPtOnEdge(uint32_t dwEdgeIdx, std::vector<DVector3> &vctBuf);
     } ;
 
 }
