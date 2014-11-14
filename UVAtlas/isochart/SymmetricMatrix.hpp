@@ -92,11 +92,11 @@ namespace Isochart
             }
 
             // 2. allocate memory resouce
-            std::unique_ptr<value_type[]> temp(new (std::nothrow) value_type[(dwDimension * dwDimension) + (3 * dwDimension)]);
-            if (!temp)
+            std::unique_ptr<value_type[]> tmp(new (std::nothrow) value_type[(dwDimension * dwDimension) + (3 * dwDimension)]);
+            if (!tmp)
                 return false;
 
-            value_type* pInitialMatrix = temp.get();                                // dwDimension * dwDimension
+            value_type* pInitialMatrix = tmp.get();                                 // dwDimension * dwDimension
             value_type* pSubDiagVec = pInitialMatrix + (dwDimension * dwDimension); // dwDimension
             value_type* pU = pSubDiagVec + dwDimension;                             // dwDimension
             value_type* pP = pU + dwDimension;                                      // dwDimension

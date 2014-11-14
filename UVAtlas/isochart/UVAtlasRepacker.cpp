@@ -1112,22 +1112,22 @@ HRESULT CUVAtlasRepacker::PrepareChartsInfo()
                     m_ChartsInfo[i].PosInfo[j].edges.clear();
                     for (uint32_t t = 0; t < m_AttrTable[i].FaceCount; t++)
                     {
-                        uint32_t Base = (t + m_AttrTable[i].FaceStart) * 3;
+                        uint32_t Base0 = (t + m_AttrTable[i].FaceStart) * 3;
 
-                        int a = m_IndexPartition[m_IndexBuffer[Base]];
-                        int b = m_IndexPartition[m_IndexBuffer[Base + 1]];
-                        int c = m_IndexPartition[m_IndexBuffer[Base + 2]];
+                        int a0 = m_IndexPartition[m_IndexBuffer[Base0]];
+                        int b0 = m_IndexPartition[m_IndexBuffer[Base0 + 1]];
+                        int c0 = m_IndexPartition[m_IndexBuffer[Base0 + 2]];
 
-                        int indexbase = m_AttrTable[i].VertexStart; 
+                        int indexbase0 = m_AttrTable[i].VertexStart; 
 
-                        if (a >= indexbase && b >= indexbase && c >= indexbase)
+                        if (a0 >= indexbase0 && b0 >= indexbase0 && c0 >= indexbase0)
                         {
-                            XMFLOAT2 &Vertex1 = *reinterpret_cast<XMFLOAT2*>(&OutVec[a - indexbase]);
-                            XMFLOAT2 &Vertex2 = *reinterpret_cast<XMFLOAT2*>(&OutVec[b - indexbase]);
-                            XMFLOAT2 &Vertex3 = *reinterpret_cast<XMFLOAT2*>(&OutVec[c - indexbase]);
-                            m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(Vertex1, Vertex2));
-                            m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(Vertex2, Vertex3));
-                            m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(Vertex3, Vertex1));
+                            XMFLOAT2 &vert1 = *reinterpret_cast<XMFLOAT2*>(&OutVec[a0 - indexbase0]);
+                            XMFLOAT2 &vert2 = *reinterpret_cast<XMFLOAT2*>(&OutVec[b0 - indexbase0]);
+                            XMFLOAT2 &vert3 = *reinterpret_cast<XMFLOAT2*>(&OutVec[c0 - indexbase0]);
+                            m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(vert1, vert2));
+                            m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(vert2, vert3));
+                            m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(vert3, vert1));
                         }
                         else 
                             return E_FAIL;

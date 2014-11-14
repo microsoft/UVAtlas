@@ -1065,7 +1065,7 @@ void CExactOneToAll::IntersectWindow( EdgeWindow *pExistingWindow,
     }
 }
 
-void CExactOneToAll::GenerateWindowsAroundSaddleOrBoundaryVertex( const EdgeWindow &WindowToBePropagated,
+void CExactOneToAll::GenerateWindowsAroundSaddleOrBoundaryVertex( const EdgeWindow &iwindow,
                                                                   const uint32_t dwSaddleOrBoundaryVertexId,
                                                                   std::vector<EdgeWindow> &WindowsOut)
 {
@@ -1083,12 +1083,12 @@ void CExactOneToAll::GenerateWindowsAroundSaddleOrBoundaryVertex( const EdgeWind
         tmpWindow.b1 = tmpWindow.pEdge->dEdgeLength ;
         tmpWindow.d0 = sqrt( SquredD3Dist(*tmpWindow.pEdge->pVertex0, m_VertexList[dwSaddleOrBoundaryVertexId]) ) ;
         tmpWindow.d1 = sqrt( SquredD3Dist(*tmpWindow.pEdge->pVertex1, m_VertexList[dwSaddleOrBoundaryVertexId]) ) ;
-        tmpWindow.dPseuSrcToSrcDistance = (WindowToBePropagated.dwMarkFromEdgeVertexIdx == dwSaddleOrBoundaryVertexId ? WindowToBePropagated.d0 : WindowToBePropagated.d1) 
-            + WindowToBePropagated.dPseuSrcToSrcDistance ;
+        tmpWindow.dPseuSrcToSrcDistance = (iwindow.dwMarkFromEdgeVertexIdx == dwSaddleOrBoundaryVertexId ? iwindow.d0 : iwindow.d1)
+            + iwindow.dPseuSrcToSrcDistance ;
         ParameterizePt3ToPt2( *tmpWindow.pEdge->pVertex0, *tmpWindow.pEdge->pVertex1, m_VertexList[dwSaddleOrBoundaryVertexId], tmpWindow.dv2Src ) ; 
 
-        tmpWindow.ksi = WindowToBePropagated.ksi ;
-        tmpWindow.pEdgePropagatedFrom = WindowToBePropagated.pEdge ;
+        tmpWindow.ksi = iwindow.ksi ;
+        tmpWindow.pEdgePropagatedFrom = iwindow.pEdge ;
 
         tmpWindow.dwTag = 1 ;
         

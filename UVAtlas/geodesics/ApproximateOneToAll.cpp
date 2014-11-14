@@ -175,21 +175,21 @@ void CApproximateOneToAll::CutHeapTopData( EdgeWindow &EdgeWindowOut )
 
                         case 4:
                             {
-                                double A = SQR(spie.y) - SQR(pWindowLeft->dv2Src.y) ;
-                                double B = 2 * (spie.x * SQR(pWindowLeft->dv2Src.y) - pWindowLeft->dv2Src.x * SQR(spie.y)) ;
-                                double C = SQR(pWindowLeft->dv2Src.x) * SQR(spie.y) - SQR(spie.x) * SQR(pWindowLeft->dv2Src.y) ;
+                                double A0 = SQR(spie.y) - SQR(pWindowLeft->dv2Src.y) ;
+                                double B0 = 2 * (spie.x * SQR(pWindowLeft->dv2Src.y) - pWindowLeft->dv2Src.x * SQR(spie.y)) ;
+                                double C0 = SQR(pWindowLeft->dv2Src.x) * SQR(spie.y) - SQR(spie.x) * SQR(pWindowLeft->dv2Src.y) ;
 
-                                if ( A > FLT_EPSILON || A < -FLT_EPSILON )
+                                if ( A0 > FLT_EPSILON || A0 < -FLT_EPSILON )
                                 {
-                                    double discriminant = SQR(B)-4*A*C ;
+                                    double discriminant = SQR(B0)-4*A0*C0;
 
                                     if ( discriminant > 0 )
                                     {
-                                        tmpp.x = (-B+SqrtMin0(discriminant))/(2*A) ;
+                                        tmpp.x = (-B0+SqrtMin0(discriminant))/(2*A0) ;
 
                                         if ( tmpp.x < pWindowLeft->b0 || tmpp.x > pWindowLeft->b1 )
                                         {
-                                            tmpp.x = (-B-SqrtMin0(discriminant))/(2*A) ;
+                                            tmpp.x = (-B0-SqrtMin0(discriminant))/(2*A0) ;
 
                                             if ( tmpp.x < pWindowLeft->b0 || tmpp.x > pWindowLeft->b1 )
                                             {
@@ -202,9 +202,9 @@ void CApproximateOneToAll::CutHeapTopData( EdgeWindow &EdgeWindowOut )
                                     }
                                 } else
                                 {
-                                    if ( B != 0 )
+                                    if ( B0 != 0 )
                                     {                                
-                                        tmpp.x = -C/B ;
+                                        tmpp.x = -C0/B0 ;
 
                                         if ( tmpp.x < pWindowLeft->b0 || tmpp.x > pWindowLeft->b1 )
                                         {
@@ -223,21 +223,21 @@ void CApproximateOneToAll::CutHeapTopData( EdgeWindow &EdgeWindowOut )
 
                         case 5:
                             {
-                                double A = SQR(spie.y) - SQR(pWindowRight->dv2Src.y) ;
-                                double B = 2 * (spie.x * SQR(pWindowRight->dv2Src.y) - pWindowRight->dv2Src.x * SQR(spie.y)) ;
-                                double C = SQR(pWindowRight->dv2Src.x) * SQR(spie.y) - SQR(spie.x) * SQR(pWindowRight->dv2Src.y) ;
+                                double A0 = SQR(spie.y) - SQR(pWindowRight->dv2Src.y) ;
+                                double B0 = 2 * (spie.x * SQR(pWindowRight->dv2Src.y) - pWindowRight->dv2Src.x * SQR(spie.y)) ;
+                                double C0 = SQR(pWindowRight->dv2Src.x) * SQR(spie.y) - SQR(spie.x) * SQR(pWindowRight->dv2Src.y) ;
 
-                                if ( A > FLT_EPSILON || A < -FLT_EPSILON )
+                                if ( A0 > FLT_EPSILON || A0 < -FLT_EPSILON )
                                 {
-                                    double discriminant = SQR(B)-4*A*C ;
+                                    double discriminant = SQR(B0)-4*A0*C0;
 
                                     if ( discriminant > 0 )
                                     {
-                                        tmpp.x = (-B+SqrtMin0(discriminant))/(2*A) ;
+                                        tmpp.x = (-B0+SqrtMin0(discriminant))/(2*A0) ;
 
                                         if ( tmpp.x < pWindowRight->b0 || tmpp.x > pWindowRight->b1 )
                                         {
-                                            tmpp.x = (-B-SqrtMin0(discriminant))/(2*A) ;
+                                            tmpp.x = (-B0-SqrtMin0(discriminant))/(2*A0) ;
 
                                             if ( tmpp.x < pWindowRight->b0 || tmpp.x > pWindowRight->b1 )
                                             {
@@ -250,9 +250,9 @@ void CApproximateOneToAll::CutHeapTopData( EdgeWindow &EdgeWindowOut )
                                     }
                                 } else
                                 {
-                                    if ( B != 0 )
+                                    if ( B0 != 0 )
                                     {                                
-                                        tmpp.x = -C/B ;
+                                        tmpp.x = -C0/B0 ;
 
                                         if ( tmpp.x < pWindowRight->b0 || tmpp.x > pWindowRight->b1 )
                                         {

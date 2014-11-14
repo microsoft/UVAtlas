@@ -1431,10 +1431,10 @@ namespace
         const float *C3 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i) * pTexDesc->uStride];
         const float *C4 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i2) * pTexDesc->uStride];
 
-        for (size_t i = 0; i < uSignalDimension; i++)
+        for (size_t k = 0; k < uSignalDimension; k++)
         {
-            pfSignalOut[i] = (C1[i] * (1.f - du) + C2[i] * du) * (1.f - dv) +
-                (C3[i] * (1.f - du) + C4[i] * du) * dv;
+            pfSignalOut[k] = (C1[k] * (1.f - du) + C2[k] * du) * (1.f - dv) +
+                (C3[k] * (1.f - du) + C4[k] * du) * dv;
         }
 
         return S_OK;
@@ -1496,10 +1496,10 @@ namespace
         const float *C3 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i) * pTexDesc->uStride];
         const float *C4 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i2) * pTexDesc->uStride];
 
-        for (size_t i = 0; i < uSignalDimension; i++)
+        for (size_t k = 0; k < uSignalDimension; k++)
         {
-            pfSignalOut[i] = (C1[i] * (1.f - du) + C2[i] * du) * (1.f - dv) +
-                (C3[i] * (1.f - du) + C4[i] * du) * dv;
+            pfSignalOut[k] = (C1[k] * (1.f - du) + C2[k] * du) * (1.f - dv) +
+                (C3[k] * (1.f - du) + C4[k] * du) * dv;
         }
 
         return S_OK;
@@ -1561,10 +1561,10 @@ namespace
         const float *C3 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i) * pTexDesc->uStride];
         const float *C4 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i2) * pTexDesc->uStride];
 
-        for (size_t i = 0; i < uSignalDimension; i++)
+        for (size_t k = 0; k < uSignalDimension; k++)
         {
-            pfSignalOut[i] = (C1[i] * (1.f - du) + C2[i] * du) * (1.f - dv) +
-                (C3[i] * (1.f - du) + C4[i] * du) * dv;
+            pfSignalOut[k] = (C1[k] * (1.f - du) + C2[k] * du) * (1.f - dv) +
+                (C3[k] * (1.f - du) + C4[k] * du) * dv;
         }
 
         return S_OK;
@@ -1629,10 +1629,10 @@ namespace
         const float *C3 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i) * pTexDesc->uStride];
         const float *C4 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i2) * pTexDesc->uStride];
 
-        for (size_t i = 0; i < uSignalDimension; i++)
+        for (size_t k = 0; k < uSignalDimension; k++)
         {
-            pfSignalOut[i] = (C1[i] * (1.f - du) + C2[i] * du) * (1.f - dv) +
-                (C3[i] * (1.f - du) + C4[i] * du) * dv;
+            pfSignalOut[k] = (C1[k] * (1.f - du) + C2[k] * du) * (1.f - dv) +
+                (C3[k] * (1.f - du) + C4[k] * du) * dv;
         }
 
         return S_OK;

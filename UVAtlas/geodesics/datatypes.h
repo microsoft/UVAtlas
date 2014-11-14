@@ -142,25 +142,25 @@ namespace GeodesicDist
         }
 
         // setting an index also assigns appropriate pointer to the corresponding pointer field 
-        void SetEdgeIdx(TypeEdgeList &EdgeList, const uint32_t dwEdgeIdx)
+        void SetEdgeIdx(TypeEdgeList &EdgeList, const uint32_t index)
         {
-            this->dwEdgeIdx = dwEdgeIdx ;
-            this->pEdge = &(EdgeList[dwEdgeIdx]) ;
+            this->dwEdgeIdx = index;
+            this->pEdge = &(EdgeList[index]) ;
         }    
-        void SetPseuSrcVertexIdx(TypeVertexList &VertexList, const uint32_t dwPseuSrcVertexIdx)
+        void SetPseuSrcVertexIdx(TypeVertexList &VertexList, const uint32_t index)
         {
-            this->dwPseuSrcVertexIdx = dwPseuSrcVertexIdx ;
-            this->pPseuSrcVertex = (dwPseuSrcVertexIdx < VertexList.size()) ? &(VertexList[dwPseuSrcVertexIdx]) : nullptr;
+            this->dwPseuSrcVertexIdx = index;
+            this->pPseuSrcVertex = (index < VertexList.size()) ? &(VertexList[index]) : nullptr;
         }
-        void SetMarkFromEdgeVertexIdx(TypeVertexList &VertexList, const uint32_t dwMarkFromEdgeVertexIdx)
+        void SetMarkFromEdgeVertexIdx(TypeVertexList &VertexList, const uint32_t index)
         {
-            this->dwMarkFromEdgeVertexIdx = dwMarkFromEdgeVertexIdx ;
-            this->pMarkFromEdgeVertex = &(VertexList[dwMarkFromEdgeVertexIdx]) ;
+            this->dwMarkFromEdgeVertexIdx = index;
+            this->pMarkFromEdgeVertex = &(VertexList[index]) ;
         }
-        void SetFaceIdxPropagatedFrom(TypeFaceList &FaceList, const uint32_t dwFaceIdxPropagatedFrom)
+        void SetFaceIdxPropagatedFrom(TypeFaceList &FaceList, const uint32_t index)
         {
-            this->dwFaceIdxPropagatedFrom = dwFaceIdxPropagatedFrom ;
-            this->pFacePropagatedFrom = &(FaceList[dwFaceIdxPropagatedFrom]) ;
+            this->dwFaceIdxPropagatedFrom = index;
+            this->pFacePropagatedFrom = &(FaceList[index]) ;
         }
     } ;
 
