@@ -161,7 +161,7 @@ CIsochartMesh::CalAdjacentChartsForEachChart(
         ISOCHARTFACE* pFace = children[i]->GetFaceBuffer();
         for ( size_t j=0; j<children[i]->GetFaceNumber(); j++)
         {
-            pdwFaceChartId.get()[pFace->dwIDInRootMesh] = i;
+            pdwFaceChartId[pFace->dwIDInRootMesh] = i;
             pFace++;
         }
     }
@@ -228,8 +228,8 @@ HRESULT CIsochartMesh::PerformMerging(
             continue;
         }
         
-        pHeapItems.get()[i].m_weight = static_cast<uint32_t>( MAX_FACE_NUMBER - pChart->GetFaceNumber() );
-        pHeapItems.get()[i].m_data = i;
+        pHeapItems[i].m_weight = static_cast<uint32_t>( MAX_FACE_NUMBER - pChart->GetFaceNumber() );
+        pHeapItems[i].m_data = i;
         heap.insert(pHeapItems.get() + i);
     }
     memset(pbMergeFlag.get(), 1, sizeof(bool)*children.size());

@@ -157,11 +157,11 @@ HRESULT Mesh::SetIndexData( size_t nFaces, const uint16_t* indices, uint32_t* at
     {
         if ( indices[ j ] == uint16_t(-1) )
         {
-            ib.get()[ j ] = uint32_t(-1);
+            ib[ j ] = uint32_t(-1);
         }
         else
         {
-            ib.get()[ j ] = indices[ j ];
+            ib[ j ] = indices[ j ];
         }
     }
 
@@ -469,41 +469,41 @@ HRESULT Mesh::Clean( _In_ bool breakBowties )
     {
         assert(*it < mnVerts);
 
-        pos.get()[ j ] = mPositions.get()[ *it ];
+        pos[ j ] = mPositions[ *it ];
 
         if (norms)
         {
-            norms.get()[ j ] = mNormals.get()[ *it ];
+            norms[ j ] = mNormals[ *it ];
         }
 
         if (tans1)
         {
-            tans1.get()[ j ] = mTangents.get()[ *it ];
+            tans1[ j ] = mTangents[ *it ];
         }
 
         if (tans2)
         {
-            tans2.get()[ j ] = mBiTangents.get()[*it];
+            tans2[ j ] = mBiTangents[*it];
         }
 
         if (texcoord)
         {
-            texcoord.get() [ j] = mTexCoords.get()[*it];
+            texcoord.get() [ j] = mTexCoords[*it];
         }
 
         if (colors)
         {
-            colors.get()[j] = mColors.get()[*it];
+            colors[j] = mColors[*it];
         }
 
         if (blendIndices)
         {
-            blendIndices.get()[j] = mBlendIndices.get()[*it];
+            blendIndices[j] = mBlendIndices[*it];
         }
 
         if (blendWeights)
         {
-            blendWeights.get()[j] = mBlendWeights.get()[*it];
+            blendWeights[j] = mBlendWeights[*it];
         }
     }
 
@@ -923,7 +923,7 @@ std::unique_ptr<uint16_t[]> Mesh::GetIndexBuffer16() const
         uint32_t index = *(iptr++);
         if (index == uint32_t(-1))
         {
-            ib.get()[j] = uint16_t(-1);
+            ib[j] = uint16_t(-1);
         }
         else if (index >= UINT16_MAX)
         {
@@ -932,7 +932,7 @@ std::unique_ptr<uint16_t[]> Mesh::GetIndexBuffer16() const
         }
         else
         {
-            ib.get()[j] = static_cast<uint16_t>(index);
+            ib[j] = static_cast<uint16_t>(index);
         }
     }
 
@@ -1094,16 +1094,16 @@ HRESULT Mesh::ExportToVBO( const wchar_t* szFileName ) const
     auto vptr = vb.get();
     for (size_t j = 0; j < mnVerts; ++j, ++vptr)
     {
-        vptr->position = mPositions.get()[j];
-        vptr->normal = mNormals.get()[j];
-        vptr->textureCoordinate = mTexCoords.get()[j];
+        vptr->position = mPositions[j];
+        vptr->normal = mNormals[j];
+        vptr->textureCoordinate = mTexCoords[j];
     }
 
     // Copy to IB
     auto iptr = ib.get();
     for (size_t j = 0; j < header.numIndices; ++j, ++iptr)
     {
-        uint32_t index = mIndices.get()[j];
+        uint32_t index = mIndices[j];
         if (index == uint32_t(-1))
         {
             *iptr = uint16_t(-1);
@@ -1250,9 +1250,9 @@ HRESULT Mesh::CreateFromVBO( const wchar_t* szFileName, std::unique_ptr<Mesh>& r
     auto vptr = vb.get();
     for (size_t j = 0; j < header.numVertices; ++j, ++vptr)
     {
-        pos.get()[ j ] = vptr->position;
-        norm.get()[ j ] = vptr->normal;
-        texcoord.get()[ j] = vptr->textureCoordinate;
+        pos[ j ] = vptr->position;
+        norm[ j ] = vptr->normal;
+        texcoord[ j] = vptr->textureCoordinate;
     }
 
     // Copy IB to result
@@ -1265,9 +1265,9 @@ HRESULT Mesh::CreateFromVBO( const wchar_t* szFileName, std::unique_ptr<Mesh>& r
     {
         uint16_t index = *iptr;
         if (index == uint16_t(-1))
-            indices.get()[ j ] = uint32_t(-1);
+            indices[ j ] = uint32_t(-1);
         else
-            indices.get()[ j ] = index;
+            indices[ j ] = index;
     }
 
     result->mPositions.swap(pos);
@@ -1478,14 +1478,14 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
     auto vptr = vb.get();
     for (size_t j = 0; j < mnVerts; ++j, ++vptr)
     {
-        vptr->Position = mPositions.get()[j];
-        vptr->Normal = mNormals.get()[j];
-        vptr->Tangent = mTangents.get()[j];
-        vptr->TextureCoordinates = mTexCoords.get()[j];
+        vptr->Position = mPositions[j];
+        vptr->Normal = mNormals[j];
+        vptr->Tangent = mTangents[j];
+        vptr->TextureCoordinates = mTexCoords[j];
 
         if (mColors)
         {
-            XMVECTOR icolor = XMLoadFloat4(&mColors.get()[j]);
+            XMVECTOR icolor = XMLoadFloat4(&mColors[j]);
             PackedVector::XMUBYTEN4 rgba;
             PackedVector::XMStoreUByteN4(&rgba, icolor);
             vptr->color = rgba.v;
@@ -1500,10 +1500,10 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
     {
         for (size_t j = 0; j < mnVerts; ++j, ++sptr)
         {
-            XMVECTOR v = XMLoadFloat4(&mBlendIndices.get()[j]);
+            XMVECTOR v = XMLoadFloat4(&mBlendIndices[j]);
             XMStoreUInt4( reinterpret_cast<XMUINT4*>( &sptr->boneIndex[0] ), v);
 
-            const XMFLOAT4* w = &mBlendWeights.get()[j];
+            const XMFLOAT4* w = &mBlendWeights[j];
             sptr->boneWeight[0] = w->x;
             sptr->boneWeight[1] = w->y;
             sptr->boneWeight[2] = w->z;
@@ -1515,7 +1515,7 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
     auto iptr = ib.get();
     for (size_t j = 0; j < nIndices; ++j, ++iptr)
     {
-        uint32_t index = mIndices.get()[j];
+        uint32_t index = mIndices[j];
         if (index == uint32_t(-1))
         {
             *iptr = uint16_t(-1);
@@ -1670,7 +1670,7 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
         for (auto it = subsets.cbegin(); it != subsets.end(); ++it)
         {
             SubMesh smesh;
-            smesh.MaterialIndex = mAttributes.get()[it->first];
+            smesh.MaterialIndex = mAttributes[it->first];
             if (smesh.MaterialIndex >= nMaterials)
                 smesh.MaterialIndex = 0;
 
@@ -2403,7 +2403,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName, size_t nMaterials, cons
             subsetArray.push_back(static_cast<UINT>(submeshes.size()));
 
             SDKMESH_SUBSET s = { 0 };
-            s.MaterialID = mAttributes.get()[it->first];
+            s.MaterialID = mAttributes[it->first];
             if (s.MaterialID >= nMaterials)
                 s.MaterialID = 0;
 

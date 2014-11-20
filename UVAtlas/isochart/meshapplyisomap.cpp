@@ -587,7 +587,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexKS98(
 
     // 2. Init the source vertices
     pCurrentVertex = m_pVerts + dwSourceVertID;
-    pbVertProcessed.get()[dwSourceVertID] = true;
+    pbVertProcessed[dwSourceVertID] = true;
     pCurrentVertex->fGeodesicDistance = 0;
     pCurrentVertex->fSignalDistance = 0;
 
@@ -614,7 +614,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexKS98(
         }
 
         pCurrentVertex = m_pVerts + pTop->m_data;
-        pbVertProcessed.get()[pCurrentVertex->dwID] = true;
+        pbVertProcessed[pCurrentVertex->dwID] = true;
         dwFarestVertID = pCurrentVertex->dwID;
 
         // 4.1 For each vertex adjacent to current vertex, Compute geodesic
@@ -633,7 +633,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexKS98(
                 dwAdjacentVertID = edge.dwVertexID[0];
             }
 
-            if (pbVertProcessed.get()[dwAdjacentVertID])
+            if (pbVertProcessed[dwAdjacentVertID])
             {
                 continue;
             }
@@ -650,7 +650,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexKS98(
         for (size_t j=0; j<pCurrentVertex->vertAdjacent.size(); j++)
         {
             uint32_t dwAdjacentID = pCurrentVertex->vertAdjacent[j];
-            if (pbVertProcessed.get()[dwAdjacentID])
+            if (pbVertProcessed[dwAdjacentID])
             {
                 continue;
             }

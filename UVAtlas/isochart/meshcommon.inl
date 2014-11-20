@@ -482,7 +482,7 @@ inline CIsochartMesh* CIsochartMesh::CreateNewChart(
         pNewVertex->dwIDInFatherMesh = pOldVertex->dwID;
         pNewVertex->bIsBoundary = pOldVertex->bIsBoundary;
         pNewVertex->nImportanceOrder = pOldVertex->nImportanceOrder;
-        pdwVertMap.get()[pOldVertex->dwID] = i;
+        pdwVertMap[pOldVertex->dwID] = i;
         pNewVertex++;
     }
 
@@ -496,7 +496,7 @@ inline CIsochartMesh* CIsochartMesh::CreateNewChart(
         for (size_t j=0; j<3; j++)
         {
             pNewFace->dwVertexID[j] = 
-                pdwVertMap.get()[pOldFace->dwVertexID[j]];
+                pdwVertMap[pOldFace->dwVertexID[j]];
         }
         pNewFace++;
     }

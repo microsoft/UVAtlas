@@ -1028,7 +1028,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             size_t j = 0;
             for( auto it = facePartitioning.cbegin(); it != facePartitioning.cend(); ++it, ++j )
             {
-                attr.get()[j] = *it % _countof(g_ColorList);
+                attr[j] = *it % _countof(g_ColorList);
             }
 
             hr = inMesh->UpdateAttributes( nFaces, attr.get() );

@@ -820,10 +820,10 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
             if (pAB[i] == -1)
             {
                 ab.clear();
-                if (!bUsedFace.get()[i]) 
+                if (!bUsedFace[i]) 
                 {
                     ab.push_back(i);
-                    bUsedFace.get()[i] = true;
+                    bUsedFace[i] = true;
                 }
                 size_t t = 0;
 
@@ -837,10 +837,10 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                         for (uint32_t j = 0; j < 3; j++)
                         {
                             uint32_t index = 3 * ab[t] + j;
-                            if (m_AdjacentInfo[index] != -1 && !bUsedFace.get()[m_AdjacentInfo[index]])
+                            if (m_AdjacentInfo[index] != -1 && !bUsedFace[m_AdjacentInfo[index]])
                             {
                                 ab.push_back(m_AdjacentInfo[index]);
-                                bUsedFace.get()[m_AdjacentInfo[index]] = true;
+                                bUsedFace[m_AdjacentInfo[index]] = true;
                             }
                         }
                         t++;
@@ -855,10 +855,10 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                         {
                             uint32_t index = *(T *) (pIB + (3 * ab[t] + j) * sizeof(T));
                             for (size_t k = 0; k < m_VertexAdjInfo[index].size(); k++)
-                                if (!bUsedFace.get()[m_VertexAdjInfo[index][k]])
+                                if (!bUsedFace[m_VertexAdjInfo[index][k]])
                                 {
                                     ab.push_back(m_VertexAdjInfo[index][k]);
-                                    bUsedFace.get()[m_VertexAdjInfo[index][k]] = true;
+                                    bUsedFace[m_VertexAdjInfo[index][k]] = true;
                                 }
                         }
                         t++;

@@ -476,7 +476,7 @@ namespace
 
                 EdgeInfoItem* pEdge = nullptr;
                 if (IsNeedToSplit(
-                    pVertEdgeList.get()[v1],
+                    pVertEdgeList[v1],
                     v2,
                     iFace,
                     rgdwAdjacency,
@@ -1487,7 +1487,7 @@ HRESULT CIsochartMesh::FindAllEdges(
                     std::swap(v1, v2);
                 }
 
-                auto& et = pVertEdges.get()[v1];
+                auto& et = pVertEdges[v1];
                 size_t k;
                 for (k=0; k<et.size(); k++)
                 {
@@ -1655,7 +1655,7 @@ HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool& bCleaned)
             for (size_t jj = 0; jj < dwAdjEdgeCount; jj++)
             {
                 uint32_t dwMainEdge = vert.edgeAdjacent[jj];
-                if (bProcessedEdge.get()[dwMainEdge]) continue;
+                if (bProcessedEdge[dwMainEdge]) continue;
 
                 ISOCHARTEDGE& edge = m_edges[dwMainEdge];
 
@@ -1673,14 +1673,14 @@ HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool& bCleaned)
                     do
                     {
                         dwCurrEdge = iter.GetCurrEdge();
-                        bProcessedEdge.get()[dwCurrEdge] = true;
+                        bProcessedEdge[dwCurrEdge] = true;
 
                         if (dwClusterCount > 0)
                         {
                             vertexFaceList.push_back(iter.GetCurrFace());
                         }
                     } while (iter.Next());
-                    bProcessedEdge.get()[iter.GetCurrEdge()] = true;
+                    bProcessedEdge[iter.GetCurrEdge()] = true;
 
                     if (iter.IsBackToBegin()) //Scaned all faces.
                     {
@@ -2374,9 +2374,9 @@ HRESULT CIsochartMesh::ExtractIndependentObject(
             for (size_t j = 0; j < pOldVertex->faceAdjacent.size(); j++)
             {
                 uint32_t dwFaceIndex = pOldVertex->faceAdjacent[j];
-                if (!pbFaceMark.get()[dwFaceIndex])
+                if (!pbFaceMark[dwFaceIndex])
                 {
-                    pbFaceMark.get()[dwFaceIndex] = true;
+                    pbFaceMark[dwFaceIndex] = true;
                     faceList.push_back(dwFaceIndex);
                 }
             }

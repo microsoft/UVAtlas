@@ -266,11 +266,11 @@ HRESULT CIsochartMesh::SmoothPartitionResult(
     {
         for (size_t i=0; i < dwMaxSubchartCount; i++)
         {
-            pFaceGroup.get()[i].reserve(static_cast<uint32_t>(-pHeapItems[i].m_weight));
+            pFaceGroup[i].reserve(static_cast<uint32_t>(-pHeapItems[i].m_weight));
         }
         for (uint32_t i = 0; i < m_dwFaceNumber; i++)
         {
-            pFaceGroup.get()[pdwFaceChartID[i]].push_back(i);
+            pFaceGroup[pdwFaceChartID[i]].push_back(i);
         }
     }
     catch (std::bad_alloc&)
@@ -284,9 +284,9 @@ HRESULT CIsochartMesh::SmoothPartitionResult(
         auto pTop = heap.cutTop();
         assert(pTop != 0 && (pTop->m_weight <= 0));
 
-        for (size_t j=0; j < pFaceGroup.get()[pTop->m_data].size(); j++)
+        for (size_t j=0; j < pFaceGroup[pTop->m_data].size(); j++)
         {
-            uint32_t dwFaceID = pFaceGroup.get()[pTop->m_data][j];
+            uint32_t dwFaceID = pFaceGroup[pTop->m_data][j];
             ISOCHARTFACE* pFace = m_pFaces + dwFaceID;
             
             assert(dwFaceID == pFace->dwID);
@@ -532,8 +532,8 @@ HRESULT CIsochartMesh::FindCongenerFaces(
                 return E_FAIL;
             }
 
-            bFalseFace.get()[edge.dwFaceID[0]] = true;
-            bFalseFace.get()[edge.dwFaceID[1]] = true;
+            bFalseFace[edge.dwFaceID[0]] = true;
+            bFalseFace[edge.dwFaceID[1]] = true;
 
             bHasFalseEdge = true;
         }
@@ -557,7 +557,7 @@ HRESULT CIsochartMesh::FindCongenerFaces(
     {
         for (uint32_t ii = 0; ii < m_dwFaceNumber; ii++)
         {
-            if (!bFalseFace.get()[ii] || bProcessedFace.get()[ii])
+            if (!bFalseFace[ii] || bProcessedFace[ii])
             {
                 continue;
             }
@@ -565,7 +565,7 @@ HRESULT CIsochartMesh::FindCongenerFaces(
             uint32_t dwBegin = static_cast<uint32_t>(congenerFaceCategories.size());
 
             congenerFaceCategories.push_back(ii);
-            bProcessedFace.get()[ii] = true;
+            bProcessedFace[ii] = true;
 
             uint32_t dwCur = dwBegin;
             do
@@ -582,15 +582,15 @@ HRESULT CIsochartMesh::FindCongenerFaces(
                         (edge.dwFaceID[0] == dwCurrentFace) ?
                         edge.dwFaceID[1] : edge.dwFaceID[0];
 
-                    assert(bFalseFace.get()[dwAdjFace]);
+                    assert(bFalseFace[dwAdjFace]);
                     if (dwAdjFace == INVALID_FACE_ID ||
-                        bProcessedFace.get()[dwAdjFace])
+                        bProcessedFace[dwAdjFace])
                     {
                         continue;
                     }
 
                     congenerFaceCategories.push_back(dwAdjFace);
-                    bProcessedFace.get()[dwAdjFace] = true;
+                    bProcessedFace[dwAdjFace] = true;
                 }
                 dwCur++;
             } while (dwCur < congenerFaceCategories.size());
@@ -1418,7 +1418,7 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
             m_pVerts[face.dwVertexID[(dwOrgIndex+i)%3]].uv.y,
             0, 0);
 
-        rgbVertProcessed.get()[face.dwVertexID[(dwOrgIndex + i) % 3]] = true;
+        rgbVertProcessed[face.dwVertexID[(dwOrgIndex + i) % 3]] = true;
     }
 
     XMStoreFloat3(&v1, temp[1] - temp[0]);
@@ -1430,7 +1430,7 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
     {
         faceQueue.push(dwStandardFaceID);
 
-        rgbFaceAdded.get()[dwStandardFaceID] = true;
+        rgbFaceAdded[dwStandardFaceID] = true;
         while(!faceQueue.empty())
         {
             uint32_t dwFaceID = faceQueue.front();
@@ -1438,12 +1438,12 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
             ISOCHARTFACE& curFace = m_pFaces[dwFaceID];
             for (size_t i=0; i<3; i++)
             {
-                if (!rgbVertProcessed.get()[curFace.dwVertexID[i]])
+                if (!rgbVertProcessed[curFace.dwVertexID[i]])
                 {
                     uint32_t vId0 = curFace.dwVertexID[(i + 1) % 3];
                     uint32_t vId1 = curFace.dwVertexID[(i + 2) % 3];
-                    assert(rgbVertProcessed.get()[vId0]);
-                    assert(rgbVertProcessed.get()[vId1]);
+                    assert(rgbVertProcessed[vId0]);
+                    assert(rgbVertProcessed[vId1]);
                 
                     uint32_t vId2 = curFace.dwVertexID[i];
 
@@ -1464,7 +1464,7 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
                     if (IsInZeroRange(fLen2))
                     {
                         m_pVerts[vId2].uv = m_pVerts[vId0].uv;	
-                        rgbVertProcessed.get()[vId2] = true;
+                        rgbVertProcessed[vId2] = true;
                         break;
                     }
 
@@ -1518,7 +1518,7 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
                         return E_FAIL;
                     }
 
-                    rgbVertProcessed.get()[vId2] = true;
+                    rgbVertProcessed[vId2] = true;
                     break;
                 }
             }
@@ -1532,10 +1532,10 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
                     dwAdjacent = edge.dwFaceID[1];
                 }
                 if (dwAdjacent != INVALID_FACE_ID && 
-                !rgbFaceAdded.get()[dwAdjacent])
+                !rgbFaceAdded[dwAdjacent])
                 {
                     faceQueue.push(dwAdjacent);
-                    rgbFaceAdded.get()[dwAdjacent] = true;
+                    rgbFaceAdded[dwAdjacent] = true;
                 }
             }
         }
@@ -2037,13 +2037,13 @@ HRESULT CIsochartMesh::PartitionLonghornShape(
     // sub-chart.other faces will be partitioned as another sub-chart.
     for (size_t i=0; i<m_dwFaceNumber; i++)
     {
-        pdwFaceChartID.get()[i] = 1;
+        pdwFaceChartID[i] = 1;
     }
 
     ISOCHARTVERTEX* pExtremeVertex = m_pVerts + dwLonghornExtremeVexID;
     for (size_t i=0; i<pExtremeVertex->faceAdjacent.size(); i++)
     {
-        pdwFaceChartID.get()[pExtremeVertex->faceAdjacent[i]] = 0;
+        pdwFaceChartID[pExtremeVertex->faceAdjacent[i]] = 0;
     }
 
     // 2. Smooth partition result
@@ -2659,7 +2659,7 @@ HRESULT CIsochartMesh::BiPartitionParameterlizeShape(
             ISOCHARTFACE* pFace = m_children[i]->m_pFaces;
             for (size_t j=0; j<m_children[i]->m_dwFaceNumber; j++)
             {
-                pdwFaceChartID.get()[pFace->dwIDInFatherMesh] = i;
+                pdwFaceChartID[pFace->dwIDInFatherMesh] = i;
                 pFace++;
             }
         }
@@ -2951,8 +2951,8 @@ HRESULT CIsochartMesh::GrowPartitionFromCutPath(
         for (size_t ii=0; ii<cutPath.size(); ii++)
         {
             ISOCHARTEDGE* pEdge = cutPath[ii];
-            bMask.get()[pEdge->dwFaceID[0]] = true;
-            bMask.get()[pEdge->dwFaceID[1]] = true;
+            bMask[pEdge->dwFaceID[0]] = true;
+            bMask[pEdge->dwFaceID[1]] = true;
             faceQueue.push(pEdge->dwFaceID[0]);
             faceQueue.push(pEdge->dwFaceID[1]);
         }
@@ -2980,11 +2980,11 @@ HRESULT CIsochartMesh::GrowPartitionFromCutPath(
                     dwAdjacentFaceID = edge.dwFaceID[0];
                 }
 
-                if (!bMask.get()[dwAdjacentFaceID])
+                if (!bMask[dwAdjacentFaceID])
                 {
                     pdwFaceChartID[dwAdjacentFaceID]
                         = pdwFaceChartID[dwFaceID];
-                    bMask.get()[dwAdjacentFaceID] = true;
+                    bMask[dwAdjacentFaceID] = true;
 
                     faceQueue.push(dwAdjacentFaceID);
                 }

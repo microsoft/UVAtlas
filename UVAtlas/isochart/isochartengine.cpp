@@ -1445,12 +1445,12 @@ HRESULT CIsochartEngine::PrepareExportBuffers(
             ISOCHARTVERTEX* pVert = finalChartList[i]->GetVertexBuffer();
             for (size_t j = 0; j < finalChartList[i]->GetVertexNumber(); j++)
             {
-                rgbVertUsed.get()[pVert[j].dwIDInRootMesh] = true;
+                rgbVertUsed[pVert[j].dwIDInRootMesh] = true;
             }
         }
         for (uint32_t i = 0; i < m_baseInfo.dwVertexCount; i++)
         {
-            if (!rgbVertUsed.get()[i])
+            if (!rgbVertUsed[i])
             {
                 notUsedVertList.push_back(i);
             }
