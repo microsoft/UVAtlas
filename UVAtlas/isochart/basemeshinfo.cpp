@@ -323,7 +323,8 @@ HRESULT CBaseMeshInfo::ComputeInputFaceAttributes(
 
         pfFaceAreaArray[i] = area * 0.5f;
         fMeshArea += pfFaceAreaArray[i];
-        vFaceNormal /= area;
+        if ( area > 0.f )
+            vFaceNormal /= area;
         XMStoreFloat3(pFaceNormal, vFaceNormal);
 
         if (pFaceCanonicalUVCoordinate)
