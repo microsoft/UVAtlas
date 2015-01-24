@@ -372,7 +372,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
             if(!dwOption || (dwOptions & (1 << dwOption)))
             {
-                wprintf( L"ERROR: unknown command-line option '%s'\n\n", pArg);
+                wprintf( L"ERROR: unknown command-line option '%ls'\n\n", pArg);
                 PrintUsage();
                 return 1;
             }
@@ -392,7 +392,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 {
                     if((iArg + 1 >= argc))
                     {
-                        wprintf( L"ERROR: missing value for command-line option '%s'\n\n", pArg);
+                        wprintf( L"ERROR: missing value for command-line option '%ls'\n\n", pArg);
                         PrintUsage();
                         return 1;
                     }
@@ -419,7 +419,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 }
                 else
                 {
-                    wprintf( L"Invalid value specified with -q (%s)\n", pValue);
+                    wprintf( L"Invalid value specified with -q (%ls)\n", pValue);
                     return 1;
                 }
                 break;
@@ -427,7 +427,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             case OPT_MAXCHARTS:
                 if (swscanf_s(pValue, L"%Iu", &maxCharts) != 1)
                 {
-                    wprintf( L"Invalid value specified with -n (%s)\n", pValue);
+                    wprintf( L"Invalid value specified with -n (%ls)\n", pValue);
                     return 1;
                 }
                 break;
@@ -437,7 +437,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                     || maxStretch < 0.f
                     || maxStretch > 1.f )
                 {
-                    wprintf( L"Invalid value specified with -st (%s)\n", pValue);
+                    wprintf( L"Invalid value specified with -st (%ls)\n", pValue);
                     return 1;
                 }
                 break;
@@ -446,7 +446,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 if (swscanf_s(pValue, L"%f", &gutter) != 1
                     || gutter < 0.f )
                 {
-                    wprintf( L"Invalid value specified with -g (%s)\n", pValue);
+                    wprintf( L"Invalid value specified with -g (%ls)\n", pValue);
                     return 1;
                 }
                 break;
@@ -454,7 +454,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             case OPT_WIDTH:
                 if (swscanf_s(pValue, L"%Iu", &width) != 1)
                 {
-                    wprintf( L"Invalid value specified with -w (%s)\n", pValue);
+                    wprintf( L"Invalid value specified with -w (%ls)\n", pValue);
                     return 1;
                 }
                 break;
@@ -462,7 +462,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             case OPT_HEIGHT:
                 if (swscanf_s(pValue, L"%Iu", &height) != 1)
                 {
-                    wprintf( L"Invalid value specified with -h (%s)\n", pValue);
+                    wprintf( L"Invalid value specified with -h (%ls)\n", pValue);
                     return 1;
                 }
                 break;
@@ -516,7 +516,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 }
                 else
                 {
-                    wprintf( L"Invalid value specified with -iv (%s)\n", pValue);
+                    wprintf( L"Invalid value specified with -iv (%ls)\n", pValue);
                     return 1;
                 }
                 break;
@@ -616,7 +616,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         if ( pConv != conversion.begin() )
             wprintf( L"\n");
 
-        wprintf( L"reading %s", pConv->szSrc );
+        wprintf( L"reading %ls", pConv->szSrc );
         fflush(stdout);
 
         std::unique_ptr<Mesh> inMesh;
@@ -790,7 +790,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 }
                 if (FAILED(hr))
                 {
-                    wprintf(L"\nWARNING: Failed to load texture for IMT (%08X):\n%s\n", hr, szTexFile );
+                    wprintf(L"\nWARNING: Failed to load texture for IMT (%08X):\n%ls\n", hr, szTexFile );
                 }
                 else
                 {
@@ -803,7 +803,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                         if (FAILED(hr))
                         {
                             img = nullptr;
-                            wprintf(L"\nWARNING: Failed converting texture for IMT (%08X):\n%s\n", hr, szTexFile);
+                            wprintf(L"\nWARNING: Failed converting texture for IMT (%08X):\n%ls\n", hr, szTexFile);
                         }
                         else
                         {
@@ -813,7 +813,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
                     if ( img )
                     {
-                        wprintf(L"\nComputing IMT from file %s...\n", szTexFile);
+                        wprintf(L"\nComputing IMT from file %ls...\n", szTexFile);
                         IMTData.reset(new (std::nothrow) float[nFaces * 3]);
                         if (!IMTData)
                         {
@@ -828,7 +828,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                         if (FAILED(hr))
                         {
                             IMTData.reset();
-                            wprintf(L"WARNING: Failed to compute IMT from texture (%08X):\n%s\n", hr, szTexFile);
+                            wprintf(L"WARNING: Failed to compute IMT from texture (%08X):\n%ls\n", hr, szTexFile);
                         }
                     }
                 }
@@ -874,11 +874,11 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
                 if (!pSignal)
                 {
-                    wprintf(L"\nWARNING: Mesh does not have channel %s for IMT\n", szChannel );
+                    wprintf(L"\nWARNING: Mesh does not have channel %ls for IMT\n", szChannel );
                 }
                 else
                 {
-                    wprintf(L"\nComputing IMT from %s...\n", szChannel);
+                    wprintf(L"\nComputing IMT from %ls...\n", szChannel);
 
                     IMTData.reset(new (std::nothrow) float[nFaces * 3]);
                     if (!IMTData)
@@ -894,7 +894,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                     if (FAILED(hr))
                     {
                         IMTData.reset();
-                        wprintf(L"WARNING: Failed to compute IMT from channel %s (%08X)\n", szChannel, hr );
+                        wprintf(L"WARNING: Failed to compute IMT from channel %ls (%08X)\n", szChannel, hr );
                     }
                 }
             }
@@ -1086,7 +1086,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         {
             if (GetFileAttributesW(outputPath) != INVALID_FILE_ATTRIBUTES)
             {
-                wprintf(L"\nERROR: Output file already exists, use -y to overwrite:\n'%s'\n", outputPath);
+                wprintf(L"\nERROR: Output file already exists, use -y to overwrite:\n'%ls'\n", outputPath);
                 return 1;
             }
         }
@@ -1134,17 +1134,17 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         }
         else
         {
-            wprintf(L"\nERROR: Unknown output file type '%s'\n", outputExt);
+            wprintf(L"\nERROR: Unknown output file type '%ls'\n", outputExt);
             return 1;
         }
 
         if (FAILED(hr))
         {
-            wprintf(L"\nERROR: Failed write (%08X):-> '%s'\n", hr, outputPath);
+            wprintf(L"\nERROR: Failed write (%08X):-> '%ls'\n", hr, outputPath);
             return 1;
         }
 
-        wprintf(L" %Iu vertices, %Iu faces written:\n'%s'\n", nVerts, nFaces, outputPath);
+        wprintf(L" %Iu vertices, %Iu faces written:\n'%ls'\n", nVerts, nFaces, outputPath);
 
         // Write out UV mesh visualization
         if (dwOptions & (1 << OPT_UV_MESH))
@@ -1176,10 +1176,10 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
             if (FAILED(hr))
             {
-                wprintf(L"\nERROR: Failed uv mesh write (%08X):-> '%s'\n", hr, outputPath);
+                wprintf(L"\nERROR: Failed uv mesh write (%08X):-> '%ls'\n", hr, outputPath);
                 return 1;
             }
-            wprintf(L"uv mesh visualization '%s'\n", outputPath);
+            wprintf(L"uv mesh visualization '%ls'\n", outputPath);
         }
     }
 
