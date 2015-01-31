@@ -57,6 +57,7 @@ namespace GeodesicDist
         EdgeWindow WindowToBePropagated ; // window that is just popped off the heap
 
         CExactOneToAll() ;
+        virtual ~CExactOneToAll() {};
 
         // set the source vertex index before run
         void SetSrcVertexIdx(const uint32_t dwSrcVertexIdx);
