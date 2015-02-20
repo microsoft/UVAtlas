@@ -208,7 +208,7 @@ namespace Isochart
         CCallbackSchemer& m_callbackSchemer;
 
         // Prevent copying
-        CProgressiveMesh(CProgressiveMesh const&);
-        CProgressiveMesh& operator=(CProgressiveMesh const&);
+        CProgressiveMesh(CProgressiveMesh const&) DIRECTX_CTOR_DELETE
+        CProgressiveMesh& operator=(CProgressiveMesh const&) DIRECTX_CTOR_DELETE
     };
 }

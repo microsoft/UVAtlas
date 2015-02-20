@@ -1329,8 +1329,8 @@ private:
     #endif
 
     // Prevent copying
-    CIsochartMesh(CIsochartMesh const&);
-    CIsochartMesh& operator=(CIsochartMesh const&);
+    CIsochartMesh(CIsochartMesh const&) DIRECTX_CTOR_DELETE
+    CIsochartMesh& operator=(CIsochartMesh const&) DIRECTX_CTOR_DELETE
 };
 
 }

@@ -1617,8 +1617,8 @@ public:
 
 private:
     // Prevent copying
-    VertFaceIter(VertFaceIter const&);
-    VertFaceIter& operator=(VertFaceIter const&);
+    VertFaceIter(VertFaceIter const&) DIRECTX_CTOR_DELETE
+    VertFaceIter& operator=(VertFaceIter const&) DIRECTX_CTOR_DELETE
 };
 
 HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool& bCleaned)

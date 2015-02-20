@@ -128,6 +128,6 @@ private:
     std::unique_ptr<DirectX::XMFLOAT4[]>        mBlendWeights;
 
     // Prevent copying
-    Mesh(Mesh const&);
-    Mesh& operator= (Mesh const&);
+    Mesh(Mesh const&) DIRECTX_CTOR_DELETE
+    Mesh& operator= (Mesh const&) DIRECTX_CTOR_DELETE
 };
