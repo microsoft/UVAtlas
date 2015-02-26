@@ -1109,7 +1109,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         }
         else if ( !_wcsicmp(outputExt, L".sdkmesh") )
         {
-            hr = inMesh->ExportToSDKMESH(outputPath, inMaterial.size(), &inMaterial.front());
+            hr = inMesh->ExportToSDKMESH(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : &inMaterial.front());
         }
         else if ( !_wcsicmp(outputExt, L".cmo") )
         {
@@ -1125,7 +1125,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 return 1;
             }
 
-            hr = inMesh->ExportToCMO(outputPath, inMaterial.size(), &inMaterial.front());
+            hr = inMesh->ExportToCMO(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : &inMaterial.front());
         }
         else if ( !_wcsicmp(outputExt, L".x") )
         {
@@ -1168,11 +1168,11 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
             else if (!_wcsicmp(outputExt, L".sdkmesh"))
             {
-                hr = inMesh->ExportToSDKMESH(outputPath, inMaterial.size(), &inMaterial.front());
+                hr = inMesh->ExportToSDKMESH(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : &inMaterial.front());
             }
             else if (!_wcsicmp(outputExt, L".cmo"))
             {
-                hr = inMesh->ExportToCMO(outputPath, inMaterial.size(), &inMaterial.front());
+                hr = inMesh->ExportToCMO(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : &inMaterial.front());
             }
             if (FAILED(hr))
             {

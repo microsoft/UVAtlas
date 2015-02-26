@@ -2425,6 +2425,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName, size_t nMaterials, cons
         s.PrimitiveType = PT_TRIANGLE_LIST;
         s.IndexCount = mnFaces * 3;
         s.VertexCount = mnVerts;
+        subsetArray.push_back(0);
         submeshes.push_back(s);
     }
 
