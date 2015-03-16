@@ -49,8 +49,8 @@ UVAtasTool\
         .\UVAtlas\UVAtlas
         .\UVAtlas\UVAtlasTool
 
-All content and source code for this package are bound to the Microsoft Public License (Ms-PL)
-<http://www.microsoft.com/en-us/openness/licenses.aspx#MPL>.
+All content and source code for this package are subject to the terms of the MIT License.
+<http://opensource.org/licenses/MIT>.
 
 For the latest version of UVAtlas, more detailed documentation, discussion forums, bug
 reports and feature requests, please visit the Codeplex site.
