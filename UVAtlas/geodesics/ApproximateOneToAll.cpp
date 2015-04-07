@@ -59,6 +59,12 @@ void CApproximateOneToAll::CutHeapTopData( EdgeWindow &EdgeWindowOut )
                 double b0pie = pWindowLeft->b0 ;
                 double D1 = pWindowRight->dPseuSrcToSrcDistance + SqrtMin0( SquredD2Dist(DVector2(b1pie, 0), pWindowRight->dv2Src) ) ;
                 double D0 = pWindowLeft->dPseuSrcToSrcDistance + SqrtMin0( SquredD2Dist(DVector2(b0pie, 0), pWindowLeft->dv2Src) ) ;
+
+                if (fabs(D1 - D0) < DBL_EPSILON)
+                {
+                    continue;	// prevent divide-by-zero on very narrow windows
+                }
+
                 double alpha = (b1pie - b0pie) / (D1 - D0) ;
                 double beta = ( SQR(b0pie) - SQR(b1pie) - SQR(D0) + SQR(D1) ) / ( 2*(D1 - D0) ) ;
                 double A = SQR( alpha ) - 1 ;

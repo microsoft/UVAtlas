@@ -141,9 +141,23 @@ void CIsochartMesh::Free()
     DestroyPakingInfoBuffer();
     DeleteChildren();
 }
+
 /////////////////////////////////////////////////////////////
 //////////////////////Class Public Methods //////////////////
 /////////////////////////////////////////////////////////////
+
+// detect whether or not the mesh has boundary vertices
+bool CIsochartMesh::HasBoundaryVertex() const
+{
+    for (size_t i = 0; i < m_dwVertNumber; ++i)
+    {
+        if (m_pVerts[i].bIsBoundary)
+        {
+            return true;
+        }
+    }
+    return false;
+}
 
 // Convert external stretch to the internal stretches
 // See more details in [SSGH01] page 2-3:
@@ -3443,8 +3457,8 @@ HRESULT CIsochartMesh::CalculateDijkstraPathToVertex(
 
 
 /////////////////////////////////////////////////////////////
-////////////////Calculatel Vertex Improtance  methods/////////
-////////////////////////////////////////////////////////////
+////////////////Calculate Vertex Importance methods//////////
+/////////////////////////////////////////////////////////////
 
 
 // Using Progressive Mesh Algorithm to simplify current chart to get weight of importance

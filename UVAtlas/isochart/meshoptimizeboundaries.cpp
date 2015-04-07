@@ -1169,7 +1169,20 @@ HRESULT CIsochartMesh::ApplyGraphCutByStretch(
 {
     CGraphcut graphCut;
 
-    std::unique_ptr<float[]> pfWorkSpace( new (std::nothrow) float[dwLandmarkNumber] );
+    // It is possible for the children to have more landmark vertices than their parents.
+    // This is due to vertices being cloned in CIsochartMesh::CleanNonmanifoldMesh function.
+    // For this allocation simply use the max number of landmark vertices for the size.
+    size_t workspaceSize = dwLandmarkNumber;
+    for(size_t i = 0; i < m_children.size(); ++i)
+    {
+        size_t numChildLandmark = m_children[i]->m_landmarkVerts.size();
+        if (workspaceSize < numChildLandmark)
+        {
+            workspaceSize = numChildLandmark;
+        }
+    }
+
+    std::unique_ptr<float[]> pfWorkSpace( new (std::nothrow) float[workspaceSize] );
     std::unique_ptr<float[]> pfFacesStretchDiff( new (std::nothrow) float[m_dwFaceNumber] );
     std::unique_ptr<uint32_t []> pdwFaceGraphNodeID(new (std::nothrow) uint32_t[m_dwFaceNumber]);
 

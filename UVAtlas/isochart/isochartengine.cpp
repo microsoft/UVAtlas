@@ -664,7 +664,18 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
             CIsochartMesh::ConvertToExternalStretch(
                     fCurrAvgL2SquaredStretch,
                     IsIMTSpecified());
-    
+
+    // detect closed surfaces which have not been correctly partitioned.
+    for (size_t i = 0; i < m_finalChartList.size(); ++i)
+    {
+        if (m_finalChartList[i]->GetVertexNumber() > 0
+            && !m_finalChartList[i]->HasBoundaryVertex())
+        {
+            DPF(0, "UVAtlas Internal error: Closed surface not correctly partitioned" );
+            return E_FAIL;
+        }
+    }
+
     return hr;
 }
 
