@@ -336,11 +336,8 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeap(
 
             if (bFirstTime)
             {
-                if (FAILED(hr = m_callbackSchemer.UpdateCallbackAdapt(
-                    pChart->GetFaceNumber())))
-                {
-                        return hr;
-                }
+                if (FAILED(hr = m_callbackSchemer.UpdateCallbackAdapt(pChart->GetFaceNumber())))
+                    return hr;
             }
         }
     }		
@@ -348,7 +345,10 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeap(
     // 3.2 Update status
     if (bFirstTime)
     {
-        m_callbackSchemer.FinishWorkAdapt();
+        HRESULT hr = m_callbackSchemer.FinishWorkAdapt();
+        if ( FAILED(hr) )
+            return hr;
+
         if (dwExpectChartCount > 0)
         {
             size_t dwStep = 0;
@@ -356,13 +356,11 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeap(
             {
                 dwStep = MaxChartNumber - m_currentChartHeap.size();
             }
-            m_callbackSchemer.InitCallBackAdapt(
-                dwStep, 0.70f, 0.40f);
+            m_callbackSchemer.InitCallBackAdapt(dwStep, 0.70f, 0.40f);
         }
         else
         {
-            m_callbackSchemer.InitCallBackAdapt(
-                1, 0.40f, 0.40f);
+            m_callbackSchemer.InitCallBackAdapt(1, 0.40f, 0.40f);
         }
     }
 
@@ -610,28 +608,26 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
         if (dwExpectChartCount > 0)
         {
             size_t dwCurrentChartNumber (m_finalChartList.size() + m_currentChartHeap.size());
-            hr = m_callbackSchemer.UpdateCallbackAdapt(
-                 dwCurrentChartNumber - dwLastChartNumber);
+            hr = m_callbackSchemer.UpdateCallbackAdapt(dwCurrentChartNumber - dwLastChartNumber);
             dwLastChartNumber = dwCurrentChartNumber;
         }
         else
         {
-            hr = m_callbackSchemer.UpdateCallbackDirectly(
-                    fExpectAvgL2SquaredStretch/
-                    fCurrAvgL2SquaredStretch);
+            hr = m_callbackSchemer.UpdateCallbackDirectly(fExpectAvgL2SquaredStretch/fCurrAvgL2SquaredStretch);
         }
         FAILURE_RETURN(hr);
     }while(!m_currentChartHeap.empty());
 
-    m_callbackSchemer.FinishWorkAdapt();
+    hr = m_callbackSchemer.FinishWorkAdapt();
+    if ( FAILED(hr) )
+        return hr;
 
     // 4. MergeChart
     if (m_finalChartList.size() > dwExpectChartCount)
     {
         DPF(0, "Charts before merge %Iu", m_finalChartList.size());
         dwLastChartNumber = m_finalChartList.size();
-        m_callbackSchemer.InitCallBackAdapt(
-            (2 + m_finalChartList.size()), 0.20f, 0.80f);
+        m_callbackSchemer.InitCallBackAdapt((2 + m_finalChartList.size()), 0.20f, 0.80f);
 
         if (FAILED(
             hr = CIsochartMesh::MergeSmallCharts(
@@ -642,8 +638,11 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
         {
             return hr;
         }
-        m_callbackSchemer.FinishWorkAdapt();
         DPF(0, "Charts after merge %Iu", m_finalChartList.size());
+
+        hr = m_callbackSchemer.FinishWorkAdapt();
+        if ( FAILED(hr) )
+            return hr;
     }
 
     // 5. Optimize parameterized charts.
@@ -1204,7 +1203,7 @@ HRESULT CIsochartEngine::ApplyInitEngine(
         baseInfo.dwFaceCount,
         dwTestFaceCount);
 
-    hr=m_callbackSchemer.FinishWorkAdapt();
+    hr = m_callbackSchemer.FinishWorkAdapt();
     
     return hr;
 }

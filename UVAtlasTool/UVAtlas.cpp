@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <conio.h>
 
 #include <memory>
 #include <list>
@@ -212,6 +213,15 @@ HRESULT __cdecl UVAtlasCallback( float fPercentDone  )
     {
         wprintf( L"%.2f%%   \r", fPercentDone * 100 );
         s_lastTick = tick;
+    }
+
+    if ( _kbhit() )
+    {
+        if ( _getch() == 27 )
+        {
+            wprintf(L"*** ABORT ***");
+            return E_ABORT;
+        }
     }
 
     return S_OK;

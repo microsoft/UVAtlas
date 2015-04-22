@@ -191,7 +191,9 @@ HRESULT CProgressiveMesh::Simplify()
     }
 
     DPF(3,"----Begin Simplify----");
-    m_callbackSchemer.CheckPointAdapt();
+    HRESULT hr = m_callbackSchemer.CheckPointAdapt();
+    if ( FAILED(hr) )
+        return hr;
 
     // 2. Iteration of deleting edges.
     size_t dwEdgeCount = 0;
@@ -256,7 +258,7 @@ HRESULT CProgressiveMesh::Simplify()
         pDeleteVertex->nImportanceOrder = nImportanceOrder++;
         dwRemainVertNumber--;
 
-        HRESULT hr = DeleteCurrentEdge(
+        hr = DeleteCurrentEdge(
             heap,
             pHeapItems,
             pCurrentEdge,
@@ -299,7 +301,7 @@ HRESULT CProgressiveMesh::Simplify()
         pDeleteVertex->nImportanceOrder = nImportanceOrder++;
         dwRemainVertNumber--;
 
-        HRESULT hr = DeleteCurrentEdge(
+        hr = DeleteCurrentEdge(
             heap,
             pHeapItems,
             pCurrentEdge,

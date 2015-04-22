@@ -2308,7 +2308,10 @@ HRESULT CIsochartMesh::CheckAndDivideMultipleObjects(
             dwEnd = 1;
             while (dwHead < dwEnd)
             {
-                m_callbackSchemer.CheckPointAdapt();
+                HRESULT hr = m_callbackSchemer.CheckPointAdapt();
+                if ( FAILED(hr) )
+                    return hr;
+
                 pVertex = vertList[dwHead];
                 for (size_t j = 0; j < pVertex->vertAdjacent.size(); j++)
                 {
@@ -2550,7 +2553,9 @@ HRESULT CIsochartMesh::FindAllBoundaries(
 
             while (dwHead < dwEnd)
             {
-                m_callbackSchemer.CheckPointAdapt();
+                hr = m_callbackSchemer.CheckPointAdapt();
+                if ( FAILED(hr) )
+                    return hr;
 
                 ISOCHARTVERTEX* pCurrentVertex = allBoundaryList[dwHead];
                 auto& adjacentVertList = pCurrentVertex->vertAdjacent;
