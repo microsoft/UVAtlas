@@ -115,7 +115,11 @@ void CIsochartMesh::ReleaseAllNewCharts(
 {
     for (size_t i=0; i<children.size(); i++)
     {
-        delete children[i];
+        auto* pChart = children[i];
+        if ( pChart && !pChart->IsInitChart() )
+        {
+            delete pChart;
+        }
     }
     children.clear();
 }
