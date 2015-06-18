@@ -4,7 +4,7 @@ UVAtlas - isochart texture atlasing
 
 Copyright (c) Microsoft Corporation. All rights reserved.
 
-April 9, 2015
+June 18, 2015
 
 This package contains UVAtlas, a shared source library for creating and packing an
 isochart texture atlas.
@@ -52,8 +52,9 @@ UVAtasTool\
 All content and source code for this package are subject to the terms of the MIT License.
 <http://opensource.org/licenses/MIT>.
 
-For the latest version of UVAtlas, more detailed documentation, discussion forums, bug
-reports and feature requests, please visit the Codeplex site.
+Documentation is available at <https://github.com/Microsoft/UVAtlas/wiki>.
+
+For the latest version of UVAtlas, bug reports, etc. please visit the project site.
 
 http://go.microsoft.com/fwlink/?LinkID=512686
 
@@ -70,6 +71,10 @@ Further reading:
 ---------------
 RELEASE HISTORY
 ---------------
+
+June 18, 2015
+    Fixed bugs with handling of E_ABORT from user callback
+    Added ESC to abort to uvatlas sample
 
 April 9, 2015
     Added projects for Windows apps Technical Preview
