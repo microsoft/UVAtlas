@@ -28,7 +28,7 @@
 #include <functional>
 #include <vector>
 
-#define UVATLAS_VERSION 150
+#define UVATLAS_VERSION 151
 
 namespace DirectX
 {
