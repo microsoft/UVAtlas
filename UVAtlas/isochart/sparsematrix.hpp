@@ -25,7 +25,7 @@ namespace Isochart
         public:
             void setZero()
             {
-                memset(&front(), 0, size()*sizeof(value_type));
+                memset(data(), 0, size()*sizeof(value_type));
             }
 
         public:
@@ -101,7 +101,7 @@ namespace Isochart
                 {
                     return false;
                 }
-                memcpy(&dest.front(), &src.front(), src.size()*sizeof(T));
+                memcpy(dest.data(), src.data(), src.size()*sizeof(T));
                 return true;
             }
 

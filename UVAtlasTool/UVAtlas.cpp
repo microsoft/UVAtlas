@@ -243,8 +243,8 @@ HRESULT LoadFromOBJ(const WCHAR* szFilename, std::unique_ptr<Mesh>& inMesh, std:
     if (wfReader.indices.empty() || wfReader.vertices.empty())
         return E_FAIL;
 
-    hr = inMesh->SetIndexData(wfReader.indices.size() / 3, &wfReader.indices.front(),
-                              wfReader.attributes.empty() ? nullptr : &wfReader.attributes.front());
+    hr = inMesh->SetIndexData(wfReader.indices.size() / 3, wfReader.indices.data(),
+                              wfReader.attributes.empty() ? nullptr : wfReader.attributes.data());
     if (FAILED(hr))
         return hr;
 
@@ -283,7 +283,7 @@ HRESULT LoadFromOBJ(const WCHAR* szFilename, std::unique_ptr<Mesh>& inMesh, std:
     if (FAILED(hr))
         return hr;
 
-    hr = vbr.AddStream(&wfReader.vertices.front(), wfReader.vertices.size(), 0, sizeof(WaveFrontReader<uint32_t>::Vertex));
+    hr = vbr.AddStream(wfReader.vertices.data(), wfReader.vertices.size(), 0, sizeof(WaveFrontReader<uint32_t>::Vertex));
     if (FAILED(hr))
         return hr;
 
@@ -953,14 +953,14 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         assert(facePartitioning.size() == nFaces);
         assert(vertexRemapArray.size() == vb.size());
 
-        hr = inMesh->UpdateFaces( nFaces, reinterpret_cast<const uint32_t*>( &ib.front() ) );
+        hr = inMesh->UpdateFaces( nFaces, reinterpret_cast<const uint32_t*>( ib.data() ) );
         if ( FAILED(hr) )
         {
             wprintf(L"\nERROR: Failed applying atlas indices (%08X)\n", hr);
             return 1;
         }
 
-        hr = inMesh->VertexRemap( &vertexRemapArray.front(), vertexRemapArray.size() );
+        hr = inMesh->VertexRemap( vertexRemapArray.data(), vertexRemapArray.size() );
         if ( FAILED(hr) )
         {
             wprintf(L"\nERROR: Failed applying atlas vertex remap (%08X)\n", hr);
@@ -1119,7 +1119,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         }
         else if ( !_wcsicmp(outputExt, L".sdkmesh") )
         {
-            hr = inMesh->ExportToSDKMESH(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : &inMaterial.front());
+            hr = inMesh->ExportToSDKMESH(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
         }
         else if ( !_wcsicmp(outputExt, L".cmo") )
         {
@@ -1135,7 +1135,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 return 1;
             }
 
-            hr = inMesh->ExportToCMO(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : &inMaterial.front());
+            hr = inMesh->ExportToCMO(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
         }
         else if ( !_wcsicmp(outputExt, L".x") )
         {
@@ -1178,11 +1178,11 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
             else if (!_wcsicmp(outputExt, L".sdkmesh"))
             {
-                hr = inMesh->ExportToSDKMESH(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : &inMaterial.front());
+                hr = inMesh->ExportToSDKMESH(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
             }
             else if (!_wcsicmp(outputExt, L".cmo"))
             {
-                hr = inMesh->ExportToCMO(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : &inMaterial.front());
+                hr = inMesh->ExportToCMO(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
             }
             if (FAILED(hr))
             {

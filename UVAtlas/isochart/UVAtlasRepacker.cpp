@@ -703,7 +703,7 @@ void CUVAtlasRepacker::CleanUp()
 template <class T>
 HRESULT CUVAtlasRepacker::GenerateAdjacentInfo()
 {
-    auto ib = reinterpret_cast<const _Triangle<T> *>( &m_pvIndexBuffer->front() );
+    auto ib = reinterpret_cast<const _Triangle<T> *>( m_pvIndexBuffer->data() );
 
     try
     {
@@ -711,7 +711,7 @@ HRESULT CUVAtlasRepacker::GenerateAdjacentInfo()
 
         if (m_pPartitionAdj)
         {
-            memcpy(&m_AdjacentInfo.front(), m_pPartitionAdj, m_iNumFaces * 3 * sizeof(uint32_t));
+            memcpy(m_AdjacentInfo.data(), m_pPartitionAdj, m_iNumFaces * 3 * sizeof(uint32_t));
             return S_OK;
         }
 
@@ -786,7 +786,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
     // create an attribute buffer
     m_vAttributeBuffer.resize(m_iNumFaces);
 
-    auto pAB = &m_vAttributeBuffer.front();
+    auto pAB = m_vAttributeBuffer.data();
     for (size_t i = 0; i < m_iNumFaces; i++)
         pAB[i] = uint32_t(-1);
 
@@ -800,8 +800,8 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
         for (size_t i = 0; i < m_iNumVertices; i++)
             m_IndexPartition[i] = uint32_t(-1);
 
-        auto pVB = reinterpret_cast<const uint8_t*>( &m_pvVertexBuffer->front() );
-        auto pIB = reinterpret_cast<const uint8_t*>( &m_pvIndexBuffer->front() );
+        auto pVB = reinterpret_cast<const uint8_t*>( m_pvVertexBuffer->data() );
+        auto pIB = reinterpret_cast<const uint8_t*>( m_pvIndexBuffer->data() );
 
         UVATLASATTRIBUTERANGE ar;
 
@@ -1773,14 +1773,14 @@ void CUVAtlasRepacker::Normalize()
 void CUVAtlasRepacker::OutPutPackResult()
 {
     m_vFacePartitioning.resize(m_iNumFaces);
-    memcpy(&m_vFacePartitioning.front(), &m_vAttributeBuffer.front(), m_iNumFaces * sizeof(uint32_t));
+    memcpy(m_vFacePartitioning.data(), m_vAttributeBuffer.data(), m_iNumFaces * sizeof(uint32_t));
 
     m_vAttributeID.resize(m_iNumFaces);
-    memcpy(&m_vAttributeID.front(), &m_vAttributeBuffer.front(), m_iNumFaces * sizeof(uint32_t));
+    memcpy(m_vAttributeID.data(), m_vAttributeBuffer.data(), m_iNumFaces * sizeof(uint32_t));
 
     // copy the new UV coordinates from our vertex buffer to the original 
     // vertex buffer according to the original vertex order
-    auto pVB = reinterpret_cast<uint8_t*>( &m_pvVertexBuffer->front() );
+    auto pVB = reinterpret_cast<uint8_t*>( m_pvVertexBuffer->data() );
     for (size_t i = 0; i < m_IndexPartition.size(); i++)
     {
         // handle the situation when the chart has only one vertex.
@@ -1839,8 +1839,8 @@ float CUVAtlasRepacker::GetChartArea(uint32_t index) const
 template <class T>
 float CUVAtlasRepacker::GetTotalArea() const
 {
-    auto pVB = reinterpret_cast<const uint8_t*>( &m_pvVertexBuffer->front() );
-    auto pIB = reinterpret_cast<const uint8_t*>( &m_pvIndexBuffer->front() );
+    auto pVB = reinterpret_cast<const uint8_t*>( m_pvVertexBuffer->data() );
+    auto pIB = reinterpret_cast<const uint8_t*>( m_pvIndexBuffer->data() );
 
     float Area = 0;
     for (size_t i = 0; i < m_iNumFaces; i++)

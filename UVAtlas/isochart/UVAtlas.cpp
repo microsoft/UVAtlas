@@ -138,7 +138,7 @@ namespace
                 pReverseRemapArray[i] = i;
         }
 
-        memcpy(&vOutVertexRemapBuffer.front(), pReverseRemapArray, (*nNewVerts) * sizeof(uint32_t));
+        memcpy(vOutVertexRemapBuffer.data(), pReverseRemapArray, (*nNewVerts) * sizeof(uint32_t));
         memcpy(pOutIndexData, pNewIndexData, 3 * nFaces * sizeof(IndexType));
 
         return S_OK;
@@ -377,12 +377,12 @@ namespace
         size_t outMeshNumVertices = 0;
         if (DXGI_FORMAT_R16_UINT == indexFormat)
         {
-            hr = UVAtlasGetRealVertexRemap<uint16_t>(nFaces, nVerts, reinterpret_cast<const uint16_t*>(indices), reinterpret_cast<uint16_t*>(&vOutIndexBuffer.front()),
+            hr = UVAtlasGetRealVertexRemap<uint16_t>(nFaces, nVerts, reinterpret_cast<const uint16_t*>(indices), reinterpret_cast<uint16_t*>(vOutIndexBuffer.data()),
                                                      &outMeshNumVertices, vOutVertexRemapArray, forwardRemapArray);
         }
         else
         {
-            hr = UVAtlasGetRealVertexRemap<uint32_t>(nFaces, nVerts, reinterpret_cast<const uint32_t*>(indices), reinterpret_cast<uint32_t*>(&vOutIndexBuffer.front()),
+            hr = UVAtlasGetRealVertexRemap<uint32_t>(nFaces, nVerts, reinterpret_cast<const uint32_t*>(indices), reinterpret_cast<uint32_t*>(vOutIndexBuffer.data()),
                                                      &outMeshNumVertices, vOutVertexRemapArray, forwardRemapArray);
         }
         if (FAILED(hr))
@@ -404,10 +404,10 @@ namespace
         // copy old vertex data using remap array
         {
             auto bBaseIn = reinterpret_cast<const uint8_t*>(positions);
-            auto bBaseOut = &vMeshOutVertexBuffer.front();
+            auto bBaseOut = vMeshOutVertexBuffer.data();
 
-            uint32_t* pdwRemap = &vOutVertexRemapArray.front();
-            auto pOutVerts = &vOutVertexBuffer.front();
+            uint32_t* pdwRemap = vOutVertexRemapArray.data();
+            auto pOutVerts = vOutVertexBuffer.data();
 
             uint32_t* pForwardRemapArray = forwardRemapArray.get();
 
@@ -528,7 +528,7 @@ namespace
             return E_OUTOFMEMORY;
         }
 
-        auto pIsoVerts = &vTempVertexBuffer.front();
+        auto pIsoVerts = vTempVertexBuffer.data();
 
         // first transfer mesh position data into a vertex buffer that matches what
         // isochartpack is expecting (x,y,z,u,v)
@@ -538,13 +538,13 @@ namespace
         }
 
         // copy index buffer for isochartpack
-        memcpy(&vTempIndexBuffer.front(), &vMeshIndexBuffer.front(), vTempIndexBuffer.size());
+        memcpy(vTempIndexBuffer.data(), vMeshIndexBuffer.data(), vTempIndexBuffer.size());
 
         hr = IsochartRepacker::isochartpack2(&vTempVertexBuffer,
             nVerts,
             &vTempIndexBuffer,
             nFaces,
-            &vPartitionResultAdjacency.front(),
+            vPartitionResultAdjacency.data(),
             width,
             height,
             gutter,
@@ -556,7 +556,7 @@ namespace
 
         // encode new texture coordinates in mesh
         {
-            auto pOutVerts = &vTempVertexBuffer.front();
+            auto pOutVerts = vTempVertexBuffer.data();
 
             for (size_t i = 0; i < nVerts; i++)
             {

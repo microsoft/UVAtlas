@@ -2518,7 +2518,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName, size_t nMaterials, cons
     // Write subsets
     DWORD bytesToWrite = static_cast<DWORD>( sizeof(SDKMESH_SUBSET) * submeshes.size() );
     DWORD bytesWritten;
-    if ( !WriteFile(hFile.get(), &submeshes.front(), bytesToWrite, &bytesWritten, nullptr) )
+    if ( !WriteFile(hFile.get(), submeshes.data(), bytesToWrite, &bytesWritten, nullptr) )
         return HRESULT_FROM_WIN32(GetLastError());
 
     if (bytesWritten != bytesToWrite)
@@ -2547,7 +2547,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName, size_t nMaterials, cons
     // Write subset index list
     assert(meshHeader.NumSubsets == subsetArray.size());
     bytesToWrite = meshHeader.NumSubsets * sizeof(UINT);
-    if (!WriteFile(hFile.get(), &subsetArray.front(), bytesToWrite, &bytesWritten, nullptr))
+    if (!WriteFile(hFile.get(), subsetArray.data(), bytesToWrite, &bytesWritten, nullptr))
         return HRESULT_FROM_WIN32(GetLastError());
 
     if (bytesWritten != bytesToWrite)

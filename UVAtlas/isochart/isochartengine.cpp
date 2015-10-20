@@ -971,7 +971,7 @@ HRESULT CIsochartEngine::InitializePacking(
         DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT;
     
     if(FAILED(hr = m_baseInfo.Initialize(
-        &pvVertexBuffer->front(), 
+        pvVertexBuffer->data(), 
         VertexCount, 
         dwVertexStride,
         FaceCount,
@@ -985,7 +985,7 @@ HRESULT CIsochartEngine::InitializePacking(
     if (FAILED(hr=ApplyInitEngine(
         m_baseInfo, 
         IndexFormat, 
-        &pvFaceIndexBuffer->front(),
+        pvFaceIndexBuffer->data(),
         false)))
     {
         goto LEnd;
@@ -1524,11 +1524,11 @@ HRESULT CIsochartEngine::FillExportVertexBuffer(
     auto pVertex = reinterpret_cast<const uint8_t*>(m_baseInfo.pVertexArray);
     assert(m_baseInfo.dwVertexStride >= sizeof(XMFLOAT3));
 
-    auto pVertexOut = &pvVertexBuffer->front();
+    auto pVertexOut = pvVertexBuffer->data();
 
     uint32_t* pdwBaseMap = nullptr;
     uint32_t* pdwMap = nullptr;
-    pdwBaseMap = pdwMap = &pvMapBuffer->front();
+    pdwBaseMap = pdwMap = pvMapBuffer->data();
 
     for (size_t i=0; i<finalChartList.size(); i++)
     {
@@ -1588,7 +1588,7 @@ HRESULT CIsochartEngine::FillExportFaceIndexBuffer(
     uint32_t dwFaceId = 0;
     size_t dwOffset = 0;
 
-    auto pBaseFaces = reinterpret_cast<INDEXTYPE*>(&pvFaceBuffer->front());
+    auto pBaseFaces = reinterpret_cast<INDEXTYPE*>(pvFaceBuffer->data());
 
     INDEXTYPE* pFaces;
     for (size_t i=0; i<finalChartList.size(); i++)
@@ -1626,7 +1626,7 @@ HRESULT CIsochartEngine::FillExportFaceAttributeBuffer(
 {
     assert(pvAttributeBuffer != 0);
     
-    uint32_t* pAttributeID = &pvAttributeBuffer->front();
+    uint32_t* pAttributeID = pvAttributeBuffer->data();
 
     uint32_t dwFaceID = 0;
     
@@ -1650,7 +1650,7 @@ HRESULT CIsochartEngine::FillExportFaceAdjacencyBuffer(
 {
     assert(pvAdjacencyBuffer != 0);
     
-    uint32_t* pdwAdj = &pvAdjacencyBuffer->front();
+    uint32_t* pdwAdj = pvAdjacencyBuffer->data();
 
     uint32_t dwFaceID = 0;
     

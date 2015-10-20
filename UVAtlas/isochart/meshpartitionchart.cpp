@@ -464,7 +464,7 @@ HRESULT CIsochartMesh::AdjustToSameChartID(
     {
         return E_OUTOFMEMORY;
     }
-    memset(&subChartIDCountList.front(), 0, sizeof(uint32_t)*subChartIDCountList.size());
+    memset(subChartIDCountList.data(), 0, sizeof(uint32_t)*subChartIDCountList.size());
     for (size_t ii= 0; ii<dwCongFaceCount; ii++)
     {
         for (size_t jj=0; jj<allDiffSubChartIDList.size(); jj++)
@@ -646,7 +646,7 @@ HRESULT CIsochartMesh::SatifyUserSpecifiedRule(
     uint32_t dwBegin = 0;
     for (size_t ii=0; ii<congenerFaceCategoryLen.size(); ii++)
     {
-        uint32_t *pCongFaceID = &congenerFaceCategories.front() + dwBegin;
+        uint32_t *pCongFaceID = congenerFaceCategories.data() + dwBegin;
         uint32_t dwCongFaceCount = congenerFaceCategoryLen[ii];
 
         bool bModifiedCurPass = false;
