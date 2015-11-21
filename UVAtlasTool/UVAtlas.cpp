@@ -55,7 +55,8 @@ enum OPTIONS    // Note: dwOptions below assumes 32 or less options.
     OPT_OVERWRITE,
     OPT_NODDS,
     OPT_FLIP,
-    OPT_FLIPTC,
+    OPT_FLIPV,
+    OPT_FLIPZ,
     OPT_NOLOGO,
     OPT_MAX
 };
@@ -124,7 +125,8 @@ SValue g_pOptions[] =
     { L"y",             OPT_OVERWRITE   },
     { L"nodds",         OPT_NODDS       },
     { L"flip",          OPT_FLIP        },
-    { L"fliptc",        OPT_FLIPTC      },
+    { L"flipv",         OPT_FLIPV       },
+    { L"flipz",         OPT_FLIPZ       },
     { L"nologo",        OPT_NOLOGO      },
     { nullptr,          0               }
 };
@@ -193,7 +195,9 @@ void PrintUsage()
     wprintf( L"                       NORMAL, COLOR, TEXCOORD\n");
     wprintf( L"   -sdkmesh|-cmo|-vbo  output file type\n");
     wprintf( L"   -nodds              prevents extension renaming in exported materials\n");
-    wprintf( L"   -flip | -fliptc     reverse winding of faces and/or flips texcoords\n");
+    wprintf( L"   -flip               reverse winding of faces\n");
+    wprintf( L"   -flipv              inverts the v texcoords\n");
+    wprintf( L"   -flipz              flips the handedness of the positions/normals\n");
     wprintf( L"   -o <filename>       output filename\n");
     wprintf( L"   -y                  overwrite existing output file (if any)\n");
     wprintf( L"   -nologo             suppress copyright message\n");
@@ -391,7 +395,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
             if ( OPT_NOLOGO != dwOption && OPT_OVERWRITE != dwOption
                  && OPT_CLOCKWISE != dwOption && OPT_NODDS != dwOption
-                 && OPT_FLIP != dwOption && OPT_FLIPTC != dwOption
+                 && OPT_FLIP != dwOption && OPT_FLIPV != dwOption && OPT_FLIPZ != dwOption
                  && OPT_NORMALS != dwOption && OPT_WEIGHT_BY_AREA != dwOption && OPT_WEIGHT_BY_EQUAL != dwOption
                  && OPT_TANGENTS != dwOption && OPT_CTF != dwOption
                  && OPT_TOPOLOGICAL_ADJ != dwOption && OPT_GEOMETRIC_ADJ != dwOption
@@ -574,22 +578,6 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                     return 1;
                 }
                 break;
-
-            case OPT_FLIP:
-                if ( dwOptions & (1 << OPT_FLIPTC) )
-                {
-                    wprintf(L"Can only use flip or fliptc\n");
-                    return 1;
-                }
-                break;
-
-            case OPT_FLIPTC:
-                if (dwOptions & (1 << OPT_FLIP))
-                {
-                    wprintf(L"Can only use flip or fliptc\n");
-                    return 1;
-                }
-                break;
             }
         }
         else
@@ -674,6 +662,26 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         assert(inMesh->GetIndexBuffer() != 0);
 
         wprintf(L"\nVerts: %Iu, nFaces: %Iu", nVerts, nFaces);
+
+        if (dwOptions & (1 << OPT_FLIPV))
+        {
+            hr = inMesh->InvertVTexCoord();
+            if (FAILED(hr))
+            {
+                wprintf(L"\nERROR: Failed inverting v texcoord (%08X)\n", hr);
+                return 1;
+            }
+        }
+
+        if (dwOptions & (1 << OPT_FLIPZ))
+        {
+            hr = inMesh->ReverseHandedness();
+            if (FAILED(hr))
+            {
+                wprintf(L"\nERROR: Failed reversing handedness (%08X)\n", hr);
+                return 1;
+            }
+        }
 
         // Prepare mesh for processing
         {
@@ -1049,9 +1057,9 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
         }
 
-        if (dwOptions & ((1 << OPT_FLIP) | (1 << OPT_FLIPTC)))
+        if (dwOptions & (1 << OPT_FLIP))
         {
-            hr = inMesh->ReverseWinding( (dwOptions & (1 << OPT_FLIPTC)) ? true : false );
+            hr = inMesh->ReverseWinding();
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed reversing winding (%08X)\n", hr);

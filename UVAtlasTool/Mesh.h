@@ -68,7 +68,11 @@ public:
 
     HRESULT VertexRemap( _In_reads_(nNewVerts) const uint32_t* remap, _In_ size_t nNewVerts );
 
-    HRESULT ReverseWinding( bool texcoords );
+    HRESULT ReverseWinding();
+
+    HRESULT InvertVTexCoord();
+
+    HRESULT ReverseHandedness();
 
     HRESULT VisualizeUVs();
 

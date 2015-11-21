@@ -820,7 +820,7 @@ HRESULT Mesh::VertexRemap( const uint32_t* remap, size_t nNewVerts )
 
 
 //--------------------------------------------------------------------------------------
-HRESULT Mesh::ReverseWinding(bool texcoords)
+HRESULT Mesh::ReverseWinding()
 {
     if (!mIndices || !mnFaces)
         return E_UNEXPECTED;
@@ -832,12 +832,44 @@ HRESULT Mesh::ReverseWinding(bool texcoords)
         iptr += 3;
     }
 
-    if (texcoords && mTexCoords)
+    return S_OK;
+}
+
+
+//--------------------------------------------------------------------------------------
+HRESULT Mesh::InvertVTexCoord()
+{
+    if (!mTexCoords)
+        return E_UNEXPECTED;
+
+    auto tptr = mTexCoords.get();
+    for (size_t j = 0; j < mnVerts; ++j, ++tptr)
     {
-        auto tptr = mTexCoords.get();
-        for (size_t j = 0; j < mnVerts; ++j, ++tptr)
+        tptr->y = 1.f - tptr->y;
+    }
+
+    return S_OK;
+}
+
+
+//--------------------------------------------------------------------------------------
+HRESULT Mesh::ReverseHandedness()
+{
+    if (!mPositions)
+        return E_UNEXPECTED;
+
+    auto ptr = mPositions.get();
+    for (size_t j = 0; j < mnVerts; ++j, ++ptr)
+    {
+        ptr->z = -ptr->z;
+    }
+
+    if (mNormals)
+    {
+        auto nptr = mNormals.get();
+        for (size_t j = 0; j < mnVerts; ++j, ++nptr)
         {
-            tptr->x = 1.f - tptr->x;
+            nptr->z = -nptr->z;
         }
     }
 
