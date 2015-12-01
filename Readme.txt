@@ -4,7 +4,7 @@ UVAtlas - isochart texture atlasing
 
 Copyright (c) Microsoft Corporation. All rights reserved.
 
-October 30, 2015
+November 30, 2015
 
 This package contains UVAtlas, a shared source library for creating and packing an
 isochart texture atlas.
@@ -66,6 +66,10 @@ Further reading:
 ---------------
 RELEASE HISTORY
 ---------------
+
+November 30, 2015
+    uvatlas command-line tool updated with -flipv and -flipz switches; removed -fliptc
+    Updated for VS 2015 Update 1 and Windows 10 SDK (10586)
 
 October 30, 2015
     Minor code cleanup
