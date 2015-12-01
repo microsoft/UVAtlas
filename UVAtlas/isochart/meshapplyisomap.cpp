@@ -903,7 +903,6 @@ HRESULT CIsochartMesh::CalculateVertMappingCoord(
         XMFLOAT3 vec2(m_pVerts[pFace->dwVertexID[2]].uv.x - m_pVerts[pFace->dwVertexID[0]].uv.x,
                            m_pVerts[pFace->dwVertexID[2]].uv.y - m_pVerts[pFace->dwVertexID[0]].uv.y,
                            0);
-        XMFLOAT3 vec3;
 
         if (CalculateZOfVec3Cross(&vec1, &vec2) >= 0)
         {

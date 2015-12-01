@@ -323,8 +323,6 @@ inline void Rotate2DPoint(
 inline void CIsochartMesh::RotateChart(
     const DirectX::XMFLOAT2& center, float fAngle) const
 {
-    DirectX::XMFLOAT2 tempCoordinate;
-
     float fCos = cosf(fAngle);
     float fSin = sinf(fAngle);
 

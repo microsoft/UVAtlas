@@ -992,7 +992,7 @@ void CUVAtlasRepacker::ComputeBoundingBox(
 \***************************************************************************/
 HRESULT CUVAtlasRepacker::PrepareChartsInfo()
 {
-    XMMATRIX bestMatrix;
+    XMMATRIX bestMatrix = XMMatrixIdentity();
     float RotateAngle = 5.0f;
 
     std::vector<XMFLOAT2> OutVec;
@@ -1546,7 +1546,7 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
     _PositionInfo *pPosInfo = 
         (_PositionInfo *)&(m_ChartsInfo[index].PosInfo[m_triedRotate]);
 
-    XMMATRIX matrixRotate, transMatrix;
+    XMMATRIX matrixRotate;
     matrixRotate = XMMatrixRotationZ(m_triedPutRotation / 180.0f * XM_PI);
     XMStoreFloat2(&(pPosInfo->basePoint), XMVector2TransformCoord(XMLoadFloat2(&(pPosInfo->basePoint)),
         matrixRotate));
@@ -1554,6 +1554,7 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
         pPosInfo->angle);
 
     m_currAspectRatio = m_triedAspectRatio;
+    XMMATRIX transMatrix = XMMatrixIdentity();;
     switch (m_triedPutRotation)
     {
     case 0:
