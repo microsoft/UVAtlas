@@ -1596,7 +1596,10 @@ public:
     {
         m_dwBeginFace = currFace;
     }
-        
+
+    VertFaceIter(VertFaceIter const&) = delete;
+    VertFaceIter& operator=(VertFaceIter const&) = delete;
+
     bool Next()
     {
         if (m_dwCurFace == INVALID_FACE_ID)
@@ -1628,11 +1631,6 @@ public:
     uint32_t GetCurrEdge() { return m_dwCurEdge; }
     uint32_t GetCurrFace() { return m_dwCurFace; }
     bool IsBackToBegin() {return m_dwCurFace == m_dwBeginFace; }
-
-private:
-    // Prevent copying
-    VertFaceIter(VertFaceIter const&) DIRECTX_CTOR_DELETE
-    VertFaceIter& operator=(VertFaceIter const&) DIRECTX_CTOR_DELETE
 };
 
 HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool& bCleaned)

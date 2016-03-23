@@ -142,6 +142,9 @@ public:
         CCallbackSchemer& callbackSchemer,
         const CIsochartEngine &IsochartEngine);
 
+    CIsochartMesh(CIsochartMesh const&) = delete;
+    CIsochartMesh& operator=(CIsochartMesh const&) = delete;
+
     ~CIsochartMesh();
 
     /////////////////////////////////////////////////////////////
@@ -1328,10 +1331,6 @@ private:
     #else
     GeodesicDist::CApproximateOneToAll m_ApproximateOneToAllEngine ;
     #endif
-
-    // Prevent copying
-    CIsochartMesh(CIsochartMesh const&) DIRECTX_CTOR_DELETE
-    CIsochartMesh& operator=(CIsochartMesh const&) DIRECTX_CTOR_DELETE
 };
 
 }

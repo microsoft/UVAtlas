@@ -88,6 +88,9 @@ namespace Isochart
             const CBaseMeshInfo &baseInfo,
             CCallbackSchemer& callbackSchemer);
 
+        CProgressiveMesh(CProgressiveMesh const&) = delete;
+        CProgressiveMesh& operator=(CProgressiveMesh const&) = delete;
+
         ~CProgressiveMesh();
 
         HRESULT Initialize(CIsochartMesh& mesh);
@@ -206,9 +209,5 @@ namespace Isochart
 
         const CBaseMeshInfo& m_baseInfo; 
         CCallbackSchemer& m_callbackSchemer;
-
-        // Prevent copying
-        CProgressiveMesh(CProgressiveMesh const&) DIRECTX_CTOR_DELETE
-        CProgressiveMesh& operator=(CProgressiveMesh const&) DIRECTX_CTOR_DELETE
     };
 }

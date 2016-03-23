@@ -48,7 +48,7 @@ struct _EDGE {
     DirectX::XMFLOAT2 p2;
     DirectX::XMFLOAT2 minP;
     DirectX::XMFLOAT2 maxP;
-    _EDGE() DIRECTX_CTOR_DEFAULT
+    _EDGE() = default;
     _EDGE(const DirectX::XMFLOAT2& _p1, const DirectX::XMFLOAT2& _p2) : p1(_p1), p2(_p2) {
         minP.x = std::min(p1.x, p2.x);
         maxP.x = std::max(p1.x, p2.x);

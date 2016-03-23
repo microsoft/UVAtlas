@@ -19,10 +19,7 @@
 #include <string>
 #include <vector>
 
-#pragma warning(push)
-#pragma warning(disable : 4005)
 #include <stdint.h>
-#pragma warning(pop)
 
 #if defined(_XBOX_ONE) && defined(_TITLE)
 #include <d3d11_x.h>
@@ -41,6 +38,9 @@ public:
     Mesh() : mnFaces(0), mnVerts(0) {}
     Mesh(Mesh&& moveFrom);
     Mesh& operator= (Mesh&& moveFrom);
+
+    Mesh(Mesh const&) = delete;
+    Mesh& operator= (Mesh const&) = delete;
 
     // Methods
     void Clear();
@@ -130,8 +130,4 @@ private:
     std::unique_ptr<DirectX::XMFLOAT4[]>        mColors;
     std::unique_ptr<DirectX::XMFLOAT4[]>        mBlendIndices;
     std::unique_ptr<DirectX::XMFLOAT4[]>        mBlendWeights;
-
-    // Prevent copying
-    Mesh(Mesh const&) DIRECTX_CTOR_DELETE
-    Mesh& operator= (Mesh const&) DIRECTX_CTOR_DELETE
 };
