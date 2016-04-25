@@ -8,6 +8,7 @@
 // http://go.microsoft.com/fwlink/?LinkID=512686
 //--------------------------------------------------------------------------------------
 
+#define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 
 #include <stdio.h>
