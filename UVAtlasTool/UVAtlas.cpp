@@ -74,7 +74,7 @@ enum CHANNELS
 
 struct SConversion
 {
-    WCHAR szSrc [MAX_PATH];
+    wchar_t szSrc [MAX_PATH];
 };
 
 struct SValue
@@ -138,7 +138,7 @@ SValue g_pOptions[] =
 
 #pragma prefast(disable : 26018, "Only used with static internal arrays")
 
-DWORD LookupByName(const WCHAR *pName, const SValue *pArray)
+DWORD LookupByName(const wchar_t *pName, const SValue *pArray)
 {
     while(pArray->pName)
     {
@@ -151,7 +151,7 @@ DWORD LookupByName(const WCHAR *pName, const SValue *pArray)
     return 0;
 }
 
-const WCHAR* LookupByValue(DWORD pValue, const SValue *pArray)
+const wchar_t* LookupByValue(DWORD pValue, const SValue *pArray)
 {
     while(pArray->pName)
     {
@@ -234,7 +234,7 @@ HRESULT __cdecl UVAtlasCallback( float fPercentDone  )
 
 
 //--------------------------------------------------------------------------------------
-HRESULT LoadFromOBJ(const WCHAR* szFilename, std::unique_ptr<Mesh>& inMesh, std::vector<Mesh::Material>& inMaterial, DWORD options )
+HRESULT LoadFromOBJ(const wchar_t* szFilename, std::unique_ptr<Mesh>& inMesh, std::vector<Mesh::Material>& inMaterial, DWORD options )
 {
     WaveFrontReader<uint32_t> wfReader;
     HRESULT hr = wfReader.Load(szFilename, (options & (1 << OPT_CLOCKWISE)) ? false : true );
@@ -313,11 +313,11 @@ HRESULT LoadFromOBJ(const WCHAR* szFilename, std::unique_ptr<Mesh>& inMesh, std:
             mtl.diffuseColor = it->vDiffuse;
             mtl.specularColor = (it->bSpecular) ? it->vSpecular : XMFLOAT3(0.f, 0.f, 0.f);
 
-            WCHAR texture[_MAX_PATH] = { 0 };
+            wchar_t texture[_MAX_PATH] = { 0 };
             if (*it->strTexture)
             {
-                WCHAR txext[_MAX_EXT];
-                WCHAR txfname[_MAX_FNAME];
+                wchar_t txext[_MAX_EXT];
+                wchar_t txfname[_MAX_FNAME];
                 _wsplitpath_s(it->strTexture, nullptr, 0, nullptr, 0, txfname, _MAX_FNAME, txext, _MAX_EXT);
 
                 if (!(options & (1 << OPT_NODDS)))
@@ -354,8 +354,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
     CHANNELS perVertex = CHANNEL_NONE;
     DWORD uvOptions = UVATLAS_DEFAULT;
 
-    WCHAR szTexFile[MAX_PATH] = { 0 };
-    WCHAR szOutputFile[MAX_PATH] = { 0 };
+    wchar_t szTexFile[MAX_PATH] = { 0 };
+    wchar_t szOutputFile[MAX_PATH] = { 0 };
 
     // Initialize COM (needed for WIC)
     HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
@@ -608,8 +608,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
     // Process files
     for( auto pConv = conversion.begin(); pConv != conversion.end(); ++pConv )
     {
-        WCHAR ext[_MAX_EXT];
-        WCHAR fname[_MAX_FNAME];
+        wchar_t ext[_MAX_EXT];
+        wchar_t fname[_MAX_FNAME];
         _wsplitpath_s( pConv->szSrc, nullptr, 0, nullptr, 0, fname, _MAX_FNAME, ext, _MAX_EXT );
 
         if ( pConv != conversion.begin() )
@@ -790,7 +790,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                     return 1;
                 }
 
-                WCHAR txext[_MAX_EXT];
+                wchar_t txext[_MAX_EXT];
                 _wsplitpath_s(szTexFile, nullptr, 0, nullptr, 0, nullptr, 0, txext, _MAX_EXT);
 
                 ScratchImage iimage;
@@ -854,7 +854,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
             else
             {
-                const WCHAR* szChannel = L"*unknown*";
+                const wchar_t* szChannel = L"*unknown*";
                 const float* pSignal = nullptr;
                 size_t signalDim = 0;
                 size_t signalStride = 0;
@@ -1022,7 +1022,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 Mesh::Material mtl;
                 memset( &mtl, 0, sizeof(mtl) );
 
-                WCHAR matname[32];
+                wchar_t matname[32];
                 wsprintf( matname, L"Chart%02Iu", j+1 );
                 mtl.name = matname;
                 mtl.specularPower = 1.f;
@@ -1071,8 +1071,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         // Write results
         wprintf(L"\n\t->\n");
 
-        WCHAR outputPath[ MAX_PATH ] = { 0 };
-        WCHAR outputExt[ _MAX_EXT] = { 0 };
+        wchar_t outputPath[ MAX_PATH ] = { 0 };
+        wchar_t outputExt[ _MAX_EXT] = { 0 };
 
         if ( *szOutputFile )
         {
@@ -1095,7 +1095,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 wcscpy_s(outputExt, L".sdkmesh");
             }
 
-            WCHAR outFilename[ _MAX_FNAME ] = { 0 };
+            wchar_t outFilename[ _MAX_FNAME ] = { 0 };
             wcscpy_s( outFilename, fname );
 
             _wmakepath_s( outputPath, nullptr, nullptr, outFilename, outputExt );
@@ -1175,7 +1175,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 return 1;
             }
 
-            WCHAR uvFilename[_MAX_FNAME] = { 0 };
+            wchar_t uvFilename[_MAX_FNAME] = { 0 };
             wcscpy_s(uvFilename, fname);
             wcscat_s(uvFilename, L"_texture");
 

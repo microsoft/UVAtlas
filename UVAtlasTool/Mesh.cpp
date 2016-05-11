@@ -41,7 +41,7 @@ namespace
         return S_OK;
     }
 
-    inline HRESULT write_file_string(HANDLE hFile, const WCHAR* value)
+    inline HRESULT write_file_string(HANDLE hFile, const wchar_t* value)
     {
         UINT length = (value) ? static_cast<UINT>( wcslen(value)+1 ) : 1;
 
@@ -54,7 +54,7 @@ namespace
 
         if (length > 0)
         {
-            DWORD bytes = static_cast<DWORD>(sizeof(WCHAR) * length);
+            DWORD bytes = static_cast<DWORD>(sizeof(wchar_t) * length);
 
             if (!WriteFile(hFile, value, bytes, &bytesWritten, nullptr))
                 return HRESULT_FROM_WIN32(GetLastError());
@@ -64,11 +64,11 @@ namespace
         }
         else
         {
-            WCHAR nul = 0;
-            if (!WriteFile(hFile, &nul, sizeof(WCHAR), &bytesWritten, nullptr))
+            wchar_t nul = 0;
+            if (!WriteFile(hFile, &nul, sizeof(wchar_t), &bytesWritten, nullptr))
                 return HRESULT_FROM_WIN32(GetLastError());
 
-            if (bytesWritten != sizeof(WCHAR))
+            if (bytesWritten != sizeof(wchar_t))
                 return E_FAIL;
         }
 
@@ -1578,7 +1578,7 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
         return hr;
 
     {
-        WCHAR fname[_MAX_FNAME];
+        wchar_t fname[_MAX_FNAME];
         _wsplitpath_s(szFileName, nullptr, 0, nullptr, 0, fname, _MAX_FNAME, nullptr, 0);
 
         hr = write_file_string(hFile.get(), fname);
@@ -1616,7 +1616,7 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
         }
         else
         {
-            WCHAR name[64];
+            wchar_t name[64];
             swprintf_s(name, L"material%03u\n", j);
             hr = write_file_string(hFile.get(), name);
         }
