@@ -53,6 +53,11 @@ For the latest version of UVAtlas, bug reports, etc. please visit the project si
 
 http://go.microsoft.com/fwlink/?LinkID=512686
 
+This project has adopted the Microsoft Open Source Code of Conduct. For more information see the
+Code of Conduct FAQ or contact opencode@microsoft.com with any additional questions or comments.
+
+https://opensource.microsoft.com/codeofconduct/
+
 Further reading:
 
     Zhou et al, "Iso-charts: Stretch-driven Mesh Parameterization using Spectral Analysis",
