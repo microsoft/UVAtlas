@@ -4,13 +4,13 @@ UVAtlas - isochart texture atlasing
 
 Copyright (c) Microsoft Corporation. All rights reserved.
 
-April 26, 2016
+June 27, 2016
 
 This package contains UVAtlas, a shared source library for creating and packing an
 isochart texture atlas.
 
 The source is written for Visual Studio 2013 or 2015. It is recommended that you
-make use of VS 2013 Update 5, VS 2015 Update 2, and Windows 7 Service Pack 1 or later.
+make use of VS 2013 Update 5 or VS 2015 Update 3 and Windows 7 Service Pack 1 or later.
 
 These components are designed to work without requiring any content from the DirectX SDK. For details,
 see "Where is the DirectX SDK?" <http://msdn.microsoft.com/en-us/library/ee663275.aspx>.
@@ -71,6 +71,9 @@ Further reading:
 ---------------
 RELEASE HISTORY
 ---------------
+
+June 27, 2016
+    Code cleanup
 
 April 26, 2016
     Retired VS 2012 projects and obsolete adapter code
