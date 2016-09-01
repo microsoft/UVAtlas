@@ -471,10 +471,8 @@ namespace
         if (!width || !height)
             return E_INVALIDARG;
 
-#ifdef _M_X64
-        if ((width > 0xFFFFFFFF) || (height > 0xFFFFFFFF))
+        if ((width > UINT32_MAX) || (height > UINT32_MAX))
             return E_INVALIDARG;
-#endif
 
         if (vMeshVertexBuffer.empty() || vMeshIndexBuffer.empty())
             return E_INVALIDARG;
@@ -872,10 +870,8 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromSignal(
         return E_INVALIDARG;
     }
 
-#ifdef _M_X64
-    if (signalDimension > 0xFFFFFFFF)
+    if (signalDimension > UINT32_MAX)
         return E_INVALIDARG;
-#endif
 
     switch (indexFormat)
     {
@@ -1257,10 +1253,8 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromTexture(
     if (!width || !height)
         return E_INVALIDARG;
 
-#ifdef _M_X64
-    if ((width > 0xFFFFFFFF) || (height > 0xFFFFFFFF))
+    if ((width > UINT32_MAX) || (height > UINT32_MAX))
         return E_INVALIDARG;
-#endif
 
     switch (indexFormat)
     {
@@ -1662,10 +1656,8 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerTexelSignal(
     if (!width || !height)
         return E_INVALIDARG;
 
-#ifdef _M_X64
-    if ((width > 0xFFFFFFFF) || (height > 0xFFFFFFFF) || (signalDimension > 0xFFFFFFFF) || (nComponents > 0xFFFFFFFF))
+    if ((width > UINT32_MAX) || (height > UINT32_MAX) || (signalDimension > UINT32_MAX) || (nComponents > UINT32_MAX))
         return E_INVALIDARG;
-#endif
 
     switch (indexFormat)
     {
