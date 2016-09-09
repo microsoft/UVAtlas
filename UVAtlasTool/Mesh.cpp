@@ -1152,9 +1152,9 @@ HRESULT Mesh::ExportToVBO( const wchar_t* szFileName ) const
 
     // Write header and data
 #if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
-    ScopedHandle hFile(safe_handle(CreateFile2(szFileName, GENERIC_WRITE, 0, CREATE_ALWAYS, 0)));
+    ScopedHandle hFile(safe_handle(CreateFile2(szFileName, GENERIC_WRITE, 0, CREATE_ALWAYS, nullptr)));
 #else
-    ScopedHandle hFile(safe_handle(CreateFileW(szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0)));
+    ScopedHandle hFile(safe_handle(CreateFileW(szFileName, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, nullptr)));
 #endif
     if (!hFile)
         return HRESULT_FROM_WIN32(GetLastError());
@@ -1206,25 +1206,18 @@ HRESULT Mesh::CreateFromVBO( const wchar_t* szFileName, std::unique_ptr<Mesh>& r
     }
 
     // Get the file size
-    LARGE_INTEGER FileSize = { 0 };
-
-#if (_WIN32_WINNT >= _WIN32_WINNT_VISTA)
     FILE_STANDARD_INFO fileInfo;
     if (!GetFileInformationByHandleEx(hFile.get(), FileStandardInfo, &fileInfo, sizeof(fileInfo)))
     {
         return HRESULT_FROM_WIN32(GetLastError());
     }
-    FileSize = fileInfo.EndOfFile;
-#else
-    GetFileSizeEx(hFile.get(), &FileSize);
-#endif
 
     // File is too big for 32-bit allocation, so reject read
-    if (FileSize.HighPart > 0)
+    if (fileInfo.EndOfFile.HighPart > 0)
         return E_FAIL;
 
     // Need at least enough data to read the header
-    if (FileSize.LowPart < sizeof(header_t))
+    if (fileInfo.EndOfFile.LowPart < sizeof(header_t))
         return E_FAIL;
 
     // Read VBO header
@@ -1564,9 +1557,9 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
 
     // Create CMO file
 #if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
-    ScopedHandle hFile(safe_handle(CreateFile2(szFileName, GENERIC_WRITE, 0, CREATE_ALWAYS, 0)));
+    ScopedHandle hFile(safe_handle(CreateFile2(szFileName, GENERIC_WRITE, 0, CREATE_ALWAYS, nullptr)));
 #else
-    ScopedHandle hFile(safe_handle(CreateFileW(szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0)));
+    ScopedHandle hFile(safe_handle(CreateFileW(szFileName, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, nullptr)));
 #endif
     if (!hFile)
         return HRESULT_FROM_WIN32(GetLastError());
@@ -2463,9 +2456,9 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName, size_t nMaterials, cons
 
     // Create file
 #if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
-    ScopedHandle hFile(safe_handle(CreateFile2(szFileName, GENERIC_WRITE, 0, CREATE_ALWAYS, 0)));
+    ScopedHandle hFile(safe_handle(CreateFile2(szFileName, GENERIC_WRITE, 0, CREATE_ALWAYS, nullptr)));
 #else
-    ScopedHandle hFile(safe_handle(CreateFileW(szFileName, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0)));
+    ScopedHandle hFile(safe_handle(CreateFileW(szFileName, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, 0, nullptr)));
 #endif
     if (!hFile)
         return HRESULT_FROM_WIN32(GetLastError());

@@ -67,11 +67,7 @@ CIsochartEngine::~CIsochartEngine()
 
 HRESULT CIsochartEngine::CreateEngineMutex()
 {
-#if _WIN32_WINNT >= _WIN32_WINNT_VISTA
     m_hMutex = CreateMutexEx(nullptr, nullptr, CREATE_MUTEX_INITIAL_OWNER, SYNCHRONIZE );
-#else
-    m_hMutex = CreateMutex(nullptr, TRUE, nullptr);
-#endif
     if (!m_hMutex)
     {
         return HRESULT_FROM_WIN32(GetLastError());
