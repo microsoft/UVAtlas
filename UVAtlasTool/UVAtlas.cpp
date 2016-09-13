@@ -40,7 +40,8 @@ using namespace DirectX;
 
 enum OPTIONS
 {
-    OPT_QUALITY = 1,
+    OPT_RECURSIVE = 1,
+    OPT_QUALITY,
     OPT_MAXCHARTS,
     OPT_MAXSTRETCH,
     OPT_GUTTER,
@@ -110,6 +111,7 @@ static const XMFLOAT3 g_ColorList[8] =
 
 SValue g_pOptions[] =
 {
+    { L"r",         OPT_RECURSIVE },
     { L"q",         OPT_QUALITY },
     { L"n",         OPT_MAXCHARTS },
     { L"st",        OPT_MAXSTRETCH },
@@ -147,6 +149,12 @@ SValue g_pOptions[] =
 
 namespace
 {
+    inline HANDLE safe_handle(HANDLE h) { return (h == INVALID_HANDLE_VALUE) ? 0 : h; }
+
+    struct find_closer { void operator()(HANDLE h) { assert(h != INVALID_HANDLE_VALUE); if (h) FindClose(h); } };
+
+    typedef public std::unique_ptr<void, find_closer> ScopedFindHandle;
+
 #pragma prefast(disable : 26018, "Only used with static internal arrays")
 
     DWORD LookupByName(const wchar_t *pName, const SValue *pArray)
@@ -177,6 +185,81 @@ namespace
     }
 
 
+    void SearchForFiles(const wchar_t* path, std::list<SConversion>& files, bool recursive)
+    {
+        // Process files
+        WIN32_FIND_DATA findData = {};
+        ScopedFindHandle hFile(safe_handle(FindFirstFileExW(path,
+            FindExInfoBasic, &findData,
+            FindExSearchNameMatch, nullptr,
+            FIND_FIRST_EX_LARGE_FETCH)));
+        if (hFile)
+        {
+            for (;;)
+            {
+                if (!(findData.dwFileAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_DIRECTORY)))
+                {
+                    wchar_t drive[_MAX_DRIVE] = {};
+                    wchar_t dir[_MAX_DIR] = {};
+                    _wsplitpath_s(path, drive, _MAX_DRIVE, dir, _MAX_DIR, nullptr, 0, nullptr, 0);
+
+                    SConversion conv;
+                    _wmakepath_s(conv.szSrc, drive, dir, findData.cFileName, nullptr);
+                    files.push_back(conv);
+                }
+
+                if (!FindNextFile(hFile.get(), &findData))
+                    break;
+            }
+        }
+
+        // Process directories
+        if (recursive)
+        {
+            wchar_t searchDir[MAX_PATH] = {};
+            {
+                wchar_t drive[_MAX_DRIVE] = {};
+                wchar_t dir[_MAX_DIR] = {};
+                _wsplitpath_s(path, drive, _MAX_DRIVE, dir, _MAX_DIR, nullptr, 0, nullptr, 0);
+                _wmakepath_s(searchDir, drive, dir, L"*", nullptr);
+            }
+
+            hFile.reset(safe_handle(FindFirstFileExW(searchDir,
+                FindExInfoBasic, &findData,
+                FindExSearchLimitToDirectories, nullptr,
+                FIND_FIRST_EX_LARGE_FETCH)));
+            if (!hFile)
+                return;
+
+            for (;;)
+            {
+                if (findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+                {
+                    if (findData.cFileName[0] != L'.')
+                    {
+                        wchar_t subdir[MAX_PATH] = {};
+
+                        {
+                            wchar_t drive[_MAX_DRIVE] = {};
+                            wchar_t dir[_MAX_DIR] = {};
+                            wchar_t fname[_MAX_FNAME] = {};
+                            wchar_t ext[_MAX_FNAME] = {};
+                            _wsplitpath_s(path, drive, dir, fname, ext);
+                            wcscat_s(dir, findData.cFileName);
+                            _wmakepath_s(subdir, drive, dir, fname, ext);
+                        }
+
+                        SearchForFiles(subdir, files, recursive);
+                    }
+                }
+
+                if (!FindNextFile(hFile.get(), &findData))
+                    break;
+            }
+        }
+    }
+
+
     void PrintLogo()
     {
         wprintf(L"Microsoft (R) UVAtlas Command-line Tool\n");
@@ -191,6 +274,7 @@ namespace
 
         wprintf(L"Usage: uvatlas <options> <files>\n");
         wprintf(L"\n");
+        wprintf(L"   -r                  wildcard filename search is recursive\n");
         wprintf(L"   -q <level>          sets quality level to DEFAULT, FAST or QUALITY\n");
         wprintf(L"   -n <number>         maximum number of charts to generate (def: 0)\n");
         wprintf(L"   -st <float>         maximum amount of stretch 0.0 to 1.0 (def: 0.16667)\n");
@@ -598,6 +682,16 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                     return 1;
                 }
                 break;
+            }
+        }
+        else if (wcspbrk(pArg, L"?*") != nullptr)
+        {
+            size_t count = conversion.size();
+            SearchForFiles(pArg, conversion, (dwOptions & (1 << OPT_RECURSIVE)) != 0);
+            if (conversion.size() <= count)
+            {
+                wprintf(L"No matching files found for %ls\n", pArg);
+                return 1;
             }
         }
         else
