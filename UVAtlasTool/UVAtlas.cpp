@@ -8,8 +8,17 @@
 // http://go.microsoft.com/fwlink/?LinkID=512686
 //--------------------------------------------------------------------------------------
 
+#pragma warning(push)
+#pragma warning(disable : 4005)
 #define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
+#define NODRAWTEXT
+#define NOGDI
+#define NOBITMAP
+#define NOMCX
+#define NOSERVICE
+#define NOHELP
+#pragma warning(pop)
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -29,7 +38,7 @@
 
 using namespace DirectX;
 
-enum OPTIONS    // Note: dwOptions below assumes 32 or less options.
+enum OPTIONS
 {
     OPT_QUALITY = 1,
     OPT_MAXCHARTS,
@@ -62,7 +71,7 @@ enum OPTIONS    // Note: dwOptions below assumes 32 or less options.
     OPT_MAX
 };
 
-static_assert( OPT_MAX <= 32, "dwOptions is a DWORD bitfield" );
+static_assert(OPT_MAX <= 32, "dwOptions is a DWORD bitfield");
 
 enum CHANNELS
 {
@@ -74,7 +83,7 @@ enum CHANNELS
 
 struct SConversion
 {
-    wchar_t szSrc [MAX_PATH];
+    wchar_t szSrc[MAX_PATH];
 };
 
 struct SValue
@@ -85,256 +94,262 @@ struct SValue
 
 static const XMFLOAT3 g_ColorList[8] =
 {
-    XMFLOAT3( 1.0f, 0.5f, 0.5f ),
-    XMFLOAT3( 0.5f, 1.0f, 0.5f ),
-    XMFLOAT3( 1.0f, 1.0f, 0.5f ),
-    XMFLOAT3( 0.5f, 1.0f, 1.0f ),
-    XMFLOAT3( 1.0f, 0.5f, 0.75f ),
-    XMFLOAT3( 0.0f, 0.5f, 0.75f ),
-    XMFLOAT3( 0.5f, 0.5f, 0.75f ),
-    XMFLOAT3( 0.5f, 0.5f, 1.0f ),
+    XMFLOAT3(1.0f, 0.5f, 0.5f),
+    XMFLOAT3(0.5f, 1.0f, 0.5f),
+    XMFLOAT3(1.0f, 1.0f, 0.5f),
+    XMFLOAT3(0.5f, 1.0f, 1.0f),
+    XMFLOAT3(1.0f, 0.5f, 0.75f),
+    XMFLOAT3(0.0f, 0.5f, 0.75f),
+    XMFLOAT3(0.5f, 0.5f, 0.75f),
+    XMFLOAT3(0.5f, 0.5f, 1.0f),
 };
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-SValue g_pOptions[] = 
+SValue g_pOptions[] =
 {
-    { L"q",             OPT_QUALITY     },
-    { L"n",             OPT_MAXCHARTS   },
-    { L"st",            OPT_MAXSTRETCH  },
-    { L"g",             OPT_GUTTER      },
-    { L"w",             OPT_WIDTH       },
-    { L"h",             OPT_HEIGHT      },
-    { L"ta",            OPT_TOPOLOGICAL_ADJ },
-    { L"ga",            OPT_GEOMETRIC_ADJ },
-    { L"nn",            OPT_NORMALS     },
-    { L"na",            OPT_WEIGHT_BY_AREA },
-    { L"ne",            OPT_WEIGHT_BY_EQUAL },
-    { L"tt",            OPT_TANGENTS    },
-    { L"tb",            OPT_CTF         },
-    { L"c",             OPT_COLOR_MESH  },
-    { L"t",             OPT_UV_MESH     },
-    { L"it",            OPT_IMT_TEXFILE },
-    { L"iv",            OPT_IMT_VERTEX  },
-    { L"o",             OPT_OUTPUTFILE  },
-    { L"sdkmesh",       OPT_SDKMESH     },
-    { L"cmo",           OPT_CMO         },
-    { L"vbo",           OPT_VBO         },
-    { L"cw",            OPT_CLOCKWISE   },
-    { L"y",             OPT_OVERWRITE   },
-    { L"nodds",         OPT_NODDS       },
-    { L"flip",          OPT_FLIP        },
-    { L"flipv",         OPT_FLIPV       },
-    { L"flipz",         OPT_FLIPZ       },
-    { L"nologo",        OPT_NOLOGO      },
-    { nullptr,          0               }
+    { L"q",         OPT_QUALITY },
+    { L"n",         OPT_MAXCHARTS },
+    { L"st",        OPT_MAXSTRETCH },
+    { L"g",         OPT_GUTTER },
+    { L"w",         OPT_WIDTH },
+    { L"h",         OPT_HEIGHT },
+    { L"ta",        OPT_TOPOLOGICAL_ADJ },
+    { L"ga",        OPT_GEOMETRIC_ADJ },
+    { L"nn",        OPT_NORMALS },
+    { L"na",        OPT_WEIGHT_BY_AREA },
+    { L"ne",        OPT_WEIGHT_BY_EQUAL },
+    { L"tt",        OPT_TANGENTS },
+    { L"tb",        OPT_CTF },
+    { L"c",         OPT_COLOR_MESH },
+    { L"t",         OPT_UV_MESH },
+    { L"it",        OPT_IMT_TEXFILE },
+    { L"iv",        OPT_IMT_VERTEX },
+    { L"o",         OPT_OUTPUTFILE },
+    { L"sdkmesh",   OPT_SDKMESH },
+    { L"cmo",       OPT_CMO },
+    { L"vbo",       OPT_VBO },
+    { L"cw",        OPT_CLOCKWISE },
+    { L"y",         OPT_OVERWRITE },
+    { L"nodds",     OPT_NODDS },
+    { L"flip",      OPT_FLIP },
+    { L"flipv",     OPT_FLIPV },
+    { L"flipz",     OPT_FLIPZ },
+    { L"nologo",    OPT_NOLOGO },
+    { nullptr,      0 }
 };
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
+namespace
+{
 #pragma prefast(disable : 26018, "Only used with static internal arrays")
 
-DWORD LookupByName(const wchar_t *pName, const SValue *pArray)
-{
-    while(pArray->pName)
+    DWORD LookupByName(const wchar_t *pName, const SValue *pArray)
     {
-        if(!_wcsicmp(pName, pArray->pName))
-            return pArray->dwValue;
-
-        pArray++;
-    }
-
-    return 0;
-}
-
-const wchar_t* LookupByValue(DWORD pValue, const SValue *pArray)
-{
-    while(pArray->pName)
-    {
-        if(pValue == pArray->dwValue)
-            return pArray->pName;
-
-        pArray++;
-    }
-
-    return L"";
-}
-
-void PrintLogo()
-{
-    wprintf( L"Microsoft (R) UVAtlas Command-line Tool\n");
-    wprintf( L"Copyright (C) Microsoft Corp. All rights reserved.\n");
-    wprintf( L"\n");
-}
-
-
-void PrintUsage()
-{
-    PrintLogo();
-
-    wprintf( L"Usage: uvatlas <options> <files>\n");
-    wprintf( L"\n");
-    wprintf( L"   -q <level>          sets quality level to DEFAULT, FAST or QUALITY\n");
-    wprintf( L"   -n <number>         maximum number of charts to generate (def: 0)\n");
-    wprintf( L"   -st <float>         maximum amount of stretch 0.0 to 1.0 (def: 0.16667)\n");
-    wprintf( L"   -g <float>          the gutter width betwen charts in texels (def: 2.0)\n");
-    wprintf( L"   -w <number>         texture width (def: 512)\n");
-    wprintf( L"   -h <number>         texture height (def: 512)\n");
-    wprintf( L"   -ta | -ga           generate topological vs. geometric adjancecy (def: ta)\n");
-    wprintf( L"   -nn | -na | -ne     generate normals weighted by angle/area/equal\n" );
-    wprintf( L"   -tt                 generate tangents\n");
-    wprintf( L"   -tb                 generate tangents & bi-tangents\n");
-    wprintf( L"   -cw                 faces are clockwise (defaults to counter-clockwise)\n");
-    wprintf( L"   -c                  generate mesh with colors showing charts\n");
-    wprintf( L"   -t                  generates a separate mesh with uvs - (*_texture)\n");
-    wprintf( L"   -it <filename>      calculate IMT for the mesh using this texture map\n");
-    wprintf( L"   -iv <channel>       calculate IMT using per-vertex data\n");
-    wprintf( L"                       NORMAL, COLOR, TEXCOORD\n");
-    wprintf( L"   -sdkmesh|-cmo|-vbo  output file type\n");
-    wprintf( L"   -nodds              prevents extension renaming in exported materials\n");
-    wprintf( L"   -flip               reverse winding of faces\n");
-    wprintf( L"   -flipv              inverts the v texcoords\n");
-    wprintf( L"   -flipz              flips the handedness of the positions/normals\n");
-    wprintf( L"   -o <filename>       output filename\n");
-    wprintf( L"   -y                  overwrite existing output file (if any)\n");
-    wprintf( L"   -nologo             suppress copyright message\n");
-
-    wprintf( L"\n");
-}
-
-
-//--------------------------------------------------------------------------------------
-HRESULT __cdecl UVAtlasCallback( float fPercentDone  )
-{
-    static ULONGLONG s_lastTick = 0;
-
-    ULONGLONG tick = GetTickCount64();
-
-    if ( ( tick - s_lastTick ) > 1000 )
-    {
-        wprintf( L"%.2f%%   \r", fPercentDone * 100 );
-        s_lastTick = tick;
-    }
-
-    if ( _kbhit() )
-    {
-        if ( _getch() == 27 )
+        while (pArray->pName)
         {
-            wprintf(L"*** ABORT ***");
-            return E_ABORT;
+            if (!_wcsicmp(pName, pArray->pName))
+                return pArray->dwValue;
+
+            pArray++;
         }
+
+        return 0;
     }
 
-    return S_OK;
-}
 
-
-//--------------------------------------------------------------------------------------
-HRESULT LoadFromOBJ(const wchar_t* szFilename, std::unique_ptr<Mesh>& inMesh, std::vector<Mesh::Material>& inMaterial, DWORD options )
-{
-    WaveFrontReader<uint32_t> wfReader;
-    HRESULT hr = wfReader.Load(szFilename, (options & (1 << OPT_CLOCKWISE)) ? false : true );
-    if (FAILED(hr))
-        return hr;
-
-    inMesh.reset(new (std::nothrow) Mesh);
-    if (!inMesh)
-        return E_OUTOFMEMORY;
-
-    if (wfReader.indices.empty() || wfReader.vertices.empty())
-        return E_FAIL;
-
-    hr = inMesh->SetIndexData(wfReader.indices.size() / 3, wfReader.indices.data(),
-                              wfReader.attributes.empty() ? nullptr : wfReader.attributes.data());
-    if (FAILED(hr))
-        return hr;
-
-    static const D3D11_INPUT_ELEMENT_DESC s_vboLayout [] =
+    const wchar_t* LookupByValue(DWORD pValue, const SValue *pArray)
     {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    };
-
-    static const D3D11_INPUT_ELEMENT_DESC s_vboLayoutAlt [] =
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    };
-
-    const D3D11_INPUT_ELEMENT_DESC* layout = s_vboLayout;
-    size_t nDecl = _countof(s_vboLayout);
-
-    if (!wfReader.hasNormals && !wfReader.hasTexcoords)
-    {
-        nDecl = 1;
-    }
-    else if (wfReader.hasNormals && !wfReader.hasTexcoords)
-    {
-        nDecl = 2;
-    }
-    else if (!wfReader.hasNormals && wfReader.hasTexcoords)
-    {
-        layout = s_vboLayoutAlt;
-        nDecl = _countof(s_vboLayoutAlt);
-    }
-
-    VBReader vbr;
-    hr = vbr.Initialize(layout, nDecl);
-    if (FAILED(hr))
-        return hr;
-
-    hr = vbr.AddStream(wfReader.vertices.data(), wfReader.vertices.size(), 0, sizeof(WaveFrontReader<uint32_t>::Vertex));
-    if (FAILED(hr))
-        return hr;
-
-    hr = inMesh->SetVertexData(vbr, wfReader.vertices.size());
-    if (FAILED(hr))
-        return hr;
-
-    if ( !wfReader.materials.empty() )
-    {
-        inMaterial.clear();
-        inMaterial.reserve(wfReader.materials.size());
-
-        for (auto it = wfReader.materials.cbegin(); it != wfReader.materials.cend(); ++it)
+        while (pArray->pName)
         {
-            Mesh::Material mtl;
-            memset(&mtl, 0, sizeof(mtl));
+            if (pValue == pArray->dwValue)
+                return pArray->pName;
 
-            mtl.name = it->strName;
-            mtl.specularPower = (it->bSpecular) ? float(it->nShininess) : 1.f;
-            mtl.alpha = it->fAlpha;
-            mtl.ambientColor = it->vAmbient;
-            mtl.diffuseColor = it->vDiffuse;
-            mtl.specularColor = (it->bSpecular) ? it->vSpecular : XMFLOAT3(0.f, 0.f, 0.f);
+            pArray++;
+        }
 
-            wchar_t texture[_MAX_PATH] = { 0 };
-            if (*it->strTexture)
+        return L"";
+    }
+
+
+    void PrintLogo()
+    {
+        wprintf(L"Microsoft (R) UVAtlas Command-line Tool\n");
+        wprintf(L"Copyright (C) Microsoft Corp. All rights reserved.\n");
+        wprintf(L"\n");
+    }
+
+
+    void PrintUsage()
+    {
+        PrintLogo();
+
+        wprintf(L"Usage: uvatlas <options> <files>\n");
+        wprintf(L"\n");
+        wprintf(L"   -q <level>          sets quality level to DEFAULT, FAST or QUALITY\n");
+        wprintf(L"   -n <number>         maximum number of charts to generate (def: 0)\n");
+        wprintf(L"   -st <float>         maximum amount of stretch 0.0 to 1.0 (def: 0.16667)\n");
+        wprintf(L"   -g <float>          the gutter width betwen charts in texels (def: 2.0)\n");
+        wprintf(L"   -w <number>         texture width (def: 512)\n");
+        wprintf(L"   -h <number>         texture height (def: 512)\n");
+        wprintf(L"   -ta | -ga           generate topological vs. geometric adjancecy (def: ta)\n");
+        wprintf(L"   -nn | -na | -ne     generate normals weighted by angle/area/equal\n");
+        wprintf(L"   -tt                 generate tangents\n");
+        wprintf(L"   -tb                 generate tangents & bi-tangents\n");
+        wprintf(L"   -cw                 faces are clockwise (defaults to counter-clockwise)\n");
+        wprintf(L"   -c                  generate mesh with colors showing charts\n");
+        wprintf(L"   -t                  generates a separate mesh with uvs - (*_texture)\n");
+        wprintf(L"   -it <filename>      calculate IMT for the mesh using this texture map\n");
+        wprintf(
+            L"   -iv <channel>       calculate IMT using per-vertex data\n"
+            L"                       NORMAL, COLOR, TEXCOORD\n");
+        wprintf(L"   -sdkmesh|-cmo|-vbo  output file type\n");
+        wprintf(L"   -nodds              prevents extension renaming in exported materials\n");
+        wprintf(L"   -flip               reverse winding of faces\n");
+        wprintf(L"   -flipv              inverts the v texcoords\n");
+        wprintf(L"   -flipz              flips the handedness of the positions/normals\n");
+        wprintf(L"   -o <filename>       output filename\n");
+        wprintf(L"   -y                  overwrite existing output file (if any)\n");
+        wprintf(L"   -nologo             suppress copyright message\n");
+
+        wprintf(L"\n");
+    }
+
+
+    //--------------------------------------------------------------------------------------
+    HRESULT __cdecl UVAtlasCallback(float fPercentDone)
+    {
+        static ULONGLONG s_lastTick = 0;
+
+        ULONGLONG tick = GetTickCount64();
+
+        if ((tick - s_lastTick) > 1000)
+        {
+            wprintf(L"%.2f%%   \r", fPercentDone * 100);
+            s_lastTick = tick;
+        }
+
+        if (_kbhit())
+        {
+            if (_getch() == 27)
             {
-                wchar_t txext[_MAX_EXT];
-                wchar_t txfname[_MAX_FNAME];
-                _wsplitpath_s(it->strTexture, nullptr, 0, nullptr, 0, txfname, _MAX_FNAME, txext, _MAX_EXT);
+                wprintf(L"*** ABORT ***");
+                return E_ABORT;
+            }
+        }
 
-                if (!(options & (1 << OPT_NODDS)))
+        return S_OK;
+    }
+
+
+    //--------------------------------------------------------------------------------------
+    HRESULT LoadFromOBJ(const wchar_t* szFilename, std::unique_ptr<Mesh>& inMesh, std::vector<Mesh::Material>& inMaterial, DWORD options)
+    {
+        WaveFrontReader<uint32_t> wfReader;
+        HRESULT hr = wfReader.Load(szFilename, (options & (1 << OPT_CLOCKWISE)) ? false : true);
+        if (FAILED(hr))
+            return hr;
+
+        inMesh.reset(new (std::nothrow) Mesh);
+        if (!inMesh)
+            return E_OUTOFMEMORY;
+
+        if (wfReader.indices.empty() || wfReader.vertices.empty())
+            return E_FAIL;
+
+        hr = inMesh->SetIndexData(wfReader.indices.size() / 3, wfReader.indices.data(),
+            wfReader.attributes.empty() ? nullptr : wfReader.attributes.data());
+        if (FAILED(hr))
+            return hr;
+
+        static const D3D11_INPUT_ELEMENT_DESC s_vboLayout[] =
+        {
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        };
+
+        static const D3D11_INPUT_ELEMENT_DESC s_vboLayoutAlt[] =
+        {
+            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        };
+
+        const D3D11_INPUT_ELEMENT_DESC* layout = s_vboLayout;
+        size_t nDecl = _countof(s_vboLayout);
+
+        if (!wfReader.hasNormals && !wfReader.hasTexcoords)
+        {
+            nDecl = 1;
+        }
+        else if (wfReader.hasNormals && !wfReader.hasTexcoords)
+        {
+            nDecl = 2;
+        }
+        else if (!wfReader.hasNormals && wfReader.hasTexcoords)
+        {
+            layout = s_vboLayoutAlt;
+            nDecl = _countof(s_vboLayoutAlt);
+        }
+
+        VBReader vbr;
+        hr = vbr.Initialize(layout, nDecl);
+        if (FAILED(hr))
+            return hr;
+
+        hr = vbr.AddStream(wfReader.vertices.data(), wfReader.vertices.size(), 0, sizeof(WaveFrontReader<uint32_t>::Vertex));
+        if (FAILED(hr))
+            return hr;
+
+        hr = inMesh->SetVertexData(vbr, wfReader.vertices.size());
+        if (FAILED(hr))
+            return hr;
+
+        if (!wfReader.materials.empty())
+        {
+            inMaterial.clear();
+            inMaterial.reserve(wfReader.materials.size());
+
+            for (auto it = wfReader.materials.cbegin(); it != wfReader.materials.cend(); ++it)
+            {
+                Mesh::Material mtl;
+                memset(&mtl, 0, sizeof(mtl));
+
+                mtl.name = it->strName;
+                mtl.specularPower = (it->bSpecular) ? float(it->nShininess) : 1.f;
+                mtl.alpha = it->fAlpha;
+                mtl.ambientColor = it->vAmbient;
+                mtl.diffuseColor = it->vDiffuse;
+                mtl.specularColor = (it->bSpecular) ? it->vSpecular : XMFLOAT3(0.f, 0.f, 0.f);
+
+                wchar_t texture[_MAX_PATH] = { 0 };
+                if (*it->strTexture)
                 {
-                    wcscpy_s(txext, L".dds");
+                    wchar_t txext[_MAX_EXT];
+                    wchar_t txfname[_MAX_FNAME];
+                    _wsplitpath_s(it->strTexture, nullptr, 0, nullptr, 0, txfname, _MAX_FNAME, txext, _MAX_EXT);
+
+                    if (!(options & (1 << OPT_NODDS)))
+                    {
+                        wcscpy_s(txext, L".dds");
+                    }
+
+                    _wmakepath_s(texture, nullptr, nullptr, txfname, txext);
                 }
 
-                _wmakepath_s(texture, nullptr, nullptr, txfname, txext);
+                mtl.texture = texture;
+
+                inMaterial.push_back(mtl);
             }
-
-            mtl.texture = texture;
-
-            inMaterial.push_back(mtl);
         }
-    }
 
-    return S_OK;
+        return S_OK;
+    }
 }
 
 
@@ -350,7 +365,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
     float maxStretch = 0.16667f;
     float gutter = 2.f;
     size_t width = 512;
-    size_t height = 512; 
+    size_t height = 512;
     CHANNELS perVertex = CHANNEL_NONE;
     DWORD uvOptions = UVATLAS_DEFAULT;
 
@@ -359,9 +374,9 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
     // Initialize COM (needed for WIC)
     HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
-    if( FAILED(hr) )
+    if (FAILED(hr))
     {
-        wprintf( L"Failed to initialize COM (%08X)\n", hr);
+        wprintf(L"Failed to initialize COM (%08X)\n", hr);
         return 1;
     }
 
@@ -369,45 +384,48 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
     DWORD dwOptions = 0;
     std::list<SConversion> conversion;
 
-    for(int iArg = 1; iArg < argc; iArg++)
+    for (int iArg = 1; iArg < argc; iArg++)
     {
         PWSTR pArg = argv[iArg];
 
-        if(('-' == pArg[0]) || ('/' == pArg[0]))
+        if (('-' == pArg[0]) || ('/' == pArg[0]))
         {
             pArg++;
             PWSTR pValue;
 
-            for(pValue = pArg; *pValue && (':' != *pValue); pValue++);
+            for (pValue = pArg; *pValue && (':' != *pValue); pValue++);
 
-            if(*pValue)
+            if (*pValue)
                 *pValue++ = 0;
 
             DWORD dwOption = LookupByName(pArg, g_pOptions);
 
-            if(!dwOption || (dwOptions & (1 << dwOption)))
+            if (!dwOption || (dwOptions & (1 << dwOption)))
             {
-                wprintf( L"ERROR: unknown command-line option '%ls'\n\n", pArg);
+                wprintf(L"ERROR: unknown command-line option '%ls'\n\n", pArg);
                 PrintUsage();
                 return 1;
             }
 
             dwOptions |= (1 << dwOption);
 
-            if ( OPT_NOLOGO != dwOption && OPT_OVERWRITE != dwOption
-                 && OPT_CLOCKWISE != dwOption && OPT_NODDS != dwOption
-                 && OPT_FLIP != dwOption && OPT_FLIPV != dwOption && OPT_FLIPZ != dwOption
-                 && OPT_NORMALS != dwOption && OPT_WEIGHT_BY_AREA != dwOption && OPT_WEIGHT_BY_EQUAL != dwOption
-                 && OPT_TANGENTS != dwOption && OPT_CTF != dwOption
-                 && OPT_TOPOLOGICAL_ADJ != dwOption && OPT_GEOMETRIC_ADJ != dwOption
-                 && OPT_COLOR_MESH != dwOption && OPT_UV_MESH != dwOption
-                 && OPT_SDKMESH != dwOption && OPT_CMO != dwOption && OPT_VBO != dwOption )
+            // Handle options with additional value parameter
+            switch (dwOption)
             {
-                if(!*pValue)
+            case OPT_QUALITY:
+            case OPT_MAXCHARTS:
+            case OPT_MAXSTRETCH:
+            case OPT_GUTTER:
+            case OPT_WIDTH:
+            case OPT_HEIGHT:
+            case OPT_IMT_TEXFILE:
+            case OPT_IMT_VERTEX:
+            case OPT_OUTPUTFILE:
+                if (!*pValue)
                 {
-                    if((iArg + 1 >= argc))
+                    if ((iArg + 1 >= argc))
                     {
-                        wprintf( L"ERROR: missing value for command-line option '%ls'\n\n", pArg);
+                        wprintf(L"ERROR: missing value for command-line option '%ls'\n\n", pArg);
                         PrintUsage();
                         return 1;
                     }
@@ -415,26 +433,27 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                     iArg++;
                     pValue = argv[iArg];
                 }
+                break;
             }
 
-            switch(dwOption)
+            switch (dwOption)
             {
             case OPT_QUALITY:
-                if ( !_wcsicmp( pValue, L"DEFAULT" ) )
+                if (!_wcsicmp(pValue, L"DEFAULT"))
                 {
                     uvOptions = UVATLAS_DEFAULT;
                 }
-                else if ( !_wcsicmp( pValue, L"FAST" ) )
+                else if (!_wcsicmp(pValue, L"FAST"))
                 {
                     uvOptions = UVATLAS_GEODESIC_FAST;
                 }
-                else if ( !_wcsicmp( pValue, L"QUALITY" ) )
+                else if (!_wcsicmp(pValue, L"QUALITY"))
                 {
                     uvOptions = UVATLAS_GEODESIC_QUALITY;
                 }
                 else
                 {
-                    wprintf( L"Invalid value specified with -q (%ls)\n", pValue);
+                    wprintf(L"Invalid value specified with -q (%ls)\n", pValue);
                     return 1;
                 }
                 break;
@@ -442,7 +461,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             case OPT_MAXCHARTS:
                 if (swscanf_s(pValue, L"%Iu", &maxCharts) != 1)
                 {
-                    wprintf( L"Invalid value specified with -n (%ls)\n", pValue);
+                    wprintf(L"Invalid value specified with -n (%ls)\n", pValue);
                     return 1;
                 }
                 break;
@@ -450,18 +469,18 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             case OPT_MAXSTRETCH:
                 if (swscanf_s(pValue, L"%f", &maxStretch) != 1
                     || maxStretch < 0.f
-                    || maxStretch > 1.f )
+                    || maxStretch > 1.f)
                 {
-                    wprintf( L"Invalid value specified with -st (%ls)\n", pValue);
+                    wprintf(L"Invalid value specified with -st (%ls)\n", pValue);
                     return 1;
                 }
                 break;
 
             case OPT_GUTTER:
                 if (swscanf_s(pValue, L"%f", &gutter) != 1
-                    || gutter < 0.f )
+                    || gutter < 0.f)
                 {
-                    wprintf( L"Invalid value specified with -g (%ls)\n", pValue);
+                    wprintf(L"Invalid value specified with -g (%ls)\n", pValue);
                     return 1;
                 }
                 break;
@@ -469,7 +488,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             case OPT_WIDTH:
                 if (swscanf_s(pValue, L"%Iu", &width) != 1)
                 {
-                    wprintf( L"Invalid value specified with -w (%ls)\n", pValue);
+                    wprintf(L"Invalid value specified with -w (%ls)\n", pValue);
                     return 1;
                 }
                 break;
@@ -477,7 +496,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             case OPT_HEIGHT:
                 if (swscanf_s(pValue, L"%Iu", &height) != 1)
                 {
-                    wprintf( L"Invalid value specified with -h (%ls)\n", pValue);
+                    wprintf(L"Invalid value specified with -h (%ls)\n", pValue);
                     return 1;
                 }
                 break;
@@ -501,9 +520,9 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
 
             case OPT_IMT_TEXFILE:
-                if ( dwOptions & (1 << OPT_IMT_VERTEX) )
+                if (dwOptions & (1 << OPT_IMT_VERTEX))
                 {
-                    wprintf( L"Cannot use both if and iv at the same time\n" );
+                    wprintf(L"Cannot use both if and iv at the same time\n");
                     return 1;
                 }
 
@@ -511,27 +530,27 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
 
             case OPT_IMT_VERTEX:
-                if ( dwOptions & (1 << OPT_IMT_TEXFILE) )
+                if (dwOptions & (1 << OPT_IMT_TEXFILE))
                 {
-                    wprintf( L"Cannot use both if and iv at the same time\n" );
+                    wprintf(L"Cannot use both if and iv at the same time\n");
                     return 1;
                 }
 
-                if ( !_wcsicmp( pValue, L"COLOR" ) )
+                if (!_wcsicmp(pValue, L"COLOR"))
                 {
                     perVertex = CHANNEL_COLOR;
                 }
-                else if ( !_wcsicmp( pValue, L"NORMAL" ) )
+                else if (!_wcsicmp(pValue, L"NORMAL"))
                 {
                     perVertex = CHANNEL_NORMAL;
                 }
-                else if ( !_wcsicmp( pValue, L"TEXCOORD" ) )
+                else if (!_wcsicmp(pValue, L"TEXCOORD"))
                 {
                     perVertex = CHANNEL_TEXCOORD;
                 }
                 else
                 {
-                    wprintf( L"Invalid value specified with -iv (%ls)\n", pValue);
+                    wprintf(L"Invalid value specified with -iv (%ls)\n", pValue);
                     return 1;
                 }
                 break;
@@ -557,25 +576,25 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
 
             case OPT_SDKMESH:
-                if ( dwOptions & ( (1 << OPT_VBO) | (1 << OPT_CMO) ) )
+                if (dwOptions & ((1 << OPT_VBO) | (1 << OPT_CMO)))
                 {
-                    wprintf( L"Can only use one of sdkmesh, cmo, or vbo\n" );
+                    wprintf(L"Can only use one of sdkmesh, cmo, or vbo\n");
                     return 1;
                 }
                 break;
 
             case OPT_CMO:
-                if ( dwOptions & ( (1 << OPT_VBO) | (1 << OPT_SDKMESH) ) )
+                if (dwOptions & ((1 << OPT_VBO) | (1 << OPT_SDKMESH)))
                 {
-                    wprintf( L"Can only use one of sdkmesh, cmo, or vbo\n" );
+                    wprintf(L"Can only use one of sdkmesh, cmo, or vbo\n");
                     return 1;
                 }
                 break;
 
             case OPT_VBO:
-                if ( dwOptions & ( (1 << OPT_SDKMESH) | (1 << OPT_CMO) ) )
+                if (dwOptions & ((1 << OPT_SDKMESH) | (1 << OPT_CMO)))
                 {
-                    wprintf( L"Can only use one of sdkmesh, cmo, or vbo\n" );
+                    wprintf(L"Can only use one of sdkmesh, cmo, or vbo\n");
                     return 1;
                 }
                 break;
@@ -590,54 +609,54 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         }
     }
 
-    if(conversion.empty())
+    if (conversion.empty())
     {
         PrintUsage();
         return 0;
     }
 
-    if ( *szOutputFile && conversion.size() > 1 )
+    if (*szOutputFile && conversion.size() > 1)
     {
-        wprintf( L"Cannot use -o with multiple input files\n");
+        wprintf(L"Cannot use -o with multiple input files\n");
         return 1;
     }
 
-    if(~dwOptions & (1 << OPT_NOLOGO))
+    if (~dwOptions & (1 << OPT_NOLOGO))
         PrintLogo();
 
     // Process files
-    for( auto pConv = conversion.begin(); pConv != conversion.end(); ++pConv )
+    for (auto pConv = conversion.begin(); pConv != conversion.end(); ++pConv)
     {
         wchar_t ext[_MAX_EXT];
         wchar_t fname[_MAX_FNAME];
-        _wsplitpath_s( pConv->szSrc, nullptr, 0, nullptr, 0, fname, _MAX_FNAME, ext, _MAX_EXT );
+        _wsplitpath_s(pConv->szSrc, nullptr, 0, nullptr, 0, fname, _MAX_FNAME, ext, _MAX_EXT);
 
-        if ( pConv != conversion.begin() )
-            wprintf( L"\n");
+        if (pConv != conversion.begin())
+            wprintf(L"\n");
 
-        wprintf( L"reading %ls", pConv->szSrc );
+        wprintf(L"reading %ls", pConv->szSrc);
         fflush(stdout);
 
         std::unique_ptr<Mesh> inMesh;
         std::vector<Mesh::Material> inMaterial;
         hr = E_NOTIMPL;
-        if ( _wcsicmp( ext, L".vbo" ) == 0 )
+        if (_wcsicmp(ext, L".vbo") == 0)
         {
-            hr = Mesh::CreateFromVBO( pConv->szSrc, inMesh );
+            hr = Mesh::CreateFromVBO(pConv->szSrc, inMesh);
         }
-        else if ( _wcsicmp( ext, L".sdkmesh" ) == 0 )
+        else if (_wcsicmp(ext, L".sdkmesh") == 0)
         {
             wprintf(L"\nERROR: Importing SDKMESH files not supported\n");
             return 1;
         }
-        else if ( _wcsicmp( ext, L".cmo" ) == 0 )
+        else if (_wcsicmp(ext, L".cmo") == 0)
         {
             wprintf(L"\nERROR: Importing Visual Studio CMO files not supported\n");
             return 1;
         }
-        else if ( _wcsicmp( ext, L".x" ) == 0 )
+        else if (_wcsicmp(ext, L".x") == 0)
         {
-            wprintf( L"\nERROR: Legacy Microsoft X files not supported\n");
+            wprintf(L"\nERROR: Legacy Microsoft X files not supported\n");
             return 1;
         }
         else
@@ -646,7 +665,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         }
         if (FAILED(hr))
         {
-            wprintf( L" FAILED (%08X)\n", hr);
+            wprintf(L" FAILED (%08X)\n", hr);
             return 1;
         }
 
@@ -655,7 +674,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
         if (!nVerts || !nFaces)
         {
-            wprintf( L"\nERROR: Invalid mesh\n" );
+            wprintf(L"\nERROR: Invalid mesh\n");
             return 1;
         }
 
@@ -692,13 +711,13 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             hr = inMesh->GenerateAdjacency(epsilon);
             if (FAILED(hr))
             {
-                wprintf( L"\nERROR: Failed generating adjacency (%08X)\n", hr );
+                wprintf(L"\nERROR: Failed generating adjacency (%08X)\n", hr);
                 return 1;
             }
 
             // Validation
             std::wstring msgs;
-            hr = inMesh->Validate( VALIDATE_BACKFACING | VALIDATE_BOWTIES, &msgs );
+            hr = inMesh->Validate(VALIDATE_BACKFACING | VALIDATE_BOWTIES, &msgs);
             if (!msgs.empty())
             {
                 wprintf(L"\nWARNING: \n");
@@ -706,10 +725,10 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
 
             // Clean
-            hr = inMesh->Clean( true );
+            hr = inMesh->Clean(true);
             if (FAILED(hr))
             {
-                wprintf( L"\nERROR: Failed mesh clean (%08X)\n", hr );
+                wprintf(L"\nERROR: Failed mesh clean (%08X)\n", hr);
                 return 1;
             }
             else
@@ -735,7 +754,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
         // Compute vertex normals from faces
         if ((dwOptions & (1 << OPT_NORMALS))
-             || ((dwOptions & ((1 << OPT_TANGENTS) | (1 << OPT_CTF))) && !inMesh->GetNormalBuffer()) )
+            || ((dwOptions & ((1 << OPT_TANGENTS) | (1 << OPT_CTF))) && !inMesh->GetNormalBuffer()))
         {
             DWORD flags = CNORM_DEFAULT;
 
@@ -753,10 +772,10 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 flags |= CNORM_WIND_CW;
             }
 
-            hr = inMesh->ComputeNormals( flags );
+            hr = inMesh->ComputeNormals(flags);
             if (FAILED(hr))
             {
-                wprintf( L"\nERROR: Failed computing normals (flags:%1X, %08X)\n", flags, hr );
+                wprintf(L"\nERROR: Failed computing normals (flags:%1X, %08X)\n", flags, hr);
                 return 1;
             }
         }
@@ -766,11 +785,11 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         {
             if (!inMesh->GetTexCoordBuffer())
             {
-                wprintf( L"\nERROR: Computing tangents/bi-tangents requires texture coordinates\n" );
+                wprintf(L"\nERROR: Computing tangents/bi-tangents requires texture coordinates\n");
                 return 1;
             }
 
-            hr = inMesh->ComputeTangentFrame( (dwOptions & (1 << OPT_CTF)) ? true : false );
+            hr = inMesh->ComputeTangentFrame((dwOptions & (1 << OPT_CTF)) ? true : false);
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed computing tangent frame (%08X)\n", hr);
@@ -780,13 +799,13 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
         // Compute IMT
         std::unique_ptr<float[]> IMTData;
-        if ( dwOptions & ((1 << OPT_IMT_TEXFILE) | (1 << OPT_IMT_VERTEX)) )
+        if (dwOptions & ((1 << OPT_IMT_TEXFILE) | (1 << OPT_IMT_VERTEX)))
         {
             if (dwOptions & (1 << OPT_IMT_TEXFILE))
             {
                 if (!inMesh->GetTexCoordBuffer())
                 {
-                    wprintf( L"\nERROR: Computing IMT from texture requires texture coordinates\n" );
+                    wprintf(L"\nERROR: Computing IMT from texture requires texture coordinates\n");
                     return 1;
                 }
 
@@ -803,13 +822,17 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 {
                     hr = LoadFromTGAFile(szTexFile, nullptr, iimage);
                 }
+                else if (_wcsicmp(ext, L".hdr") == 0)
+                {
+                    hr = LoadFromHDRFile(szTexFile, nullptr, iimage);
+                }
                 else
                 {
                     hr = LoadFromWICFile(szTexFile, TEX_FILTER_DEFAULT, nullptr, iimage);
                 }
                 if (FAILED(hr))
                 {
-                    wprintf(L"\nWARNING: Failed to load texture for IMT (%08X):\n%ls\n", hr, szTexFile );
+                    wprintf(L"\nWARNING: Failed to load texture for IMT (%08X):\n%ls\n", hr, szTexFile);
                 }
                 else
                 {
@@ -830,7 +853,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                         }
                     }
 
-                    if ( img )
+                    if (img)
                     {
                         wprintf(L"\nComputing IMT from file %ls...\n", szTexFile);
                         IMTData.reset(new (std::nothrow) float[nFaces * 3]);
@@ -841,9 +864,9 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                         }
 
                         hr = UVAtlasComputeIMTFromTexture(inMesh->GetPositionBuffer(), inMesh->GetTexCoordBuffer(), nVerts,
-                                                          inMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, nFaces,
-                                                          reinterpret_cast<const float*>( img->pixels ), img->width, img->height,
-                                                          UVATLAS_IMT_DEFAULT, UVAtlasCallback, IMTData.get());
+                            inMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, nFaces,
+                            reinterpret_cast<const float*>(img->pixels), img->width, img->height,
+                            UVATLAS_IMT_DEFAULT, UVAtlasCallback, IMTData.get());
                         if (FAILED(hr))
                         {
                             IMTData.reset();
@@ -893,7 +916,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
                 if (!pSignal)
                 {
-                    wprintf(L"\nWARNING: Mesh does not have channel %ls for IMT\n", szChannel );
+                    wprintf(L"\nWARNING: Mesh does not have channel %ls for IMT\n", szChannel);
                 }
                 else
                 {
@@ -905,15 +928,15 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                         wprintf(L"\nERROR: out of memory\n");
                         return 1;
                     }
-                
-                    hr = UVAtlasComputeIMTFromPerVertexSignal( inMesh->GetPositionBuffer(), nVerts,
-                                                               inMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, nFaces,
-                                                               pSignal, signalDim, signalStride, UVAtlasCallback, IMTData.get() );
+
+                    hr = UVAtlasComputeIMTFromPerVertexSignal(inMesh->GetPositionBuffer(), nVerts,
+                        inMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, nFaces,
+                        pSignal, signalDim, signalStride, UVAtlasCallback, IMTData.get());
 
                     if (FAILED(hr))
                     {
                         IMTData.reset();
-                        wprintf(L"WARNING: Failed to compute IMT from channel %ls (%08X)\n", szChannel, hr );
+                        wprintf(L"WARNING: Failed to compute IMT from channel %ls (%08X)\n", szChannel, hr);
                     }
                 }
             }
@@ -924,7 +947,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         }
 
         // Perform UVAtlas isocharting
-        wprintf( L"Computing isochart atlas on mesh...\n" );
+        wprintf(L"Computing isochart atlas on mesh...\n");
 
         std::vector<UVAtlasVertex> vb;
         std::vector<uint8_t> ib;
@@ -932,45 +955,45 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         size_t outCharts = 0;
         std::vector<uint32_t> facePartitioning;
         std::vector<uint32_t> vertexRemapArray;
-        hr = UVAtlasCreate( inMesh->GetPositionBuffer(), nVerts,
-                            inMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, nFaces,
-                            maxCharts, maxStretch, width, height, gutter,
-                            inMesh->GetAdjacencyBuffer(), nullptr,
-                            IMTData.get(),
-                            UVAtlasCallback, UVATLAS_DEFAULT_CALLBACK_FREQUENCY,
-                            uvOptions, vb, ib,
-                            &facePartitioning,
-                            &vertexRemapArray,
-                            &outStretch, &outCharts );
-        if ( FAILED(hr) )
+        hr = UVAtlasCreate(inMesh->GetPositionBuffer(), nVerts,
+            inMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, nFaces,
+            maxCharts, maxStretch, width, height, gutter,
+            inMesh->GetAdjacencyBuffer(), nullptr,
+            IMTData.get(),
+            UVAtlasCallback, UVATLAS_DEFAULT_CALLBACK_FREQUENCY,
+            uvOptions, vb, ib,
+            &facePartitioning,
+            &vertexRemapArray,
+            &outStretch, &outCharts);
+        if (FAILED(hr))
         {
-            if ( hr == HRESULT_FROM_WIN32( ERROR_INVALID_DATA ) )
+            if (hr == HRESULT_FROM_WIN32(ERROR_INVALID_DATA))
             {
-                wprintf( L"\nERROR: Non-manifold mesh\n" );
+                wprintf(L"\nERROR: Non-manifold mesh\n");
                 return 1;
             }
             else
             {
-                wprintf( L"\nERROR: Failed creating isocharts (%08X)\n", hr );
+                wprintf(L"\nERROR: Failed creating isocharts (%08X)\n", hr);
                 return 1;
             }
         }
 
-        wprintf( L"Output # of charts: %Iu, resulting stretching %f, %Iu verts\n", outCharts, outStretch, vb.size());
+        wprintf(L"Output # of charts: %Iu, resulting stretching %f, %Iu verts\n", outCharts, outStretch, vb.size());
 
-        assert((ib.size() / sizeof(uint32_t) ) == (nFaces*3));
+        assert((ib.size() / sizeof(uint32_t)) == (nFaces * 3));
         assert(facePartitioning.size() == nFaces);
         assert(vertexRemapArray.size() == vb.size());
 
-        hr = inMesh->UpdateFaces( nFaces, reinterpret_cast<const uint32_t*>( ib.data() ) );
-        if ( FAILED(hr) )
+        hr = inMesh->UpdateFaces(nFaces, reinterpret_cast<const uint32_t*>(ib.data()));
+        if (FAILED(hr))
         {
             wprintf(L"\nERROR: Failed applying atlas indices (%08X)\n", hr);
             return 1;
         }
 
-        hr = inMesh->VertexRemap( vertexRemapArray.data(), vertexRemapArray.size() );
-        if ( FAILED(hr) )
+        hr = inMesh->VertexRemap(vertexRemapArray.data(), vertexRemapArray.size());
+        if (FAILED(hr))
         {
             wprintf(L"\nERROR: Failed applying atlas vertex remap (%08X)\n", hr);
             return 1;
@@ -980,7 +1003,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
 #ifdef _DEBUG
         std::wstring msgs;
-        hr = inMesh->Validate( VALIDATE_DEFAULT, &msgs );
+        hr = inMesh->Validate(VALIDATE_DEFAULT, &msgs);
         if (!msgs.empty())
         {
             wprintf(L"\nWARNING: \n");
@@ -990,7 +1013,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
         // Copy isochart UVs into mesh
         {
-            std::unique_ptr<XMFLOAT2[]> texcoord( new (std::nothrow) XMFLOAT2[nVerts] );
+            std::unique_ptr<XMFLOAT2[]> texcoord(new (std::nothrow) XMFLOAT2[nVerts]);
             if (!texcoord)
             {
                 wprintf(L"\nERROR: out of memory\n");
@@ -1004,7 +1027,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 *txptr = it->uv;
             }
 
-            hr = inMesh->UpdateUVs( nVerts, texcoord.get() );
+            hr = inMesh->UpdateUVs(nVerts, texcoord.get());
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed to update with isochart UVs\n");
@@ -1015,43 +1038,43 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         if (dwOptions & (1 << OPT_COLOR_MESH))
         {
             inMaterial.clear();
-            inMaterial.reserve( _countof(g_ColorList) );
+            inMaterial.reserve(_countof(g_ColorList));
 
-            for( size_t j = 0; j < _countof(g_ColorList) && (j < outCharts); ++j )
+            for (size_t j = 0; j < _countof(g_ColorList) && (j < outCharts); ++j)
             {
                 Mesh::Material mtl;
-                memset( &mtl, 0, sizeof(mtl) );
+                memset(&mtl, 0, sizeof(mtl));
 
                 wchar_t matname[32];
-                wsprintf( matname, L"Chart%02Iu", j+1 );
+                wsprintf(matname, L"Chart%02Iu", j + 1);
                 mtl.name = matname;
                 mtl.specularPower = 1.f;
                 mtl.alpha = 1.f;
 
-                XMVECTOR v = XMLoadFloat3( &g_ColorList[j] );
-                XMStoreFloat3( &mtl.diffuseColor, v );
+                XMVECTOR v = XMLoadFloat3(&g_ColorList[j]);
+                XMStoreFloat3(&mtl.diffuseColor, v);
 
-                v = XMVectorScale( v, 0.2f );
-                XMStoreFloat3( &mtl.ambientColor, v );
+                v = XMVectorScale(v, 0.2f);
+                XMStoreFloat3(&mtl.ambientColor, v);
 
                 inMaterial.push_back(mtl);
             }
 
-            std::unique_ptr<uint32_t[]> attr( new (std::nothrow) uint32_t[ nFaces ] );
-            if ( !attr )
+            std::unique_ptr<uint32_t[]> attr(new (std::nothrow) uint32_t[nFaces]);
+            if (!attr)
             {
-                wprintf(L"\nERROR: out of memory\n" );
+                wprintf(L"\nERROR: out of memory\n");
                 return 1;
             }
 
             size_t j = 0;
-            for( auto it = facePartitioning.cbegin(); it != facePartitioning.cend(); ++it, ++j )
+            for (auto it = facePartitioning.cbegin(); it != facePartitioning.cend(); ++it, ++j)
             {
                 attr[j] = *it % _countof(g_ColorList);
             }
 
-            hr = inMesh->UpdateAttributes( nFaces, attr.get() );
-            if ( FAILED(hr) )
+            hr = inMesh->UpdateAttributes(nFaces, attr.get());
+            if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed applying atlas attributes (%08X)\n", hr);
                 return 1;
@@ -1071,14 +1094,14 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         // Write results
         wprintf(L"\n\t->\n");
 
-        wchar_t outputPath[ MAX_PATH ] = { 0 };
-        wchar_t outputExt[ _MAX_EXT] = { 0 };
+        wchar_t outputPath[MAX_PATH] = { 0 };
+        wchar_t outputExt[_MAX_EXT] = { 0 };
 
-        if ( *szOutputFile )
+        if (*szOutputFile)
         {
-            wcscpy_s( outputPath, szOutputFile );
-            
-            _wsplitpath_s( szOutputFile, nullptr, 0, nullptr, 0, nullptr, 0, outputExt, _MAX_EXT );
+            wcscpy_s(outputPath, szOutputFile);
+
+            _wsplitpath_s(szOutputFile, nullptr, 0, nullptr, 0, nullptr, 0, outputExt, _MAX_EXT);
         }
         else
         {
@@ -1095,13 +1118,13 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 wcscpy_s(outputExt, L".sdkmesh");
             }
 
-            wchar_t outFilename[ _MAX_FNAME ] = { 0 };
-            wcscpy_s( outFilename, fname );
+            wchar_t outFilename[_MAX_FNAME] = { 0 };
+            wcscpy_s(outFilename, fname);
 
-            _wmakepath_s( outputPath, nullptr, nullptr, outFilename, outputExt );
+            _wmakepath_s(outputPath, nullptr, nullptr, outFilename, outputExt);
         }
 
-        if ( ~dwOptions & (1 << OPT_OVERWRITE) )
+        if (~dwOptions & (1 << OPT_OVERWRITE))
         {
             if (GetFileAttributesW(outputPath) != INVALID_FILE_ATTRIBUTES)
             {
@@ -1110,11 +1133,11 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
         }
 
-        if ( !_wcsicmp(outputExt, L".vbo") )
+        if (!_wcsicmp(outputExt, L".vbo"))
         {
             if (!inMesh->GetNormalBuffer() || !inMesh->GetTexCoordBuffer())
             {
-                wprintf( L"\nERROR: VBO requires position, normal, and texcoord\n" );
+                wprintf(L"\nERROR: VBO requires position, normal, and texcoord\n");
                 return 1;
             }
 
@@ -1126,11 +1149,11 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
             hr = inMesh->ExportToVBO(outputPath);
         }
-        else if ( !_wcsicmp(outputExt, L".sdkmesh") )
+        else if (!_wcsicmp(outputExt, L".sdkmesh"))
         {
             hr = inMesh->ExportToSDKMESH(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
         }
-        else if ( !_wcsicmp(outputExt, L".cmo") )
+        else if (!_wcsicmp(outputExt, L".cmo"))
         {
             if (!inMesh->GetNormalBuffer() || !inMesh->GetTexCoordBuffer() || !inMesh->GetTangentBuffer())
             {
@@ -1146,7 +1169,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
             hr = inMesh->ExportToCMO(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
         }
-        else if ( !_wcsicmp(outputExt, L".x") )
+        else if (!_wcsicmp(outputExt, L".x"))
         {
             wprintf(L"\nERROR: Legacy Microsoft X files not supported\n");
             return 1;
