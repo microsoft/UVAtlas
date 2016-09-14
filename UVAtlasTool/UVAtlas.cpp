@@ -938,7 +938,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                     ScratchImage floatImage;
                     if (img->format != DXGI_FORMAT_R32G32B32A32_FLOAT)
                     {
-                        hr = Convert(*iimage.GetImage(0, 0, 0), DXGI_FORMAT_R32G32B32A32_FLOAT, TEX_FILTER_DEFAULT, 0.5f, floatImage);
+                        hr = Convert(*iimage.GetImage(0, 0, 0), DXGI_FORMAT_R32G32B32A32_FLOAT, TEX_FILTER_DEFAULT, TEX_THRESHOLD_DEFAULT, floatImage);
                         if (FAILED(hr))
                         {
                             img = nullptr;
