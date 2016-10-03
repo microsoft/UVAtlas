@@ -36,6 +36,14 @@
 #include "Mesh.h"
 #include "WaveFrontReader.h"
 
+//Uncomment to add support for OpenEXR (.exr)
+//#define USE_OPENEXR
+
+#ifdef USE_OPENEXR
+// See <https://github.com/Microsoft/DirectXTex/wiki/Adding-OpenEXR> for details
+#include "DirectXTexEXR.h"
+#endif
+
 using namespace DirectX;
 
 enum OPTIONS
@@ -923,6 +931,12 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 {
                     hr = LoadFromHDRFile(szTexFile, nullptr, iimage);
                 }
+#ifdef USE_OPENEXR
+                else if (_wcsicmp(ext, L".exr") == 0)
+                {
+                    hr = LoadFromEXRFile(szTexFile, nullptr, iimage);
+                }
+#endif
                 else
                 {
                     hr = LoadFromWICFile(szTexFile, TEX_FILTER_DEFAULT, nullptr, iimage);
