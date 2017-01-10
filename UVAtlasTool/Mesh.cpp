@@ -247,7 +247,7 @@ HRESULT Mesh::SetVertexData( _Inout_ DirectX::VBReader& reader, _In_ size_t nVer
     
     // Load normals
     std::unique_ptr<XMFLOAT3[]> norms;
-    auto e = reader.GetElement("NORMAL", 0);
+    auto e = reader.GetElement11("NORMAL", 0);
     if (e)
     {
         norms.reset(new (std::nothrow) XMFLOAT3[nVerts]);
@@ -261,7 +261,7 @@ HRESULT Mesh::SetVertexData( _Inout_ DirectX::VBReader& reader, _In_ size_t nVer
 
     // Load tangents
     std::unique_ptr<XMFLOAT4[]> tans1;
-    e = reader.GetElement("TANGENT", 0);
+    e = reader.GetElement11("TANGENT", 0);
     if (e)
     {
         tans1.reset(new (std::nothrow) XMFLOAT4[nVerts]);
@@ -275,7 +275,7 @@ HRESULT Mesh::SetVertexData( _Inout_ DirectX::VBReader& reader, _In_ size_t nVer
 
     // Load bi-tangents
     std::unique_ptr<XMFLOAT3[]> tans2;
-    e = reader.GetElement("BINORMAL", 0);
+    e = reader.GetElement11("BINORMAL", 0);
     if (e)
     {
         tans2.reset(new (std::nothrow) XMFLOAT3[nVerts]);
@@ -289,7 +289,7 @@ HRESULT Mesh::SetVertexData( _Inout_ DirectX::VBReader& reader, _In_ size_t nVer
 
     // Load texture coordinates
     std::unique_ptr<XMFLOAT2[]> texcoord;
-    e = reader.GetElement("TEXCOORD", 0);
+    e = reader.GetElement11("TEXCOORD", 0);
     if (e)
     {
         texcoord.reset(new (std::nothrow) XMFLOAT2[nVerts]);
@@ -303,7 +303,7 @@ HRESULT Mesh::SetVertexData( _Inout_ DirectX::VBReader& reader, _In_ size_t nVer
 
     // Load vertex colors
     std::unique_ptr<XMFLOAT4[]> colors;
-    e = reader.GetElement("COLOR", 0);
+    e = reader.GetElement11("COLOR", 0);
     if (e)
     {
         colors.reset(new (std::nothrow) XMFLOAT4[nVerts]);
@@ -317,7 +317,7 @@ HRESULT Mesh::SetVertexData( _Inout_ DirectX::VBReader& reader, _In_ size_t nVer
 
     // Load skinning bone indices
     std::unique_ptr<XMFLOAT4[]> blendIndices;
-    e = reader.GetElement("BLENDINDICES", 0);
+    e = reader.GetElement11("BLENDINDICES", 0);
     if (e)
     {
         blendIndices.reset(new (std::nothrow) XMFLOAT4[nVerts]);
@@ -331,7 +331,7 @@ HRESULT Mesh::SetVertexData( _Inout_ DirectX::VBReader& reader, _In_ size_t nVer
 
     // Load skinning bone weights
     std::unique_ptr<XMFLOAT4[]> blendWeights;
-    e = reader.GetElement("BLENDWEIGHT", 0);
+    e = reader.GetElement11("BLENDWEIGHT", 0);
     if (e)
     {
         blendWeights.reset(new (std::nothrow) XMFLOAT4[nVerts]);
@@ -984,7 +984,7 @@ HRESULT Mesh::GetVertexBuffer(_Inout_ DirectX::VBWriter& writer) const
 
     if (mNormals)
     {
-        auto e = writer.GetElement("NORMAL", 0);
+        auto e = writer.GetElement11("NORMAL", 0);
         if (e)
         {
             hr = writer.Write(mNormals.get(), "NORMAL", 0, mnVerts);
@@ -995,7 +995,7 @@ HRESULT Mesh::GetVertexBuffer(_Inout_ DirectX::VBWriter& writer) const
 
     if (mTangents)
     {
-        auto e = writer.GetElement("TANGENT", 0);
+        auto e = writer.GetElement11("TANGENT", 0);
         if (e)
         {
             hr = writer.Write(mTangents.get(), "TANGENT", 0, mnVerts);
@@ -1006,7 +1006,7 @@ HRESULT Mesh::GetVertexBuffer(_Inout_ DirectX::VBWriter& writer) const
 
     if (mBiTangents)
     {
-        auto e = writer.GetElement("BINORMAL", 0);
+        auto e = writer.GetElement11("BINORMAL", 0);
         if (e)
         {
             hr = writer.Write(mBiTangents.get(), "BINORMAL", 0, mnVerts);
@@ -1017,7 +1017,7 @@ HRESULT Mesh::GetVertexBuffer(_Inout_ DirectX::VBWriter& writer) const
 
     if (mTexCoords)
     {
-        auto e = writer.GetElement("TEXCOORD", 0);
+        auto e = writer.GetElement11("TEXCOORD", 0);
         if (e)
         {
             hr = writer.Write(mTexCoords.get(), "TEXCOORD", 0, mnVerts);
@@ -1028,7 +1028,7 @@ HRESULT Mesh::GetVertexBuffer(_Inout_ DirectX::VBWriter& writer) const
 
     if (mColors)
     {
-        auto e = writer.GetElement("COLOR", 0);
+        auto e = writer.GetElement11("COLOR", 0);
         if (e)
         {
             hr = writer.Write(mColors.get(), "COLOR", 0, mnVerts);
@@ -1039,7 +1039,7 @@ HRESULT Mesh::GetVertexBuffer(_Inout_ DirectX::VBWriter& writer) const
 
     if (mBlendIndices)
     {
-        auto e = writer.GetElement("BLENDINDICES", 0);
+        auto e = writer.GetElement11("BLENDINDICES", 0);
         if (e)
         {
             hr = writer.Write(mBlendIndices.get(), "BLENDINDICES", 0, mnVerts);
@@ -1050,7 +1050,7 @@ HRESULT Mesh::GetVertexBuffer(_Inout_ DirectX::VBWriter& writer) const
 
     if (mBlendWeights)
     {
-        auto e = writer.GetElement("BLENDWEIGHT", 0);
+        auto e = writer.GetElement11("BLENDWEIGHT", 0);
         if (e)
         {
             hr = writer.Write(mBlendWeights.get(), "BLENDWEIGHT", 0, mnVerts);
