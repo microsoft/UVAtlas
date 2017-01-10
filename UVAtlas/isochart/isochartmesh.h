@@ -797,7 +797,7 @@ private:
         CHARTOPTIMIZEINFO& optimizeInfo,
         bool& bCanOptimize);
 
-    void CIsochartMesh::ReleaseOptimizeInfo(
+    void ReleaseOptimizeInfo(
         CHARTOPTIMIZEINFO& optimizeInfo);
 
     HRESULT OptimizeStretch( 

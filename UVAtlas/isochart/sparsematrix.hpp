@@ -25,7 +25,7 @@ namespace Isochart
         public:
             void setZero()
             {
-                memset(data(), 0, size()*sizeof(value_type));
+                memset(this->data(), 0, this->size()*sizeof(value_type));
             }
 
         public:
