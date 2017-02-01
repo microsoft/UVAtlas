@@ -4,7 +4,7 @@ UVAtlas - isochart texture atlasing
 
 Copyright (c) Microsoft Corporation. All rights reserved.
 
-September 14, 2016
+January 31, 2017
 
 This package contains UVAtlas, a shared source library for creating and packing an
 isochart texture atlas.
@@ -71,6 +71,12 @@ Further reading:
 ---------------
 RELEASE HISTORY
 ---------------
+
+January 31, 2017
+    uvatlas command-line tool: Updated for latest DirectXMesh
+    uvatlas command-line tool: optional OpenEXR support
+    VS 2017 RC projects added
+    Minor code cleanup
 
 September 14, 2016
     uvatlas command-line tool: added wildcard support for input filename and optional -r switch for recursive search
