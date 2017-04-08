@@ -544,6 +544,7 @@ HRESULT CIsochartMesh::CalculateIsoParameterization()
 
     HRESULT hr = S_OK;
     size_t dwLandmarkNumber = 0;
+    size_t dwCalculatedDimension = 0;
 
     // 1. Calculate the landmark vertices
     FAILURE_RETURN(
@@ -591,7 +592,6 @@ HRESULT CIsochartMesh::CalculateIsoParameterization()
         goto LEnd;
     }
 
-    size_t dwCalculatedDimension = 0;
     if (FAILED(hr = m_isoMap.ComputeLargestEigen(2, dwCalculatedDimension)))
     {
         goto LEnd;

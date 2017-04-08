@@ -435,6 +435,8 @@ HRESULT CIsochartMesh::OptimizeWholeChart(
 {
     HRESULT hr = S_OK;
 
+    float fNewGeoL2Stretch = 0.f;
+
     // 1. Check if parameterized
     assert(m_bIsParameterized);
 
@@ -486,7 +488,7 @@ HRESULT CIsochartMesh::OptimizeWholeChart(
         CHART_MAX_SCALE_FACTOR,
         matrix);
 
-    float fNewGeoL2Stretch 
+    fNewGeoL2Stretch 
         = static_cast<float>(
         (dGeoM[0] * (matrix[0]*matrix[0] + matrix[2]*matrix[2])
         + dGeoM[2] * (matrix[1]*matrix[1] + matrix[3]*matrix[3])

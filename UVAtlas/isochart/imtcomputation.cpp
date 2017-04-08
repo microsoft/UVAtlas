@@ -209,6 +209,8 @@ namespace
 
         uint32_t dwNewIdx = static_cast<uint32_t>(vertList.size());
 
+        SUBFACE* pNewFace[4] = { nullptr, nullptr, nullptr, nullptr };
+
         // 1. Compute new vertices that split the original triangle into 4-sub triangles.
         try
         {
@@ -227,7 +229,6 @@ namespace
         }
 
         // 2. Push the new 4 sub-triangles into queue.
-        SUBFACE* pNewFace[4] = { nullptr, nullptr, nullptr, nullptr };
         for (size_t ii = 0; ii < 4; ii++)
         {
             pNewFace[ii] = new (std::nothrow) SUBFACE;
@@ -435,6 +436,8 @@ Isochart::IMTFromTextureMap(
         return E_OUTOFMEMORY;
     }
 
+    float* pfSignal = nullptr;
+
     pFace->dwDepth = 0;
     try
     {
@@ -501,7 +504,7 @@ Isochart::IMTFromTextureMap(
         goto LEnd;
     }
     
-    float* pfSignal = pfSignalBase.get();
+    pfSignal = pfSignalBase.get();
     for (size_t ii = 0; ii<vertList.size(); ii++)
     {		
         XMFLOAT2 coord = vertList[ii];

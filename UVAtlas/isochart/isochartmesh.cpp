@@ -733,6 +733,8 @@ HRESULT CIsochartMesh::Partition()
 
     size_t dwBoundaryNumber = 0;
     bool bIsSimpleChart = false;
+    bool bSpecialShape = false;
+    bool bTrivialShape = false;
 
     // 1. Prepare simple chart
     if (FAILED(hr = PrepareSimpleChart(
@@ -779,7 +781,6 @@ HRESULT CIsochartMesh::Partition()
     // Trivial shape includes: 
     //  a. chart with only one face
     //  b. chart been degenerated to a point
-    bool bTrivialShape = false;
     if (FAILED(hr = ProcessTrivialShape(
         dwPrimaryEigenDimension, 
         bTrivialShape)) || bTrivialShape)
@@ -792,7 +793,6 @@ HRESULT CIsochartMesh::Partition()
     //  a. Cylinder
     //  b. Longhorn
 
-    bool bSpecialShape = false;
     hr = ProcessSpecialShape(
             dwBoundaryNumber,
             pfVertGeodesicDistance,
@@ -931,6 +931,7 @@ HRESULT CIsochartMesh::Bipartition3D()
 
     std::vector<uint32_t> representativeVertsIdx;	
     float* pfVertCombineDistance = nullptr;
+    bool bIsPartitionSucceed = false;
 
     // 1. Calculate Distance (Geodesic & Siganl)  between vertices and landmarks.
     float* pfVertGeoDistance = new (std::nothrow) float[dwLandCount*m_dwVertNumber];
@@ -980,7 +981,6 @@ HRESULT CIsochartMesh::Bipartition3D()
     representativeVertsIdx[0]=0;
     representativeVertsIdx[1]=1;
     // 2. Partition 
-    bool bIsPartitionSucceed = false;
     FAILURE_RETURN(
         PartitionGeneralShape(
             pfVertGeoDistance,
@@ -1200,10 +1200,10 @@ HRESULT CIsochartMesh::IsomapParameterlization(
     float* pfVertCombinedDistance = nullptr;
     float* pfGeodesicMatrix = nullptr;
     float* pfVertMappingCoord = nullptr;
+    size_t dwLandmarkNumber = 0;
+    size_t dwCalculatedDimension = 0;
 
     // 1. Calculate the landmark vertices
-    size_t dwLandmarkNumber = 0;
-
     if (FAILED(hr = CalculateLandmarkVertices(
                         MIN_LANDMARK_NUMBER,
                         dwLandmarkNumber)))
@@ -1266,7 +1266,6 @@ HRESULT CIsochartMesh::IsomapParameterlization(
         goto LEnd;
     }
 
-    size_t dwCalculatedDimension = 0;
     if (FAILED(hr = m_isoMap.ComputeLargestEigen(
                         dwMaxEigenDimension,
                         dwCalculatedDimension)))
