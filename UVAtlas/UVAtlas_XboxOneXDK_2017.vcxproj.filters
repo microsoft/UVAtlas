@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Geodesics">
+      <UniqueIdentifier>{ec40e560-79b7-49f4-87b7-65b05c4025e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Isochart">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="inc\UVAtlas.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="maxheap.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="geodesics\ApproximateOneToAll.h">
+      <Filter>Geodesics</Filter>
+    </ClInclude>
+    <ClInclude Include="geodesics\datatypes.h">
+      <Filter>Geodesics</Filter>
+    </ClInclude>
+    <ClInclude Include="geodesics\ExactOneToAll.h">
+      <Filter>Geodesics</Filter>
+    </ClInclude>
+    <ClInclude Include="geodesics\mathutils.h">
+      <Filter>Geodesics</Filter>
+    </ClInclude>
+    <ClInclude Include="geodesics\minheap.hpp">
+      <Filter>Geodesics</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\basemeshinfo.h">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\callbackschemer.h">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\graphcut.h">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\isochart.h">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\isochartconfig.h">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\isochartengine.h">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\isochartmesh.h">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\isochartutil.h">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\isomap.h">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\progressivemesh.h">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\sparsematrix.hpp">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\SymmetricMatrix.hpp">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\UVAtlasRepacker.h">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\vertiter.h">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="isochart\Vis_Maxflow.h">
+      <Filter>Isochart</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="geodesics\ApproximateOneToAll.cpp">
+      <Filter>Geodesics</Filter>
+    </ClCompile>
+    <ClCompile Include="geodesics\ExactOneToAll.cpp">
+      <Filter>Geodesics</Filter>
+    </ClCompile>
+    <ClCompile Include="geodesics\mathutils.cpp">
+      <Filter>Geodesics</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\barycentricparam.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\basemeshinfo.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\graphcut.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\imtcomputation.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\isochart.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\isochartengine.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\isochartmesh.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\isochartutil.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\isomap.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\lscmparam.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\mergecharts.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\meshapplyisomap.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\meshoptimizeboundaries.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\meshoptimizestretch.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\meshpartitionchart.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\packingcharts.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\progressivemesh.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\UVAtlas.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\UVAtlasRepacker.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\vertiter.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="isochart\Vis_Maxflow.cpp">
+      <Filter>Isochart</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="isochart\meshcommon.inl">
+      <Filter>Isochart</Filter>
+    </None>
+  </ItemGroup>
+</Project>

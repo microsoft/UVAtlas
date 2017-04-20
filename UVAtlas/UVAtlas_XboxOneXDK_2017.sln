@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UVAtlas", "UVAtlas_XboxOneXDK_2017.vcxproj", "{5959D651-867B-4AD9-BABD-4265310B6D5D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Durango = Debug|Durango
+		Profile|Durango = Profile|Durango
+		Release|Durango = Release|Durango
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5959D651-867B-4AD9-BABD-4265310B6D5D}.Debug|Durango.ActiveCfg = Debug|Durango
+		{5959D651-867B-4AD9-BABD-4265310B6D5D}.Debug|Durango.Build.0 = Debug|Durango
+		{5959D651-867B-4AD9-BABD-4265310B6D5D}.Profile|Durango.ActiveCfg = Profile|Durango
+		{5959D651-867B-4AD9-BABD-4265310B6D5D}.Profile|Durango.Build.0 = Profile|Durango
+		{5959D651-867B-4AD9-BABD-4265310B6D5D}.Release|Durango.ActiveCfg = Release|Durango
+		{5959D651-867B-4AD9-BABD-4265310B6D5D}.Release|Durango.Build.0 = Release|Durango
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
