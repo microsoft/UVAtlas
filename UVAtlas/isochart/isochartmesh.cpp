@@ -95,28 +95,31 @@ CIsochartMesh::CIsochartMesh(
     const CBaseMeshInfo& baseInfo,
     CCallbackSchemer& callbackSchemer,    
     const CIsochartEngine &IsochartEngine)
-    :m_baseInfo(baseInfo),
-    m_callbackSchemer(callbackSchemer),
-    m_pVerts(nullptr),
-    m_pFaces(nullptr),
-    m_pPackingInfo(nullptr),
-    m_dwFaceNumber(0),
+    : m_callbackSchemer(callbackSchemer),
+    m_IsochartEngine(IsochartEngine),
+    m_baseInfo(baseInfo),
     m_dwVertNumber(0),
+    m_pVerts(nullptr),
+    m_dwFaceNumber(0),
+    m_pFaces(nullptr),
+    m_dwEdgeNumber(0),
+    m_pFather(nullptr),
+    m_fBoxDiagLen(0),
+    m_fParamStretchL2(0),
+    m_fParamStretchLn(0),
+    m_fBaseL2Stretch(0),
+    m_fGeoL2Stretch(0),
     m_bVertImportanceDone(false),
     m_bIsSubChart(false),
     m_bIsInitChart(false),
+    m_fChart2DArea(0),
+    m_fChart3DArea(0),
+    m_pPackingInfo(nullptr),
     m_bIsParameterized(false),
-    m_IsochartEngine(IsochartEngine)
+    m_bOptimizedL2Stretch(false),
+    m_bOrderedLandmark(false),
+    m_bNeedToClean(false)
 {
-    m_fParamStretchL2 = 0;
-    m_fParamStretchLn = 0;
-    m_fBaseL2Stretch = 0;
-    m_fGeoL2Stretch = 0;
-    m_fChart2DArea = 0;
-    m_fChart3DArea = 0;
-    m_bOptimizedL2Stretch = false;
-    m_bOrderedLandmark = false;
-    m_bNeedToClean = false;
 }
 
 CIsochartMesh::~CIsochartMesh()

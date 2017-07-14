@@ -163,9 +163,9 @@ namespace Isochart
         {
         public:
             Node()
-                : capacity(0), resident(0), depth(0)
+                : capacity(0), resident(0)
                 , parent_node(no_parent), parent_edge(no_parent)
-                , m_iFlag(0), m_iActive(0)
+                , m_iFlag(0), depth(0)
             {
                 edges.reserve(m_expect_degree);
             };
@@ -231,7 +231,6 @@ namespace Isochart
         private:
             typedef int FLAG;
             FLAG m_iFlag;
-            FLAG m_iActive;
             int depth;   // distanst to either s or t
             
 

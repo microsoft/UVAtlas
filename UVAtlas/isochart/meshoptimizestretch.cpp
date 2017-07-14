@@ -99,9 +99,9 @@ namespace Isochart
             fBarToStopOptAll(0),
             fAverageEdgeLength(0),
             fTolerance(0),
+            pHeapItems(nullptr),
             pfVertStretch(nullptr),
             pfFaceStretch(nullptr),
-            pHeapItems(nullptr),
             fPreveMaxFaceStretch(0),
             fInfiniteStretch(0),
             dwInfinitStretchVertexCount(0),
@@ -1794,7 +1794,7 @@ bool CIsochartMesh::OptimizeVertexStretchAroundCenter(
 {
     ISOCHARTVERTEX* pOptimizeVertex = vertInfo.pOptimizeVertex;
 
-    XMFLOAT2 originalStart = vertInfo.start;
+    XMFLOAT2 originalStart = vertInfo.start; // -Wunused-variable
     float fOriginalStartStretch = vertInfo.fStartStretch;
 
     XMFLOAT2 originalEnd = vertInfo.end;

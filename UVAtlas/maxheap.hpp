@@ -51,8 +51,8 @@ namespace Isochart
             
             CMaxHeapItem(weight_type weight, data_type data)
                 :m_weight(weight)
-                ,m_position(NOT_IN_HEAP)
                 ,m_data(data)
+                ,m_position(NOT_IN_HEAP)
             { 		
             }
             
@@ -82,10 +82,10 @@ namespace Isochart
             typedef _Ty2 data_type;					
             typedef CMaxHeapItem<weight_type, data_type> item_type;
 
-            CMaxHeap():m_size(0), m_bAutoMangeMemory(false)
+            CMaxHeap(): m_bAutoMangeMemory(false), m_size(0)
             {		
             }
-            CMaxHeap(size_t size):m_size(0), m_bAutoMangeMemory(false)
+            CMaxHeap(size_t size): m_bAutoMangeMemory(false), m_size(0)
             {
                 m_items.reserve(size);			
             }

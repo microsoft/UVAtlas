@@ -74,17 +74,17 @@ namespace
 CProgressiveMesh::CProgressiveMesh(
     const CBaseMeshInfo &baseInfo,
     CCallbackSchemer& callbackSchemer)
-    :m_baseInfo(baseInfo),
-    m_callbackSchemer(callbackSchemer),
-    m_pVertArray(nullptr),
+    : m_pVertArray(nullptr),
     m_pFaceArray(nullptr),
     m_pEdgeArray(nullptr),
     m_pQuadricArray(nullptr),
     m_dwVertNumber(0),
     m_dwFaceNumber(0),
-    m_dwEdgeNumber(0)
+    m_dwEdgeNumber(0),
+    m_fBoxDiagLen(0),
+    m_baseInfo(baseInfo),
+    m_callbackSchemer(callbackSchemer)
 {
-    
 }
 
 CProgressiveMesh::~CProgressiveMesh()

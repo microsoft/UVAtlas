@@ -507,7 +507,7 @@ namespace
     }
 
     // 
-    _forceinline static bool FindCorrespondSegmentsOfBorders(
+    inline static bool FindCorrespondSegmentsOfBorders(
         VERTEX_ARRAY& aBorder1,
         VERTEX_ARRAY& aBorder2,
         size_t& dwBorder1Start,
@@ -583,7 +583,7 @@ namespace
 
     // 1. Judge that the vertex is on which side of the border.
     // 2. Calculate the distance from the vertex to the border.
-    _forceinline static VertexLocation CalculateVertexLocationToBorder(
+    inline static VertexLocation CalculateVertexLocationToBorder(
         VERTEX_ARRAY& aBorder, // a vertical Border.
         size_t dwBorderStart,
         size_t dwBorderEnd,
@@ -1164,7 +1164,7 @@ namespace
     }
 
     // When adding a chart to atlas, moving it from origin to a candidate iposition.
-    _forceinline static void MoveChartToNewPosition(
+    inline static void MoveChartToNewPosition(
         VERTEX_ARRAY& newChartBorder,
         const XMFLOAT2* pOrigUV,
            Axis TangentAxis,
@@ -1212,7 +1212,7 @@ namespace
             fGutter);
     }
 
-    _forceinline static bool CalMinDistanceBetweenAtlasAndChart(
+    inline static bool CalMinDistanceBetweenAtlasAndChart(
         VertexLocation invalidatlasLocationAgainstChart,
         VertexLocation invalidChartLocationAgainstAtlas,
         bool bPackingFromLowerPlace,
@@ -1312,7 +1312,7 @@ namespace
         return true;
     }
 
-    _forceinline static void UpdateOptimalPosition(
+    inline static void UpdateOptimalPosition(
         bool bPackingFromLowerPlace,
         ATLASINFO& atlasInfo,
         VERTEX_ARRAY& atlasBorder,

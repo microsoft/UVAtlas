@@ -76,20 +76,57 @@ CUVAtlasRepacker::CUVAtlasRepacker(std::vector<UVAtlasVertex>* pvVertexArray,
                                     size_t *pFinalHeight,
                                     size_t *pChartNumber,
                                     size_t *pIterationTimes) :
-            m_iNumFaces(FaceCount),
-            m_iNumVertices(VertexCount),
-            m_pvVertexBuffer(pvVertexArray),
-            m_pvIndexBuffer(pvFaceIndexArray),
-            m_iRotateNum(iNumRotate),
-            m_pPartitionAdj(pdwAdjacency),
-            m_dwAtlasWidth(Width),
-            m_dwAtlasHeight(Height),
-            m_iGutter((int)Gutter),
-            m_pPercentOur(pPercentOur),
-            m_pFinalWidth(pFinalWidth),
-            m_pFinalHeight(pFinalHeight),
-            m_pOurChartNumber(pChartNumber),
-            m_pOurIterationTimes(pIterationTimes)
+    m_pPartitionAdj(pdwAdjacency),
+    m_pvVertexBuffer(pvVertexArray),
+    m_pvIndexBuffer(pvFaceIndexArray),
+    m_EstimatedSpacePercent(0),
+    m_OutOfRange(false),
+    m_bDwIndex(false),
+    m_bStopIteration(false),
+    m_TexCoordOffset(0),
+    m_iRotateNum(iNumRotate),
+    m_iNumCharts(0),
+    m_iNumVertices(VertexCount),
+    m_iNumFaces(FaceCount),
+    m_iNumBytesPerVertex(0),
+    m_fChartsTotalArea(0),
+    m_dwAtlasHeight(Height),
+    m_dwAtlasWidth(Width),
+    m_AspectRatio(0),
+    m_iGutter((int)Gutter),
+    m_bRepacked(false),
+    m_adjustFactor(1.f),
+    m_packedArea(0),
+    m_packedCharts(0),
+    m_fromX(0),
+    m_toX(0),
+    m_fromY(0),
+    m_toY(0),
+    m_iIterationTimes(0),
+    m_chartFromX(0),
+    m_chartToX(0),
+    m_chartFromY(0),
+    m_chartToY(0),
+    m_currAspectRatio(0),
+    m_currRotate(0),
+    m_triedRotate(0),
+    m_triedInternalSpace(0),
+    m_triedPutPos(0),
+    m_triedOverlappedLen(0),
+    m_triedPutRotation(0),
+    m_triedPutSide(0),
+    m_triedAspectRatio(0),
+    m_NormalizeLen(0),
+    m_PreparedAtlasWidth(0),
+    m_PreparedAtlasHeight(0),
+    m_RealWidth(0),
+    m_RealHeight(0),
+    m_PixelWidth(0),
+    m_pPercentOur(pPercentOur),
+    m_pFinalWidth(pFinalWidth),
+    m_pFinalHeight(pFinalHeight),
+    m_pOurChartNumber(pChartNumber),
+    m_pOurIterationTimes(pIterationTimes)
 {		                    
 }
 
@@ -748,10 +785,10 @@ HRESULT CUVAtlasRepacker::GenerateAdjacentInfo()
         {
             for (size_t m = 0; m < 3; m++) if (m_AdjacentInfo[i * 3 + m] == uint32_t(-1))
                 for (size_t n = 0; n < 3; n++) if (m_AdjacentInfo[j * 3 + n] == uint32_t(-1))
-                    if (ib[i].vertex[order[m][0]] == ib[j].vertex[order[n][0]] && 
-                        ib[i].vertex[order[m][1]] == ib[j].vertex[order[n][1]] ||
-                        ib[i].vertex[order[m][0]] == ib[j].vertex[order[n][1]] && 
-                        ib[i].vertex[order[m][1]] == ib[j].vertex[order[n][0]])
+                    if ((ib[i].vertex[order[m][0]] == ib[j].vertex[order[n][0]] && 
+                        ib[i].vertex[order[m][1]] == ib[j].vertex[order[n][1]]) ||
+                        (ib[i].vertex[order[m][0]] == ib[j].vertex[order[n][1]] && 
+                        ib[i].vertex[order[m][1]] == ib[j].vertex[order[n][0]]))
                         // if two triangles have two common vertices, they are adjacent
                     {
                         m_AdjacentInfo[i * 3 + m] = j;

@@ -24,25 +24,26 @@ namespace
 }
 
 CBaseMeshInfo::CBaseMeshInfo():
-    pVertPosition(nullptr),
-    dwVertexCount(0),
     pVertexArray(nullptr),
+    dwVertexCount(0),
     dwVertexStride(0),
-    IndexFormat(DXGI_FORMAT_R16_UINT),
-    pFaceNormalArray(nullptr),
-    pfFaceAreaArray(nullptr),
-    pdwFaceAdjacentArray(nullptr),
-    pdwOriginalFaceAdjacentArray(nullptr),
     dwFaceCount(0),
+    IndexFormat(DXGI_FORMAT_R16_UINT),
     pfIMTArray(nullptr),
+    pdwOriginalFaceAdjacentArray(nullptr),
+    pVertPosition(nullptr),
+    pFaceNormalArray(nullptr),
     pFaceCanonicalUVCoordinate(nullptr),
     pFaceCanonicalParamAxis(nullptr),
-    fBoxDiagLen(0),
-    bIsFaceAdjacenctArrayReady(false),
+    pfFaceAreaArray(nullptr),
+    pdwFaceAdjacentArray(nullptr),
     fMeshArea(0),
+    fBoxDiagLen(0),
     fOverturnTolerance(0),
     fExpectAvgL2SquaredStretch(0),
     fExpectMinAvgL2SquaredStretch(FACE_MIN_L2_STRETCH),
+    fRatioOfSigToGeo(0),
+    bIsFaceAdjacenctArrayReady(false),
     pdwSplitHint(nullptr)
 {
 }

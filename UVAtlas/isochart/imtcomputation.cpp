@@ -1444,7 +1444,7 @@ Isochart::IMTFromTextureMapEx(
     double fTexelLengthW = (1.0 / pTexDesc->uWidth);
     double fTexelLengthH = (1.0 / pTexDesc->uHeight);
 
-    DOUBLEVECTOR2 uv[3] = {0};
+    DOUBLEVECTOR2 uv[3] = {};
     for (size_t ii = 0; ii<3; ii++)
     {
         uv[ii].x = pUV[ii].x;
