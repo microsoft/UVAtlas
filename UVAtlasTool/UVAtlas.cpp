@@ -25,6 +25,7 @@
 #include <assert.h>
 #include <conio.h>
 
+#include <fstream>
 #include <memory>
 #include <list>
 
@@ -77,6 +78,7 @@ enum OPTIONS
     OPT_FLIPV,
     OPT_FLIPZ,
     OPT_NOLOGO,
+    OPT_FILELIST,
     OPT_MAX
 };
 
@@ -148,6 +150,7 @@ const SValue g_pOptions [] =
     { L"flipv",     OPT_FLIPV },
     { L"flipz",     OPT_FLIPZ },
     { L"nologo",    OPT_NOLOGO },
+    { L"flist",     OPT_FILELIST },
     { nullptr,      0 }
 };
 
@@ -311,6 +314,7 @@ namespace
         wprintf(L"   -o <filename>       output filename\n");
         wprintf(L"   -y                  overwrite existing output file (if any)\n");
         wprintf(L"   -nologo             suppress copyright message\n");
+        wprintf(L"   -flist <filename>   use text file with a list of input files (one per line)\n");
 
         wprintf(L"\n");
     }
@@ -516,6 +520,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             case OPT_IMT_TEXFILE:
             case OPT_IMT_VERTEX:
             case OPT_OUTPUTFILE:
+            case OPT_FILELIST:
                 if (!*pValue)
                 {
                     if ((iArg + 1 >= argc))
@@ -691,6 +696,48 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 {
                     wprintf(L"Can only use one of sdkmesh, cmo, or vbo\n");
                     return 1;
+                }
+                break;
+
+            case OPT_FILELIST:
+                {
+                    std::wifstream inFile(pValue);
+                    if (!inFile)
+                    {
+                        wprintf(L"Error opening -flist file %ls\n", pValue);
+                        return 1;
+                    }
+                    wchar_t fname[1024] = {};
+                    for (;;)
+                    {
+                        inFile >> fname;
+                        if (!inFile)
+                            break;
+
+                        if (*fname == L'#')
+                        {
+                            // Comment
+                        }
+                        else if (*fname == L'-')
+                        {
+                            wprintf(L"Command-line arguments not supported in -flist file\n");
+                            return 1;
+                        }
+                        else if (wcspbrk(fname, L"?*") != nullptr)
+                        {
+                            wprintf(L"Wildcards not supported in -flist file\n");
+                            return 1;
+                        }
+                        else
+                        {
+                            SConversion conv;
+                            wcscpy_s(conv.szSrc, MAX_PATH, fname);
+                            conversion.push_back(conv);
+                        }
+
+                        inFile.ignore(1000, '\n');
+                    }
+                    inFile.close();
                 }
                 break;
             }
