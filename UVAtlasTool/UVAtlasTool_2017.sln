@@ -6,7 +6,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXTex", "..\..\DirectX
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DirectXMesh", "..\..\DirectXMesh\DirectXMesh\DirectXMesh_Desktop_2017.vcxproj", "{6857F086-F6FE-4150-9ED7-7446F1C1C220}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UVAtlas", "..\UVAtlas\UVAtlas_2017.vcxproj", "{10359E70-6A7F-4433-8EF1-B0FB688D830E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UVAtlas", "..\UVAtlas\UVAtlas_2017_Win10.vcxproj", "{10359E70-6A7F-4433-8EF1-B0FB688D830E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
