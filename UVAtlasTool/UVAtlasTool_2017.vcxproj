@@ -384,7 +384,7 @@
     <ProjectReference Include="..\..\DirectXTex\DirectXTex\DirectXTex_Desktop_2017.vcxproj">
       <Project>{371b9fa9-4c90-4ac6-a123-aced756d6c77}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\UVAtlas\UVAtlas_2017.vcxproj">
+    <ProjectReference Include="..\UVAtlas\UVAtlas_2017_Win10.vcxproj">
       <Project>{10359e70-6a7f-4433-8ef1-b0fb688d830e}</Project>
     </ProjectReference>
   </ItemGroup>
