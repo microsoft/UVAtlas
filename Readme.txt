@@ -69,6 +69,16 @@ Further reading:
     http://research.microsoft.com/en-us/um/people/johnsny/papers/ssp.pdf
 
 
+-------------
+RELEASE NOTES
+-------------
+
+* The VS 2017 projects make use of /permissive- for improved C++ standard conformance. Use of a Windows 10 SDK prior to
+  the Fall Creators Update (16299) or an Xbox One XDK prior to June 2017 QFE 4 may result in failures due to problems
+  with the system headers. You can work around these by deleting /permissive- from the project files which is found
+  in the <AdditionalOptions> element.
+
+
 ---------------
 RELEASE HISTORY
 ---------------
