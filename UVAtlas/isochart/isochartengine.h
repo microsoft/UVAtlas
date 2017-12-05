@@ -65,7 +65,7 @@ public:
         LPISOCHARTCALLBACK pCallback,
         float Frequency) override;
 
-    STDMETHOD(SetStage)(
+    STDMETHODIMP SetStage(
         unsigned int TotalStageCount,
         unsigned int DoneStageCount) override;
 
