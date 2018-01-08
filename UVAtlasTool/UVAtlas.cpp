@@ -811,6 +811,11 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             wprintf(L"\nERROR: Legacy Microsoft X files not supported\n");
             return 1;
         }
+        else if (_wcsicmp(ext, L".fbx") == 0)
+        {
+            wprintf(L"\nERROR: Autodesk FBX files not supported\n");
+            return 1;
+        }
         else
         {
             hr = LoadFromOBJ(pConv->szSrc, inMesh, inMaterial, dwOptions);
