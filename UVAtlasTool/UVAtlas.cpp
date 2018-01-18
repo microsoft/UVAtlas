@@ -426,7 +426,7 @@ namespace
                 mtl.diffuseColor = it->vDiffuse;
                 mtl.specularColor = (it->bSpecular) ? it->vSpecular : XMFLOAT3(0.f, 0.f, 0.f);
 
-                wchar_t texture[_MAX_PATH] = { 0 };
+                wchar_t texture[_MAX_PATH] = {};
                 if (*it->strTexture)
                 {
                     wchar_t txext[_MAX_EXT];
@@ -468,8 +468,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
     CHANNELS perVertex = CHANNEL_NONE;
     DWORD uvOptions = UVATLAS_DEFAULT;
 
-    wchar_t szTexFile[MAX_PATH] = { 0 };
-    wchar_t szOutputFile[MAX_PATH] = { 0 };
+    wchar_t szTexFile[MAX_PATH] = {};
+    wchar_t szOutputFile[MAX_PATH] = {};
 
     // Initialize COM (needed for WIC)
     HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
@@ -1257,8 +1257,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         // Write results
         wprintf(L"\n\t->\n");
 
-        wchar_t outputPath[MAX_PATH] = { 0 };
-        wchar_t outputExt[_MAX_EXT] = { 0 };
+        wchar_t outputPath[MAX_PATH] = {};
+        wchar_t outputExt[_MAX_EXT] = {};
 
         if (*szOutputFile)
         {
@@ -1281,7 +1281,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 wcscpy_s(outputExt, L".sdkmesh");
             }
 
-            wchar_t outFilename[_MAX_FNAME] = { 0 };
+            wchar_t outFilename[_MAX_FNAME] = {};
             wcscpy_s(outFilename, fname);
 
             _wmakepath_s(outputPath, nullptr, nullptr, outFilename, outputExt);
@@ -1361,7 +1361,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 return 1;
             }
 
-            wchar_t uvFilename[_MAX_FNAME] = { 0 };
+            wchar_t uvFilename[_MAX_FNAME] = {};
             wcscpy_s(uvFilename, fname);
             wcscat_s(uvFilename, L"_texture");
 

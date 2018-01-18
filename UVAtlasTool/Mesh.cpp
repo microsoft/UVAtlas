@@ -80,7 +80,7 @@ namespace
         return ((value + 4095) / 4096) * 4096;
     }
 
-    static const uint8_t g_padding[4096] = { 0 };
+    static const uint8_t g_padding[4096] = {};
 }
 
 // Move constructor
@@ -2224,11 +2224,11 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName, size_t nMaterials, cons
 
     static_assert((_countof(s_elements) + 1) == _countof(s_decls), "InputLayouts and Vertex Decls disagree");
 
-    SDKMESH_VERTEX_BUFFER_HEADER vbHeader = { 0 };
+    SDKMESH_VERTEX_BUFFER_HEADER vbHeader = {};
     vbHeader.NumVertices = mnVerts;
     vbHeader.Decl[0] = s_decls[0];
 
-    D3D11_INPUT_ELEMENT_DESC inputLayout[MAX_VERTEX_ELEMENTS] = { 0 };
+    D3D11_INPUT_ELEMENT_DESC inputLayout[MAX_VERTEX_ELEMENTS] = {};
     inputLayout[0] = s_elements[0];
 
     size_t nDecl = 1;
@@ -2324,7 +2324,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName, size_t nMaterials, cons
     }
 
     // Build index buffer
-    SDKMESH_INDEX_BUFFER_HEADER ibHeader = { 0 };
+    SDKMESH_INDEX_BUFFER_HEADER ibHeader = {};
     ibHeader.NumIndices = mnFaces * 3;
 
     std::unique_ptr<uint16_t[]> ib16;
@@ -2427,7 +2427,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName, size_t nMaterials, cons
         {
             subsetArray.push_back(static_cast<UINT>(submeshes.size()));
 
-            SDKMESH_SUBSET s = { 0 };
+            SDKMESH_SUBSET s = {};
             s.MaterialID = mAttributes[it->first];
             if (s.MaterialID >= nMaterials)
                 s.MaterialID = 0;
@@ -2446,7 +2446,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName, size_t nMaterials, cons
     }
     else
     {
-        SDKMESH_SUBSET s = { 0 };
+        SDKMESH_SUBSET s = {};
         s.PrimitiveType = PT_TRIANGLE_LIST;
         s.IndexCount = mnFaces * 3;
         s.VertexCount = mnVerts;
@@ -2464,7 +2464,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName, size_t nMaterials, cons
         return HRESULT_FROM_WIN32(GetLastError());
 
     // Write file header
-    SDKMESH_HEADER header = { 0 };
+    SDKMESH_HEADER header = {};
     header.Version = SDKMESH_FILE_VERSION;
     header.IsBigEndian = 0;
 
@@ -2518,7 +2518,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName, size_t nMaterials, cons
     assert(header.NumMeshes == 1);
     offset = header.HeaderSize + staticDataSize;
 
-    SDKMESH_MESH meshHeader = { 0 };
+    SDKMESH_MESH meshHeader = {};
     meshHeader.NumVertexBuffers = 1;
     meshHeader.NumFrameInfluences = 1;
 
@@ -2550,7 +2550,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName, size_t nMaterials, cons
         return E_FAIL;
 
     // Write frames
-    SDKMESH_FRAME frame = { 0 };
+    SDKMESH_FRAME frame = {};
     strcpy_s( frame.Name, "root");
     frame.ParentFrame = frame.ChildFrame = frame.SiblingFrame = DWORD(-1);
     frame.AnimationDataIndex = INVALID_ANIMATION_DATA;

@@ -3011,7 +3011,7 @@ HRESULT CIsochartMesh::ReserveFarestTwoLandmarks(
     }
 
     float fMaxDistance = -FLT_MAX;
-    uint32_t dwIdx[2] = { 0 };
+    uint32_t dwIdx[2] = {};
     for (uint32_t ii = 0; ii<m_landmarkVerts.size() - 1; ii++)
     {
         for (uint32_t jj=ii+1; jj<m_landmarkVerts.size(); jj++)
