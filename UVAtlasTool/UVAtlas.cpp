@@ -4,6 +4,7 @@
 // UVAtlas command-line tool (sample for UVAtlas library)
 //
 // Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/?LinkID=512686
 //--------------------------------------------------------------------------------------
