@@ -15,7 +15,7 @@
 // C4350 behavior change
 
 // Off by default warnings
-#pragma warning(disable : 4061 4365 4571 4623 4625 4626 4628 4668 4710 4711 4746 4820 4987 5026 5027 5031 5032 5039)
+#pragma warning(disable : 4061 4365 4571 4623 4625 4626 4628 4668 4710 4711 4746 4820 4987 5026 5027 5031 5032 5039 5045)
 // C4061 enumerator 'X' in switch of enum 'X' is not explicitly handled by a case label
 // C4365 signed/unsigned mismatch
 // C4571 behavior change
@@ -33,6 +33,7 @@
 // C5027 move assignment operator was implicitly defined as deleted
 // C5031/5032 push/pop mismatches in windows headers
 // C5039 pointer or reference to potentially throwing function passed to extern C function under - EHc
+// C5045 Spectre mitigation warning
 
 // Windows 8.1 SDK related Off by default warnings
 #pragma warning(disable : 5029)
