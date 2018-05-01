@@ -242,7 +242,7 @@ HRESULT CUVAtlasRepacker::Repack()
     if ( m_pOurIterationTimes )
         *m_pOurIterationTimes = m_iIterationTimes + 1 ;        	
 
-    DPF(0, "Final X and Y = %Iu, %Iu\n", m_RealHeight, m_RealWidth);
+    DPF(0, "Final X and Y = %zu, %zu\n", m_RealHeight, m_RealWidth);
 
     m_bRepacked = true;
 
@@ -560,10 +560,10 @@ bool CUVAtlasRepacker::PossiblePack()
             (m_iGutter + 1) <= m_iNumCharts)
     {
         DPF(0, "Warning : \nGutter is too large or the atlas resolution is too small.\n");
-        DPF(0, "Chart number = %Iu", m_iNumCharts);
+        DPF(0, "Chart number = %zu", m_iNumCharts);
         DPF(0, "Gutter = %d", m_iGutter);
-        DPF(0, "User specified atlas : width = %Iu, height = %Iu", m_dwAtlasWidth, m_dwAtlasHeight);
-        DPF(0, "The theoretic maximum charts the atlas can hold is %Iu\n", 
+        DPF(0, "User specified atlas : width = %zu, height = %zu", m_dwAtlasWidth, m_dwAtlasHeight);
+        DPF(0, "The theoretic maximum charts the atlas can hold is %zu\n", 
             m_dwAtlasHeight / (m_iGutter + 1) * m_dwAtlasWidth / (m_iGutter + 1));
         DPF(0, "So it is impossible to pack it into user specified atlas.\n");
         return false;

@@ -2342,11 +2342,11 @@ HRESULT CIsochartMesh::CheckAndDivideMultipleObjects(
                 m_children.push_back(pChart);
 
                 DPF(3,
-                    "Generate new mesh: %Iu vert, %Iu face, %Iu edge\n",
+                    "Generate new mesh: %zu vert, %zu face, %zu edge\n",
                     pChart->m_dwVertNumber, pChart->m_dwFaceNumber, pChart->m_dwEdgeNumber);
             }
         }
-        DPF(3, "....Divide into %Iu sub-meshes...\n", m_children.size());
+        DPF(3, "....Divide into %zu sub-meshes...\n", m_children.size());
     }
     catch (std::bad_alloc&)
     {
@@ -2835,7 +2835,7 @@ HRESULT CIsochartMesh::DecreaseBoundary(
     }
 
     HRESULT hr = S_OK;
-    DPF(3,"....Has %Iu boundies...\n", dwBoundaryNumber);
+    DPF(3,"....Has %zu boundies...\n", dwBoundaryNumber);
 
     std::vector<uint32_t> minDijkstraPath;
     FAILURE_RETURN(
@@ -3286,7 +3286,7 @@ CIsochartMesh* CIsochartMesh::SplitVertices(
     size_t nDupVerts = splitPath.size();
     assert(dwNewVertNumber == m_dwVertNumber + nDupVerts);
     _Analysis_assume_(dwNewVertNumber == m_dwVertNumber + nDupVerts);
-    DPF(3, "new vert number is :%Iu\n", dwNewVertNumber);
+    DPF(3, "new vert number is :%zu\n", dwNewVertNumber);
 
     // Creat all vertices for new chart.
     pChart->m_dwVertNumber = dwNewVertNumber;
