@@ -2098,7 +2098,7 @@ static void BruteForceFoldChecking(
                     if (!bFoundFold)
                     {
                         bFoundFold = true;
-                        DPF(0, "Found fold in chart %Iu...", ii);
+                        DPF(0, "Found fold in chart %zu...", ii);
                         DPF(0, "(%f, %f) (%f, %f) --> (%f, %f) (%f, %f)",
                                 v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
                     }
@@ -2151,7 +2151,7 @@ static void BruteForceOverlappingChecking(
                                 pVertList2[edge2.dwVertexID[0]].dwIDInRootMesh,
                                 pVertList2[edge2.dwVertexID[1]].dwIDInRootMesh);
 
-                        DPF(0, "Chart1 %Iu, Chart2 %Iu\n", ii, jj);
+                        DPF(0, "Chart1 %zu, Chart2 %zu\n", ii, jj);
 
                         DPF(0, "(%f, %f) (%f, %f) --> (%f, %f) (%f, %f)",
                             v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
@@ -2747,8 +2747,8 @@ HRESULT CIsochartMesh::PackingOneChart(
     {
         DPF(0, "2d area %f", pChart->m_fChart2DArea);	
         DPF(0, "3d area %f", pChart->m_fChart3DArea);
-        DPF(0, "Face number %Iu", pChart->m_dwFaceNumber);		
-        DPF(0, "Vert number %Iu", pChart->m_dwVertNumber);
+        DPF(0, "Face number %zu", pChart->m_dwFaceNumber);
+        DPF(0, "Vert number %zu", pChart->m_dwVertNumber);
 
         for (size_t ii=0; ii<pChart->m_dwVertNumber; ii++)
         {

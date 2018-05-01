@@ -189,7 +189,7 @@ namespace
 
                 if (k >= 3)
                 {
-                    DPF(0, "Adjacency data is invalid, %u is a neighbor of %Iu, but not vice versa.", neighbor, i);
+                    DPF(0, "Adjacency data is invalid, %u is a neighbor of %zu, but not vice versa.", neighbor, i);
                     return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
                 }
 
@@ -740,13 +740,13 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerVertexSignal(
 
     if ( !signalStride || ( signalStride % sizeof(float) ) )
     {
-        DPF(0, "UVAtlasComputeIMT: signalStride (%Iu) must be a multiple of %Iu.", signalStride, sizeof(float));
+        DPF(0, "UVAtlasComputeIMT: signalStride (%zu) must be a multiple of %zu.", signalStride, sizeof(float));
         return E_INVALIDARG;
     }
 
     if ( (signalStride / sizeof(float)) < signalDimension )
     {
-        DPF(0, "UVAtlasComputeIMT: signalStride (%Iu) must accommodate signal dimension float values (%Iu)\n", signalStride, signalDimension);
+        DPF(0, "UVAtlasComputeIMT: signalStride (%zu) must accommodate signal dimension float values (%zu)\n", signalStride, signalDimension);
         return E_INVALIDARG;
     }
 

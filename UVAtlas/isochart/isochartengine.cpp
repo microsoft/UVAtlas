@@ -151,7 +151,7 @@ HRESULT CIsochartEngine::Initialize(
         goto LEnd;
     }
     
-    DPF(0, "Initially having %Iu separated charts", m_initChartList.size());
+    DPF(0, "Initially having %zu separated charts", m_initChartList.size());
     
     // 6. If specified pMinChartNumber, perform precomputing
     m_state = ISOCHART_ST_INITIALIZED;
@@ -281,7 +281,7 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeap(
     // 3.1 If Any charts needed to be partitioned
     while(!m_currentChartHeap.empty())
     {
-        DPF(1,"Processed charts number is : %Iu", m_finalChartList.size()+m_currentChartHeap.size());		
+        DPF(1,"Processed charts number is : %zu", m_finalChartList.size()+m_currentChartHeap.size());
         CIsochartMesh* pChart = m_currentChartHeap.cutTopData();
         assert(pChart != 0);
         _Analysis_assume_(pChart != 0);
@@ -540,7 +540,7 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
     bool bCountParition = true;
     bool bHasSatisfiedNumber = false;
     size_t dwLastChartNumber = 0;
-    DPF(0, "Initial chart number %Iu\n", m_currentChartHeap.size());
+    DPF(0, "Initial chart number %zu\n", m_currentChartHeap.size());
     do
     {
         // 3.1. Generate initial parameterization for charts in current chart heap
@@ -548,7 +548,7 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
             ParameterizeChartsInHeap(bCountParition, MaxChartNumber));
         bCountParition = false;
 
-        DPF(1,"Current charts number is : %Iu", m_finalChartList.size());
+        DPF(1,"Current charts number is : %zu", m_finalChartList.size());
 
         // 3.2 Optimize all charts with right parameterization
         // chart 2d area will be compted in this function
@@ -617,7 +617,7 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
     // 4. MergeChart
     if (m_finalChartList.size() > dwExpectChartCount)
     {
-        DPF(0, "Charts before merge %Iu", m_finalChartList.size());
+        DPF(0, "Charts before merge %zu", m_finalChartList.size());
         dwLastChartNumber = m_finalChartList.size();
         m_callbackSchemer.InitCallBackAdapt((2 + m_finalChartList.size()), 0.20f, 0.80f);
 
@@ -630,7 +630,7 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
         {
             return hr;
         }
-        DPF(0, "Charts after merge %Iu", m_finalChartList.size());
+        DPF(0, "Charts after merge %zu", m_finalChartList.size());
 
         hr = m_callbackSchemer.FinishWorkAdapt();
         if ( FAILED(hr) )
@@ -1149,7 +1149,7 @@ HRESULT CIsochartEngine::ApplyInitEngine(
             return hr;
         }
 
-        DPF(3, "Separate to %Iu sub-charts", pChart->GetChildrenCount());
+        DPF(3, "Separate to %zu sub-charts", pChart->GetChildrenCount());
         // if original mesh has multiple sub-charts or current chart 
         // has multiple boundaies it will generate children.
         
@@ -1188,10 +1188,10 @@ HRESULT CIsochartEngine::ApplyInitEngine(
         }
     }
 
-    DPF(3, "Old Vert Number is %Iu, New Vert Number is %Iu",
+    DPF(3, "Old Vert Number is %zu, New Vert Number is %zu",
         baseInfo.dwVertexCount,
         dwTestVertexCount);
-    DPF(3, "Old Face Number is %Iu, New Face Number is %Iu",
+    DPF(3, "Old Face Number is %zu, New Face Number is %zu",
         baseInfo.dwFaceCount,
         dwTestFaceCount);
 

@@ -28,7 +28,7 @@ HRESULT CIsochartMesh::MergeSmallCharts(
     const CBaseMeshInfo& baseInfo,
     CCallbackSchemer& callbackSchemer)
 {
-    DPF(1, "#<Chart Number Before Merge> : %Iu", chartList.size());
+    DPF(1, "#<Chart Number Before Merge> : %zu", chartList.size());
     if (chartList.size() < 4)
     {
         return S_OK;
@@ -98,7 +98,7 @@ HRESULT CIsochartMesh::MergeSmallCharts(
         }
     }
 
-    DPF(1,"#<Chart Number after Merge> : %Iu", chartList.size());
+    DPF(1,"#<Chart Number after Merge> : %zu", chartList.size());
     return hr;
 }
 

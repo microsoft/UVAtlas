@@ -316,8 +316,8 @@ HRESULT WINAPI Isochart::isochartpartition(
     unsigned int dwTotalStage = STAGE_TOTAL(Stage);
     unsigned int dwDoneStage = STAGE_DONE(Stage);
         
-    DPF(0, "Vertex Number:%Iu\n", VertexCount);
-    DPF(0, "Face Number:%Iu\n", FaceCount);
+    DPF(0, "Vertex Number:%zu\n", VertexCount);
+    DPF(0, "Face Number:%zu\n", FaceCount);
         
     // 2. Create isochart engine
     auto pEngine = IIsochartEngine::CreateIsochartEngine();

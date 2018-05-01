@@ -109,7 +109,7 @@ HRESULT CIsochartMesh::CalculateLandmarkVertices(
         dwLandmarkNumber = m_dwVertNumber;
     }
 
-    DPF(1, "total landmark count is %Iu", dwLandmarkNumber);
+    DPF(1, "total landmark count is %zu", dwLandmarkNumber);
     
     // 2. Get landmark
     m_landmarkVerts.clear();

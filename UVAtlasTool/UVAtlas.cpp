@@ -560,7 +560,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
 
             case OPT_MAXCHARTS:
-                if (swscanf_s(pValue, L"%Iu", &maxCharts) != 1)
+                if (swscanf_s(pValue, L"%zu", &maxCharts) != 1)
                 {
                     wprintf(L"Invalid value specified with -n (%ls)\n", pValue);
                     return 1;
@@ -587,7 +587,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
 
             case OPT_WIDTH:
-                if (swscanf_s(pValue, L"%Iu", &width) != 1)
+                if (swscanf_s(pValue, L"%zu", &width) != 1)
                 {
                     wprintf(L"Invalid value specified with -w (%ls)\n", pValue);
                     return 1;
@@ -595,7 +595,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
 
             case OPT_HEIGHT:
-                if (swscanf_s(pValue, L"%Iu", &height) != 1)
+                if (swscanf_s(pValue, L"%zu", &height) != 1)
                 {
                     wprintf(L"Invalid value specified with -h (%ls)\n", pValue);
                     return 1;
@@ -839,7 +839,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         assert(inMesh->GetPositionBuffer() != 0);
         assert(inMesh->GetIndexBuffer() != 0);
 
-        wprintf(L"\nVerts: %Iu, nFaces: %Iu", nVerts, nFaces);
+        wprintf(L"\nVerts: %zu, nFaces: %zu", nVerts, nFaces);
 
         if (dwOptions & (1 << OPT_FLIPV))
         {
@@ -894,7 +894,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 size_t nNewVerts = inMesh->GetVertexCount();
                 if (nVerts != nNewVerts)
                 {
-                    wprintf(L" [%Iu vertex dups] ", nNewVerts - nVerts);
+                    wprintf(L" [%zu vertex dups] ", nNewVerts - nVerts);
                     nVerts = nNewVerts;
                 }
             }
@@ -1143,7 +1143,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
         }
 
-        wprintf(L"Output # of charts: %Iu, resulting stretching %f, %Iu verts\n", outCharts, outStretch, vb.size());
+        wprintf(L"Output # of charts: %zu, resulting stretching %f, %zu verts\n", outCharts, outStretch, vb.size());
 
         assert((ib.size() / sizeof(uint32_t)) == (nFaces * 3));
         assert(facePartitioning.size() == nFaces);
@@ -1350,7 +1350,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             return 1;
         }
 
-        wprintf(L" %Iu vertices, %Iu faces written:\n'%ls'\n", nVerts, nFaces, outputPath);
+        wprintf(L" %zu vertices, %zu faces written:\n'%ls'\n", nVerts, nFaces, outputPath);
 
         // Write out UV mesh visualization
         if (dwOptions & (1 << OPT_UV_MESH))
