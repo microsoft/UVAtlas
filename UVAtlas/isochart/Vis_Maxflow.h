@@ -48,9 +48,9 @@ namespace Isochart
 
         static edge_id invalid_edge_id() { return -1;}
 
-        const static node_id node_t = -10;
-        const static node_id node_s = -11;
-        const static node_id no_parent = -20;
+        static const node_id node_t = -10;
+        static const node_id node_s = -11;
+        static const node_id no_parent = -20;
 
         struct Node;
         struct Edge;
@@ -230,9 +230,9 @@ namespace Isochart
             int depth;   // distanst to either s or t
             
 
-            const static FLAG FREE = 0;
-            const static FLAG TO_S = 1;
-            const static FLAG TO_T = 2;
+            static const FLAG FREE = 0;
+            static const FLAG TO_S = 1;
+            static const FLAG TO_T = 2;
         };
 
         // only n-links, t-links are virtual in node
