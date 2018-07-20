@@ -5,20 +5,22 @@
       <UniqueIdentifier>{8e114980-c1a3-4ada-ad7c-83caadf5daeb}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe</Extensions>
     </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{2c3d4c8c-5d1a-459a-a05a-a4e4b608a44e}</UniqueIdentifier>
-      <Extensions>fx;fxh;hlsl</Extensions>
+    <Filter Include="Wavefront OBJ">
+      <UniqueIdentifier>{22955106-e9b9-44fe-bb88-dc7647aebf20}</UniqueIdentifier>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\DirectXMesh\Utilities\WaveFrontReader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UVAtlas.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <CLInclude Include="Mesh.h" />
+    <ClCompile Include="MeshOBJ.cpp">
+      <Filter>Wavefront OBJ</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\DirectXMesh\Utilities\WaveFrontReader.h">
+      <Filter>Wavefront OBJ</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UVAtlas.rc">

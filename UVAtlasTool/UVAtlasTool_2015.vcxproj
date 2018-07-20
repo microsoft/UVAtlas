@@ -308,6 +308,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="MeshOBJ.cpp" />
     <ClCompile Include="UVAtlas.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClInclude Include="..\..\DirectXMesh\Utilities\WaveFrontReader.h" />

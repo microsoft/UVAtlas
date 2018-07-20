@@ -7,6 +7,7 @@
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/?LinkID=324981
+// http://go.microsoft.com/fwlink/?LinkID=512686
 //--------------------------------------------------------------------------------------
 
 #include <windows.h>
