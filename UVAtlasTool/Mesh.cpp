@@ -1734,7 +1734,7 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
             if ((startIndex + (it->second * 3)) > mnFaces * 3)
                 return E_FAIL;
 
-            startIndex += smesh.PrimCount * 3;
+            startIndex += static_cast<size_t>(uint64_t(smesh.PrimCount) * 3);
         }
     }
     else
