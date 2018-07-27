@@ -173,7 +173,7 @@ namespace
         }
 
         // 2. If the distance between vertices is too small, stop split.
-        XMFLOAT2 texCoord[3];
+        XMFLOAT2 texCoord[3] = {};
         for (size_t ii = 0; ii < 3; ii++)
         {
             texCoord[ii] = vertList[pFace->dwVertIdx[ii]];

@@ -792,7 +792,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerVertexSignal(
                 return E_ABORT;
         }
 
-        XMFLOAT3 pos[3];
+        XMFLOAT3 pos[3] = {};
         for (size_t j = 0; j < 3; j++)
         {
             uint32_t dwId;
@@ -905,8 +905,8 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromSignal(
                 return E_ABORT;
         }
 
-        XMFLOAT3 pos[3];
-        XMFLOAT2 uv[3];
+        XMFLOAT3 pos[3] = {};
+        XMFLOAT2 uv[3] = {};
         for (size_t j = 0; j < 3; j++)
         {
             uint32_t dwId;
@@ -1311,8 +1311,8 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromTexture(
                 return E_ABORT;
         }
 
-        XMFLOAT3 pos[3];
-        XMFLOAT2 uv[3];
+        XMFLOAT3 pos[3] = {};
+        XMFLOAT2 uv[3] = {};
         for (size_t j = 0; j < 3; j++)
         {
             uint32_t dwId;
@@ -1723,8 +1723,8 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerTexelSignal(
                 return E_ABORT;
         }
 
-        XMFLOAT3 pos[3];
-        XMFLOAT2 uv[3];
+        XMFLOAT3 pos[3] = {};
+        XMFLOAT2 uv[3] = {};
         for (size_t j = 0; j < 3; j++)
         {
             uint32_t dwId;
