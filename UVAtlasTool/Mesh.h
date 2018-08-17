@@ -105,6 +105,39 @@ public:
         DirectX::XMFLOAT3   specularColor;
         DirectX::XMFLOAT3   emissiveColor;
         std::wstring        texture;
+
+        Material() noexcept :
+            perVertexColor(false),
+            specularPower(1.f),
+            alpha(1.f),
+            ambientColor{},
+            diffuseColor{},
+            specularColor{},
+            emissiveColor{}
+        {
+        }
+
+        Material(
+            const wchar_t* iname,
+            bool pvc,
+            float power,
+            float ialpha,
+            const DirectX::XMFLOAT3& ambient,
+            const DirectX::XMFLOAT3 diffuse,
+            const DirectX::XMFLOAT3& specular,
+            const DirectX::XMFLOAT3& emissive,
+            const wchar_t* txtname) :
+            name(iname),
+            perVertexColor(pvc),
+            specularPower(power),
+            alpha(ialpha),
+            ambientColor(ambient),
+            diffuseColor(diffuse),
+            specularColor(specular),
+            emissiveColor(emissive),
+            texture(txtname)
+        {
+        }
     };
 
     HRESULT ExportToVBO(_In_z_ const wchar_t* szFileName) const;
