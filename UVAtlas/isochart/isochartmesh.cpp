@@ -2252,7 +2252,7 @@ void CIsochartMesh::GetFaceAdjacentArray(
 ///////////////////Simplify Chart Methods////////////////////
 /////////////////////////////////////////////////////////////
 
-//Check if the original mesh have independant sub-meshes.
+//Check if the original mesh have independent sub-meshes.
 // if true creat new meshes
 // Algorithm:
 // Keep a vertex queue Q and vertex array.A
