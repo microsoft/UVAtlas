@@ -203,7 +203,7 @@ namespace
     void SearchForFiles(const wchar_t* path, std::list<SConversion>& files, bool recursive)
     {
         // Process files
-        WIN32_FIND_DATA findData = {};
+        WIN32_FIND_DATAW findData = {};
         ScopedFindHandle hFile(safe_handle(FindFirstFileExW(path,
             FindExInfoBasic, &findData,
             FindExSearchNameMatch, nullptr,
@@ -223,7 +223,7 @@ namespace
                     files.push_back(conv);
                 }
 
-                if (!FindNextFile(hFile.get(), &findData))
+                if (!FindNextFileW(hFile.get(), &findData))
                     break;
             }
         }
@@ -268,7 +268,7 @@ namespace
                     }
                 }
 
-                if (!FindNextFile(hFile.get(), &findData))
+                if (!FindNextFileW(hFile.get(), &findData))
                     break;
             }
         }
@@ -1121,8 +1121,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             {
                 Mesh::Material mtl = {};
 
-                wchar_t matname[32];
-                wsprintf(matname, L"Chart%02Iu", j + 1);
+                wchar_t matname[32] = {};
+                swprintf_s(matname, L"Chart%02Iu", j + 1);
                 mtl.name = matname;
                 mtl.specularPower = 1.f;
                 mtl.alpha = 1.f;
