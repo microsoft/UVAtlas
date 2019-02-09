@@ -27,6 +27,28 @@
 
 using namespace DirectX;
 
+namespace
+{
+    std::wstring ProcessTextureFileName(const wchar_t* inName, bool dds)
+    {
+        if (!inName || !*inName)
+            return std::wstring();
+
+        wchar_t txext[_MAX_EXT] = {};
+        wchar_t txfname[_MAX_FNAME] = {};
+        _wsplitpath_s(inName, nullptr, 0, nullptr, 0, txfname, _MAX_FNAME, txext, _MAX_EXT);
+
+        if (dds)
+        {
+            wcscpy_s(txext, L".dds");
+        }
+
+        wchar_t texture[_MAX_PATH] = {};
+        _wmakepath_s(texture, nullptr, nullptr, txfname, txext);
+        return std::wstring(texture);
+    }
+}
+
 HRESULT LoadFromOBJ(
     const wchar_t* szFilename,
     std::unique_ptr<Mesh>& inMesh,
@@ -109,24 +131,15 @@ HRESULT LoadFromOBJ(
             mtl.ambientColor = it->vAmbient;
             mtl.diffuseColor = it->vDiffuse;
             mtl.specularColor = (it->bSpecular) ? it->vSpecular : XMFLOAT3(0.f, 0.f, 0.f);
-            mtl.emissiveColor = XMFLOAT3(0.f, 0.f, 0.f);
+            mtl.emissiveColor = (it->bEmissive) ? it->vEmissive : XMFLOAT3(0.f, 0.f, 0.f);
 
-            wchar_t texture[_MAX_PATH] = {};
-            if (*it->strTexture)
+            mtl.texture = ProcessTextureFileName(it->strTexture, dds);
+            mtl.normalTexture = ProcessTextureFileName(it->strNormalTexture, dds);
+            mtl.specularTexture = ProcessTextureFileName(it->strSpecularTexture, dds);
+            if (it->bEmissive)
             {
-                wchar_t txext[_MAX_EXT];
-                wchar_t txfname[_MAX_FNAME];
-                _wsplitpath_s(it->strTexture, nullptr, 0, nullptr, 0, txfname, _MAX_FNAME, txext, _MAX_EXT);
-
-                if (dds)
-                {
-                    wcscpy_s(txext, L".dds");
-                }
-
-                _wmakepath_s(texture, nullptr, nullptr, txfname, txext);
+                mtl.emissiveTexture = ProcessTextureFileName(it->strEmissiveTexture, dds);
             }
-
-            mtl.texture = texture;
 
             inMaterial.push_back(mtl);
         }

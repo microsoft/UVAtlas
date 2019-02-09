@@ -332,6 +332,7 @@
     <ClCompile Include="Mesh.cpp" />
     <ClInclude Include="..\..\DirectXMesh\Utilities\WaveFrontReader.h" />
     <CLInclude Include="Mesh.h" />
+    <ClInclude Include="SDKMesh.h" />
   </ItemGroup>
   <ItemGroup>
   </ItemGroup>
