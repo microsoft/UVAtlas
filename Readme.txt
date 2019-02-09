@@ -4,7 +4,7 @@ UVAtlas - isochart texture atlasing
 
 Copyright (c) Microsoft Corporation. All rights reserved.
 
-November 16, 2018
+February 8, 2019
 
 This package contains UVAtlas, a shared source library for creating and packing an
 isochart texture atlas.
@@ -93,6 +93,9 @@ RELEASE NOTES
 RELEASE HISTORY
 ---------------
 
+February 8, 2019
+    uvatlastool: added -sdkmesh2 switch for PBR materials
+
 November 16, 2018
     VS 2017 updated for Windows 10 October 2018 Update SDK (17763)
     ARM64 platform configurations added to UWP projects
@@ -104,7 +107,7 @@ August 17, 2018
 
 July 3, 2018
     Code cleanup
-    uvatlas: added -flipu and -ib32 switches
+    uvatlastool: added -flipu and -ib32 switches
 
 May 31, 2018
     VS 2017 updated for Windows 10 April 2018 Update SDK (17134)
@@ -129,7 +132,7 @@ November 1, 2017
 
 September 22, 2017
     Updated for VS 2017 15.3 update /permissive- changes
-    uvatlas: added -flist option
+    uvatlastool: added -flist option
 
 July 28, 2017
     Code cleanup
@@ -182,7 +185,7 @@ April 9, 2015
     Fixes for potential divide-by-zero cases
     Fix for memory allocation problem
     Added error detection for invalid partitioning
-    uvatlas: fix when importing from .vbo
+    uvatlastool: fix when importing from .vbo
     Minor code cleanup
 
 November 12, 2014
