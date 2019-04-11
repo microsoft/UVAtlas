@@ -1856,7 +1856,7 @@ float CUVAtlasRepacker::GetChartArea(uint32_t index) const
         const XMFLOAT2 *p1 = &m_VertexBuffer[m_IndexPartition[m_IndexBuffer[3 * i]]].uv;
         const XMFLOAT2 *p2 = &m_VertexBuffer[m_IndexPartition[m_IndexBuffer[3 * i + 1]]].uv;
         const XMFLOAT2 *p3 = &m_VertexBuffer[m_IndexPartition[m_IndexBuffer[3 * i + 2]]].uv;
-        currArea = fabs((p1->x - p3->x)*(p2->y - p3->y) - (p2->x - p3->x)*(p1->y - p3->y)) / 2;
+        currArea = fabsf((p1->x - p3->x)*(p2->y - p3->y) - (p2->x - p3->x)*(p1->y - p3->y)) / 2;
         Area += currArea;
     }
 
@@ -1888,7 +1888,7 @@ float CUVAtlasRepacker::GetTotalArea() const
         XMFLOAT2 *p3 =
             (XMFLOAT2 *)(pVB + *(T *)(pIB + (3 * i + 2) * sizeof(T)) *
             m_iNumBytesPerVertex + m_TexCoordOffset);
-        float s = fabs((p1->x - p3->x)*(p2->y - p3->y) - 
+        float s = fabsf((p1->x - p3->x)*(p2->y - p3->y) - 
                     (p2->x - p3->x)*(p1->y - p3->y)) / 2;
         Area += s;
     }
