@@ -177,11 +177,11 @@ void CIsochartMesh::	ConvertToInternalCriterion(
 
     if (bIsSignalSpecialized)
     {
-        fTemp = 1 - pow(fStretch, POW_OF_IMT_GEO_L2_STRETCH);	
+        fTemp = 1.f - powf(fStretch, POW_OF_IMT_GEO_L2_STRETCH);	
     }
     else
     {
-        fTemp = 1 - fStretch;
+        fTemp = 1.f - fStretch;
     }
     
     if (IsInZeroRange(fTemp))
@@ -212,7 +212,7 @@ float CIsochartMesh::ConvertToExternalStretch(
 
     if (bIsSignalSpecialized)
     {
-        fStretch = pow(fStretch, 1/POW_OF_IMT_GEO_L2_STRETCH);	
+        fStretch = powf(fStretch, 1/POW_OF_IMT_GEO_L2_STRETCH);	
     }
     if (fStretch < 0)
     {
