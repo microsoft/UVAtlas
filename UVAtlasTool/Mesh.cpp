@@ -2136,6 +2136,18 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName, size_t nMaterials, cons
                         *m2->EmissiveTexture = 0;
                     }
                 }
+
+                // Allow RMA texture material property to override drived name
+                if (!m0->rmaTexture.empty())
+                {
+                    int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
+                        m0->rmaTexture.c_str(), -1,
+                        m2->RMATexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                    if (!result)
+                    {
+                        *m2->RMATexture = 0;
+                    }
+                }
             }
         }
     }

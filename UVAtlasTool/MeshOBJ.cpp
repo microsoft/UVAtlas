@@ -140,6 +140,7 @@ HRESULT LoadFromOBJ(
             {
                 mtl.emissiveTexture = ProcessTextureFileName(it->strEmissiveTexture, dds);
             }
+            mtl.rmaTexture = ProcessTextureFileName(it->strRMATexture, dds);
 
             inMaterial.push_back(mtl);
         }
