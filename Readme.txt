@@ -4,18 +4,19 @@ UVAtlas - isochart texture atlasing
 
 Copyright (c) Microsoft Corporation. All rights reserved.
 
-February 8, 2019
+April 26, 2019
 
 This package contains UVAtlas, a shared source library for creating and packing an
 isochart texture atlas.
 
-This code is designed to build with Visual Studio 2015 Update 3 or Visual Studio 2017.
-It is recommended that you make use of VS 2015 Update 3, Windows Tools 1.4.1, and the
-Windows 10 Anniversary Update SDK (14393) -or- VS 2017 (15.9 update) with the
-Windows 10 October 2018 Update SDK (17763).
+This code is designed to build with Visual Studio 2015 Update 3, Visual Studio 2017,
+or Visual Studio 2019. It is recommended that you make use of VS 2015 Update 3,
+Windows Tools 1.4.1, and the Windows 10 Anniversary Update SDK (14393) -or-
+VS 2017 (15.9 update) / VS 2019 with the Windows 10 October 2018 Update SDK (17763).
 
-These components are designed to work without requiring any content from the DirectX SDK. For details,
-see "Where is the DirectX SDK?" <http://msdn.microsoft.com/en-us/library/ee663275.aspx>.
+These components are designed to work without requiring any content from the
+legacy DirectX SDK. For details, see "Where is the DirectX SDK?"
+<https://aka.ms/dxsdk>.
 
 Inc\
     Public Header File (in the DirectX C++ namespace):
@@ -74,24 +75,33 @@ Further reading:
 RELEASE NOTES
 -------------
 
-* The VS 2017 projects make use of /permissive- for improved C++ standard conformance. Use of a Windows 10 SDK prior to
-  the Fall Creators Update (16299) or an Xbox One XDK prior to June 2017 QFE 4 may result in failures due to problems
-  with the system headers. You can work around these by disabling this switch in the project files which is found
-  in the <ConformanceMode> elements.
+* The VS 2017/2019 projects make use of /permissive- for improved C++ standard
+  conformance. Use of a Windows 10 SDK prior to the Fall Creators Update (16299)
+  or an Xbox One XDK prior to June 2017 QFE 4 may result in failures due to
+  problems with the system headers. You can work around these by disabling this
+  switch in the project files which is found in the <ConformanceMode> elements.
 
-* The VS 2017 projects require the 15.5 update or later. For UWP and Win32 classic desktop projects with the 15.5 -
-  15.7 updates, you need to install the standalone Windows 10 SDK (17763) which is otherwise included in the 15.8.6 or
-  later update. Older VS 2017 updates will fail to load the projects due to use of the <ConformanceMode> element.
-  If using the 15.5 or 15.6 updates, you will see "warning D9002: ignoring unknown option '/Zc:__cplusplus'" because
-  this switch isn't supported until 15.7. It is safe to ignore this warning, or you can edit the project files
-  <AdditionalOptions> elements.
+* The VS 2017 projects require the 15.5 update or later. For UWP and Win32
+  classic desktop projects with the 15.5 - 15.7 updates, you need to install the
+  standalone Windows 10 SDK (17763) which is otherwise included in the 15.8.6 or
+  later update. Older VS 2017 updates will fail to load the projects due to use
+  of the <ConformanceMode> element. If using the 15.5 or 15.6 updates, you will
+  see "warning D9002: ignoring unknown option '/Zc:__cplusplus'" because this
+  switch isn't supported until 15.7. It is safe to ignore this warning, or you
+  can edit the project files <AdditionalOptions> elements.
 
-* The UWP projects include configurations for the ARM64 platform. These require VS 2017 (15.9 update) to build.
+* The UWP projects include configurations for the ARM64 platform. These require
+  VS 2017 (15.9 update) or VS 2019 to build.
 
 
 ---------------
 RELEASE HISTORY
 ---------------
+
+April 26, 2019
+    uvatlas command-line tool: Updated for latest DirectXMesh
+    Added VS 2019 desktop projects
+    Officially dropped Windows Vista support
 
 February 8, 2019
     uvatlastool: added -sdkmesh2 switch for PBR materials
