@@ -12,8 +12,6 @@
 #include "isochartmesh.h"
 #include "isochartutil.h"
 
-#define TEXEL_OFFSET 0
-
 using namespace Isochart;
 using namespace DirectX;
 

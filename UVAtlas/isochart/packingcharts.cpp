@@ -75,8 +75,6 @@
 #define VECTOR_ITEM(v, axis) (((float*)(v))[axis])
 #define VECTOR_CHANGE_ITEM(v1, v2, axis, op, value) \
     {(((float*)(v1))[axis]) = (((float*)(v2))[axis]) op value;}
-#define VECTOR_ITEM_OP(v1, v2, axis, op) \
-    (((float*)(v1))[axis] op ((float*)(v2))[axis])
 
 #define CONTROL_SEARCH_BY_STEP_COUNT 1
 

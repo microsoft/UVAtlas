@@ -111,7 +111,7 @@ isochartpartition(
 class IIsochartEngine
 {
 public:
-    virtual ~IIsochartEngine(){};
+    virtual ~IIsochartEngine() = default;
     
     static IIsochartEngine* CreateIsochartEngine();
     static void ReleaseIsochartEngine(IIsochartEngine* pIsochartEngine);

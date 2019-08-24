@@ -2225,7 +2225,7 @@ HRESULT CIsochartMesh::CalculateRepresentiveVertices(
     const float* pfVertMappingCoord)
 {
     representativeVertsIdx.clear();
-#if BIPARTITION
+#ifdef BIPARTITION
     for (size_t dwDimIndex=0;
         dwDimIndex<dwPrimaryEigenDimension;
         dwDimIndex++)

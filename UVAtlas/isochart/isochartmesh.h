@@ -1322,7 +1322,7 @@ private:
 
     bool m_bNeedToClean;
 
-    #if _USE_EXACT_ALGORITHM
+    #ifdef _USE_EXACT_ALGORITHM
     GeodesicDist::CExactOneToAll m_ExactOneToAllEngine ;
     #else
     GeodesicDist::CApproximateOneToAll m_ApproximateOneToAllEngine ;

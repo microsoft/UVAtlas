@@ -9,7 +9,7 @@
 
 #include "pch.h"
 
-#include "uvatlasrepacker.h"
+#include "UVAtlasRepacker.h"
 #include "UVAtlas.h"
 
 using namespace DirectX;

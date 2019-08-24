@@ -15,7 +15,6 @@
 #define NOMINMAX
 #define NODRAWTEXT
 #define NOGDI
-#define NOBITMAP
 #define NOMCX
 #define NOSERVICE
 #define NOHELP
@@ -32,8 +31,8 @@
 
 #include <dxgiformat.h>
 
-#include "uvatlas.h"
-#include "directxtex.h"
+#include "UVAtlas.h"
+#include "DirectXTex.h"
 
 #include "Mesh.h"
 

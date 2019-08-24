@@ -18,8 +18,8 @@ using namespace Isochart;
 using namespace GeodesicDist ;
 using namespace DirectX;
 
-// define the macro to 1 to use the exact algorithm, otherwise the fast approximate algorithm is employed    
-#if _USE_EXACT_ALGORITHM
+// define the macro to use the exact algorithm, otherwise the fast approximate algorithm is employed    
+#ifdef _USE_EXACT_ALGORITHM
 #define ONE_TO_ALL_ENGINE m_ExactOneToAllEngine
 #else
 #define ONE_TO_ALL_ENGINE m_ApproximateOneToAllEngine
