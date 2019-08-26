@@ -282,9 +282,9 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeap(
     while(!m_currentChartHeap.empty())
     {
         DPF(1,"Processed charts number is : %zu", m_finalChartList.size()+m_currentChartHeap.size());
-        CIsochartMesh* pChart = m_currentChartHeap.cutTopData();
-        assert(pChart != 0);
-        _Analysis_assume_(pChart != 0);
+        auto pChart = m_currentChartHeap.cutTopData();
+        assert(pChart != nullptr);
+        _Analysis_assume_(pChart != nullptr);
 
         // Process current chart, if it's needed to be partitioned again, 
         // Just partition it.
@@ -379,7 +379,7 @@ HRESULT CIsochartEngine::GenerateNewChartsToParameterize()
     assert(INVALID_INDEX != dwMaxIdx);
             
     pChartWithMaxL2Stretch = m_finalChartList[dwMaxIdx];
-    assert(pChartWithMaxL2Stretch != 0);
+    assert(pChartWithMaxL2Stretch != nullptr);
             
     HRESULT hr = pChartWithMaxL2Stretch->Bipartition3D();
     if (FAILED(hr))
@@ -678,7 +678,7 @@ HRESULT CIsochartEngine::AddChildrenToCurrentChartHeap(
     for (uint32_t i=0; i<pChart->GetChildrenCount(); i++)
     {
         CIsochartMesh* pChild = pChart->GetChild(i);
-        assert( pChild != 0 );
+        assert(pChild != nullptr);
 
         if (pChild->GetVertexNumber() == 4 && (pChild->GetVertexBuffer()[0]).dwIDInRootMesh == 228)
         {
@@ -1139,8 +1139,8 @@ HRESULT CIsochartEngine::ApplyInitEngine(
     while(!m_currentChartHeap.empty())
     {
         CIsochartMesh* pChart = m_currentChartHeap.cutTopData();
-        assert(pChart != 0);
-        _Analysis_assume_(pChart != 0);
+        assert(pChart != nullptr);
+        _Analysis_assume_(pChart != nullptr);
         assert(!pChart->IsImportanceCaculationDone());
 
         if (FAILED(hr = pChart->PrepareProcessing(bIsForPartition)))
@@ -1158,7 +1158,7 @@ HRESULT CIsochartEngine::ApplyInitEngine(
             for (uint32_t i = 0; i<pChart->GetChildrenCount(); i++)
             {
                 CIsochartMesh* pChild = pChart->GetChild(i);
-                assert( pChild != 0 );
+                assert(pChild != nullptr);
                 assert(!pChild->IsImportanceCaculationDone());
 
                 if(!m_currentChartHeap.insertData(pChild, 0))
@@ -1211,8 +1211,8 @@ void CIsochartEngine::ReleaseCurrentCharts()
     while(!m_currentChartHeap.empty())
     {
         CIsochartMesh* pChart = m_currentChartHeap.cutTopData();
-        assert(pChart != 0);
-        _Analysis_assume_(pChart != 0);
+        assert(pChart != nullptr);
+        _Analysis_assume_(pChart != nullptr);
         // Don't delete charts that also in init chart list here.
         if (!pChart->IsInitChart()) 
         {
@@ -1277,7 +1277,7 @@ HRESULT CIsochartEngine::ExportCurrentCharts(
     for (uint32_t i = 0; i<finalChartList.size(); i++)
     {
         CIsochartMesh* pChart = finalChartList[i];
-        assert(pChart != 0);
+        assert(pChart != nullptr);
 
         ISOCHARTFACE* pChartFaceBuffer = pChart->GetFaceBuffer();
 
@@ -1308,9 +1308,9 @@ HRESULT CIsochartEngine::ExportCurrentCharts(
     std::vector<uint32_t>* pvAttributeIDOut,
     std::vector<uint32_t>* pvAdjacencyOut)
 {
-    assert(pvVertexArrayOut != 0);
-    assert(pvFaceIndexArrayOut != 0);
-    assert(pvVertexRemapArrayOut != 0);
+    assert(pvVertexArrayOut != nullptr);
+    assert(pvFaceIndexArrayOut != nullptr);
+    assert(pvVertexRemapArrayOut != nullptr);
 
     DPF(3,"Export Isochart Result...");
 
@@ -1421,9 +1421,9 @@ HRESULT CIsochartEngine::PrepareExportBuffers(
 {
     HRESULT hr = S_OK;
     
-    assert(pvVertexArrayOut != 0);
-    assert(pvFaceIndexArrayOut != 0);
-    assert(pvVertexRemapArrayOut != 0);
+    assert(pvVertexArrayOut != nullptr);
+    assert(pvFaceIndexArrayOut != nullptr);
+    assert(pvVertexRemapArrayOut != nullptr);
     
     pvVertexArrayOut->clear();
     pvFaceIndexArrayOut->clear();
@@ -1511,8 +1511,8 @@ HRESULT CIsochartEngine::FillExportVertexBuffer(
     std::vector<UVAtlasVertex>* pvVertexBuffer,
     std::vector<uint32_t>* pvMapBuffer)
 {
-    assert(pvVertexBuffer != 0);
-    assert(pvMapBuffer != 0);
+    assert(pvVertexBuffer != nullptr);
+    assert(pvMapBuffer != nullptr);
     auto pVertex = reinterpret_cast<const uint8_t*>(m_baseInfo.pVertexArray);
     assert(m_baseInfo.dwVertexStride >= sizeof(XMFLOAT3));
 
@@ -1575,7 +1575,7 @@ HRESULT CIsochartEngine::FillExportFaceIndexBuffer(
     std::vector<CIsochartMesh*> &finalChartList,
     std::vector<uint8_t>* pvFaceBuffer)
 {
-    assert(pvFaceBuffer != 0);
+    assert(pvFaceBuffer != nullptr);
 
     uint32_t dwFaceId = 0;
     size_t dwOffset = 0;
@@ -1616,7 +1616,7 @@ HRESULT CIsochartEngine::FillExportFaceAttributeBuffer(
     std::vector<CIsochartMesh*> &finalChartList,
     std::vector<uint32_t>* pvAttributeBuffer)
 {
-    assert(pvAttributeBuffer != 0);
+    assert(pvAttributeBuffer != nullptr);
     
     uint32_t* pAttributeID = pvAttributeBuffer->data();
 
@@ -1640,7 +1640,7 @@ HRESULT CIsochartEngine::FillExportFaceAdjacencyBuffer(
     std::vector<CIsochartMesh*> &finalChartList,
     std::vector<uint32_t>* pvAdjacencyBuffer)
 {
-    assert(pvAdjacencyBuffer != 0);
+    assert(pvAdjacencyBuffer != nullptr);
     
     uint32_t* pdwAdj = pvAdjacencyBuffer->data();
 

@@ -235,7 +235,7 @@ inline void GetIMTOnCanonicalFace(
     const float f3D,
     float* pIMT)
 {
-    assert(pIMT != 0 && pMT != 0);
+    assert(pIMT != nullptr && pMT != nullptr);
 
     for (size_t ii=0; ii<IMT_DIM; ii++)
     {

@@ -2354,7 +2354,7 @@ HRESULT CIsochartMesh::CreateChartsPackingBuffer(
 {
     for (size_t i=0; i<chartList.size(); i++)
     {
-        assert( chartList[i] != 0 );
+        assert(chartList[i] != nullptr);
         HRESULT hr = S_OK;
         if (FAILED(hr = chartList[i]->CreatePackingInfoBuffer()))
         {
@@ -2370,7 +2370,7 @@ void CIsochartMesh::DestroyChartsPackingBuffer(
 {
     for (size_t i=0; i<chartList.size(); i++)
     {
-        assert( chartList[i] != 0 );
+        assert(chartList[i] != nullptr);
         chartList[i]->DestroyPakingInfoBuffer();
     }
 }
@@ -2418,7 +2418,7 @@ float CIsochartMesh::CalculateAllPackingChartsArea(
     float fTotalArea = 0;
     for (size_t i=0; i<chartList.size(); i++)
     {
-        assert(chartList[i] != 0);
+        assert(chartList[i] != nullptr);
         chartList[i]->m_fChart2DArea = chartList[i]->CalculateChart2DArea();
         fTotalArea += chartList[i]->m_fChart2DArea;
     }
@@ -2793,10 +2793,10 @@ HRESULT CIsochartMesh::PackingOneChart(
 // Packing chart with zero area to origin
 void CIsochartMesh::PackingZeroAreaChart(CIsochartMesh* pChart)
 {
-    assert(pChart != 0);
+    assert(pChart != nullptr);
     for (size_t i=0; i<pChart->m_dwVertNumber; i++)
     {
-        assert(pChart->m_pVerts != 0);
+        assert(pChart->m_pVerts != nullptr);
         pChart->m_pVerts[i].uv.x = 0;
         pChart->m_pVerts[i].uv.y = 0;
     }
@@ -2831,8 +2831,8 @@ HRESULT CIsochartMesh::CalculateChartBordersOfAllDirection(
             &pBottomVertex);
 
         // 2. Get the top & bottom border of the rotated chart.
-        assert(pLeftVertex != 0 && pRightVertex != 0 && pLeftVertex != pRightVertex);
-        assert(pTopVertex != 0 && pBottomVertex != 0 && pTopVertex != pBottomVertex);
+        assert(pLeftVertex != nullptr && pRightVertex != nullptr && pLeftVertex != pRightVertex);
+        assert(pTopVertex != nullptr && pBottomVertex != nullptr && pTopVertex != pBottomVertex);
 
         bool bCanDecide1 = false;
         bool bCanDecide2 = false;
@@ -3257,8 +3257,8 @@ HRESULT CIsochartMesh::ScanAlongBoundayEdges(
                 }
             }
 
-            assert(pScanEdge != 0);
-            _Analysis_assume_(pScanEdge != 0);
+            assert(pScanEdge != nullptr);
+            _Analysis_assume_(pScanEdge != nullptr);
 
             assert(pScanEdge->bIsBoundary && pScanEdge != pBoundaryEdge);
             if (pVertex == pStartVertex)

@@ -62,8 +62,8 @@ HRESULT CBaseMeshInfo::Initialize(
 {
     HRESULT hr;
 
-    assert(pfVertexArrayIn != 0);
-    assert(pdwFaceIndexArrayIn != 0);
+    assert(pfVertexArrayIn != nullptr);
+    assert(pdwFaceIndexArrayIn != nullptr);
     assert(dwVertexStrideIn >= sizeof(float)*3);
     assert(
         (DXGI_FORMAT_R16_UINT == IndexFormatIn) ||
@@ -116,7 +116,7 @@ HRESULT CBaseMeshInfo::Initialize(
     size_t dwFaceCountIn,
     const uint32_t* pdwFaceAdjacentArrayIn)
 {
-    assert(pfVertexArrayIn != 0);
+    assert(pfVertexArrayIn != nullptr);
     assert(dwVertexStrideIn >= sizeof(float)*3);
     
     pVertexArray = pfVertexArrayIn;
@@ -257,7 +257,7 @@ HRESULT CBaseMeshInfo::ComputeInputFaceAttributes(
     const void* pdwFaceIndexArrayIn,
     const uint32_t* pdwFaceAdjacentArrayIn)
 {
-    assert(pdwFaceIndexArrayIn != 0);
+    assert(pdwFaceIndexArrayIn != nullptr);
     
     pFaceNormalArray = new (std::nothrow) XMFLOAT3[dwFaceCount];
     if (!pFaceNormalArray)

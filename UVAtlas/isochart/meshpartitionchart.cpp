@@ -121,7 +121,7 @@ HRESULT CIsochartMesh::BuildSubChart(
     }
     else
     {
-        assert(pSubChart != 0);
+        assert(pSubChart != nullptr);
         try
         {
             m_children.push_back(pSubChart);
@@ -278,7 +278,7 @@ HRESULT CIsochartMesh::SmoothPartitionResult(
     while(!heap.empty())
     {
         auto pTop = heap.cutTop();
-        assert(pTop != 0 && (pTop->m_weight <= 0));
+        assert(pTop != nullptr && (pTop->m_weight <= 0));
 
         for (size_t j=0; j < pFaceGroup[pTop->m_data].size(); j++)
         {
@@ -2395,7 +2395,7 @@ HRESULT CIsochartMesh::GetMainRepresentive(
     size_t dwNumber,
     const float* pfVertGeodesicDistance)
 {
-    assert(pfVertGeodesicDistance != 0);
+    assert(pfVertGeodesicDistance != nullptr);
     assert(dwNumber >= 2);
     assert(representativeVertsIdx.size() >= 2);
 
@@ -2684,7 +2684,7 @@ HRESULT CIsochartMesh::BiPartitionParameterlizeShape(
     for (size_t ii=0; ii < m_children.size(); ii++)
     {
         CIsochartMesh* pSubChart = m_children[ii];
-        assert(pSubChart != 0);
+        assert(pSubChart != nullptr);
 
         ISOCHARTVERTEX* pNewVertex = pSubChart->m_pVerts;
         ISOCHARTVERTEX* pOldVertex;
@@ -2998,7 +2998,7 @@ HRESULT CIsochartMesh::GrowPartitionFromCutPath(
 HRESULT CIsochartMesh::ReserveFarestTwoLandmarks(
     const float* pfVertGeodesicDistance)
 {
-    assert(pfVertGeodesicDistance != 0);
+    assert(pfVertGeodesicDistance != nullptr);
     HRESULT hr = S_OK;
     m_bOrderedLandmark = true;
     if (m_landmarkVerts.size() <3)

@@ -18,7 +18,7 @@ using namespace Isochart;
 using namespace GeodesicDist ;
 using namespace DirectX;
 
-// define the macro to use the exact algorithm, otherwise the fast approximate algorithm is employed    
+// define the macro to use the exact algorithm, otherwise the fast approximate algorithm is employed
 #ifdef _USE_EXACT_ALGORITHM
 #define ONE_TO_ALL_ENGINE m_ExactOneToAllEngine
 #else
@@ -45,7 +45,7 @@ HRESULT CIsochartMesh::CalculateLandmarkVertices(
     size_t dwMinLandmarkNumber, 
     size_t& dwLandmarkNumber)
 {
-    assert(m_pVerts != 0);
+    assert(m_pVerts != nullptr);
     assert(m_bVertImportanceDone);
 
     std::unique_ptr<uint32_t []> landmark(new (std::nothrow) uint32_t[m_dwVertNumber]);
@@ -368,8 +368,8 @@ void CIsochartMesh::CombineGeodesicAndSignalDistance(
     const float* pfGeodesicDistance,
     size_t dwVertLandNumber) const
 {
-    assert(pfSignalDistance != 0);
-    assert(pfGeodesicDistance != 0);
+    assert(pfSignalDistance != nullptr);
+    assert(pfGeodesicDistance != nullptr);
 
     float fAverageSignalDifference = 0;
     float fAverageGeodesicDifference = 0;
@@ -412,9 +412,9 @@ void CIsochartMesh::UpdateAdjacentVertexGeodistance(
     bool* pbVertProcessed,
     bool bIsSignalDistance) const
 {
-    assert(pCurrentVertex != 0);
-    assert(pAdjacentVertex != 0);
-    assert(pbVertProcessed != 0);
+    assert(pCurrentVertex != nullptr);
+    assert(pAdjacentVertex != nullptr);
+    assert(pbVertProcessed != nullptr);
 
     if (pAdjacentVertex->fGeodesicDistance
         > (pCurrentVertex->fGeodesicDistance 
@@ -750,8 +750,8 @@ void CIsochartMesh::CalculateGeodesicMatrix(
     const float* pfVertGeodesicDistance,
     float* pfGeodesicMatrix) const
 {
-    assert(pfVertGeodesicDistance != 0);
-    assert(pfGeodesicMatrix != 0);
+    assert(pfVertGeodesicDistance != nullptr);
+    assert(pfGeodesicMatrix != nullptr);
 
     size_t dwVertLandNumber = vertList.size();
 
@@ -791,7 +791,7 @@ HRESULT CIsochartMesh::CalculateVertMappingCoord(
                                 // coordinates of each vertex in it.Not Only
                                 // store UV coordinate in vertex
 {
-    assert(pfVertGeodesicDistance != 0);
+    assert(pfVertGeodesicDistance != nullptr);
     assert(dwPrimaryEigenDimension >= 2);
     _Analysis_assume_(dwPrimaryEigenDimension >= 2);
 

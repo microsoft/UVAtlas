@@ -97,7 +97,7 @@ namespace Isochart
 
         int GetVertexImportance(uint32_t dwIndex) const
         {
-            assert(m_pVertArray != 0);
+            assert(m_pVertArray != nullptr);
             assert(dwIndex < m_dwVertNumber);
             return m_pVertArray[dwIndex].nImportanceOrder; 
         }

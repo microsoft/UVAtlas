@@ -750,8 +750,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             return 1;
         }
 
-        assert(inMesh->GetPositionBuffer() != 0);
-        assert(inMesh->GetIndexBuffer() != 0);
+        assert(inMesh->GetPositionBuffer() != nullptr);
+        assert(inMesh->GetIndexBuffer() != nullptr);
 
         wprintf(L"\n%zu vertices, %zu faces", nVerts, nFaces);
 

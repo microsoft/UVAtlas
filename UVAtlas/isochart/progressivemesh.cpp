@@ -324,8 +324,8 @@ bool CProgressiveMesh::PrepareDeletingEdge(
     PMISOCHARTVERTEX** ppDeleteVertex,
     bool& bIsGeodesicValid)
 {
-    assert(ppReserveVertex != 0);
-    assert(ppDeleteVertex != 0);
+    assert(ppReserveVertex != nullptr);
+    assert(ppDeleteVertex != nullptr);
     bIsGeodesicValid = true;
 
     // 1. If current has been deleted, return
@@ -625,7 +625,7 @@ void CProgressiveMesh::UpdateSufferedEdgesAttrib(
 
         PMISOCHARTEDGE* pEdgeToDeleteVert =
             m_pEdgeArray + pDeleteVertex->edgeAdjacent[j];
-        assert(pEdgeToDeleteVert != 0);
+        assert(pEdgeToDeleteVert != nullptr);
         if (!IsEdgeOppositeToVertex(pEdgeToDeleteVert, pReserveVertex))
         {
             continue;
@@ -639,7 +639,7 @@ void CProgressiveMesh::UpdateSufferedEdgesAttrib(
                 pCurrentEdge,
                 pEdgeToDeleteVert,
                 pReserveVertex);
-        assert(pEdgeToReserveVert != 0);
+        assert(pEdgeToReserveVert != nullptr);
 
         if (pEdgeToDeleteVert->bIsBoundary)
         {

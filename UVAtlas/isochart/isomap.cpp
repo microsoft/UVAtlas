@@ -35,7 +35,7 @@ CIsoMap::~CIsoMap()
 HRESULT CIsoMap::Init(size_t dwDimension, float *pGeodesicMatrix)
 {
     Clear();	
-    assert(pGeodesicMatrix != 0);
+    assert(pGeodesicMatrix != nullptr);
     assert(m_dwCalculatedDimension == 0);
     assert(m_fSumOfEigenValue == 0);
     assert(m_dwPrimaryDimension == 0);
@@ -129,10 +129,10 @@ HRESULT CIsoMap::ComputeLargestEigen(
     size_t dwSelectedDimension,
     size_t &dwCalculatedDimension)
 {
-    assert(m_pfMatrixB != 0);
-    _Analysis_assume_(m_pfMatrixB != 0);
-    assert(m_pfAvgSquaredDstColumn != 0);
-    _Analysis_assume_(m_pfAvgSquaredDstColumn != 0);
+    assert(m_pfMatrixB != nullptr);
+    _Analysis_assume_(m_pfMatrixB != nullptr);
+    assert(m_pfAvgSquaredDstColumn != nullptr);
+    _Analysis_assume_(m_pfAvgSquaredDstColumn != nullptr);
     assert(dwSelectedDimension <= m_dwMatrixDimension);
     _Analysis_assume_(dwSelectedDimension <= m_dwMatrixDimension);
 

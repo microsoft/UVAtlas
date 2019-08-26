@@ -236,7 +236,7 @@ public:
 
     bool IsInitChart() const { return m_bIsInitChart; }
     bool IsOptimizedL2Stretch() const { return m_bOptimizedL2Stretch; }
-    bool IsIMTSpecified() const { return m_baseInfo.pfIMTArray != 0; }
+    bool IsIMTSpecified() const { return m_baseInfo.pfIMTArray != nullptr; }
     bool HasBoundaryVertex() const;
 
     /////////////////////////////////////////////////////////////

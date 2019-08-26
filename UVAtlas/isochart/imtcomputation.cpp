@@ -247,15 +247,15 @@ namespace
             (pNewFace[ii])->dwDepth = pFace->dwDepth + 1;
         }
 
-        assert( pNewFace[0] != 0 );
-        assert( pNewFace[1] != 0 );
-        assert( pNewFace[2] != 0 );
-        assert( pNewFace[3] != 0 );
+        assert( pNewFace[0] != nullptr );
+        assert( pNewFace[1] != nullptr );
+        assert( pNewFace[2] != nullptr );
+        assert( pNewFace[3] != nullptr );
 
-        _Analysis_assume_( pNewFace[0] != 0 );
-        _Analysis_assume_( pNewFace[1] != 0 );
-        _Analysis_assume_( pNewFace[2] != 0 );
-        _Analysis_assume_( pNewFace[3] != 0 );
+        _Analysis_assume_( pNewFace[0] != nullptr );
+        _Analysis_assume_( pNewFace[1] != nullptr );
+        _Analysis_assume_( pNewFace[2] != nullptr );
+        _Analysis_assume_( pNewFace[3] != nullptr );
 
         // 3. Specify vertex indices of each sub-triangle
         (pNewFace[0])->dwVertIdx[0] = pFace->dwVertIdx[0];
@@ -724,8 +724,8 @@ namespace
         double* rgvVerticalIntersection,
         double* rgvHorizonIntersection)
     {
-        assert(rgvHorizonIntersection != 0);
-        assert(rgvVerticalIntersection != 0);
+        assert(rgvHorizonIntersection != nullptr);
+        assert(rgvVerticalIntersection != nullptr);
 
         HRESULT hr = S_OK;
 
@@ -1238,7 +1238,7 @@ namespace
         HRESULT hr = S_OK;
 
         dPieceArea = 0;
-        assert(tempIMT != 0);
+        assert(tempIMT != nullptr);
         memset(tempIMT, 0, sizeof(double)*IMT_DIM);
 
         DOUBLEVECTOR2 corner[2];

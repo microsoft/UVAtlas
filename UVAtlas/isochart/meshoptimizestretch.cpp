@@ -1455,7 +1455,7 @@ HRESULT CIsochartMesh::OptimizeVerticesInHeap(
     while(!heap.empty())
     {
         auto pTop = heap.cutTop();
-        assert(pTop != 0);
+        assert(pTop != nullptr);
 
         // If stretch is small enough, don't perform optimization.
         if (pTop->m_weight < optimizeInfo.fBarToStopOptAll)
