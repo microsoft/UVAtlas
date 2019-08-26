@@ -34,10 +34,10 @@ namespace GeodesicDist
     {
         double x, y ;
 
-        DVector2( const double &x, const double &y )
+        DVector2( const double &ix, const double &iy )
         {
-            this->x = x ;
-            this->y = y ;
+            this->x = ix ;
+            this->y = iy ;
         }
         DVector2()
         {
@@ -260,10 +260,10 @@ namespace GeodesicDist
             TypeEdgeWindowsHeap::item_type* pHeapItem ;
             EdgeWindow theWindow ;
 
-            WindowListElement( const TypeEdgeWindowsHeap::item_type * pHeapItem, const EdgeWindow &theWindow )
+            WindowListElement( const TypeEdgeWindowsHeap::item_type * heapItem, const EdgeWindow &win )
             {
-                this->pHeapItem = const_cast<TypeEdgeWindowsHeap::item_type *>(pHeapItem) ;
-                this->theWindow = theWindow ;
+                this->pHeapItem = const_cast<TypeEdgeWindowsHeap::item_type *>(heapItem) ;
+                this->theWindow = win;
             }
             WindowListElement() : pHeapItem(nullptr) { }
         };
