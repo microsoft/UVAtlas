@@ -306,7 +306,7 @@ HRESULT WINAPI Isochart::IMTFromPerVertexSignal(
         dwSignalDimension,
         pfIMTArray))
     {
-        return E_INVALIDARG;;
+        return E_INVALIDARG;
     }
 
     std::unique_ptr<float[]> Ss(new (std::nothrow) float[dwSignalDimension]);

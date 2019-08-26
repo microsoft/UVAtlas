@@ -243,7 +243,7 @@ public:
     //////////////Basic Data Member Access Methods///////////////
     /////////////////////////////////////////////////////////////
     size_t GetVertexNumber(){ return m_dwVertNumber; }
-    ISOCHARTVERTEX* GetVertexBuffer() const { return m_pVerts; };
+    ISOCHARTVERTEX* GetVertexBuffer() const { return m_pVerts; }
 
     size_t GetFaceNumber(){ return m_dwFaceNumber; }
     ISOCHARTFACE* GetFaceBuffer() const { return m_pFaces; }

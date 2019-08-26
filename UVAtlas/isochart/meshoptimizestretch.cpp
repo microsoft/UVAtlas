@@ -107,9 +107,9 @@ namespace Isochart
 
         ~CHARTOPTIMIZEINFO()
         {
-            SAFE_DELETE_ARRAY(pfVertStretch);
-            SAFE_DELETE_ARRAY(pfFaceStretch);
-            SAFE_DELETE_ARRAY(pHeapItems);
+            SAFE_DELETE_ARRAY(pfVertStretch)
+            SAFE_DELETE_ARRAY(pfFaceStretch)
+            SAFE_DELETE_ARRAY(pHeapItems)
         }
     };
 
@@ -630,9 +630,9 @@ HRESULT CIsochartMesh::InitOptimizeInfo(
 void CIsochartMesh::ReleaseOptimizeInfo(
     CHARTOPTIMIZEINFO& optimizeInfo)
 {
-    SAFE_DELETE_ARRAY(optimizeInfo.pfFaceStretch);
-    SAFE_DELETE_ARRAY(optimizeInfo.pfVertStretch);
-    SAFE_DELETE_ARRAY(optimizeInfo.pHeapItems);
+    SAFE_DELETE_ARRAY(optimizeInfo.pfFaceStretch)
+    SAFE_DELETE_ARRAY(optimizeInfo.pfVertStretch)
+    SAFE_DELETE_ARRAY(optimizeInfo.pHeapItems)
 }
 
 HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)

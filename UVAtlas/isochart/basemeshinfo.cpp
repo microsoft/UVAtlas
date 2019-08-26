@@ -146,12 +146,12 @@ HRESULT CBaseMeshInfo::Initialize(
 
 void CBaseMeshInfo::Free()
 {
-    SAFE_DELETE_ARRAY(pVertPosition);
-    SAFE_DELETE_ARRAY(pFaceNormalArray);
-    SAFE_DELETE_ARRAY(pfFaceAreaArray);
-    SAFE_DELETE_ARRAY(pdwFaceAdjacentArray);
-    SAFE_DELETE_ARRAY(pFaceCanonicalUVCoordinate);
-    SAFE_DELETE_ARRAY(pFaceCanonicalParamAxis);
+    SAFE_DELETE_ARRAY(pVertPosition)
+    SAFE_DELETE_ARRAY(pFaceNormalArray)
+    SAFE_DELETE_ARRAY(pfFaceAreaArray)
+    SAFE_DELETE_ARRAY(pdwFaceAdjacentArray)
+    SAFE_DELETE_ARRAY(pFaceCanonicalUVCoordinate)
+    SAFE_DELETE_ARRAY(pFaceCanonicalParamAxis)
     
     pfIMTArray = nullptr;
     

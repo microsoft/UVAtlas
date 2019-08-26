@@ -142,9 +142,9 @@ namespace Isochart
         }
         ~PACKINGINFO()
         {
-            SAFE_DELETE_ARRAY(pVertUV);
-            SAFE_DELETE_ARRAY(pStandardUV);
-            SAFE_DELETE_ARRAY(pStandardVirtualCorner);
+            SAFE_DELETE_ARRAY(pVertUV)
+            SAFE_DELETE_ARRAY(pStandardUV)
+            SAFE_DELETE_ARRAY(pStandardVirtualCorner)
         }
     };
 
@@ -1175,14 +1175,14 @@ namespace
                 &pOrigUV[newChartBorder[k]->dwID],
                 TangentAxis,
                 +,
-                fTangentDelta);
+                fTangentDelta)
 
             VECTOR_CHANGE_ITEM(
                 &newChartBorder[k]->uv,
                 &pOrigUV[newChartBorder[k]->dwID],
                 RadialAxis,
                 +,
-                fRadialDelta);
+                fRadialDelta)
         }
 
        // Two additional vertices on each end of the border. These vertices used to guarantee
@@ -1196,14 +1196,14 @@ namespace
             &newChartBorder[1]->uv,
             TangentAxis,
             -,
-            fGutter);
+            fGutter)
 
         VECTOR_CHANGE_ITEM(
             &newChartBorder[dwNewChartBorderSize-1]->uv,
             &newChartBorder[dwNewChartBorderSize-2]->uv,
             TangentAxis,
             +,
-            fGutter);
+            fGutter)
     }
 
     inline static bool CalMinDistanceBetweenAtlasAndChart(

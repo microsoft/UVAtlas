@@ -308,9 +308,9 @@ bool CIsoMap::GetDestineVectors(size_t dwPrimaryEigenDimension, float* pfDestCoo
 
 void CIsoMap::Clear()
 {
-    SAFE_DELETE_ARRAY(m_pfEigenValue);
-    SAFE_DELETE_ARRAY(m_pfEigenVector);
-    SAFE_DELETE_ARRAY(m_pfAvgSquaredDstColumn);
+    SAFE_DELETE_ARRAY(m_pfEigenValue)
+    SAFE_DELETE_ARRAY(m_pfEigenVector)
+    SAFE_DELETE_ARRAY(m_pfAvgSquaredDstColumn)
 
     m_dwMatrixDimension = 0;
     m_dwCalculatedDimension = 0;

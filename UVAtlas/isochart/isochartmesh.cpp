@@ -134,8 +134,8 @@ void CIsochartMesh::DeleteChildren()
 
 void CIsochartMesh::Free()
 {
-    SAFE_DELETE_ARRAY(m_pVerts);
-    SAFE_DELETE_ARRAY(m_pFaces);
+    SAFE_DELETE_ARRAY(m_pVerts)
+    SAFE_DELETE_ARRAY(m_pFaces)
 
     DestroyPakingInfoBuffer();
     DeleteChildren();
@@ -279,7 +279,7 @@ HRESULT CIsochartMesh::BuildRootChart(
     pChart->m_pVerts = new (std::nothrow) ISOCHARTVERTEX[dwVertexCount];
     if (!pChart->m_pVerts)
     {
-        SAFE_DELETE_ARRAY(pChart->m_pFaces);
+        SAFE_DELETE_ARRAY(pChart->m_pFaces)
         return E_OUTOFMEMORY;
     }
 
@@ -633,7 +633,7 @@ HRESULT CIsochartMesh::ReBuildRootChartByAdjacence()
 
     if (dwNewVertCount != m_dwVertNumber)
     {
-        SAFE_DELETE_ARRAY(m_pVerts);
+        SAFE_DELETE_ARRAY(m_pVerts)
         m_dwVertNumber = dwNewVertCount;
         m_pVerts = new (std::nothrow) ISOCHARTVERTEX[m_dwVertNumber];
         if (!m_pVerts)
@@ -819,14 +819,14 @@ LEnd:
     if (!IsIMTSpecified())
     {
         assert(pfVertGeodesicDistance == pfVertCombineDistance);
-        SAFE_DELETE_ARRAY(pfVertGeodesicDistance);
+        SAFE_DELETE_ARRAY(pfVertGeodesicDistance)
     }
     else
     {
-        SAFE_DELETE_ARRAY(pfVertGeodesicDistance);
-        SAFE_DELETE_ARRAY(pfVertCombineDistance);
+        SAFE_DELETE_ARRAY(pfVertGeodesicDistance)
+        SAFE_DELETE_ARRAY(pfVertCombineDistance)
     }
-    SAFE_DELETE_ARRAY(pfVertMappingCoord);
+    SAFE_DELETE_ARRAY(pfVertMappingCoord)
     return hr;
 }
 
@@ -1012,12 +1012,12 @@ LEnd:
     if (!IsIMTSpecified())
     {
         assert(pfVertCombineDistance == pfVertGeoDistance);
-        SAFE_DELETE_ARRAY(pfVertGeoDistance);	
+        SAFE_DELETE_ARRAY(pfVertGeoDistance)	
     }
     else
     {
-        SAFE_DELETE_ARRAY(pfVertCombineDistance);
-        SAFE_DELETE_ARRAY(pfVertGeoDistance);
+        SAFE_DELETE_ARRAY(pfVertCombineDistance)
+        SAFE_DELETE_ARRAY(pfVertGeoDistance)
     }
 
     return hr;
@@ -1106,12 +1106,12 @@ LEnd:
     if (!IsIMTSpecified())
     {
         assert(pfVertCombineDistance == pfVertGeoDistance);
-        SAFE_DELETE_ARRAY(pfVertGeoDistance);	
+        SAFE_DELETE_ARRAY(pfVertGeoDistance)	
     }
     else
     {
-        SAFE_DELETE_ARRAY(pfVertCombineDistance);
-        SAFE_DELETE_ARRAY(pfVertGeoDistance);
+        SAFE_DELETE_ARRAY(pfVertCombineDistance)
+        SAFE_DELETE_ARRAY(pfVertGeoDistance)
     }
     return hr;
 }
@@ -1271,7 +1271,7 @@ HRESULT CIsochartMesh::IsomapParameterlization(
     {
         goto LEnd;
     }
-    SAFE_DELETE_ARRAY(pfGeodesicMatrix);
+    SAFE_DELETE_ARRAY(pfGeodesicMatrix)
 
     assert(dwMaxEigenDimension >= dwCalculatedDimension);
     
@@ -1340,15 +1340,15 @@ HRESULT CIsochartMesh::IsomapParameterlization(
 
     m_bIsParameterized = true;
 LEnd:
-    SAFE_DELETE_ARRAY(pfGeodesicMatrix);
+    SAFE_DELETE_ARRAY(pfGeodesicMatrix)
     if (FAILED(hr))
     {
-        SAFE_DELETE_ARRAY(pfVertGeodesicDistance);
+        SAFE_DELETE_ARRAY(pfVertGeodesicDistance)
         if (bIsSignalSpecialized)
         {
-            SAFE_DELETE_ARRAY(pfVertCombinedDistance);
+            SAFE_DELETE_ARRAY(pfVertCombinedDistance)
         }
-        SAFE_DELETE_ARRAY(pfVertMappingCoord);
+        SAFE_DELETE_ARRAY(pfVertMappingCoord)
     }
     else
     {

@@ -1587,7 +1587,7 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
         pPosInfo->angle);
 
     m_currAspectRatio = m_triedAspectRatio;
-    XMMATRIX transMatrix = XMMatrixIdentity();;
+    XMMATRIX transMatrix = XMMatrixIdentity();
     switch (m_triedPutRotation)
     {
     case 0:

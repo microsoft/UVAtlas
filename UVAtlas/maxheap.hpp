@@ -138,7 +138,7 @@ namespace Isochart
 
                 upheap(pItem->m_position);
                 return true;
-            };
+            }
 
             bool insertData(data_type data, weight_type weight)
             {

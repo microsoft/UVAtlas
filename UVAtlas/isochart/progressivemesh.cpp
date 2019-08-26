@@ -91,10 +91,10 @@ CProgressiveMesh::~CProgressiveMesh()
 // Release all memory resource
 void CProgressiveMesh::Clear()
 {
-    SAFE_DELETE_ARRAY(m_pVertArray);
-    SAFE_DELETE_ARRAY(m_pFaceArray);
-    SAFE_DELETE_ARRAY(m_pEdgeArray);
-    SAFE_DELETE_ARRAY(m_pQuadricArray);
+    SAFE_DELETE_ARRAY(m_pVertArray)
+    SAFE_DELETE_ARRAY(m_pFaceArray)
+    SAFE_DELETE_ARRAY(m_pEdgeArray)
+    SAFE_DELETE_ARRAY(m_pQuadricArray)
 
     m_dwVertNumber = 0;
     m_dwFaceNumber = 0;

@@ -432,7 +432,7 @@ namespace Isochart
                             pSubDiagVec[n] = 0.0;					
                         }
                     }
-                };
+                }
             }
             // Sort eigenvalues and corresponding vectors.
             for (size_t i = 0; i < dwDimension - 1; i++)

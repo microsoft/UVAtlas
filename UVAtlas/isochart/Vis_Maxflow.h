@@ -164,7 +164,7 @@ namespace Isochart
                 , m_iFlag(0), depth(0)
             {
                 edges.reserve(m_expect_degree);
-            };
+            }
 
             cap_type capacity;
             cap_type resident; // resident > 0 to s; or < 0 to t;
