@@ -748,13 +748,17 @@ namespace
             double fx, fy;
             if (pUV[ii].x < pUV[(ii + 1) % 3].x)
             {
-                v0.x = pUV[ii].x, v0.y = pUV[ii].y;
-                v1.x = pUV[(ii + 1) % 3].x, v1.y = pUV[(ii + 1) % 3].y;
+                v0.x = pUV[ii].x;
+                v0.y = pUV[ii].y;
+                v1.x = pUV[(ii + 1) % 3].x;
+                v1.y = pUV[(ii + 1) % 3].y;
             }
             else
             {
-                v1.x = pUV[ii].x, v1.y = pUV[ii].y;
-                v0.x = pUV[(ii + 1) % 3].x, v0.y = pUV[(ii + 1) % 3].y;
+                v1.x = pUV[ii].x;
+                v1.y = pUV[ii].y;
+                v0.x = pUV[(ii + 1) % 3].x;
+                v0.y = pUV[(ii + 1) % 3].y;
             }
 
             if (IsInZeroRangeDouble(v1.x - v0.x))
@@ -795,13 +799,17 @@ namespace
             double fx, fy;
             if (pUV[ii].y < pUV[(ii + 1) % 3].y)
             {
-                v0.x = pUV[ii].x, v0.y = pUV[ii].y;
-                v1.x = pUV[(ii + 1) % 3].x, v1.y = pUV[(ii + 1) % 3].y;
+                v0.x = pUV[ii].x;
+                v0.y = pUV[ii].y;
+                v1.x = pUV[(ii + 1) % 3].x;
+                v1.y = pUV[(ii + 1) % 3].y;
             }
             else
             {
-                v1.x = pUV[ii].x, v1.y = pUV[ii].y;
-                v0.x = pUV[(ii + 1) % 3].x, v0.y = pUV[(ii + 1) % 3].y;
+                v1.x = pUV[ii].x;
+                v1.y = pUV[ii].y;
+                v0.x = pUV[(ii + 1) % 3].x;
+                v0.y = pUV[(ii + 1) % 3].y;
             }
             if (IsInZeroRangeDouble(v1.y - v0.y))
             {

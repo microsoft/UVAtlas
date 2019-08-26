@@ -382,33 +382,7 @@ namespace GeodesicDist
             pEdge2 = nullptr ;
         }
 
-        uint32_t &GetVertexIdx(const uint32_t idx)
-        {
-            if ( idx == 0 )
-                return dwVertexIdx0 ;
-            else if ( idx == 1 )
-                return dwVertexIdx1 ;
-            else if ( idx == 2 )
-                return dwVertexIdx2 ;
-            else
-                //assert( false ) ;
-                return (uint32_t&) FLAG_INVALIDDWORD;
-        }
-
-        uint32_t &GetEdgeIdx(const uint32_t idx)
-        {
-            if ( idx == 0 )
-                return dwEdgeIdx0 ;
-            else if ( idx == 1 )
-                return dwEdgeIdx1 ;
-            else if ( idx == 2 )
-                return dwEdgeIdx2 ;  
-            else
-                //assert( false ) ;
-                return (uint32_t&) FLAG_INVALIDDWORD;
-        }
-
-        Edge *GetEdge(const uint32_t idx)
+        Edge *GetEdge(const uint32_t idx) const
         {
             if ( idx == 0 )
                 return pEdge0 ;
@@ -421,7 +395,7 @@ namespace GeodesicDist
                 return (Edge*)FLAG_INVALID_SIZE_T ;
         }
 
-        bool HasVertexIdx(const uint32_t idx)
+        bool HasVertexIdx(const uint32_t idx) const
         {
             return ( dwVertexIdx0 == idx || dwVertexIdx1 == idx || dwVertexIdx2 == idx ) ;                  
         }

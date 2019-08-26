@@ -248,7 +248,7 @@ namespace Isochart
         };
 
         // reverse direction is accessed by odd and even transition
-        const edge_id reverse_edge(edge_id eid) const
+        edge_id reverse_edge(edge_id eid) const
         {
             return eid ^ 0x1;
         }

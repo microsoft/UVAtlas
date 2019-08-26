@@ -362,7 +362,8 @@ inline void TransformUV(
     float u = pMatrix[0]*oldUv.x + pMatrix[1]*oldUv.y;
     float v = pMatrix[2]*oldUv.x + pMatrix[3]*oldUv.y;
 
-    newUv.x = u, newUv.y = v;
+    newUv.x = u;
+    newUv.y = v;
     return;
 }
 

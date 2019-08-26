@@ -171,7 +171,9 @@ namespace
 
     typedef std::unique_ptr<void, find_closer> ScopedFindHandle;
 
+#ifdef _PREFAST_
 #pragma prefast(disable : 26018, "Only used with static internal arrays")
+#endif
 
     DWORD LookupByName(const wchar_t *pName, const SValue *pArray)
     {
@@ -184,20 +186,6 @@ namespace
         }
 
         return 0;
-    }
-
-
-    const wchar_t* LookupByValue(DWORD pValue, const SValue *pArray)
-    {
-        while (pArray->pName)
-        {
-            if (pValue == pArray->dwValue)
-                return pArray->pName;
-
-            pArray++;
-        }
-
-        return L"";
     }
 
 
@@ -363,7 +351,9 @@ extern HRESULT LoadFromOBJ(const wchar_t* szFilename, std::unique_ptr<Mesh>& inM
 //--------------------------------------------------------------------------------------
 // Entry-point
 //--------------------------------------------------------------------------------------
+#ifdef _PREFAST_
 #pragma prefast(disable : 28198, "Command-line tool, frees all memory on exit")
+#endif
 
 int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 {

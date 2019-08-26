@@ -229,7 +229,8 @@ void CExactOneToAll::InternalRun()
                 if ( w0.x == e0.x )
                 {
                     tmpWindow0.d1 = sqrt( SquredD2Dist( e0, w2 ) ) ;                    
-                } else
+                }
+                else
                 {                
                     tmpWindow0.d1 = sqrt( SquredD2Dist( w0_to_e0_e2, w2 ) ) ;                    
                 }
@@ -260,7 +261,8 @@ void CExactOneToAll::InternalRun()
                 if ( w1.x == e1.x )
                 {
                     tmpWindow0.d1 = sqrt( SquredD2Dist( e1, w2 ) ) ;                    
-                } else
+                }
+                else
                 {                
                     tmpWindow0.d1 = sqrt( SquredD2Dist( w1_to_e1_e2, w2 ) ) ;                    
                 }
@@ -275,10 +277,10 @@ void CExactOneToAll::InternalRun()
                     ProcessNewWindow( &tmpWindow0 ) ;
                 }
             }
-        } else
+        }
 
         // this is the second figure shown in the mail
-        if ( bW2W0OnE1E2 && bW2W1OnE1E2 )
+        else if ( bW2W0OnE1E2 && bW2W1OnE1E2 )
         {
             tmpWindow0.SetPseuSrcVertexIdx( m_VertexList, WindowToBePropagated.dwPseuSrcVertexIdx ) ;            
             tmpWindow0.SetEdgeIdx( m_EdgeList, dwEdgeIdxPropagateTo1 ) ;            
@@ -293,7 +295,8 @@ void CExactOneToAll::InternalRun()
             {
                 tmpWindow0.b1 = pEdge1->dEdgeLength ;  //SqrtWithAssert( SquredD2Dist( e1, e2 ) ) ;
                 tmpWindow0.d1 = sqrt( SquredD2Dist( e1, w2 ) ) ;                
-            } else
+            }
+            else
             {            
                 tmpWindow0.b1 = sqrt( SquredD2Dist( w1_to_e1_e2, e2 ) ) ;
                 tmpWindow0.d1 = sqrt( SquredD2Dist( w1_to_e1_e2, w2 ) ) ;                
@@ -400,13 +403,10 @@ void CExactOneToAll::InternalRun()
                     }
                 }
             }
-
-
         }
-        else
 
         // this is the third figure shown in the mail
-        if ( bW2W0OnE0E2 && bW2W1OnE0E2 )
+        else if ( bW2W0OnE0E2 && bW2W1OnE0E2 )
         {
             tmpWindow0.SetPseuSrcVertexIdx( m_VertexList, WindowToBePropagated.dwPseuSrcVertexIdx ) ;            
             tmpWindow0.SetEdgeIdx( m_EdgeList, dwEdgeIdxPropagateTo0 ) ;            
@@ -421,7 +421,8 @@ void CExactOneToAll::InternalRun()
             {
                 tmpWindow0.b1 = pEdge0->dEdgeLength ; //SqrtWithAssert( SquredD2Dist( e0, e2 ) ) ;
                 tmpWindow0.d1 = sqrt( SquredD2Dist( e0, w2 ) ) ;
-            } else
+            }
+            else
             {            
                 tmpWindow0.b1 = sqrt( SquredD2Dist( w0_to_e0_e2, e2 ) ) ;
                 tmpWindow0.d1 = sqrt( SquredD2Dist( w0_to_e0_e2, w2 ) ) ;
@@ -552,8 +553,8 @@ void CExactOneToAll::InternalRun()
                             {
                                 theWindow.pMarkFromEdgeVertex->dLengthOfWindowEdgeToThisVertex = theWindow.b0 ;
                                 theWindow.pMarkFromEdgeVertex->dGeoDistanceToSrc = theWindow.d0 + theWindow.dPseuSrcToSrcDistance ;                                    
-                            } else
-                            if ( theWindow.b0 == theWindow.pMarkFromEdgeVertex->dLengthOfWindowEdgeToThisVertex )
+                            }
+                            else if ( theWindow.b0 == theWindow.pMarkFromEdgeVertex->dLengthOfWindowEdgeToThisVertex )
                             {
                                 theWindow.pMarkFromEdgeVertex->dGeoDistanceToSrc = 
                                     std::min(theWindow.pMarkFromEdgeVertex->dGeoDistanceToSrc, theWindow.d0 + theWindow.dPseuSrcToSrcDistance);
@@ -661,18 +662,21 @@ void CExactOneToAll::ProcessNewWindow( EdgeWindow *pNewEdgeWindow )
                         m_EdgeWindowsHeap.insert( pExistingWindowItem ) ;
                         pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem = pExistingWindowItem ;                    
                         bDontDelete = true ;
-                    } else
+                    }
+                    else
                     {
                         // we set a flag here, that this window on edge is to be removed
                         pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem = (TypeEdgeWindowsHeap::item_type*)FLAG_INVALID_SIZE_T ;
                     }
-                } else
+                }
+                else
                 {
                     // the window is not in heap, so we just update the one on edge
                     if ( !bExistingWindowNotAvailable )
                     {
                         pNewEdgeWindow->pEdge->WindowsList[i].theWindow = pExistingWindowItem->m_data ;
-                    } else
+                    }
+                    else
                         pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem = (TypeEdgeWindowsHeap::item_type*)FLAG_INVALID_SIZE_T ;
                 }                        
             }        
@@ -867,7 +871,8 @@ void CExactOneToAll::IntersectWindow( EdgeWindow *pExistingWindow,
             pExistingWindow->d0 = sqrt( SquredD2Dist( DVector2(pExistingWindow->b0, 0), ExistingWindowSrc ) ) ;
 
             *pExistingWindowChanged = true ;
-        } else
+        }
+        else
         {
             pExistingWindow->b0 = pNewWindow->b0 ;
             pExistingWindow->d0 = sqrt( SquredD2Dist( DVector2(pExistingWindow->b0, 0), ExistingWindowSrc ) ) ;
@@ -899,7 +904,8 @@ void CExactOneToAll::IntersectWindow( EdgeWindow *pExistingWindow,
             pNewWindow->d0 = sqrt( SquredD2Dist( DVector2(pNewWindow->b0, 0), NewWindowSrc ) ) ;
 
             *pNewWindowChanged = true ;
-        } else
+        }
+        else
         {
             pNewWindow->b0 = pExistingWindow->b0 ;
             pNewWindow->d0 = sqrt( SquredD2Dist( DVector2(pNewWindow->b0, 0), NewWindowSrc ) ) ;
@@ -920,14 +926,15 @@ void CExactOneToAll::IntersectWindow( EdgeWindow *pExistingWindow,
     {
         IntersectionStart = pNewWindow->b0 ;
         bStartFromNewWindowB0 = true ;
-    } else
+    }
 
     // intersection is from pExistingWindow->b0 up to length IntersectionLength
-    if ( pExistingWindow->b0 > pNewWindow->b0 && pExistingWindow->b0 < pNewWindow->b1 )
+    else if ( pExistingWindow->b0 > pNewWindow->b0 && pExistingWindow->b0 < pNewWindow->b1 )
     {
         IntersectionStart = pExistingWindow->b0 ;
         bStartFromNewWindowB0 = false ;
-    } else 
+    }
+    else 
 
     // pNewWindow->b0 == pExistingWindow->b0
     {
@@ -957,7 +964,8 @@ void CExactOneToAll::IntersectWindow( EdgeWindow *pExistingWindow,
 
             *pNewWindowChanged = true ;
             return ;
-        } else
+        }
+        else
         {
             pNewWindow->b1 -= IntersectionLength ;
             pNewWindow->d1 = sqrt( SquredD2Dist( DVector2(pNewWindow->b1, 0), NewWindowSrc) ) ;
@@ -1000,11 +1008,13 @@ void CExactOneToAll::IntersectWindow( EdgeWindow *pExistingWindow,
                     *pNewWindowChanged = true ;
 
                     return ;
-                } else
+                }
+                else
                 {
                     pNewWindow->d1 = sqrt( SquredD2Dist( DVector2(pNewWindow->b1, 0), NewWindowSrc ) ) ;
                 }            
-            } else
+            }
+            else
             {
                 pNewWindow->b0 += IntersectionLength ;
                 if ( pNewWindow->b0 >= pNewWindow->b1 )
@@ -1014,13 +1024,15 @@ void CExactOneToAll::IntersectWindow( EdgeWindow *pExistingWindow,
                     *pNewWindowChanged = true ;
 
                     return ;
-                } else
+                }
+                else
                 {
                     pNewWindow->d0 = sqrt( SquredD2Dist( DVector2(pNewWindow->b0, 0), NewWindowSrc ) ) ;
                 }
             }
             *pNewWindowChanged = true ;
-        } else
+        }
+        else
         // the distance function of the existing window is larger than that of the new window everywhere in the intersection
         {
             if ( pNewWindow->b0 == pExistingWindow->b0 && pNewWindow->b1 == pExistingWindow->b1 )
@@ -1039,11 +1051,13 @@ void CExactOneToAll::IntersectWindow( EdgeWindow *pExistingWindow,
                     //assert(false) ;
                     *pExistingWindowNotAvailable = true ;
                     *pExistingWindowChanged = true ;
-                } else
+                }
+                else
                 {
                     pExistingWindow->d1 = sqrt( SquredD2Dist( DVector2(pExistingWindow->b1, 0), ExistingWindowSrc ) ) ;
                 }   
-            } else
+            }
+            else
             {
                 pExistingWindow->b0 += IntersectionLength ;
                 if ( pExistingWindow->b0 >= pExistingWindow->b1 )
@@ -1051,7 +1065,8 @@ void CExactOneToAll::IntersectWindow( EdgeWindow *pExistingWindow,
                     //assert(false) ;
                     *pExistingWindowNotAvailable = true ;
                     *pExistingWindowChanged = true ;
-                } else
+                }
+                else
                 {
                     pExistingWindow->d0 = sqrt( SquredD2Dist( DVector2(pExistingWindow->b0, 0), ExistingWindowSrc ) ) ;
                 }
