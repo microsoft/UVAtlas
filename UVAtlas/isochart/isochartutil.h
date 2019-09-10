@@ -322,12 +322,12 @@ inline void AffineIMTOn2D(
         pNewUv0,
         pNewUv1,
         pNewUv2,
-        (const float*)(pOldUv0),
-        (const float*)(pOldUv1),
-        (const float*)(pOldUv2),
+        reinterpret_cast<const float*>(pOldUv0),
+        reinterpret_cast<const float*>(pOldUv1),
+        reinterpret_cast<const float*>(pOldUv2),
         2,
-        (float*)&Ss,
-        (float*)&St);
+        reinterpret_cast<float*>(&Ss),
+        reinterpret_cast<float*>(&St));
 
     if (pGeo)
     {

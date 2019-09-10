@@ -190,7 +190,7 @@ HRESULT CBaseMeshInfo::CopyAndScaleInputVertices()
     
     for (size_t i=0; i<dwVertexCount; i++)
     {
-        pVertexCoord= (float*)pVertexBuffer;
+        pVertexCoord= reinterpret_cast<float*>(pVertexBuffer);
         for (size_t j=0; j<3; j++)
         {
             if (pfMinVector[j] > pVertexCoord[j])

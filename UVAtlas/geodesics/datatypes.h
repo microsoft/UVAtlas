@@ -183,7 +183,7 @@ namespace GeodesicDist
             else if ( dwIdx == dwVertexIdx1 )
                 return pVertex1 ;
             else 
-                return (Vertex*)FLAG_INVALID_SIZE_T ;
+                return reinterpret_cast<Vertex*>(FLAG_INVALID_SIZE_T);
         }
 
         uint32_t GetAnotherVertexIdx(const uint32_t dwThisVertexIdx)
@@ -196,14 +196,14 @@ namespace GeodesicDist
         Vertex *GetAnotherVertex( const Vertex *pThisVertex )
         {
             if ( pThisVertex != pVertex0 && pThisVertex != pVertex1 )
-                return (Vertex*)FLAG_INVALID_SIZE_T ;
+                return reinterpret_cast<Vertex*>(FLAG_INVALID_SIZE_T);
 
-            return (Vertex*) ((intptr_t) pVertex0 ^ (intptr_t) pVertex1 ^ (intptr_t) pThisVertex);
+            return reinterpret_cast<Vertex*>(intptr_t(pVertex0) ^ intptr_t(pVertex1) ^ intptr_t(pThisVertex));
         }
         Vertex *GetAnotherVertex(const uint32_t dwThisVertexIdx)
         {
             if ( dwThisVertexIdx != dwVertexIdx0 && dwThisVertexIdx != dwVertexIdx1 ) 
-                return (Vertex*)FLAG_INVALID_SIZE_T ;
+                return reinterpret_cast<Vertex*>(FLAG_INVALID_SIZE_T);
 
             return (dwThisVertexIdx == dwVertexIdx0 ? pVertex1 : pVertex0) ;
         }
@@ -211,7 +211,7 @@ namespace GeodesicDist
         Face* GetFace(const uint32_t idx) const
         {
             if ( idx != 0 && idx != 1 )
-                return (Face*)FLAG_INVALID_SIZE_T ;
+                return reinterpret_cast<Face*>(FLAG_INVALID_SIZE_T);
 
             return ( idx == 0 ? pAdjFace0 : pAdjFace1 ) ;
         }
@@ -234,14 +234,14 @@ namespace GeodesicDist
         Face *GetAnotherFace( const Face *pThisFace )
         {
             if ( pThisFace != pAdjFace0 && pThisFace != pAdjFace1 )
-                return (Face*)FLAG_INVALID_SIZE_T ;
+                return reinterpret_cast<Face*>(FLAG_INVALID_SIZE_T);
 
-            return (Face*) ((intptr_t) pAdjFace0 ^ (intptr_t) pAdjFace1 ^ (intptr_t) pThisFace);
+            return reinterpret_cast<Face*>(intptr_t(pAdjFace0) ^ intptr_t(pAdjFace1) ^ intptr_t(pThisFace));
         }
         Face *GetAnotherFace(const uint32_t dwThisFaceIdx)
         {
             if ( dwThisFaceIdx != dwAdjFaceIdx0 && dwThisFaceIdx != dwAdjFaceIdx1 )
-                return (Face*)FLAG_INVALID_SIZE_T ;
+                return reinterpret_cast<Face*>(FLAG_INVALID_SIZE_T);
             return (dwThisFaceIdx == dwAdjFaceIdx0 ? pAdjFace1 : pAdjFace0) ;
         }
 
@@ -262,7 +262,7 @@ namespace GeodesicDist
 
             WindowListElement( const TypeEdgeWindowsHeap::item_type * heapItem, const EdgeWindow &win )
             {
-                this->pHeapItem = const_cast<TypeEdgeWindowsHeap::item_type *>(heapItem) ;
+                this->pHeapItem = const_cast<TypeEdgeWindowsHeap::item_type*>(heapItem);
                 this->theWindow = win;
             }
             WindowListElement() : pHeapItem(nullptr) { }
@@ -296,7 +296,7 @@ namespace GeodesicDist
         Edge *GetOpposingEdge(const uint32_t dwVertexIdx)
         {
             if ( dwVertexIdx != dwVertexIdx0 && dwVertexIdx != dwVertexIdx1 && dwVertexIdx != dwVertexIdx2 )
-                return (Edge*)FLAG_INVALID_SIZE_T ;
+                return reinterpret_cast<Edge*>(FLAG_INVALID_SIZE_T);
 
             if ( !pEdge0->HasVertexIdx(dwVertexIdx) )
                 return pEdge0 ;
@@ -321,7 +321,7 @@ namespace GeodesicDist
 
         Vertex *GetOpposingVertex( const Edge *pEdge )
         {
-            return (Vertex*) ((intptr_t) pVertex0 ^ (intptr_t) pVertex1 ^ (intptr_t) pVertex2 ^ (intptr_t) pEdge->pVertex0 ^ (intptr_t) pEdge->pVertex1);
+            return reinterpret_cast<Vertex*>(intptr_t(pVertex0) ^ intptr_t(pVertex1) ^ intptr_t(pVertex2) ^ intptr_t(pEdge->pVertex0) ^ intptr_t(pEdge->pVertex1));
         }
 
         uint32_t GetOpposingVertexIdx(TypeEdgeList &EdgeList, const uint32_t dwEdge)
@@ -368,7 +368,7 @@ namespace GeodesicDist
                 *ppResEdge2 = pEdge1 ;
             } else
             {
-                *ppResEdge1 = *ppResEdge2 = (Edge*)FLAG_INVALID_SIZE_T ;
+                *ppResEdge1 = *ppResEdge2 = reinterpret_cast<Edge*>(FLAG_INVALID_SIZE_T);
             }
         }
     
@@ -392,7 +392,7 @@ namespace GeodesicDist
                 return pEdge2 ;
             else
                 //assert( false ) ;
-                return (Edge*)FLAG_INVALID_SIZE_T ;
+                return reinterpret_cast<Edge*>(FLAG_INVALID_SIZE_T);
         }
 
         bool HasVertexIdx(const uint32_t idx) const
@@ -492,7 +492,7 @@ namespace GeodesicDist
         // get the index in the vertex array
         size_t GetIdx( TypeVertexList &VertexList )
         {
-            return ((intptr_t)this - (intptr_t) &(VertexList[0])) / sizeof(Vertex);
+            return (uintptr_t(this) - uintptr_t(&(VertexList[0]))) / sizeof(Vertex);
         }
 
         // is this vertex a saddle or boundary one?
