@@ -2266,7 +2266,7 @@ void CIsochartMesh::ParameterizeOneFace(
             m_pVerts[m_pFaces->dwVertexID[2]].uv,
             fNew2DArea);
 
-        DPF(1, "New Area %f", double(fNew2DArea);
+        DPF(1, "New Area %f", double(fNew2DArea));
         DPF(3, "Theory Stretch %f, New Stretch %f", double(m_fParamStretchL2), double(fNewStretch));
     }
     else

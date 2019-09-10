@@ -1057,7 +1057,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
         }
 
-        wprintf(L"Output # of charts: %zu, resulting stretching %f, %zu verts\n", outCharts, outStretch, vb.size());
+        wprintf(L"Output # of charts: %zu, resulting stretching %f, %zu verts\n", outCharts, double(outStretch), vb.size());
 
         assert((ib.size() / sizeof(uint32_t)) == (nFaces * 3));
         assert(facePartitioning.size() == nFaces);
