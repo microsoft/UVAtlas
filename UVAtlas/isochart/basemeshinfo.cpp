@@ -225,7 +225,7 @@ HRESULT CBaseMeshInfo::CopyAndScaleInputVertices()
 
     scale = ISOCHART_MODELSCALE / scale;
 
-    DPF(0, "Scale factor is %f", scale);
+    DPF(0, "Scale factor is %f", double(scale));
     pVertexBuffer = static_cast<uint8_t*>(const_cast<void *>(pVertexArray));
     pVertexCoord= nullptr;
 

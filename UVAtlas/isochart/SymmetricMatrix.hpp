@@ -15,6 +15,11 @@
 
 #pragma once
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdouble-promotion"
+#endif
+
 namespace Isochart
 {
     template<class TYPE>
@@ -464,3 +469,7 @@ namespace Isochart
         }
     };
 }
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif

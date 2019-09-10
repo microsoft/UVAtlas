@@ -482,8 +482,8 @@ namespace GeodesicDist
         {
             bBoundary = false ;
             dAngle = 0 ;
-            dGeoDistanceToSrc = FLT_MAX ;
-            dLengthOfWindowEdgeToThisVertex = FLT_MAX ;
+            dGeoDistanceToSrc = DBL_MAX ;
+            dLengthOfWindowEdgeToThisVertex = DBL_MAX ;
             pEdgeReportedGeoDist = nullptr ;
             bShadowBoundary = false ;
             bUsed = false ;
@@ -498,7 +498,9 @@ namespace GeodesicDist
         // is this vertex a saddle or boundary one?
         bool IsSaddleBoundary()
         {
-            return (bBoundary || (dAngle > (2*DirectX::XM_PI))) ;
+            constexpr double pi = 3.14159265358979323846;
+
+            return (bBoundary || (dAngle > (2 * pi)));
         }
     };
 }

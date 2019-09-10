@@ -1285,21 +1285,21 @@ HRESULT CProgressiveMesh::CalculateQuadricArray()
 
                 fTemp = -fTemp;
 
-                pQuadric->fQA[0][0] = normal.x * normal.x;
-                pQuadric->fQA[1][1] = normal.y * normal.y;
-                pQuadric->fQA[2][2] = normal.z * normal.z;
+                pQuadric->fQA[0][0] = double(normal.x * normal.x);
+                pQuadric->fQA[1][1] = double(normal.y * normal.y);
+                pQuadric->fQA[2][2] = double(normal.z * normal.z);
 
-                pQuadric->fQA[0][1] = normal.x * normal.y;
-                pQuadric->fQA[0][2] = normal.x * normal.z;
-                pQuadric->fQA[1][2] = normal.y * normal.z;
+                pQuadric->fQA[0][1] = double(normal.x * normal.y);
+                pQuadric->fQA[0][2] = double(normal.x * normal.z);
+                pQuadric->fQA[1][2] = double(normal.y * normal.z);
 
-                pQuadric->fQA[1][0] = pQuadric->fQA[0][1];
-                pQuadric->fQA[2][0] = pQuadric->fQA[0][2];
-                pQuadric->fQA[2][1] = pQuadric->fQA[1][2];
+                pQuadric->fQA[1][0] = double(pQuadric->fQA[0][1]);
+                pQuadric->fQA[2][0] = double(pQuadric->fQA[0][2]);
+                pQuadric->fQA[2][1] = double(pQuadric->fQA[1][2]);
 
-                pQuadric->fQB[0] = normal.x * fTemp;
-                pQuadric->fQB[1] = normal.y * fTemp;
-                pQuadric->fQB[2] = normal.z * fTemp;
+                pQuadric->fQB[0] = double(normal.x) * fTemp;
+                pQuadric->fQB[1] = double(normal.y) * fTemp;
+                pQuadric->fQB[2] = double(normal.z) * fTemp;
 
                 pQuadric->fQC = fTemp * fTemp;
 
@@ -1467,18 +1467,18 @@ double CProgressiveMesh::QuadricError(
         tempV[i] = 0.0;
         for (size_t j=0; j<3; j++)
         {
-            tempV[i] = tempV[i] + fVector[j]*quadricErrorMetric.fQA[i][j];
+            tempV[i] = tempV[i] + double(fVector[j]) * quadricErrorMetric.fQA[i][j];
         }
     }
 
     for (size_t i=0; i<3; i++)
     {
-        quadricError = quadricError + tempV[i] * fVector[i];
+        quadricError = quadricError + tempV[i] * double(fVector[i]);
     }
 
     for (size_t i=0; i<3; i++)
     {
-        quadricError = quadricError + 2 * quadricErrorMetric.fQB[i] * fVector[i];
+        quadricError = quadricError + 2 * quadricErrorMetric.fQB[i] * double(fVector[i]);
     }
 
     quadricError = quadricError + quadricErrorMetric.fQC;

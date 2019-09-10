@@ -84,10 +84,10 @@ void GeodesicDist::GetCommonPointOf2Lines(const DVector2 &pt1Line1,
     double d = (pt1Line1.y-pt2Line1.y)*(pt1Line2.x-pt2Line2.x)-(pt1Line1.x-pt2Line1.x)*(pt1Line2.y-pt2Line2.y) ;
 
     // test if these two lines are parallel
-    if ( fabs(d) < FLT_EPSILON )
+    if ( fabs(d) < double(FLT_EPSILON) )
     {
-        ptResult.x = FLT_MAX ;
-        ptResult.y = FLT_MAX ;
+        ptResult.x = DBL_MAX ;
+        ptResult.y = DBL_MAX ;
 
         bResultPtWithinLineSeg1 = false ;
 

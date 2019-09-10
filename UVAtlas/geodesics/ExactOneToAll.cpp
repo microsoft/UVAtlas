@@ -30,8 +30,8 @@ void CExactOneToAll::SetSrcVertexIdx( const uint32_t dwSrcVertexIdx )
 
     for (size_t i = 0; i < m_VertexList.size(); ++i)
     {
-        m_VertexList[i].dGeoDistanceToSrc = FLT_MAX ;
-        m_VertexList[i].dLengthOfWindowEdgeToThisVertex = FLT_MAX ;
+        m_VertexList[i].dGeoDistanceToSrc = DBL_MAX;
+        m_VertexList[i].dLengthOfWindowEdgeToThisVertex = DBL_MAX;
         m_VertexList[i].pEdgeReportedGeoDist = nullptr ;
         m_VertexList[i].bShadowBoundary = false ;
     }
@@ -146,7 +146,7 @@ void CExactOneToAll::InternalRun()
             continue ;
         }
 
-        if ( fabs(WindowToBePropagated.b0 - WindowToBePropagated.b1) <= FLT_EPSILON )
+        if ( fabs(WindowToBePropagated.b0 - WindowToBePropagated.b1) <= double(FLT_EPSILON) )
         {            
             // we don't process these too small windows
             continue ;
@@ -195,86 +195,86 @@ void CExactOneToAll::InternalRun()
         e2.y = -e2.y ;
 
         GetCommonPointOf2Lines( e0, e2, w2, w0, w0_to_e0_e2, bW2W0OnE0E2 ) ;
-        if ( w0_to_e0_e2.x == FLT_MAX && fabs(w0.x-e0.x) < FLT_EPSILON )
+        if (w0_to_e0_e2.x == DBL_MAX && fabs(w0.x - e0.x) < double(FLT_EPSILON))
         {
-            bW2W0OnE0E2 = true ;
-            w0_to_e0_e2 = e0 ;
+            bW2W0OnE0E2 = true;
+            w0_to_e0_e2 = e0;
         }
 
         GetCommonPointOf2Lines( e1, e2, w2, w0, w0_to_e1_e2, bW2W0OnE1E2 ) ;        
         GetCommonPointOf2Lines( e0, e2, w2, w1, w1_to_e0_e2, bW2W1OnE0E2 ) ;        
 
         GetCommonPointOf2Lines( e1, e2, w2, w1, w1_to_e1_e2, bW2W1OnE1E2 ) ;      
-        if ( w1_to_e1_e2.x == FLT_MAX && fabs(e1.x - w1.x) < FLT_EPSILON )
+        if (w1_to_e1_e2.x == DBL_MAX && fabs(e1.x - w1.x) < double(FLT_EPSILON))
         {
-            bW2W1OnE1E2 = true ;
-            w1_to_e1_e2 = e1 ;
+            bW2W1OnE1E2 = true;
+            w1_to_e1_e2 = e1;
         }
 
         // this is the first figure shown
         if ( bW2W0OnE0E2 && bW2W1OnE1E2 && !bW2W1OnE0E2 && !bW2W0OnE1E2 )
         {
             // the first possible new window
-            if ( (tmpWindow0.b1 = sqrt( SquredD2Dist( w0_to_e0_e2, e2 ) )) > FLT_EPSILON )
-            {            
-                if ( w0.x == e0.x )
-                    tmpWindow0.b1 = pEdge0->dEdgeLength ;
+            if ((tmpWindow0.b1 = sqrt(SquredD2Dist(w0_to_e0_e2, e2))) > double(FLT_EPSILON))
+            {
+                if (w0.x == e0.x)
+                    tmpWindow0.b1 = pEdge0->dEdgeLength;
 
-                tmpWindow0.SetPseuSrcVertexIdx( m_VertexList, WindowToBePropagated.dwPseuSrcVertexIdx ) ;                
-                tmpWindow0.SetEdgeIdx( m_EdgeList, dwEdgeIdxPropagateTo0 ) ;                
-                tmpWindow0.dPseuSrcToSrcDistance = WindowToBePropagated.dPseuSrcToSrcDistance ;
-                tmpWindow0.SetFaceIdxPropagatedFrom( m_FaceList, dwFacePropagateTo ) ;
-                tmpWindow0.b0 = 0 ;
-                tmpWindow0.d0 = sqrt( SquredD2Dist( w2, e2) ) ;
-                if ( w0.x == e0.x )
+                tmpWindow0.SetPseuSrcVertexIdx(m_VertexList, WindowToBePropagated.dwPseuSrcVertexIdx);
+                tmpWindow0.SetEdgeIdx(m_EdgeList, dwEdgeIdxPropagateTo0);
+                tmpWindow0.dPseuSrcToSrcDistance = WindowToBePropagated.dPseuSrcToSrcDistance;
+                tmpWindow0.SetFaceIdxPropagatedFrom(m_FaceList, dwFacePropagateTo);
+                tmpWindow0.b0 = 0;
+                tmpWindow0.d0 = sqrt(SquredD2Dist(w2, e2));
+                if (w0.x == e0.x)
                 {
-                    tmpWindow0.d1 = sqrt( SquredD2Dist( e0, w2 ) ) ;                    
+                    tmpWindow0.d1 = sqrt(SquredD2Dist(e0, w2));
                 }
                 else
-                {                
-                    tmpWindow0.d1 = sqrt( SquredD2Dist( w0_to_e0_e2, w2 ) ) ;                    
+                {
+                    tmpWindow0.d1 = sqrt(SquredD2Dist(w0_to_e0_e2, w2));
                 }
-                ParameterizePt2ToPt2( e2, e0, w2, tmpWindow0.dv2Src ) ;
-                tmpWindow0.SetMarkFromEdgeVertexIdx( m_VertexList, dwThirdPtIdxOnFacePropagateTo ) ;
-                
-                tmpWindow0.ksi = WindowToBePropagated.ksi ;
-                tmpWindow0.pEdgePropagatedFrom = WindowToBePropagated.pEdge ;
+                ParameterizePt2ToPt2(e2, e0, w2, tmpWindow0.dv2Src);
+                tmpWindow0.SetMarkFromEdgeVertexIdx(m_VertexList, dwThirdPtIdxOnFacePropagateTo);
 
-                if ( tmpWindow0.b1 - tmpWindow0.b0 > FLT_EPSILON )
-                {                
-                    ProcessNewWindow( &tmpWindow0 ) ;
-                }                
+                tmpWindow0.ksi = WindowToBePropagated.ksi;
+                tmpWindow0.pEdgePropagatedFrom = WindowToBePropagated.pEdge;
+
+                if (tmpWindow0.b1 - tmpWindow0.b0 > double(FLT_EPSILON))
+                {
+                    ProcessNewWindow(&tmpWindow0);
+                }
             }
 
             // the second possible new window
-            if ( (tmpWindow0.b1 = sqrt( SquredD2Dist( w1_to_e1_e2, e2 ) )) > FLT_EPSILON )
-            {            
-                if ( w1.x == e1.x )
-                    tmpWindow0.b1 = pEdge1->dEdgeLength ;
+            if ((tmpWindow0.b1 = sqrt(SquredD2Dist(w1_to_e1_e2, e2))) > double(FLT_EPSILON))
+            {
+                if (w1.x == e1.x)
+                    tmpWindow0.b1 = pEdge1->dEdgeLength;
 
-                tmpWindow0.SetPseuSrcVertexIdx( m_VertexList, WindowToBePropagated.dwPseuSrcVertexIdx ) ;                
-                tmpWindow0.SetEdgeIdx( m_EdgeList, dwEdgeIdxPropagateTo1 ) ;                
-                tmpWindow0.dPseuSrcToSrcDistance = WindowToBePropagated.dPseuSrcToSrcDistance ;
-                tmpWindow0.SetFaceIdxPropagatedFrom( m_FaceList, dwFacePropagateTo ) ;                
-                tmpWindow0.b0 = 0 ;             
-                tmpWindow0.d0 = sqrt( SquredD2Dist( w2, e2) ) ;
-                if ( w1.x == e1.x )
+                tmpWindow0.SetPseuSrcVertexIdx(m_VertexList, WindowToBePropagated.dwPseuSrcVertexIdx);
+                tmpWindow0.SetEdgeIdx(m_EdgeList, dwEdgeIdxPropagateTo1);
+                tmpWindow0.dPseuSrcToSrcDistance = WindowToBePropagated.dPseuSrcToSrcDistance;
+                tmpWindow0.SetFaceIdxPropagatedFrom(m_FaceList, dwFacePropagateTo);
+                tmpWindow0.b0 = 0;
+                tmpWindow0.d0 = sqrt(SquredD2Dist(w2, e2));
+                if (w1.x == e1.x)
                 {
-                    tmpWindow0.d1 = sqrt( SquredD2Dist( e1, w2 ) ) ;                    
+                    tmpWindow0.d1 = sqrt(SquredD2Dist(e1, w2));
                 }
                 else
-                {                
-                    tmpWindow0.d1 = sqrt( SquredD2Dist( w1_to_e1_e2, w2 ) ) ;                    
+                {
+                    tmpWindow0.d1 = sqrt(SquredD2Dist(w1_to_e1_e2, w2));
                 }
-                ParameterizePt2ToPt2( e2, e1, w2, tmpWindow0.dv2Src ) ;
-                tmpWindow0.SetMarkFromEdgeVertexIdx( m_VertexList, dwThirdPtIdxOnFacePropagateTo ) ;
-                
-                tmpWindow0.ksi = WindowToBePropagated.ksi ;
-                tmpWindow0.pEdgePropagatedFrom = WindowToBePropagated.pEdge ;
+                ParameterizePt2ToPt2(e2, e1, w2, tmpWindow0.dv2Src);
+                tmpWindow0.SetMarkFromEdgeVertexIdx(m_VertexList, dwThirdPtIdxOnFacePropagateTo);
 
-                if ( tmpWindow0.b1 - tmpWindow0.b0 > FLT_EPSILON )
-                { 
-                    ProcessNewWindow( &tmpWindow0 ) ;
+                tmpWindow0.ksi = WindowToBePropagated.ksi;
+                tmpWindow0.pEdgePropagatedFrom = WindowToBePropagated.pEdge;
+
+                if (tmpWindow0.b1 - tmpWindow0.b0 > double(FLT_EPSILON))
+                {
+                    ProcessNewWindow(&tmpWindow0);
                 }
             }
         }
@@ -287,7 +287,7 @@ void CExactOneToAll::InternalRun()
             tmpWindow0.SetFaceIdxPropagatedFrom( m_FaceList, dwFacePropagateTo ) ;            
             tmpWindow0.dPseuSrcToSrcDistance = WindowToBePropagated.dPseuSrcToSrcDistance ;
             tmpWindow0.b0 = sqrt( SquredD2Dist( w0_to_e1_e2, e2 ) ) ;
-            if ( tmpWindow0.b0 < FLT_EPSILON )
+            if ( tmpWindow0.b0 < double(FLT_EPSILON) )
             {
                 tmpWindow0.b0 = 0 ;
             }
@@ -308,7 +308,7 @@ void CExactOneToAll::InternalRun()
             tmpWindow0.ksi = WindowToBePropagated.ksi ;
             tmpWindow0.pEdgePropagatedFrom = WindowToBePropagated.pEdge ;
 
-            if ( tmpWindow0.b1 - tmpWindow0.b0 > FLT_EPSILON )
+            if ( tmpWindow0.b1 - tmpWindow0.b0 > double(FLT_EPSILON) )
             { 
                 ProcessNewWindow( &tmpWindow0 ) ; 
             }
@@ -330,7 +330,7 @@ void CExactOneToAll::InternalRun()
                 tmpWindow0.ksi = WindowToBePropagated.ksi ;
                 tmpWindow0.pEdgePropagatedFrom = WindowToBePropagated.pEdge ;
 
-                if ( tmpWindow0.b1 - tmpWindow0.b0 > FLT_EPSILON )
+                if ( tmpWindow0.b1 - tmpWindow0.b0 > double(FLT_EPSILON) )
                 {                   
                     ProcessNewWindow( &tmpWindow0 ) ;
                 }
@@ -395,7 +395,7 @@ void CExactOneToAll::InternalRun()
                             tmpWindow0.pEdgePropagatedFrom = WindowToBePropagated.pEdge ;   
                             tmpWindow0.ksi = WindowToBePropagated.ksi ;
 
-                            if ( tmpWindow0.b1 - tmpWindow0.b0 > FLT_EPSILON )
+                            if ( tmpWindow0.b1 - tmpWindow0.b0 > double(FLT_EPSILON) )
                             {
                                 ProcessNewWindow( &tmpWindow0 ) ;
                             }
@@ -413,7 +413,7 @@ void CExactOneToAll::InternalRun()
             tmpWindow0.SetFaceIdxPropagatedFrom( m_FaceList, dwFacePropagateTo ) ;            
             tmpWindow0.dPseuSrcToSrcDistance = WindowToBePropagated.dPseuSrcToSrcDistance ;
             tmpWindow0.b0 = sqrt( SquredD2Dist( w1_to_e0_e2, e2 ) ) ;
-            if ( tmpWindow0.b0 < FLT_EPSILON )
+            if ( tmpWindow0.b0 < double(FLT_EPSILON) )
             {
                 tmpWindow0.b0 = 0 ;
             }
@@ -434,7 +434,7 @@ void CExactOneToAll::InternalRun()
             tmpWindow0.ksi = WindowToBePropagated.ksi ;
             tmpWindow0.pEdgePropagatedFrom = WindowToBePropagated.pEdge ;
 
-            if ( tmpWindow0.b1 - tmpWindow0.b0 > FLT_EPSILON )
+            if ( tmpWindow0.b1 - tmpWindow0.b0 > double(FLT_EPSILON) )
             { 
                 ProcessNewWindow( &tmpWindow0 ) ;
             }
@@ -455,7 +455,7 @@ void CExactOneToAll::InternalRun()
                 tmpWindow0.ksi = WindowToBePropagated.ksi ;
                 tmpWindow0.pEdgePropagatedFrom = WindowToBePropagated.pEdge ;
 
-                if ( tmpWindow0.b1 - tmpWindow0.b0 > FLT_EPSILON )
+                if ( tmpWindow0.b1 - tmpWindow0.b0 > double(FLT_EPSILON) )
                 {                    
                     ProcessNewWindow( &tmpWindow0 ) ;
                 }
@@ -521,7 +521,7 @@ void CExactOneToAll::InternalRun()
                             tmpWindow0.pEdgePropagatedFrom = WindowToBePropagated.pEdge ; 
                             tmpWindow0.ksi = WindowToBePropagated.ksi ;
 
-                            if ( tmpWindow0.b1 - tmpWindow0.b0 > FLT_EPSILON )
+                            if ( tmpWindow0.b1 - tmpWindow0.b0 > double(FLT_EPSILON) )
                             {
                                 ProcessNewWindow( &tmpWindow0 ) ;
                             }                            
@@ -536,7 +536,7 @@ void CExactOneToAll::InternalRun()
     {
         if ( m_VertexList[i].bUsed )
         {
-            if ( m_VertexList[i].dGeoDistanceToSrc == FLT_MAX )
+            if ( m_VertexList[i].dGeoDistanceToSrc == DBL_MAX )
             {
                 for (size_t j = 0; j < m_VertexList[i].edgesAdj.size(); ++j)
                 {                    
@@ -805,7 +805,7 @@ void CExactOneToAll::IntersectWindow( EdgeWindow *pExistingWindow,
         std::swap(pNewWindow->d0, pNewWindow->d1);
         std::swap(pNewWindow->b0, pNewWindow->b1);
         pNewWindow->b0 = std::max<double>(pNewWindow->pEdge->dEdgeLength - pNewWindow->b0, 0);
-        if ( pNewWindow->b0 < FLT_EPSILON )
+        if ( pNewWindow->b0 < double(FLT_EPSILON) )
         {
             pNewWindow->b0 = 0 ;
         }
@@ -835,10 +835,10 @@ void CExactOneToAll::IntersectWindow( EdgeWindow *pExistingWindow,
     NewWindowSrc = pNewWindow->dv2Src ;    
     
     // the new window is almost the same as the existing one, simply drop the new window
-    if ( SquredD2Dist(ExistingWindowSrc, NewWindowSrc) < FLT_EPSILON &&
-         fabs(pExistingWindow->b0-pNewWindow->b0) < FLT_EPSILON && 
-         fabs(pExistingWindow->b1-pNewWindow->b1) < FLT_EPSILON && 
-         fabs(pExistingWindow->dPseuSrcToSrcDistance-pNewWindow->dPseuSrcToSrcDistance) < FLT_EPSILON )
+    if ( SquredD2Dist(ExistingWindowSrc, NewWindowSrc) < double(FLT_EPSILON) &&
+         fabs(pExistingWindow->b0-pNewWindow->b0) < double(FLT_EPSILON) &&
+         fabs(pExistingWindow->b1-pNewWindow->b1) < double(FLT_EPSILON) &&
+         fabs(pExistingWindow->dPseuSrcToSrcDistance-pNewWindow->dPseuSrcToSrcDistance) < double(FLT_EPSILON) )
     {
         *pNewWindowChanged = true ;
         *pNewWindowNotAvailable = true ;

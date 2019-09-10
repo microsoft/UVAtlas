@@ -199,7 +199,7 @@ HRESULT CIsoMap::GetPrimaryEnergyDimension(
         return S_OK;
     }
 
-    if (fEnergyPercent >= 1.0)
+    if (fEnergyPercent >= 1.0f)
     {
         dwPrimaryEnergyDimension = m_dwCalculatedDimension;				
     }
@@ -209,7 +209,7 @@ HRESULT CIsoMap::GetPrimaryEnergyDimension(
     float fPrecision = m_pfEigenValue[0] + m_pfEigenValue[1];
 
     
-    while(fPrecision <0.99 * m_fSumOfEigenValue
+    while(fPrecision < 0.99f * m_fSumOfEigenValue
         && dwDestineDimension < m_dwCalculatedDimension)
     {
         fPrecision += m_pfEigenValue[dwDestineDimension];
@@ -242,7 +242,7 @@ HRESULT CIsoMap::GetPrimaryEnergyDimension(
         dwAccumulateDimension++;
     }
 
-    if (fEnergyPercent >= 0.91)
+    if (fEnergyPercent >= 0.91f)
     {
         dwPrimaryEnergyDimension = dwAccumulateDimension;
         if (dwPrimaryEnergyDimension < 2)
@@ -294,7 +294,7 @@ bool CIsoMap::GetDestineVectors(size_t dwPrimaryEigenDimension, float* pfDestCoo
         if (m_pfEigenValue[i] < 0)
             m_pfEigenValue[i] = 0;
         
-        float fTemp = static_cast<float>(IsochartSqrt(m_pfEigenValue[i]));
+        float fTemp = static_cast<float>(IsochartSqrt(double(m_pfEigenValue[i])));
         for (size_t j=0; j<m_dwMatrixDimension; j++)
         {
             pfDestCoord[j*dwPrimaryEigenDimension+i] = (fTemp* fpEigenVector[j]);
