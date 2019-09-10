@@ -296,17 +296,17 @@ HRESULT CIsochartMesh::CheckLinearEquationParamResult(
     for (size_t ii=0; ii<m_dwFaceNumber; ii++)
     {
         ISOCHARTFACE& face = m_pFaces[ii];
-        double fA = Cal2DTriangleArea(
+        float fA = Cal2DTriangleArea(
             m_pVerts[face.dwVertexID[0]].uv,
             m_pVerts[face.dwVertexID[1]].uv,
             m_pVerts[face.dwVertexID[2]].uv);
         if (fA < 0)
         {
-            DPF(1, "Negative face %f", fA);
+            DPF(1, "Negative face %f", double(fA));
             bIsOverLap = true;
             return hr;
         }
-        fTotal2D += fA;
+        fTotal2D += double(fA);
     }
 
     bIsOverLap = false;

@@ -48,7 +48,7 @@ namespace Isochart
             value_type scale,
             size_t dwDimension)
         {
-            assert(_finite(scale) != 0);
+            assert(_finite(double(scale)) != 0);
             for (size_t ii=0; ii<dwDimension; ii++)
             {
                 v[ii] *= scale;

@@ -154,9 +154,9 @@ HRESULT CIsochartMesh::InitOneToAllEngine()
         {
             Vertex &thisVertex = ONE_TO_ALL_ENGINE.m_VertexList[i];
 
-            thisVertex.x = m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh].x;
-            thisVertex.y = m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh].y;
-            thisVertex.z = m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh].z;
+            thisVertex.x = double(m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh].x);
+            thisVertex.y = double(m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh].y);
+            thisVertex.z = double(m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh].z);
             thisVertex.bBoundary = m_pVerts[i].bIsBoundary;
         }
 
@@ -533,10 +533,10 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexNewGeoDist(
             std::min(m_pVerts[i].fGeodesicDistance,
                  (float)ONE_TO_ALL_ENGINE.m_VertexList[i].dGeoDistanceToSrc ) ;
 
-        if ( m_pVerts[i].fGeodesicDistance > dGeoFarest )
+        if (double(m_pVerts[i].fGeodesicDistance) > dGeoFarest)
         {
-            dGeoFarest = m_pVerts[i].fGeodesicDistance ;
-            dwFarestVertID = i ;
+            dGeoFarest = double(m_pVerts[i].fGeodesicDistance);
+            dwFarestVertID = i;
         }
     }
 

@@ -1464,7 +1464,7 @@ void CIsochartMesh::CalculateVertGeodesicCoord(
             pfCoord[k] += pfWorkSpace[i]*pfEigenVector[k*dwLandmarkNumber+i];
         }
 
-        pfCoord[k] /= static_cast<float>(IsochartSqrt(pfEigenValue[k]) * 2);
+        pfCoord[k] /= static_cast<float>(IsochartSqrt(double(pfEigenValue[k])) * 2);
     }
 }
 
@@ -1521,7 +1521,7 @@ float CIsochartMesh::CalculateFaceGeodesicDistortion(
 
         temp = (pfMapCoord[1]-pSubVertex->uv.y); 
         fEulerDistance += temp*temp; 
-        fEulerDistance = static_cast<float>(IsochartSqrt(fEulerDistance));
+        fEulerDistance = static_cast<float>(IsochartSqrt(double(fEulerDistance)));
 
         fGeodesicDistance = 0;
         for (size_t j=0; j<3; j++)

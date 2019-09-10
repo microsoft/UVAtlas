@@ -336,8 +336,8 @@ HRESULT CIsochartMesh::OptimalScaleChart(
         {
             const FLOAT3* p = 
                 baseInfo.pfIMTArray+chartList[ii]->m_pFaces->dwIDInRootMesh;
-            if (((*p)[0] > (*p)[2] && (*p)[2] / (*p)[0] < 1e-8) ||
-                ((*p)[0] < (*p)[2] && (*p)[0] / (*p)[2] < 1e-8) )
+            if (((*p)[0] > (*p)[2] && (*p)[2] / (*p)[0] < 1e-8f) ||
+                ((*p)[0] < (*p)[2] && (*p)[0] / (*p)[2] < 1e-8f) )
             {
                 continue;
             }
@@ -463,12 +463,12 @@ HRESULT CIsochartMesh::OptimizeWholeChart(
             DPF(0, "Can not opimize scale all chart, some face has infinite stretch");
             goto LEnd;
         }
-        dm[0] += m[0];dm[1] += m[1];dm[2] += m[2];
+        dm[0] += double(m[0]); dm[1] += double(m[1]); dm[2] += double(m[2]);
 
         float fFace3DArea = m_baseInfo.pfFaceAreaArray[pFace->dwIDInRootMesh];
-        dGeoM[0] += geoM[0] * fFace3DArea;
-        dGeoM[1] += geoM[1] * fFace3DArea;
-        dGeoM[2] += geoM[2] * fFace3DArea;
+        dGeoM[0] += double(geoM[0] * fFace3DArea);
+        dGeoM[1] += double(geoM[1] * fFace3DArea);
+        dGeoM[2] += double(geoM[2] * fFace3DArea);
         pFace++;
     }
     
@@ -484,11 +484,11 @@ HRESULT CIsochartMesh::OptimizeWholeChart(
         CHART_MAX_SCALE_FACTOR,
         matrix);
 
-    fNewGeoL2Stretch 
+    fNewGeoL2Stretch
         = static_cast<float>(
-        (dGeoM[0] * (matrix[0]*matrix[0] + matrix[2]*matrix[2])
-        + dGeoM[2] * (matrix[1]*matrix[1] + matrix[3]*matrix[3])
-        + 2*dGeoM[1]*(matrix[1]*matrix[0] + matrix[2]*matrix[3]))/2);
+        (dGeoM[0] * double(matrix[0] * matrix[0] + matrix[2] * matrix[2])
+            + dGeoM[2] * double(matrix[1] * matrix[1] + matrix[3] * matrix[3])
+            + 2 * dGeoM[1] * double(matrix[1] * matrix[0] + matrix[2] * matrix[3])) / 2);
     if (fNewGeoL2Stretch > fMaxAvgGeoL2Stretch*m_fChart3DArea)
     {
         goto LEnd;
@@ -2266,8 +2266,8 @@ void CIsochartMesh::ParameterizeOneFace(
             m_pVerts[m_pFaces->dwVertexID[2]].uv,
             fNew2DArea);
 
-        DPF(1, "New Area %f", fNew2DArea);
-        DPF(3, "Theory Stretch %f, New Stretch %f", m_fParamStretchL2, fNewStretch);		
+        DPF(1, "New Area %f", double(fNew2DArea);
+        DPF(3, "Theory Stretch %f, New Stretch %f", double(m_fParamStretchL2), double(fNewStretch));
     }
     else
     {

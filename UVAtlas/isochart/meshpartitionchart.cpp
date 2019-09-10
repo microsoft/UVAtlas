@@ -1281,8 +1281,8 @@ static bool IsSelfOverlapping(
                 vv5 = vv2 - vv4;
                 if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5)))) continue;
 
-                DPF(1, "(%f, %f) (%f, %f) --> (%f, %f) (%f, %f)",						
-                        v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
+                DPF(1, "(%f, %f) (%f, %f) --> (%f, %f) (%f, %f)",
+                    double(v1.x), double(v1.y), double(v2.x), double(v2.y), double(v3.x), double(v3.y), double(v4.x), double(v4.y));
 
                 return true;
             }
@@ -1469,9 +1469,9 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
                     {
                         cosB = -1.0f;
                     }
-                    if (cosB > 1.0)
+                    if (cosB > 1.0f)
                     {
-                        cosB = 1.0;
+                        cosB = 1.0f;
                     }
 
                     float sinB = IsochartSqrtf(1.0f - cosB*cosB);
@@ -1504,11 +1504,11 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
                     m_pVerts[vId2].uv.x = fLen2*x + m_pVerts[vId0].uv.x;
                     m_pVerts[vId2].uv.y = fLen2*y + m_pVerts[vId0].uv.y;
 
-                    assert(_finite(m_pVerts[vId2].uv.x) != 0 &&
-                        _finite(m_pVerts[vId2].uv.y) != 0);
+                    assert(_finite(double(m_pVerts[vId2].uv.x)) != 0 &&
+                        _finite(double(m_pVerts[vId2].uv.y)) != 0);
 
-                    if (_finite(m_pVerts[vId2].uv.x) == 0 ||
-                        _finite(m_pVerts[vId2].uv.y) == 0)
+                    if (_finite(double(m_pVerts[vId2].uv.x)) == 0 ||
+                        _finite(double(m_pVerts[vId2].uv.y)) == 0)
                     {
                         DPF(0, "ProcessPlaneLikeShape failed due to INFs");
                         return E_FAIL;

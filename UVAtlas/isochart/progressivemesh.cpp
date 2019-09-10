@@ -174,9 +174,9 @@ HRESULT CProgressiveMesh::Simplify()
     {
         pHeapItems[i].m_weight = -m_pEdgeArray[i].fDeleteCost;
         
-        if (pHeapItems[i].m_weight > -ISOCHART_ZERO_EPS)
+        if (pHeapItems[i].m_weight > double(-ISOCHART_ZERO_EPS))
         {
-            pHeapItems[i].m_weight = -ISOCHART_ZERO_EPS;
+            pHeapItems[i].m_weight = double(-ISOCHART_ZERO_EPS);
         }
         pHeapItems[i].m_data = i;
         if (!heap.insert(pHeapItems+i))
@@ -1032,7 +1032,7 @@ void CProgressiveMesh::UpdateSufferedEdgesCost(
             m_pEdgeArray + dwCurrentEdgeIndex;
 
         CalculateEdgeQuadricError(pEdge1);
-        float fNewDeleteCost = -static_cast<float>(fabs(pEdge1->fDeleteCost));
+        auto fNewDeleteCost = -static_cast<float>(fabs(pEdge1->fDeleteCost));
         if (fNewDeleteCost > -ISOCHART_ZERO_EPS)
         {
             fNewDeleteCost = -ISOCHART_ZERO_EPS;
@@ -1040,11 +1040,11 @@ void CProgressiveMesh::UpdateSufferedEdgesCost(
 
         if (pHeapItems[dwCurrentEdgeIndex].isItemInHeap())
         {
-            heap.update(pHeapItems+dwCurrentEdgeIndex, fNewDeleteCost);
+            heap.update(pHeapItems+dwCurrentEdgeIndex, double(fNewDeleteCost));
         }
         else
         {
-            pHeapItems[dwCurrentEdgeIndex].m_weight = fNewDeleteCost;
+            pHeapItems[dwCurrentEdgeIndex].m_weight = double(fNewDeleteCost);
         }
     }
     return;
@@ -1208,9 +1208,9 @@ HRESULT CProgressiveMesh::CalculateQuadricArray()
             PMISOCHARTFACE* pFace = m_pFaceArray + i;
             PMISOCHARTVERTEX* pVert = m_pVertArray + pFace->dwVertexID[0];
             normal = pFace->normal;
-            fTemp = IsochartVec3Dot(
+            fTemp = double(IsochartVec3Dot(
                 &normal, 
-                m_baseInfo.pVertPosition+pVert->dwIDInRootMesh);
+                m_baseInfo.pVertPosition+pVert->dwIDInRootMesh));
 
             fTemp = -fTemp;
             /*
@@ -1243,9 +1243,9 @@ HRESULT CProgressiveMesh::CalculateQuadricArray()
             pQuadric->fQA[2][0] = pQuadric->fQA[0][2];
             pQuadric->fQA[2][1] = pQuadric->fQA[1][2];
 
-            pQuadric->fQB[0] = normal.x * fTemp;
-            pQuadric->fQB[1] = normal.y * fTemp;
-            pQuadric->fQB[2] = normal.z * fTemp;
+            pQuadric->fQB[0] = double(normal.x) * fTemp;
+            pQuadric->fQB[1] = double(normal.y) * fTemp;
+            pQuadric->fQB[2] = double(normal.z) * fTemp;
         
 
             pQuadric->fQC = fTemp * fTemp;
@@ -1278,10 +1278,10 @@ HRESULT CProgressiveMesh::CalculateQuadricArray()
                 IsochartVec3Cross(&normal, &tempVector, &(pFace->normal));
                 XMStoreFloat3(&normal, XMVector3Normalize(XMLoadFloat3(&normal)));
 
-                fTemp = IsochartVec3Dot(
+                fTemp = double(IsochartVec3Dot(
                     &normal, 
                     m_baseInfo.pVertPosition
-                        +m_pVertArray[pEdge->dwVertexID[0]].dwIDInRootMesh);
+                        +m_pVertArray[pEdge->dwVertexID[0]].dwIDInRootMesh));
 
                 fTemp = -fTemp;
 

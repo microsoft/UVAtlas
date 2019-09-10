@@ -168,7 +168,7 @@ HRESULT CUVAtlasRepacker::Repack()
         m_OutOfRange = false;
         if ( FAILED( hr = CreateUVAtlas()) )
             return hr ;
-        DPF(3, "Estimated Space Percent = %.3f%%", m_EstimatedSpacePercent * 100);
+        DPF(3, "Estimated Space Percent = %.3f%%", double(m_EstimatedSpacePercent * 100.f));
 
         if ( m_iIterationTimes <= 9 )
         {
@@ -215,7 +215,7 @@ HRESULT CUVAtlasRepacker::Repack()
 
     if (m_bDwIndex)
     {
-        double percentOur = GetTotalArea<uint32_t>();
+        auto percentOur = double(GetTotalArea<uint32_t>());
         DPF(0, "Final space utilization ratio after pack = %.3f%%", percentOur * 100);
         
         if ( m_pPercentOur )
@@ -223,7 +223,7 @@ HRESULT CUVAtlasRepacker::Repack()
     }
     else
     {
-        double percentOur = GetTotalArea<uint16_t>();
+        auto percentOur = double(GetTotalArea<uint16_t>());
         DPF(0, "Final space utilization ratio after pack = %.3f%%", percentOur * 100);
 
         if ( m_pPercentOur )
@@ -338,7 +338,7 @@ void CUVAtlasRepacker::AdjustEstimatedPercent()
     {
         float unpackedArea = 1.0f - m_packedArea / m_fChartsTotalArea;
         float unpackedCharts = 1.0f - (float) m_packedCharts / m_iNumCharts;
-        DPF(3, "Unpacked area ratio= %.4f\tunpacked charts ratio= %.4f", unpackedArea, unpackedCharts);
+        DPF(3, "Unpacked area ratio= %.4f\tunpacked charts ratio= %.4f", double(unpackedArea), double(unpackedCharts));
 
         float factor = unpackedArea / 4.0f + unpackedCharts / 10.0f;
                 
@@ -360,7 +360,7 @@ void CUVAtlasRepacker::AdjustEstimatedPercent()
     if (m_EstimatedSpacePercent <= 0)
         m_EstimatedSpacePercent = oldp * 0.9f;
 
-    m_PixelWidth = (float) sqrt(m_fChartsTotalArea / 
+    m_PixelWidth = sqrtf(m_fChartsTotalArea / 
         (m_EstimatedSpacePercent * m_dwAtlasWidth * m_dwAtlasHeight));
 }
 
@@ -400,7 +400,7 @@ void CUVAtlasRepacker::InitialSpacePercent()
 
     for(;;)
     {
-        m_PixelWidth = (float)sqrt(m_fChartsTotalArea / 
+        m_PixelWidth = sqrtf(m_fChartsTotalArea / 
             (m_EstimatedSpacePercent * m_dwAtlasWidth * m_dwAtlasHeight));
         ChartsInfo *pCInfo = (ChartsInfo *)&(m_ChartsInfo[m_SortedChartIndex[0]]);
         _PositionInfo *pPosInfo = (_PositionInfo *)&(pCInfo->PosInfo[0]);
@@ -1459,7 +1459,7 @@ void CUVAtlasRepacker::TryPut(int chartPutSide, int PutSide,
         //		is more inside than before	
         if ((ratio < m_triedAspectRatio && (PutSide == UV_UPSIDE || PutSide == UV_DOWNSIDE)) || 
             (ratio > m_triedAspectRatio && (PutSide == UV_LEFTSIDE || PutSide == UV_RIGHTSIDE)) ||
-            ((fabs(ratio - m_triedAspectRatio) < 1e-6f) && 
+            ((fabsf(ratio - m_triedAspectRatio) < 1e-6f) && 
             (internalSpace < m_triedInternalSpace || 
             (abs(internalSpace - m_triedInternalSpace) < m_triedInternalSpace * 0.05f && 
             m_triedOverlappedLen < minDistant))))
@@ -1975,7 +1975,7 @@ bool CUVAtlasRepacker::DoTessellation(uint32_t ChartIndex, size_t AngleIndex)
         float b = p1->y - p1->x * slope;
         float x, y;
 
-        if (fabs(slope) < 1.0f)
+        if (fabsf(slope) < 1.0f)
         {
             for (n = fromX + 1; n < toX; n++)
             {
