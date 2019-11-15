@@ -5,8 +5,9 @@
 #
 # http://go.microsoft.com/fwlink/?LinkID=512686
 
-cmake_minimum_required (VERSION 3.8)
-project (UVAtlas_CMake LANGUAGES CXX)
+cmake_minimum_required (VERSION 3.11)
+
+project (UVAtlas LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -16,10 +17,7 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/CMake")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/CMake")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/bin/CMake")
 
-set(WarningsLib "-Wall" "-Wpedantic" "-Wextra")
-set(WarningsEXE ${WarningsLib} "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic" "-Wno-exit-time-destructors" "-Wno-switch" "-Wno-switch-enum" "-Wno-language-extension-token" "-Wno-missing-prototypes")
-
-add_library (uvatlas STATIC
+add_library (${PROJECT_NAME} STATIC
     UVAtlas/maxheap.hpp
     UVAtlas/pch.h
     UVAtlas/inc/UVAtlas.h
@@ -75,26 +73,44 @@ source_group(geodesics REGULAR_EXPRESSION UVAtlas/geodesics/*.*)
 source_group(isochart REGULAR_EXPRESSION UVAtlas/isochart/*.*)
 source_group(isochart REGULAR_EXPRESSION UVAtlas/isochart/*.*)
 
-target_include_directories( uvatlas PUBLIC UVAtlas/inc )
-target_include_directories( uvatlas PRIVATE UVAtlas/ UVAtlas/geodesics UVAtlas/isochart )
+target_include_directories(${PROJECT_NAME} PUBLIC UVAtlas/inc)
+target_include_directories(${PROJECT_NAME} PRIVATE UVAtlas/ UVAtlas/geodesics UVAtlas/isochart)
 
-target_compile_options( uvatlas PRIVATE /fp:fast )
+# Use max Warning Level 
+string(REPLACE "/W3" "/Wall" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+string(REPLACE "/W3" "/Wall" CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
+string(REPLACE "/W3" "/Wall" CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 
-add_executable(uvatlastool UVAtlasTool/uvatlas.cpp UVAtlasTool/Mesh.cpp UVAtlasTool/Mesh.h UVAtlasTool/MeshOBJ.cpp UVAtlasTool/SDKMesh.h)
-target_link_libraries(uvatlastool uvatlas)
-target_include_directories( uvatlastool PRIVATE ../DirectXMesh/DirectXMesh ../DirectXMesh/DirectXMesh/Utilities ../DirectXTex/DirectXTex )
+add_executable(uvatlastool
+    UVAtlasTool/uvatlas.cpp
+    UVAtlasTool/Mesh.cpp
+    UVAtlasTool/Mesh.h
+    UVAtlasTool/MeshOBJ.cpp
+    UVAtlasTool/SDKMesh.h)
+target_link_libraries(uvatlastool ${PROJECT_NAME})
+target_include_directories(uvatlastool PRIVATE ../DirectXMesh/DirectXMesh ../DirectXMesh/Utilities ../DirectXTex/DirectXTex)
+
+target_compile_options(${PROJECT_NAME} PRIVATE /fp:fast)
+target_compile_options(uvatlastool PRIVATE /fp:fast)
+
+if (${CMAKE_SIZEOF_VOID_P} EQUAL "4")
+    target_compile_options(${PROJECT_NAME} PRIVATE /arch:SSE2)
+    target_compile_options(uvatlastool PRIVATE /arch:SSE2)
+endif()
 
 if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
-    target_compile_options( uvatlas PRIVATE ${WarningsLib} )
-    target_compile_options( uvatlastool PRIVATE ${WarningsEXE}  )
-    if (${CMAKE_SIZEOF_VOID_P} EQUAL "4")
-        target_compile_options( uvatlas PRIVATE /arch:SSE2 )
-        target_compile_options( uvatlastool PRIVATE /arch:SSE2 )
-    endif()
+    set(WarningsLib "-Wpedantic" "-Wextra")
+    target_compile_options(${PROJECT_NAME} PRIVATE ${WarningsLib})
+
+    set(WarningsEXE ${WarningsLib} "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic" "-Wno-exit-time-destructors" "-Wno-switch" "-Wno-switch-enum" "-Wno-language-extension-token" "-Wno-missing-prototypes")
+    target_compile_options(uvatlastool PRIVATE ${WarningsEXE})
 endif()
 if ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
-    target_compile_options( uvatlas PRIVATE /Wall /permissive- /Zc:__cplusplus )
-    target_compile_options( uvatlastool PRIVATE /Wall /permissive- /Zc:__cplusplus )
+    target_compile_options(${PROJECT_NAME} PRIVATE /permissive- /JMC- /Zc:__cplusplus)
+    target_compile_options(uvatlastool PRIVATE /permissive- /Zc:__cplusplus)
+
+    set(WarningsEXE "/wd4365" "/wd4710" "/wd4820" "/wd5039" "/wd5045")
+    target_compile_options(uvatlastool PRIVATE ${WarningsEXE})
 endif()
 
 # We use Windows 7 here
