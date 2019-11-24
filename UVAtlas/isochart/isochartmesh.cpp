@@ -445,7 +445,7 @@ namespace
         for (size_t i = 0; i < 3; i++)
         {
             size_t uNeighbor = uFace * 3 + i;
-            if (pdwFalseEdges[uNeighbor] != -1)
+            if (pdwFalseEdges[uNeighbor] != uint32_t(-1))
             {
                 if (FAILED(hr = AddConnectedFalseEdges(pList, pdwAdj, pdwFalseEdges, pdwAdj[uNeighbor])))
                     return hr;
@@ -532,7 +532,7 @@ namespace
             {
                 pIdx[iVert] = static_cast<uint32_t>(dwNewVertCount++);
 
-                if (pAdjacency[iVert] == INVALID_FACE_ID || (pFalseEdge[iVert] != -1))
+                if (pAdjacency[iVert] == INVALID_FACE_ID || (pFalseEdge[iVert] != uint32_t(-1)))
                 {
                     continue;
                 }

@@ -350,7 +350,7 @@ void CUVAtlasRepacker::AdjustEstimatedPercent()
         m_EstimatedSpacePercent -= factor;
         //m_EstimatedSpacePercent /= 1.02f;
 
-        if (m_iIterationTimes > MAX_ITERATION)
+        if (size_t(m_iIterationTimes) > MAX_ITERATION)
         {
             m_bStopIteration = true;
             return;
@@ -792,8 +792,9 @@ HRESULT CUVAtlasRepacker::GenerateAdjacentInfo()
                         m = 3;
                         break;
                     }
-            if (m_AdjacentInfo[i * 3] != -1 && m_AdjacentInfo[i * 3 + 1] != -1 && 
-                m_AdjacentInfo[i * 3 + 2] != -1)
+            if (m_AdjacentInfo[i * 3] != uint32_t(-1)
+                && m_AdjacentInfo[i * 3 + 1] != uint32_t(-1)
+                && m_AdjacentInfo[i * 3 + 2] != uint32_t(-1))
                 break;
         }
     }
@@ -850,7 +851,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
         int facestart = 0;
         for (uint32_t i = 0; i < m_iNumFaces; i++)
         {
-            if (pAB[i] == -1)
+            if (pAB[i] == uint32_t(-1))
             {
                 ab.clear();
                 if (!bUsedFace[i]) 
@@ -870,7 +871,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                         for (uint32_t j = 0; j < 3; j++)
                         {
                             uint32_t index = 3 * ab[t] + j;
-                            if (m_AdjacentInfo[index] != -1 && !bUsedFace[m_AdjacentInfo[index]])
+                            if (m_AdjacentInfo[index] != uint32_t(-1) && !bUsedFace[m_AdjacentInfo[index]])
                             {
                                 ab.push_back(m_AdjacentInfo[index]);
                                 bUsedFace[m_AdjacentInfo[index]] = true;
@@ -932,7 +933,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
 
                     // create an index partition buffer which store each vertex's original position
                     // to recover the vertex buffer after repacking.
-                    if (m_IndexPartition[index1] == -1) 
+                    if (m_IndexPartition[index1] == uint32_t(-1))
                     {
                         m_IndexPartition[index1] = indexnum++; 
                         UVAtlasVertex vert;
@@ -943,7 +944,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                         vert.uv.y = p1->y;
                         m_VertexBuffer.push_back(vert);
                     }
-                    if (m_IndexPartition[index2] == -1) 
+                    if (m_IndexPartition[index2] == uint32_t(-1))
                     {
                         m_IndexPartition[index2] = indexnum++;
                         UVAtlasVertex vert;
@@ -954,7 +955,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                         vert.uv.y = p2->y; 
                         m_VertexBuffer.push_back(vert);
                     }
-                    if (m_IndexPartition[index3] == -1) 
+                    if (m_IndexPartition[index3] == uint32_t(-1))
                     {
                         m_IndexPartition[index3] = indexnum++;
                         UVAtlasVertex vert;
@@ -1170,11 +1171,11 @@ HRESULT CUVAtlasRepacker::PrepareChartsInfo()
 
                 // if the triangle has a edge without adjacent triangle
                 // the edge is one outer edge
-                if (m_NewAdjacentInfo[Base] == -1)
+                if (m_NewAdjacentInfo[Base] == uint32_t(-1))
                     m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(Vertex1, Vertex2));
-                if (m_NewAdjacentInfo[Base + 1] == -1)
+                if (m_NewAdjacentInfo[Base + 1] == uint32_t(-1))
                     m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(Vertex2, Vertex3));
-                if (m_NewAdjacentInfo[Base + 2] == -1)
+                if (m_NewAdjacentInfo[Base + 2] == uint32_t(-1))
                     m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(Vertex3, Vertex1));
             }
         }
@@ -1819,7 +1820,7 @@ void CUVAtlasRepacker::OutPutPackResult()
     {
         // handle the situation when the chart has only one vertex.
         // we just move all these vertex UV into coordinates (0, 0)
-        if (m_IndexPartition[i] == -1)
+        if (m_IndexPartition[i] == uint32_t(-1))
         {
             float *pp = (float *)(pVB + i * m_iNumBytesPerVertex);
             *pp = 0;
