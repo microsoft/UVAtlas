@@ -134,20 +134,9 @@ namespace
     //////////// Configuration of stretch optimization/////////
     ///////////////////////////////////////////////////////////
 
-    // when 10%+ vertices have infinite stretch, it's hard to get good results 
-    // anyway.so don't apply optimize any more 0.1 is based on Kun's examination
-    const float MAX_INFINITE_STRETCH_VERT_PERCENT = 0.1f;
-
     // When vertex being optimized, if the distance between new and old 
     // positions less than OPTIMIZE_TOLERANCE, stop optimize
     const float OPTIMIZE_TOLERANCE = 1e-4f;
-
-    // How many times to optimize the stretch of all vertices in the same chart.
-    const size_t ALL_VERTICES_OPTIMIZE_COUNT = 6;
-
-    // Stop optimization when max stretch is smaller than STRETCH_TO_STOP_OPTIMIZE,
-    const float STRETCH_TO_STOP_OPTIMIZE = 1.5f;
-    const float STRETCH_TO_STOP_OPTIMIZE_IMT = 1e4f;
 
     // If the max stretch changes less than MINIMAL_OPTIMIZE_CHANGE, stop optimize.
     // Because more optimization won't improve result.
@@ -1790,7 +1779,6 @@ bool CIsochartMesh::OptimizeVertexStretchAroundCenter(
 {
     ISOCHARTVERTEX* pOptimizeVertex = vertInfo.pOptimizeVertex;
 
-    XMFLOAT2 originalStart = vertInfo.start; // -Wunused-variable
     float fOriginalStartStretch = vertInfo.fStartStretch;
 
     XMFLOAT2 originalEnd = vertInfo.end;
