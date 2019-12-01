@@ -89,7 +89,7 @@
 extern void __cdecl UVAtlasDebugPrintf(unsigned int lvl, _In_z_ _Printf_format_string_ LPCSTR szFormat, ...);
 #define DPF UVAtlasDebugPrintf
 #else
-#define DPF(l,s,...)
+#define DPF(...)
 #endif
 
 #ifndef SAFE_DELETE_ARRAY
