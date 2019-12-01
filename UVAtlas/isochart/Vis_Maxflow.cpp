@@ -120,7 +120,7 @@ void CMaxFlow::SetTweights(node_id id, cap_type sw, cap_type tw)
 {
     Node& n = nodes[id];
     n.resident = n.capacity = sw - tw;
-    current_flow += __min(sw, tw);
+    current_flow += std::min(sw, tw);
 
 }
 
@@ -342,7 +342,7 @@ void CMaxFlow::AugmentCurrentPath()
     Node& mt = nodes[mt_id];
     assert(mt.resident < 0);
 
-    cap_type bottleneck = __min(ns.resident, -mt.resident);
+    cap_type bottleneck = std::min(ns.resident, -mt.resident);
 
     // find the bottleneck        
         
@@ -351,7 +351,7 @@ void CMaxFlow::AugmentCurrentPath()
         // get the edge
         const edge_id eid = current_path[i];
         Edge& e = edges[eid];
-        bottleneck = __min(bottleneck, e.res);
+        bottleneck = std::min(bottleneck, e.res);
     }
 
     assert(bottleneck > 0);
