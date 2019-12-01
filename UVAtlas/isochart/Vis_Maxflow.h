@@ -108,10 +108,10 @@ namespace Isochart
 
         // test the given node label, after ComputeMaxFlow
         // return true if the given node is to s.
-        bool TestToS(node_id id) const { return nodes[id].to_s();}
+        bool TestToS(node_id id) const { return nodes[size_t(id)].to_s();}
 
         // return true if the given node is to t.
-        bool TestToT(node_id id) const { return nodes[id].to_t();}
+        bool TestToT(node_id id) const { return nodes[size_t(id)].to_t();}
 
         // access the final flow result
         flow_type GetFlow() const { return current_flow;}

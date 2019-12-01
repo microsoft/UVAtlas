@@ -873,7 +873,7 @@ namespace
                 if (IsInZeroRangeDouble(keyPointList[jj].x - keyPointList[ii].x) &&
                     IsInZeroRangeDouble(keyPointList[jj].y - keyPointList[ii].y))
                 {
-                    keyPointList.erase(keyPointList.begin() + jj);
+                    keyPointList.erase(keyPointList.begin() + ptrdiff_t(jj));
                 }
                 else
                 {

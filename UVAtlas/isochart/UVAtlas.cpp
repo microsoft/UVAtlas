@@ -1013,10 +1013,10 @@ namespace
         //
 
         XMVECTOR C1, C2, C3, C4, res;
-        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i]);
-        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i2]);
-        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i]);
-        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i2]);
+        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
+        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
+        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
+        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
 
         res = (C1 * (1.f - du) + C2 * du) * (1.f - dv) +
             (C3 * (1.f - du) + C4 * du) * dv;
@@ -1059,8 +1059,8 @@ namespace
         float du = u - i;
         float dv = v - j;
 
-        i = i % pTexDesc->uWidth;
-        i2 = i2 % pTexDesc->uWidth;
+        i = i % int(pTexDesc->uWidth);
+        i2 = i2 % int(pTexDesc->uWidth);
 
         if (i < 0)
             i += int(pTexDesc->uWidth);
@@ -1079,10 +1079,10 @@ namespace
         //
 
         XMVECTOR C1, C2, C3, C4, res;
-        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i]);
-        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i2]);
-        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i]);
-        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i2]);
+        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
+        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
+        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
+        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
 
         res = (C1 * (1.f - du) + C2 * du) * (1 - dv) +
             (C3 * (1.f - du) + C4 * du) * dv;
@@ -1128,8 +1128,8 @@ namespace
         i = std::max(0, std::min<int>(i, int(pTexDesc->uWidth) - 1));
         i2 = std::max(0, std::min<int>(i2, int(pTexDesc->uWidth) - 1));
 
-        j = j % pTexDesc->uHeight;
-        j2 = j2 % pTexDesc->uHeight;
+        j = j % int(pTexDesc->uHeight);
+        j2 = j2 % int(pTexDesc->uHeight);
 
         if (j < 0)
             j += int(pTexDesc->uHeight);
@@ -1145,10 +1145,10 @@ namespace
         //
 
         XMVECTOR C1, C2, C3, C4, res;
-        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i]);
-        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i2]);
-        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i]);
-        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i2]);
+        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
+        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
+        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
+        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
 
         res = (C1 * (1.f - du) + C2 * du) * (1.f - dv) +
             (C3 * (1.f - du) + C4 * du) * dv;
@@ -1189,16 +1189,16 @@ namespace
         float du = u - i;
         float dv = v - j;
 
-        i = i % pTexDesc->uWidth;
-        i2 = i2 % pTexDesc->uWidth;
+        i = i % int(pTexDesc->uWidth);
+        i2 = i2 % int(pTexDesc->uWidth);
 
         if (i < 0)
             i += int(pTexDesc->uWidth);
         if (i2 < 0)
             i2 += int(pTexDesc->uWidth);
 
-        j = j % pTexDesc->uHeight;
-        j2 = j2 % pTexDesc->uHeight;
+        j = j % int(pTexDesc->uHeight);
+        j2 = j2 % int(pTexDesc->uHeight);
 
         if (j < 0)
             j += int(pTexDesc->uHeight);
@@ -1214,10 +1214,10 @@ namespace
         //
 
         XMVECTOR C1, C2, C3, C4, res;
-        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i]);
-        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i2]);
-        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i]);
-        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i2]);
+        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
+        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
+        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
+        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
 
         res = (C1 * (1.f - du) + C2 * du) * (1.f - dv) +
             (C3 * (1.f - du) + C4 * du) * dv;
@@ -1416,10 +1416,10 @@ namespace
         // C3 ---- C4  v, u --->   v
         //
 
-        const float *C1 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C2 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i2) * pTexDesc->uStride];
-        const float *C3 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C4 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i2) * pTexDesc->uStride];
+        const float *C1 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C2 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
+        const float *C3 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C4 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
 
         for (size_t k = 0; k < uSignalDimension; k++)
         {
@@ -1462,8 +1462,8 @@ namespace
         float du = u - i;
         float dv = v - j;
 
-        i = i % pTexDesc->uWidth;
-        i2 = i2 % pTexDesc->uWidth;
+        i = i % int(pTexDesc->uWidth);
+        i2 = i2 % int(pTexDesc->uWidth);
 
         if (i < 0)
             i += int(pTexDesc->uWidth);
@@ -1481,10 +1481,10 @@ namespace
         // C3 ---- C4  v, u --->   v
         //
 
-        const float *C1 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C2 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i2) * pTexDesc->uStride];
-        const float *C3 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C4 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i2) * pTexDesc->uStride];
+        const float *C1 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C2 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
+        const float *C3 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C4 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
 
         for (size_t k = 0; k < uSignalDimension; k++)
         {
@@ -1530,8 +1530,8 @@ namespace
         i = std::max(0, std::min<int>(i, int(pTexDesc->uWidth) - 1));
         i2 = std::max(0, std::min<int>(i2, int(pTexDesc->uWidth) - 1));
 
-        j = j % pTexDesc->uHeight;
-        j2 = j2 % pTexDesc->uHeight;
+        j = j % int(pTexDesc->uHeight);
+        j2 = j2 % int(pTexDesc->uHeight);
 
         if (j < 0)
             j += int(pTexDesc->uHeight);
@@ -1546,10 +1546,10 @@ namespace
         // C3 ---- C4  v, u --->   v
         //
 
-        const float *C1 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C2 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i2) * pTexDesc->uStride];
-        const float *C3 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C4 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i2) * pTexDesc->uStride];
+        const float *C1 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C2 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
+        const float *C3 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C4 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
 
         for (size_t k = 0; k < uSignalDimension; k++)
         {
@@ -1590,16 +1590,16 @@ namespace
         float du = u - i;
         float dv = v - j;
 
-        i = i % pTexDesc->uWidth;
-        i2 = i2 % pTexDesc->uWidth;
+        i = i % int(pTexDesc->uWidth);
+        i2 = i2 % int(pTexDesc->uWidth);
 
         if (i < 0)
             i += int(pTexDesc->uWidth);
         if (i2 < 0)
             i2 += int(pTexDesc->uWidth);
 
-        j = j % pTexDesc->uHeight;
-        j2 = j2 % pTexDesc->uHeight;
+        j = j % int(pTexDesc->uHeight);
+        j2 = j2 % int(pTexDesc->uHeight);
 
         if (j < 0)
             j += int(pTexDesc->uHeight);
@@ -1614,10 +1614,10 @@ namespace
         // C3 ---- C4  v, u --->   v
         //
 
-        const float *C1 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C2 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i2) * pTexDesc->uStride];
-        const float *C3 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C4 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i2) * pTexDesc->uStride];
+        const float *C1 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C2 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
+        const float *C3 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C4 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
 
         for (size_t k = 0; k < uSignalDimension; k++)
         {

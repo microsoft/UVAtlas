@@ -2851,14 +2851,14 @@ HRESULT CIsochartMesh::GetMaxLengthCutPathsInWatershed(
                     if (pEndEdge->dwVertexID[0] == dwNextVertexID)
                     {
                         dwEndVertexID = pEndEdge->dwVertexID[1];
-                        marginalEdgeList.erase(marginalEdgeList.begin() + ii);
+                        marginalEdgeList.erase(marginalEdgeList.begin() + ptrdiff_t(ii));
                         break;
                     }
 
                     if (pEndEdge->dwVertexID[1] == dwNextVertexID)
                     {
                         dwEndVertexID = pEndEdge->dwVertexID[0];
-                        marginalEdgeList.erase(marginalEdgeList.begin() + ii);
+                        marginalEdgeList.erase(marginalEdgeList.begin() + ptrdiff_t(ii));
                         break;
                     }
                 }
@@ -2875,7 +2875,7 @@ HRESULT CIsochartMesh::GetMaxLengthCutPathsInWatershed(
                     if (pMiddleEdge->dwVertexID[0] == dwNextVertexID)
                     {
                         dwNextVertexID = pMiddleEdge->dwVertexID[1];
-                        internalEdgeList.erase(internalEdgeList.begin() + ii);
+                        internalEdgeList.erase(internalEdgeList.begin() + ptrdiff_t(ii));
                         fCurrentPathLength += pMiddleEdge->fLength;
                         path->push_back(pMiddleEdge);
                         break;
@@ -2884,7 +2884,7 @@ HRESULT CIsochartMesh::GetMaxLengthCutPathsInWatershed(
                     if (pMiddleEdge->dwVertexID[1] == dwNextVertexID)
                     {
                         dwNextVertexID = pMiddleEdge->dwVertexID[0];
-                        internalEdgeList.erase(internalEdgeList.begin() + ii);
+                        internalEdgeList.erase(internalEdgeList.begin() + ptrdiff_t(ii));
                         fCurrentPathLength += pMiddleEdge->fLength;
                         path->push_back(pMiddleEdge);
                         break;

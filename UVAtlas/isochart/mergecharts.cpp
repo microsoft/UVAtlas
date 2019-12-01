@@ -719,7 +719,7 @@ HRESULT CIsochartMesh::CheckMergingToplogy(
                     if (sharedVertexList[j]->dwID == pVertex1->vertAdjacent[i])
                     {
                         checkedVertexList.push_back(sharedVertexList[j]);
-                        sharedVertexList.erase(sharedVertexList.begin() + j);
+                        sharedVertexList.erase(sharedVertexList.begin() + ptrdiff_t(j));
                         break;
                     }
                 }

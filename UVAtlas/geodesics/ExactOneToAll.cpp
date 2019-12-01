@@ -695,7 +695,7 @@ void CExactOneToAll::ProcessNewWindow( EdgeWindow *pNewEdgeWindow )
             // test the remove flag set above, and erase the invalidated window from this edge
             if ( (size_t)(pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem) == FLAG_INVALID_SIZE_T )
             {
-                pNewEdgeWindow->pEdge->WindowsList.erase(pNewEdgeWindow->pEdge->WindowsList.begin() + i);
+                pNewEdgeWindow->pEdge->WindowsList.erase(pNewEdgeWindow->pEdge->WindowsList.begin() + ptrdiff_t(i));
             }
             else
             {

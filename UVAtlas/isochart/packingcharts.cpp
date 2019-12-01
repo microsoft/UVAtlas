@@ -1141,7 +1141,7 @@ namespace
             {
                 if((r1 >= r2 && r2 >= r3) || (r1 <= r2 && r2 <= r3))
                 {
-                    border.erase(border.begin() + ii);
+                    border.erase(border.begin() + ptrdiff_t(ii));
                 }
                 else
                 {
