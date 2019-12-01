@@ -72,7 +72,7 @@ void CApproximateOneToAll::CutHeapTopData( EdgeWindow &EdgeWindowOut )
                 GetCommonPointOf2Lines( pWindowLeft->dv2Src, DVector2(pWindowLeft->b0, 0), 
                                         pWindowRight->dv2Src, DVector2(pWindowRight->b1, 0), ptRes, bTmp ) ;
 
-                double sigma = FLT_MAX ;
+                double sigma = DBL_MAX ;
                 DVector2 spie ;            
                 
                 double x1, x2, x3;
@@ -120,7 +120,7 @@ void CApproximateOneToAll::CutHeapTopData( EdgeWindow &EdgeWindowOut )
 
                 // spietmp.y must < ptRes.y (if ptRes exists, which means two line segments passed into the following GetCommonPointOf2Lines are not parallel, and ptRes.y is positive)				
                 bTmp = true ;
-                if ( (ptRes.x < FLT_MAX) && (ptRes.y > 0) )
+                if ( (ptRes.x < DBL_MAX) && (ptRes.y > 0) )
                 {
                     if ( spietmp.y > ptRes.y )
                         bTmp = false ;
@@ -133,14 +133,14 @@ void CApproximateOneToAll::CutHeapTopData( EdgeWindow &EdgeWindowOut )
                     spie = spietmp ;
                 }
                 
-                if ( sigma == FLT_MAX )
+                if ( sigma == DBL_MAX )
                 {
                     // this adjacent window cannot fulfill all the criteria listed in the paper, continue to try the next window on edge                
                     continue ;
                 }
 
                 double diflargest = 0 ;
-                double Dp = FLT_MAX ;
+                double Dp = DBL_MAX ;
                 for (size_t ca = 0; ca < 6; ++ca)
                 {
                     DVector2 tmpp ;
@@ -181,7 +181,7 @@ void CApproximateOneToAll::CutHeapTopData( EdgeWindow &EdgeWindowOut )
                                 double B0 = 2 * (spie.x * SQR(pWindowLeft->dv2Src.y) - pWindowLeft->dv2Src.x * SQR(spie.y)) ;
                                 double C0 = SQR(pWindowLeft->dv2Src.x) * SQR(spie.y) - SQR(spie.x) * SQR(pWindowLeft->dv2Src.y) ;
 
-                                if ( A0 > FLT_EPSILON || A0 < -FLT_EPSILON )
+                                if ( A0 > double(FLT_EPSILON) || A0 < double(-FLT_EPSILON) )
                                 {
                                     double discriminant = SQR(B0)-4*A0*C0;
 
@@ -229,7 +229,7 @@ void CApproximateOneToAll::CutHeapTopData( EdgeWindow &EdgeWindowOut )
                                 double B0 = 2 * (spie.x * SQR(pWindowRight->dv2Src.y) - pWindowRight->dv2Src.x * SQR(spie.y)) ;
                                 double C0 = SQR(pWindowRight->dv2Src.x) * SQR(spie.y) - SQR(spie.x) * SQR(pWindowRight->dv2Src.y) ;
 
-                                if ( A0 > FLT_EPSILON || A0 < -FLT_EPSILON )
+                                if ( A0 > double(FLT_EPSILON) || A0 < double(-FLT_EPSILON) )
                                 {
                                     double discriminant = SQR(B0)-4*A0*C0;
 

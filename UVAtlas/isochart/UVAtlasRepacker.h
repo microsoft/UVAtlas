@@ -50,7 +50,7 @@ struct _EDGE {
         maxP.x = std::max(p1.x, p2.x);
         minP.y = std::min(p1.y, p2.y);
         maxP.y = std::max(p1.y, p2.y);
-    };
+    }
 };
 
 // save the information about the chart in a specific position and rotate angle
@@ -72,7 +72,7 @@ struct ChartsInfo {
     bool valid;                         // if the chart information is valid
     float area;
     std::vector<_PositionInfo> PosInfo; // Position information of different angle
-    ChartsInfo() : maxLength(0.0), valid(false), area(0.0) {} ;    
+    ChartsInfo() : maxLength(0.0), valid(false), area(0.0) {}    
 };
 
 // 2-dimension matrix to describe the UV atlas

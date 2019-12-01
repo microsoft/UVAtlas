@@ -121,7 +121,7 @@ HRESULT CIsochartMesh::BuildSubChart(
     }
     else
     {
-        assert(pSubChart != 0);
+        assert(pSubChart != nullptr);
         try
         {
             m_children.push_back(pSubChart);
@@ -278,7 +278,7 @@ HRESULT CIsochartMesh::SmoothPartitionResult(
     while(!heap.empty())
     {
         auto pTop = heap.cutTop();
-        assert(pTop != 0 && (pTop->m_weight <= 0));
+        assert(pTop != nullptr && (pTop->m_weight <= 0));
 
         for (size_t j=0; j < pFaceGroup[pTop->m_data].size(); j++)
         {
@@ -1281,8 +1281,8 @@ static bool IsSelfOverlapping(
                 vv5 = vv2 - vv4;
                 if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5)))) continue;
 
-                DPF(1, "(%f, %f) (%f, %f) --> (%f, %f) (%f, %f)",						
-                        v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
+                DPF(1, "(%f, %f) (%f, %f) --> (%f, %f) (%f, %f)",
+                    double(v1.x), double(v1.y), double(v2.x), double(v2.y), double(v3.x), double(v3.y), double(v4.x), double(v4.y));
 
                 return true;
             }
@@ -1469,9 +1469,9 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
                     {
                         cosB = -1.0f;
                     }
-                    if (cosB > 1.0)
+                    if (cosB > 1.0f)
                     {
-                        cosB = 1.0;
+                        cosB = 1.0f;
                     }
 
                     float sinB = IsochartSqrtf(1.0f - cosB*cosB);
@@ -1504,11 +1504,11 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
                     m_pVerts[vId2].uv.x = fLen2*x + m_pVerts[vId0].uv.x;
                     m_pVerts[vId2].uv.y = fLen2*y + m_pVerts[vId0].uv.y;
 
-                    assert(_finite(m_pVerts[vId2].uv.x) != 0 &&
-                        _finite(m_pVerts[vId2].uv.y) != 0);
+                    assert(_finite(double(m_pVerts[vId2].uv.x)) != 0 &&
+                        _finite(double(m_pVerts[vId2].uv.y)) != 0);
 
-                    if (_finite(m_pVerts[vId2].uv.x) == 0 ||
-                        _finite(m_pVerts[vId2].uv.y) == 0)
+                    if (_finite(double(m_pVerts[vId2].uv.x)) == 0 ||
+                        _finite(double(m_pVerts[vId2].uv.y)) == 0)
                     {
                         DPF(0, "ProcessPlaneLikeShape failed due to INFs");
                         return E_FAIL;
@@ -2225,7 +2225,7 @@ HRESULT CIsochartMesh::CalculateRepresentiveVertices(
     const float* pfVertMappingCoord)
 {
     representativeVertsIdx.clear();
-#if BIPARTITION
+#ifdef BIPARTITION
     for (size_t dwDimIndex=0;
         dwDimIndex<dwPrimaryEigenDimension;
         dwDimIndex++)
@@ -2395,7 +2395,7 @@ HRESULT CIsochartMesh::GetMainRepresentive(
     size_t dwNumber,
     const float* pfVertGeodesicDistance)
 {
-    assert(pfVertGeodesicDistance != 0);
+    assert(pfVertGeodesicDistance != nullptr);
     assert(dwNumber >= 2);
     assert(representativeVertsIdx.size() >= 2);
 
@@ -2684,7 +2684,7 @@ HRESULT CIsochartMesh::BiPartitionParameterlizeShape(
     for (size_t ii=0; ii < m_children.size(); ii++)
     {
         CIsochartMesh* pSubChart = m_children[ii];
-        assert(pSubChart != 0);
+        assert(pSubChart != nullptr);
 
         ISOCHARTVERTEX* pNewVertex = pSubChart->m_pVerts;
         ISOCHARTVERTEX* pOldVertex;
@@ -2998,7 +2998,7 @@ HRESULT CIsochartMesh::GrowPartitionFromCutPath(
 HRESULT CIsochartMesh::ReserveFarestTwoLandmarks(
     const float* pfVertGeodesicDistance)
 {
-    assert(pfVertGeodesicDistance != 0);
+    assert(pfVertGeodesicDistance != nullptr);
     HRESULT hr = S_OK;
     m_bOrderedLandmark = true;
     if (m_landmarkVerts.size() <3)

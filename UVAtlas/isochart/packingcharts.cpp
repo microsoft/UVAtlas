@@ -75,8 +75,6 @@
 #define VECTOR_ITEM(v, axis) (((float*)(v))[axis])
 #define VECTOR_CHANGE_ITEM(v1, v2, axis, op, value) \
     {(((float*)(v1))[axis]) = (((float*)(v2))[axis]) op value;}
-#define VECTOR_ITEM_OP(v1, v2, axis, op) \
-    (((float*)(v1))[axis] op ((float*)(v2))[axis])
 
 #define CONTROL_SEARCH_BY_STEP_COUNT 1
 
@@ -144,9 +142,9 @@ namespace Isochart
         }
         ~PACKINGINFO()
         {
-            SAFE_DELETE_ARRAY(pVertUV);
-            SAFE_DELETE_ARRAY(pStandardUV);
-            SAFE_DELETE_ARRAY(pStandardVirtualCorner);
+            SAFE_DELETE_ARRAY(pVertUV)
+            SAFE_DELETE_ARRAY(pStandardUV)
+            SAFE_DELETE_ARRAY(pStandardVirtualCorner)
         }
     };
 
@@ -823,7 +821,7 @@ namespace
                 XMStoreFloat3(&v2, vv2);
         
                 if (IsInZeroRange(v1.x) && IsInZeroRange(v2.x) 
-                    && fabs(v1.y) > 0.1f && fabs(v2.y) > 0.1f
+                    && fabsf(v1.y) > 0.1f && fabsf(v2.y) > 0.1f
                     && v1.y * v2.y < 0)
                 {
                     if (v1.y > v2.y)
@@ -837,7 +835,7 @@ namespace
                 }
 
                 if (IsInZeroRange(v1.y) && IsInZeroRange(v2.y) 
-                    && fabs(v1.x) > 0.1f && fabs(v2.x) > 0.1f
+                    && fabsf(v1.x) > 0.1f && fabsf(v2.x) > 0.1f
                     && v1.x * v2.x < 0)
                 {
                     if (v1.x < v2.x)
@@ -854,7 +852,7 @@ namespace
             }
              // pOrigin, pVertex1, pVertex2 in the same line,
              // need to move origin forward, and Calculate again
-             if (fabs(fZ) < ISOCHART_ZERO_EPS)
+             if (fabsf(fZ) < ISOCHART_ZERO_EPS)
              {
                 if (f1 < f2)
                 {
@@ -955,7 +953,7 @@ namespace
                 XMStoreFloat3(&v2, vv2);
 
                 if (IsInZeroRange(v1.x) && IsInZeroRange(v2.x)
-                    && fabs(v1.y) > 0.1f && fabs(v2.y) > 0.1f
+                    && fabsf(v1.y) > 0.1f && fabsf(v2.y) > 0.1f
                     && v1.y * v2.y < 0)
                 {
                     if (v1.y > v2.y)
@@ -969,7 +967,7 @@ namespace
                 }
 
                 if (IsInZeroRange(v1.y) && IsInZeroRange(v2.y)
-                    && fabs(v1.x) > 0.1f && fabs(v2.x) > 0.1f
+                    && fabsf(v1.x) > 0.1f && fabsf(v2.x) > 0.1f
                     && v1.x * v2.x < 0)
                 {
                     if (v1.x < v2.x)
@@ -986,7 +984,7 @@ namespace
             }
             // pOrigin, pVertex1, pVertex2 in the same line,
             // need to move origin forward, and Calculate again
-            if (fabs(fZ) < ISOCHART_ZERO_EPS)
+            if (fabsf(fZ) < ISOCHART_ZERO_EPS)
             {
                 if (f1 < f2)
                 {
@@ -1138,8 +1136,8 @@ namespace
             float r2 = VECTOR_ITEM(&border[ii]->uv, RadialAxis);
             float r3 = VECTOR_ITEM(&border[ii+1]->uv, RadialAxis);
 
-            if (fabs(t1-t2) < ISOCHART_ZERO_EPS
-            && fabs(t3-t2) < ISOCHART_ZERO_EPS)
+            if (fabsf(t1-t2) < ISOCHART_ZERO_EPS
+                && fabsf(t3-t2) < ISOCHART_ZERO_EPS)
             {
                 if((r1 >= r2 && r2 >= r3) || (r1 <= r2 && r2 <= r3))
                 {
@@ -1177,14 +1175,14 @@ namespace
                 &pOrigUV[newChartBorder[k]->dwID],
                 TangentAxis,
                 +,
-                fTangentDelta);
+                fTangentDelta)
 
             VECTOR_CHANGE_ITEM(
                 &newChartBorder[k]->uv,
                 &pOrigUV[newChartBorder[k]->dwID],
                 RadialAxis,
                 +,
-                fRadialDelta);
+                fRadialDelta)
         }
 
        // Two additional vertices on each end of the border. These vertices used to guarantee
@@ -1198,14 +1196,14 @@ namespace
             &newChartBorder[1]->uv,
             TangentAxis,
             -,
-            fGutter);
+            fGutter)
 
         VECTOR_CHANGE_ITEM(
             &newChartBorder[dwNewChartBorderSize-1]->uv,
             &newChartBorder[dwNewChartBorderSize-2]->uv,
             TangentAxis,
             +,
-            fGutter);
+            fGutter)
     }
 
     inline static bool CalMinDistanceBetweenAtlasAndChart(
@@ -2100,7 +2098,7 @@ static void BruteForceFoldChecking(
                         bFoundFold = true;
                         DPF(0, "Found fold in chart %zu...", ii);
                         DPF(0, "(%f, %f) (%f, %f) --> (%f, %f) (%f, %f)",
-                                v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
+                            double(v1.x), double(v1.y), double(v2.x), double(v2.y), double(v3.x), double(v3.y), double(v4.x), double(v4.y));
                     }
                 }
             }
@@ -2154,7 +2152,7 @@ static void BruteForceOverlappingChecking(
                         DPF(0, "Chart1 %zu, Chart2 %zu\n", ii, jj);
 
                         DPF(0, "(%f, %f) (%f, %f) --> (%f, %f) (%f, %f)",
-                            v1.x, v1.y, v2.x, v2.y, v3.x, v3.y, v4.x, v4.y);
+                            double(v1.x), double(v1.y), double(v2.x), double(v2.y), double(v3.x), double(v3.y), double(v4.x), double(v4.y));
 
                         assert(!bIsIntersect);
                     }
@@ -2212,9 +2210,9 @@ HRESULT CIsochartMesh::PackingCharts(
         }
     }
 
-    DPF(3, "Area lost rate is : %f", 1 - atlasInfo.fPackedChartArea / 
-           ((atlasInfo.fBoxRight-atlasInfo.fBoxLeft) * 
-           (atlasInfo.fBoxTop-atlasInfo.fBoxBottom)));
+    DPF(3, "Area lost rate is : %f", double(1 - atlasInfo.fPackedChartArea /
+        ((atlasInfo.fBoxRight - atlasInfo.fBoxLeft) *
+        (atlasInfo.fBoxTop - atlasInfo.fBoxBottom))));
 
     // 3. Normalize the atlas to [0.0, 1.0]
     NormalizeAtlas(chartList, atlasInfo);
@@ -2340,7 +2338,7 @@ HRESULT CIsochartMesh::PreparePacking(
             gutter);
 
     atlasInfo.fGutter = gutter * atlasInfo.fPixelLength;
-    DPF(2, "Pixel Length is %f", atlasInfo.fPixelLength);
+    DPF(2, "Pixel Length is %f", double(atlasInfo.fPixelLength));
     atlasInfo.fExpectedAtlasWidth = dwWidth * atlasInfo.fPixelLength;
     atlasInfo.fWidthHeightRatio = (static_cast<float>(dwWidth)) / (dwHeight);
     atlasInfo.fBoxTop = 0;
@@ -2356,7 +2354,7 @@ HRESULT CIsochartMesh::CreateChartsPackingBuffer(
 {
     for (size_t i=0; i<chartList.size(); i++)
     {
-        assert( chartList[i] != 0 );
+        assert(chartList[i] != nullptr);
         HRESULT hr = S_OK;
         if (FAILED(hr = chartList[i]->CreatePackingInfoBuffer()))
         {
@@ -2372,7 +2370,7 @@ void CIsochartMesh::DestroyChartsPackingBuffer(
 {
     for (size_t i=0; i<chartList.size(); i++)
     {
-        assert( chartList[i] != 0 );
+        assert(chartList[i] != nullptr);
         chartList[i]->DestroyPakingInfoBuffer();
     }
 }
@@ -2420,7 +2418,7 @@ float CIsochartMesh::CalculateAllPackingChartsArea(
     float fTotalArea = 0;
     for (size_t i=0; i<chartList.size(); i++)
     {
-        assert(chartList[i] != 0);
+        assert(chartList[i] != nullptr);
         chartList[i]->m_fChart2DArea = chartList[i]->CalculateChart2DArea();
         fTotalArea += chartList[i]->m_fChart2DArea;
     }
@@ -2745,14 +2743,14 @@ HRESULT CIsochartMesh::PackingOneChart(
 
     if (dwDirMinRotationId[dwPackDirection] == INVALID_INDEX)
     {
-        DPF(0, "2d area %f", pChart->m_fChart2DArea);	
-        DPF(0, "3d area %f", pChart->m_fChart3DArea);
-        DPF(0, "Face number %zu", pChart->m_dwFaceNumber);
-        DPF(0, "Vert number %zu", pChart->m_dwVertNumber);
+        DPF(0, "2d area %f", double(pChart->m_fChart2DArea));
+        DPF(0, "3d area %f", double(pChart->m_fChart3DArea));
+        DPF(0, "Face number %zu", double(pChart->m_dwFaceNumber));
+        DPF(0, "Vert number %zu", double(pChart->m_dwVertNumber));
 
         for (size_t ii=0; ii<pChart->m_dwVertNumber; ii++)
         {
-            DPF(0, "(%f, %f)", pChart->m_pVerts[ii].uv.x, pChart->m_pVerts[ii].uv.y);
+            DPF(0, "(%f, %f)", double(pChart->m_pVerts[ii].uv.x), double(pChart->m_pVerts[ii].uv.y));
         }
     }
      
@@ -2795,10 +2793,10 @@ HRESULT CIsochartMesh::PackingOneChart(
 // Packing chart with zero area to origin
 void CIsochartMesh::PackingZeroAreaChart(CIsochartMesh* pChart)
 {
-    assert(pChart != 0);
+    assert(pChart != nullptr);
     for (size_t i=0; i<pChart->m_dwVertNumber; i++)
     {
-        assert(pChart->m_pVerts != 0);
+        assert(pChart->m_pVerts != nullptr);
         pChart->m_pVerts[i].uv.x = 0;
         pChart->m_pVerts[i].uv.y = 0;
     }
@@ -2833,8 +2831,8 @@ HRESULT CIsochartMesh::CalculateChartBordersOfAllDirection(
             &pBottomVertex);
 
         // 2. Get the top & bottom border of the rotated chart.
-        assert(pLeftVertex != 0 && pRightVertex != 0 && pLeftVertex != pRightVertex);
-        assert(pTopVertex != 0 && pBottomVertex != 0 && pTopVertex != pBottomVertex);
+        assert(pLeftVertex != nullptr && pRightVertex != nullptr && pLeftVertex != pRightVertex);
+        assert(pTopVertex != nullptr && pBottomVertex != nullptr && pTopVertex != pBottomVertex);
 
         bool bCanDecide1 = false;
         bool bCanDecide2 = false;
@@ -3154,7 +3152,7 @@ HRESULT CIsochartMesh::CalculateChartBorders(
     if ((bFirstBorderOutside && !bSecondBorderInSide) 
         || (!bFirstBorderOutside && bSecondBorderInSide))
     {
-        DPF(1, "Dot value 1 = %f, Dot value 2 = %f", fDotValue1, fDotValue2);
+        DPF(1, "Dot value 1 = %f, Dot value 2 = %f", double(fDotValue1), double(fDotValue2));
         if (fabsf(fDotValue1) < 0.1f && fabsf(fDotValue2) > 0.9f)
         {
             bSecondBorderInSide = bFirstBorderOutside;
@@ -3259,8 +3257,8 @@ HRESULT CIsochartMesh::ScanAlongBoundayEdges(
                 }
             }
 
-            assert(pScanEdge != 0);
-            _Analysis_assume_(pScanEdge != 0);
+            assert(pScanEdge != nullptr);
+            _Analysis_assume_(pScanEdge != nullptr);
 
             assert(pScanEdge->bIsBoundary && pScanEdge != pBoundaryEdge);
             if (pVertex == pStartVertex)
@@ -3398,8 +3396,8 @@ void CIsochartMesh::NormalizeAtlas(
             pVertex->uv.x = (pVertex->uv.x - atlasInfo.fBoxLeft) / fScaleW;
             pVertex->uv.y = (pVertex->uv.y - atlasInfo.fBoxBottom)/ fScaleH;
 
-            assert(_finite(pVertex->uv.x));
-            assert(_finite(pVertex->uv.y));
+            assert(_finite(double(pVertex->uv.x)));
+            assert(_finite(double(pVertex->uv.y)));
 
             if (pVertex->uv.x < 0.0f)
             {
@@ -3458,7 +3456,7 @@ void CIsochartMesh::OptimizeAtlasSignalStretch(
         pChart->m_fChart2DArea = pChart->CalculateChart2DArea();
         fTotal2DArea += pChart->m_fChart2DArea;
 
-        assert(_finite(pChart->m_fParamStretchL2) != 0);
+        assert(_finite(double(pChart->m_fParamStretchL2)) != 0);
 
         fTotal += IsochartSqrtf(
             (pChart->m_fParamStretchL2+ShiftError)*pChart->m_fChart2DArea);
@@ -3492,7 +3490,7 @@ void CIsochartMesh::OptimizeAtlasSignalStretch(
 
         pChart->ScaleChart(fScale);
 
-        assert(_finite(pChart->m_fParamStretchL2) != 0);
+        assert(_finite(double(pChart->m_fParamStretchL2)) != 0);
     }
 }
 

@@ -8,7 +8,7 @@
 //-------------------------------------------------------------------------------------
 
 #include "pch.h"
-#include "vis_maxflow.h"
+#include "Vis_Maxflow.h"
 
 using namespace Isochart;
 

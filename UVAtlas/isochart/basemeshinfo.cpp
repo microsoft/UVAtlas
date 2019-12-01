@@ -62,8 +62,8 @@ HRESULT CBaseMeshInfo::Initialize(
 {
     HRESULT hr;
 
-    assert(pfVertexArrayIn != 0);
-    assert(pdwFaceIndexArrayIn != 0);
+    assert(pfVertexArrayIn != nullptr);
+    assert(pdwFaceIndexArrayIn != nullptr);
     assert(dwVertexStrideIn >= sizeof(float)*3);
     assert(
         (DXGI_FORMAT_R16_UINT == IndexFormatIn) ||
@@ -116,7 +116,7 @@ HRESULT CBaseMeshInfo::Initialize(
     size_t dwFaceCountIn,
     const uint32_t* pdwFaceAdjacentArrayIn)
 {
-    assert(pfVertexArrayIn != 0);
+    assert(pfVertexArrayIn != nullptr);
     assert(dwVertexStrideIn >= sizeof(float)*3);
     
     pVertexArray = pfVertexArrayIn;
@@ -146,12 +146,12 @@ HRESULT CBaseMeshInfo::Initialize(
 
 void CBaseMeshInfo::Free()
 {
-    SAFE_DELETE_ARRAY(pVertPosition);
-    SAFE_DELETE_ARRAY(pFaceNormalArray);
-    SAFE_DELETE_ARRAY(pfFaceAreaArray);
-    SAFE_DELETE_ARRAY(pdwFaceAdjacentArray);
-    SAFE_DELETE_ARRAY(pFaceCanonicalUVCoordinate);
-    SAFE_DELETE_ARRAY(pFaceCanonicalParamAxis);
+    SAFE_DELETE_ARRAY(pVertPosition)
+    SAFE_DELETE_ARRAY(pFaceNormalArray)
+    SAFE_DELETE_ARRAY(pfFaceAreaArray)
+    SAFE_DELETE_ARRAY(pdwFaceAdjacentArray)
+    SAFE_DELETE_ARRAY(pFaceCanonicalUVCoordinate)
+    SAFE_DELETE_ARRAY(pFaceCanonicalParamAxis)
     
     pfIMTArray = nullptr;
     
@@ -190,7 +190,7 @@ HRESULT CBaseMeshInfo::CopyAndScaleInputVertices()
     
     for (size_t i=0; i<dwVertexCount; i++)
     {
-        pVertexCoord= (float*)pVertexBuffer;
+        pVertexCoord= reinterpret_cast<float*>(pVertexBuffer);
         for (size_t j=0; j<3; j++)
         {
             if (pfMinVector[j] > pVertexCoord[j])
@@ -225,7 +225,7 @@ HRESULT CBaseMeshInfo::CopyAndScaleInputVertices()
 
     scale = ISOCHART_MODELSCALE / scale;
 
-    DPF(0, "Scale factor is %f", scale);
+    DPF(0, "Scale factor is %f", double(scale));
     pVertexBuffer = static_cast<uint8_t*>(const_cast<void *>(pVertexArray));
     pVertexCoord= nullptr;
 
@@ -257,7 +257,7 @@ HRESULT CBaseMeshInfo::ComputeInputFaceAttributes(
     const void* pdwFaceIndexArrayIn,
     const uint32_t* pdwFaceAdjacentArrayIn)
 {
-    assert(pdwFaceIndexArrayIn != 0);
+    assert(pdwFaceIndexArrayIn != nullptr);
     
     pFaceNormalArray = new (std::nothrow) XMFLOAT3[dwFaceCount];
     if (!pFaceNormalArray)

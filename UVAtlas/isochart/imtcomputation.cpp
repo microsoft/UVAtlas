@@ -12,8 +12,6 @@
 #include "isochartmesh.h"
 #include "isochartutil.h"
 
-#define TEXEL_OFFSET 0
-
 using namespace Isochart;
 using namespace DirectX;
 
@@ -249,15 +247,15 @@ namespace
             (pNewFace[ii])->dwDepth = pFace->dwDepth + 1;
         }
 
-        assert( pNewFace[0] != 0 );
-        assert( pNewFace[1] != 0 );
-        assert( pNewFace[2] != 0 );
-        assert( pNewFace[3] != 0 );
+        assert(pNewFace[0] != nullptr);
+        assert(pNewFace[1] != nullptr);
+        assert(pNewFace[2] != nullptr);
+        assert(pNewFace[3] != nullptr);
 
-        _Analysis_assume_( pNewFace[0] != 0 );
-        _Analysis_assume_( pNewFace[1] != 0 );
-        _Analysis_assume_( pNewFace[2] != 0 );
-        _Analysis_assume_( pNewFace[3] != 0 );
+        _Analysis_assume_(pNewFace[0] != nullptr);
+        _Analysis_assume_(pNewFace[1] != nullptr);
+        _Analysis_assume_(pNewFace[2] != nullptr);
+        _Analysis_assume_(pNewFace[3] != nullptr);
 
         // 3. Specify vertex indices of each sub-triangle
         (pNewFace[0])->dwVertIdx[0] = pFace->dwVertIdx[0];
@@ -308,7 +306,7 @@ HRESULT WINAPI Isochart::IMTFromPerVertexSignal(
         dwSignalDimension,
         pfIMTArray))
     {
-        return E_INVALIDARG;;
+        return E_INVALIDARG;
     }
 
     std::unique_ptr<float[]> Ss(new (std::nothrow) float[dwSignalDimension]);
@@ -403,10 +401,10 @@ Isochart::IMTFromTextureMap(
     std::vector<SUBFACE*> finalSubFaceIdxList;
     std::vector<XMFLOAT2> vertList;
 
-    double d3dArea = fabs(Cal3DTriangleArea(
-        pV3d, pV3d+1, pV3d+2));
-    double d2dArea = fabs(Cal2DTriangleArea(
-        pUV, pUV+1, pUV+2));
+    double d3dArea = fabs(double(Cal3DTriangleArea(
+        pV3d, pV3d+1, pV3d+2)));
+    double d2dArea = fabs(double(Cal2DTriangleArea(
+        pUV, pUV+1, pUV+2)));
 
     if (IsInZeroRangeDouble(d3dArea) ||
         IsInZeroRangeDouble(d2dArea))
@@ -551,16 +549,16 @@ Isochart::IMTFromTextureMap(
             &tempIMT);
 
         double dIntegratedArea = d3dArea / (uint64_t(1) << (uint64_t(pCurrFace->dwDepth) << 1) );			
-        dTotalIMT[0] += tempIMT[0]*dIntegratedArea;
-        dTotalIMT[1] += tempIMT[1]*dIntegratedArea;
-        dTotalIMT[2] += tempIMT[2]*dIntegratedArea;
+        dTotalIMT[0] += double(tempIMT[0]) * dIntegratedArea;
+        dTotalIMT[1] += double(tempIMT[1]) * dIntegratedArea;
+        dTotalIMT[2] += double(tempIMT[2]) * dIntegratedArea;
         delete pCurrFace;
     }
 
     
     for (size_t ii = 0; ii<IMT_DIM; ii++)
     {
-        (*pfIMTArray)[ii] = static_cast<float>((*pfIMTArray)[ii] / d3dArea);
+        (*pfIMTArray)[ii] = static_cast<float>(double((*pfIMTArray)[ii]) / d3dArea);
     }
 
     // 4. Convert to canonical IMT 
@@ -726,8 +724,8 @@ namespace
         double* rgvVerticalIntersection,
         double* rgvHorizonIntersection)
     {
-        assert(rgvHorizonIntersection != 0);
-        assert(rgvVerticalIntersection != 0);
+        assert(rgvHorizonIntersection != nullptr);
+        assert(rgvVerticalIntersection != nullptr);
 
         HRESULT hr = S_OK;
 
@@ -750,13 +748,17 @@ namespace
             double fx, fy;
             if (pUV[ii].x < pUV[(ii + 1) % 3].x)
             {
-                v0.x = pUV[ii].x, v0.y = pUV[ii].y;
-                v1.x = pUV[(ii + 1) % 3].x, v1.y = pUV[(ii + 1) % 3].y;
+                v0.x = pUV[ii].x;
+                v0.y = pUV[ii].y;
+                v1.x = pUV[(ii + 1) % 3].x;
+                v1.y = pUV[(ii + 1) % 3].y;
             }
             else
             {
-                v1.x = pUV[ii].x, v1.y = pUV[ii].y;
-                v0.x = pUV[(ii + 1) % 3].x, v0.y = pUV[(ii + 1) % 3].y;
+                v1.x = pUV[ii].x;
+                v1.y = pUV[ii].y;
+                v0.x = pUV[(ii + 1) % 3].x;
+                v0.y = pUV[(ii + 1) % 3].y;
             }
 
             if (IsInZeroRangeDouble(v1.x - v0.x))
@@ -797,13 +799,17 @@ namespace
             double fx, fy;
             if (pUV[ii].y < pUV[(ii + 1) % 3].y)
             {
-                v0.x = pUV[ii].x, v0.y = pUV[ii].y;
-                v1.x = pUV[(ii + 1) % 3].x, v1.y = pUV[(ii + 1) % 3].y;
+                v0.x = pUV[ii].x;
+                v0.y = pUV[ii].y;
+                v1.x = pUV[(ii + 1) % 3].x;
+                v1.y = pUV[(ii + 1) % 3].y;
             }
             else
             {
-                v1.x = pUV[ii].x, v1.y = pUV[ii].y;
-                v0.x = pUV[(ii + 1) % 3].x, v0.y = pUV[(ii + 1) % 3].y;
+                v1.x = pUV[ii].x;
+                v1.y = pUV[ii].y;
+                v0.x = pUV[(ii + 1) % 3].x;
+                v0.y = pUV[(ii + 1) % 3].y;
             }
             if (IsInZeroRangeDouble(v1.y - v0.y))
             {
@@ -1077,10 +1083,10 @@ namespace
         */
         for (size_t ii = 0; ii < dwSignalDimension; ii++)
         {
-            double a = pfSignal[0 * dwSignalDimension + ii];
-            double b = pfSignal[1 * dwSignalDimension + ii];
-            double c = pfSignal[2 * dwSignalDimension + ii];
-            double d = pfSignal[3 * dwSignalDimension + ii];
+            auto a = double(pfSignal[0 * dwSignalDimension + ii]);
+            auto b = double(pfSignal[1 * dwSignalDimension + ii]);
+            auto c = double(pfSignal[2 * dwSignalDimension + ii]);
+            auto d = double(pfSignal[3 * dwSignalDimension + ii]);
 
             m1[ii] = a + d - c - b;
             m2[ii] = (b - a)*corner[1].y + (c - d)*corner[0].y;
@@ -1240,7 +1246,7 @@ namespace
         HRESULT hr = S_OK;
 
         dPieceArea = 0;
-        assert(tempIMT != 0);
+        assert(tempIMT != nullptr);
         memset(tempIMT, 0, sizeof(double)*IMT_DIM);
 
         DOUBLEVECTOR2 corner[2];
@@ -1443,8 +1449,8 @@ Isochart::IMTFromTextureMapEx(
     DOUBLEVECTOR2 uv[3] = {};
     for (size_t ii = 0; ii<3; ii++)
     {
-        uv[ii].x = pUV[ii].x;
-        uv[ii].y = pUV[ii].y;		
+        uv[ii].x = double(pUV[ii].x);
+        uv[ii].y = double(pUV[ii].y);
     }
 
     GetCoveredPixelsCount(
@@ -1515,8 +1521,8 @@ Isochart::IMTFromTextureMapEx(
         }
     }
 
-    DPF(3, "2d area by formal %f", f2dArea);
-    DPF(3, "integrated 2d area %f", float(dTotal2DArea));
+    DPF(3, "2d area by formal %f", double(f2dArea));
+    DPF(3, "integrated 2d area %f", dTotal2DArea);
 
     // 2. Standard face parameterizaion
     for (size_t ii = 0; ii<IMT_DIM; ii++)

@@ -235,7 +235,7 @@ inline void GetIMTOnCanonicalFace(
     const float f3D,
     float* pIMT)
 {
-    assert(pIMT != 0 && pMT != 0);
+    assert(pIMT != nullptr && pMT != nullptr);
 
     for (size_t ii=0; ii<IMT_DIM; ii++)
     {
@@ -322,12 +322,12 @@ inline void AffineIMTOn2D(
         pNewUv0,
         pNewUv1,
         pNewUv2,
-        (const float*)(pOldUv0),
-        (const float*)(pOldUv1),
-        (const float*)(pOldUv2),
+        reinterpret_cast<const float*>(pOldUv0),
+        reinterpret_cast<const float*>(pOldUv1),
+        reinterpret_cast<const float*>(pOldUv2),
         2,
-        (float*)&Ss,
-        (float*)&St);
+        reinterpret_cast<float*>(&Ss),
+        reinterpret_cast<float*>(&St));
 
     if (pGeo)
     {
@@ -362,7 +362,8 @@ inline void TransformUV(
     float u = pMatrix[0]*oldUv.x + pMatrix[1]*oldUv.y;
     float v = pMatrix[2]*oldUv.x + pMatrix[3]*oldUv.y;
 
-    newUv.x = u, newUv.y = v;
+    newUv.x = u;
+    newUv.y = v;
     return;
 }
 

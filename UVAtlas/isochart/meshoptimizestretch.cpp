@@ -107,9 +107,9 @@ namespace Isochart
 
         ~CHARTOPTIMIZEINFO()
         {
-            SAFE_DELETE_ARRAY(pfVertStretch);
-            SAFE_DELETE_ARRAY(pfFaceStretch);
-            SAFE_DELETE_ARRAY(pHeapItems);
+            SAFE_DELETE_ARRAY(pfVertStretch)
+            SAFE_DELETE_ARRAY(pfFaceStretch)
+            SAFE_DELETE_ARRAY(pHeapItems)
         }
     };
 
@@ -134,20 +134,9 @@ namespace
     //////////// Configuration of stretch optimization/////////
     ///////////////////////////////////////////////////////////
 
-    // when 10%+ vertices have infinite stretch, it's hard to get good results 
-    // anyway.so don't apply optimize any more 0.1 is based on Kun's examination
-    const float MAX_INFINITE_STRETCH_VERT_PERCENT = 0.1f;
-
     // When vertex being optimized, if the distance between new and old 
     // positions less than OPTIMIZE_TOLERANCE, stop optimize
     const float OPTIMIZE_TOLERANCE = 1e-4f;
-
-    // How many times to optimize the stretch of all vertices in the same chart.
-    const size_t ALL_VERTICES_OPTIMIZE_COUNT = 6;
-
-    // Stop optimization when max stretch is smaller than STRETCH_TO_STOP_OPTIMIZE,
-    const float STRETCH_TO_STOP_OPTIMIZE = 1.5f;
-    const float STRETCH_TO_STOP_OPTIMIZE_IMT = 1e4f;
 
     // If the max stretch changes less than MINIMAL_OPTIMIZE_CHANGE, stop optimize.
     // Because more optimization won't improve result.
@@ -336,8 +325,8 @@ HRESULT CIsochartMesh::OptimalScaleChart(
         {
             const FLOAT3* p = 
                 baseInfo.pfIMTArray+chartList[ii]->m_pFaces->dwIDInRootMesh;
-            if (((*p)[0] > (*p)[2] && (*p)[2] / (*p)[0] < 1e-8) ||
-                ((*p)[0] < (*p)[2] && (*p)[0] / (*p)[2] < 1e-8) )
+            if (((*p)[0] > (*p)[2] && (*p)[2] / (*p)[0] < 1e-8f) ||
+                ((*p)[0] < (*p)[2] && (*p)[0] / (*p)[2] < 1e-8f) )
             {
                 continue;
             }
@@ -463,12 +452,12 @@ HRESULT CIsochartMesh::OptimizeWholeChart(
             DPF(0, "Can not opimize scale all chart, some face has infinite stretch");
             goto LEnd;
         }
-        dm[0] += m[0];dm[1] += m[1];dm[2] += m[2];
+        dm[0] += double(m[0]); dm[1] += double(m[1]); dm[2] += double(m[2]);
 
         float fFace3DArea = m_baseInfo.pfFaceAreaArray[pFace->dwIDInRootMesh];
-        dGeoM[0] += geoM[0] * fFace3DArea;
-        dGeoM[1] += geoM[1] * fFace3DArea;
-        dGeoM[2] += geoM[2] * fFace3DArea;
+        dGeoM[0] += double(geoM[0] * fFace3DArea);
+        dGeoM[1] += double(geoM[1] * fFace3DArea);
+        dGeoM[2] += double(geoM[2] * fFace3DArea);
         pFace++;
     }
     
@@ -484,11 +473,11 @@ HRESULT CIsochartMesh::OptimizeWholeChart(
         CHART_MAX_SCALE_FACTOR,
         matrix);
 
-    fNewGeoL2Stretch 
+    fNewGeoL2Stretch
         = static_cast<float>(
-        (dGeoM[0] * (matrix[0]*matrix[0] + matrix[2]*matrix[2])
-        + dGeoM[2] * (matrix[1]*matrix[1] + matrix[3]*matrix[3])
-        + 2*dGeoM[1]*(matrix[1]*matrix[0] + matrix[2]*matrix[3]))/2);
+        (dGeoM[0] * double(matrix[0] * matrix[0] + matrix[2] * matrix[2])
+            + dGeoM[2] * double(matrix[1] * matrix[1] + matrix[3] * matrix[3])
+            + 2 * dGeoM[1] * double(matrix[1] * matrix[0] + matrix[2] * matrix[3])) / 2);
     if (fNewGeoL2Stretch > fMaxAvgGeoL2Stretch*m_fChart3DArea)
     {
         goto LEnd;
@@ -630,9 +619,9 @@ HRESULT CIsochartMesh::InitOptimizeInfo(
 void CIsochartMesh::ReleaseOptimizeInfo(
     CHARTOPTIMIZEINFO& optimizeInfo)
 {
-    SAFE_DELETE_ARRAY(optimizeInfo.pfFaceStretch);
-    SAFE_DELETE_ARRAY(optimizeInfo.pfVertStretch);
-    SAFE_DELETE_ARRAY(optimizeInfo.pHeapItems);
+    SAFE_DELETE_ARRAY(optimizeInfo.pfFaceStretch)
+    SAFE_DELETE_ARRAY(optimizeInfo.pfVertStretch)
+    SAFE_DELETE_ARRAY(optimizeInfo.pHeapItems)
 }
 
 HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)
@@ -1455,7 +1444,7 @@ HRESULT CIsochartMesh::OptimizeVerticesInHeap(
     while(!heap.empty())
     {
         auto pTop = heap.cutTop();
-        assert(pTop != 0);
+        assert(pTop != nullptr);
 
         // If stretch is small enough, don't perform optimization.
         if (pTop->m_weight < optimizeInfo.fBarToStopOptAll)
@@ -1790,7 +1779,6 @@ bool CIsochartMesh::OptimizeVertexStretchAroundCenter(
 {
     ISOCHARTVERTEX* pOptimizeVertex = vertInfo.pOptimizeVertex;
 
-    XMFLOAT2 originalStart = vertInfo.start; // -Wunused-variable
     float fOriginalStartStretch = vertInfo.fStartStretch;
 
     XMFLOAT2 originalEnd = vertInfo.end;
@@ -2266,8 +2254,8 @@ void CIsochartMesh::ParameterizeOneFace(
             m_pVerts[m_pFaces->dwVertexID[2]].uv,
             fNew2DArea);
 
-        DPF(1, "New Area %f", fNew2DArea);
-        DPF(3, "Theory Stretch %f, New Stretch %f", m_fParamStretchL2, fNewStretch);		
+        DPF(1, "New Area %f", double(fNew2DArea));
+        DPF(3, "Theory Stretch %f, New Stretch %f", double(m_fParamStretchL2), double(fNewStretch));
     }
     else
     {

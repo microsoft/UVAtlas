@@ -164,7 +164,7 @@ namespace Isochart
                 , m_iFlag(0), depth(0)
             {
                 edges.reserve(m_expect_degree);
-            };
+            }
 
             cap_type capacity;
             cap_type resident; // resident > 0 to s; or < 0 to t;
@@ -248,7 +248,7 @@ namespace Isochart
         };
 
         // reverse direction is accessed by odd and even transition
-        const edge_id reverse_edge(edge_id eid) const
+        edge_id reverse_edge(edge_id eid) const
         {
             return eid ^ 0x1;
         }

@@ -236,14 +236,14 @@ public:
 
     bool IsInitChart() const { return m_bIsInitChart; }
     bool IsOptimizedL2Stretch() const { return m_bOptimizedL2Stretch; }
-    bool IsIMTSpecified() const { return m_baseInfo.pfIMTArray != 0; }
+    bool IsIMTSpecified() const { return m_baseInfo.pfIMTArray != nullptr; }
     bool HasBoundaryVertex() const;
 
     /////////////////////////////////////////////////////////////
     //////////////Basic Data Member Access Methods///////////////
     /////////////////////////////////////////////////////////////
     size_t GetVertexNumber(){ return m_dwVertNumber; }
-    ISOCHARTVERTEX* GetVertexBuffer() const { return m_pVerts; };
+    ISOCHARTVERTEX* GetVertexBuffer() const { return m_pVerts; }
 
     size_t GetFaceNumber(){ return m_dwFaceNumber; }
     ISOCHARTFACE* GetFaceBuffer() const { return m_pFaces; }
@@ -1322,7 +1322,7 @@ private:
 
     bool m_bNeedToClean;
 
-    #if _USE_EXACT_ALGORITHM
+    #ifdef _USE_EXACT_ALGORITHM
     GeodesicDist::CExactOneToAll m_ExactOneToAllEngine ;
     #else
     GeodesicDist::CApproximateOneToAll m_ApproximateOneToAllEngine ;

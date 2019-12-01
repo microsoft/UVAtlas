@@ -121,11 +121,11 @@ HRESULT CIsochartMesh::AddFaceWeight(
         axis);
 
     double t = 
-        (v2d[0].x*v2d[1].y - v2d[0].y*v2d[1].x) +
-        (v2d[1].x*v2d[2].y - v2d[1].y*v2d[2].x) +
-        (v2d[2].x*v2d[0].y - v2d[2].y*v2d[0].x);
+        double(v2d[0].x*v2d[1].y - v2d[0].y*v2d[1].x) +
+        double(v2d[1].x*v2d[2].y - v2d[1].y*v2d[2].x) +
+        double(v2d[2].x*v2d[0].y - v2d[2].y*v2d[0].x);
 
-    t = static_cast<double>(IsochartSqrt(t));
+    t = IsochartSqrt(t);
     if (IsInZeroRange2(static_cast<float>(t)))
     {
         return hr;
@@ -136,8 +136,8 @@ HRESULT CIsochartMesh::AddFaceWeight(
     {
         ISOCHARTVERTEX& vert = m_pVerts[face.dwVertexID[ii]];
 
-        double w_r = v2d[(ii+2)%3].x - v2d[(ii+1)%3].x;
-        double w_i = v2d[(ii+2)%3].y - v2d[(ii+1)%3].y;
+        double w_r = double(v2d[(ii+2)%3].x - v2d[(ii+1)%3].x);
+        double w_i = double(v2d[(ii+2)%3].y - v2d[(ii+1)%3].y);
 
         size_t dwCol1;
         size_t dwCol2;
@@ -192,10 +192,10 @@ HRESULT CIsochartMesh::EstimateSolution(
         return E_OUTOFMEMORY;
     }
 
-    V[0] = static_cast<double>(1.0);
-    V[1] = static_cast<double>(0.0);
-    V[2] = static_cast<double>(-1.0);
-    V[3] = static_cast<double>(0.0);
+    V[0] = 1.0;
+    V[1] = 0.0;
+    V[2] = -1.0;
+    V[3] = 0.0;
     return S_OK;
 }
 
@@ -268,7 +268,7 @@ HRESULT CIsochartMesh::InitializeLSCMEquation(
         return E_OUTOFMEMORY;
     }
     assert(orgB.size() == 2*m_dwFaceNumber);
-    CVector<double>::scale(orgB, orgB, static_cast<double>(-1));
+    CVector<double>::scale(orgB, orgB, -1.0);
 
     // A' = A^T * A
     if (!CSparseMatrix<double>::Mat_Trans_MUL_Mat(A, orgA))
@@ -296,21 +296,21 @@ HRESULT CIsochartMesh::CheckLinearEquationParamResult(
     for (size_t ii=0; ii<m_dwFaceNumber; ii++)
     {
         ISOCHARTFACE& face = m_pFaces[ii];
-        double fA = Cal2DTriangleArea(
+        float fA = Cal2DTriangleArea(
             m_pVerts[face.dwVertexID[0]].uv,
             m_pVerts[face.dwVertexID[1]].uv,
             m_pVerts[face.dwVertexID[2]].uv);
         if (fA < 0)
         {
-            DPF(1, "Negative face %f", fA);
+            DPF(1, "Negative face %f", double(fA));
             bIsOverLap = true;
             return hr;
         }
-        fTotal2D += fA;
+        fTotal2D += double(fA);
     }
 
     bIsOverLap = false;
-    ScaleChart(static_cast<float>(IsochartSqrt(m_fChart3DArea/fTotal2D)));
+    ScaleChart(static_cast<float>(IsochartSqrt(double(m_fChart3DArea)/fTotal2D)));
     m_fChart2DArea = m_fChart3DArea;
 
     m_bIsParameterized = true;
@@ -360,7 +360,7 @@ HRESULT CIsochartMesh::LSCMParameterization(
             A,
             B,
             LSCM_MAX_ITERATION,
-            static_cast<double>(1e-8),
+            1e-8,
             nIterCount) ? S_OK : E_FAIL));
     if (nIterCount >= LSCM_MAX_ITERATION)
     {

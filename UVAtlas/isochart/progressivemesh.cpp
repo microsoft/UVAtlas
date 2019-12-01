@@ -91,10 +91,10 @@ CProgressiveMesh::~CProgressiveMesh()
 // Release all memory resource
 void CProgressiveMesh::Clear()
 {
-    SAFE_DELETE_ARRAY(m_pVertArray);
-    SAFE_DELETE_ARRAY(m_pFaceArray);
-    SAFE_DELETE_ARRAY(m_pEdgeArray);
-    SAFE_DELETE_ARRAY(m_pQuadricArray);
+    SAFE_DELETE_ARRAY(m_pVertArray)
+    SAFE_DELETE_ARRAY(m_pFaceArray)
+    SAFE_DELETE_ARRAY(m_pEdgeArray)
+    SAFE_DELETE_ARRAY(m_pQuadricArray)
 
     m_dwVertNumber = 0;
     m_dwFaceNumber = 0;
@@ -174,9 +174,9 @@ HRESULT CProgressiveMesh::Simplify()
     {
         pHeapItems[i].m_weight = -m_pEdgeArray[i].fDeleteCost;
         
-        if (pHeapItems[i].m_weight > -ISOCHART_ZERO_EPS)
+        if (pHeapItems[i].m_weight > double(-ISOCHART_ZERO_EPS))
         {
-            pHeapItems[i].m_weight = -ISOCHART_ZERO_EPS;
+            pHeapItems[i].m_weight = double(-ISOCHART_ZERO_EPS);
         }
         pHeapItems[i].m_data = i;
         if (!heap.insert(pHeapItems+i))
@@ -324,8 +324,8 @@ bool CProgressiveMesh::PrepareDeletingEdge(
     PMISOCHARTVERTEX** ppDeleteVertex,
     bool& bIsGeodesicValid)
 {
-    assert(ppReserveVertex != 0);
-    assert(ppDeleteVertex != 0);
+    assert(ppReserveVertex != nullptr);
+    assert(ppDeleteVertex != nullptr);
     bIsGeodesicValid = true;
 
     // 1. If current has been deleted, return
@@ -625,7 +625,7 @@ void CProgressiveMesh::UpdateSufferedEdgesAttrib(
 
         PMISOCHARTEDGE* pEdgeToDeleteVert =
             m_pEdgeArray + pDeleteVertex->edgeAdjacent[j];
-        assert(pEdgeToDeleteVert != 0);
+        assert(pEdgeToDeleteVert != nullptr);
         if (!IsEdgeOppositeToVertex(pEdgeToDeleteVert, pReserveVertex))
         {
             continue;
@@ -639,7 +639,7 @@ void CProgressiveMesh::UpdateSufferedEdgesAttrib(
                 pCurrentEdge,
                 pEdgeToDeleteVert,
                 pReserveVertex);
-        assert(pEdgeToReserveVert != 0);
+        assert(pEdgeToReserveVert != nullptr);
 
         if (pEdgeToDeleteVert->bIsBoundary)
         {
@@ -1032,7 +1032,7 @@ void CProgressiveMesh::UpdateSufferedEdgesCost(
             m_pEdgeArray + dwCurrentEdgeIndex;
 
         CalculateEdgeQuadricError(pEdge1);
-        float fNewDeleteCost = -static_cast<float>(fabs(pEdge1->fDeleteCost));
+        auto fNewDeleteCost = -static_cast<float>(fabs(pEdge1->fDeleteCost));
         if (fNewDeleteCost > -ISOCHART_ZERO_EPS)
         {
             fNewDeleteCost = -ISOCHART_ZERO_EPS;
@@ -1040,11 +1040,11 @@ void CProgressiveMesh::UpdateSufferedEdgesCost(
 
         if (pHeapItems[dwCurrentEdgeIndex].isItemInHeap())
         {
-            heap.update(pHeapItems+dwCurrentEdgeIndex, fNewDeleteCost);
+            heap.update(pHeapItems+dwCurrentEdgeIndex, double(fNewDeleteCost));
         }
         else
         {
-            pHeapItems[dwCurrentEdgeIndex].m_weight = fNewDeleteCost;
+            pHeapItems[dwCurrentEdgeIndex].m_weight = double(fNewDeleteCost);
         }
     }
     return;
@@ -1208,9 +1208,9 @@ HRESULT CProgressiveMesh::CalculateQuadricArray()
             PMISOCHARTFACE* pFace = m_pFaceArray + i;
             PMISOCHARTVERTEX* pVert = m_pVertArray + pFace->dwVertexID[0];
             normal = pFace->normal;
-            fTemp = IsochartVec3Dot(
+            fTemp = double(IsochartVec3Dot(
                 &normal, 
-                m_baseInfo.pVertPosition+pVert->dwIDInRootMesh);
+                m_baseInfo.pVertPosition+pVert->dwIDInRootMesh));
 
             fTemp = -fTemp;
             /*
@@ -1243,9 +1243,9 @@ HRESULT CProgressiveMesh::CalculateQuadricArray()
             pQuadric->fQA[2][0] = pQuadric->fQA[0][2];
             pQuadric->fQA[2][1] = pQuadric->fQA[1][2];
 
-            pQuadric->fQB[0] = normal.x * fTemp;
-            pQuadric->fQB[1] = normal.y * fTemp;
-            pQuadric->fQB[2] = normal.z * fTemp;
+            pQuadric->fQB[0] = double(normal.x) * fTemp;
+            pQuadric->fQB[1] = double(normal.y) * fTemp;
+            pQuadric->fQB[2] = double(normal.z) * fTemp;
         
 
             pQuadric->fQC = fTemp * fTemp;
@@ -1278,28 +1278,28 @@ HRESULT CProgressiveMesh::CalculateQuadricArray()
                 IsochartVec3Cross(&normal, &tempVector, &(pFace->normal));
                 XMStoreFloat3(&normal, XMVector3Normalize(XMLoadFloat3(&normal)));
 
-                fTemp = IsochartVec3Dot(
+                fTemp = double(IsochartVec3Dot(
                     &normal, 
                     m_baseInfo.pVertPosition
-                        +m_pVertArray[pEdge->dwVertexID[0]].dwIDInRootMesh);
+                        +m_pVertArray[pEdge->dwVertexID[0]].dwIDInRootMesh));
 
                 fTemp = -fTemp;
 
-                pQuadric->fQA[0][0] = normal.x * normal.x;
-                pQuadric->fQA[1][1] = normal.y * normal.y;
-                pQuadric->fQA[2][2] = normal.z * normal.z;
+                pQuadric->fQA[0][0] = double(normal.x * normal.x);
+                pQuadric->fQA[1][1] = double(normal.y * normal.y);
+                pQuadric->fQA[2][2] = double(normal.z * normal.z);
 
-                pQuadric->fQA[0][1] = normal.x * normal.y;
-                pQuadric->fQA[0][2] = normal.x * normal.z;
-                pQuadric->fQA[1][2] = normal.y * normal.z;
+                pQuadric->fQA[0][1] = double(normal.x * normal.y);
+                pQuadric->fQA[0][2] = double(normal.x * normal.z);
+                pQuadric->fQA[1][2] = double(normal.y * normal.z);
 
-                pQuadric->fQA[1][0] = pQuadric->fQA[0][1];
-                pQuadric->fQA[2][0] = pQuadric->fQA[0][2];
-                pQuadric->fQA[2][1] = pQuadric->fQA[1][2];
+                pQuadric->fQA[1][0] = double(pQuadric->fQA[0][1]);
+                pQuadric->fQA[2][0] = double(pQuadric->fQA[0][2]);
+                pQuadric->fQA[2][1] = double(pQuadric->fQA[1][2]);
 
-                pQuadric->fQB[0] = normal.x * fTemp;
-                pQuadric->fQB[1] = normal.y * fTemp;
-                pQuadric->fQB[2] = normal.z * fTemp;
+                pQuadric->fQB[0] = double(normal.x) * fTemp;
+                pQuadric->fQB[1] = double(normal.y) * fTemp;
+                pQuadric->fQB[2] = double(normal.z) * fTemp;
 
                 pQuadric->fQC = fTemp * fTemp;
 
@@ -1467,18 +1467,18 @@ double CProgressiveMesh::QuadricError(
         tempV[i] = 0.0;
         for (size_t j=0; j<3; j++)
         {
-            tempV[i] = tempV[i] + fVector[j]*quadricErrorMetric.fQA[i][j];
+            tempV[i] = tempV[i] + double(fVector[j]) * quadricErrorMetric.fQA[i][j];
         }
     }
 
     for (size_t i=0; i<3; i++)
     {
-        quadricError = quadricError + tempV[i] * fVector[i];
+        quadricError = quadricError + tempV[i] * double(fVector[i]);
     }
 
     for (size_t i=0; i<3; i++)
     {
-        quadricError = quadricError + 2 * quadricErrorMetric.fQB[i] * fVector[i];
+        quadricError = quadricError + 2 * quadricErrorMetric.fQB[i] * double(fVector[i]);
     }
 
     quadricError = quadricError + quadricErrorMetric.fQC;

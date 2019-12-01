@@ -261,7 +261,7 @@ HRESULT CIsochartMesh::PerformMerging(
         }
 
         CMaxHeapItem<uint32_t, uint32_t>*pTop = heap.cutTop();
-        assert (pTop != 0);
+        assert (pTop != nullptr);
 
         uint32_t index = pTop->m_data;
         assert(pTop == pHeapItems.get()+ index);
@@ -846,9 +846,9 @@ HRESULT CIsochartMesh::TryMergeChart(
     const CIsochartMesh* pChart2,
     CIsochartMesh** ppFinialChart)
 {
-    assert(pChart1 != 0);
-    assert(pChart2 != 0);
-    assert(ppFinialChart != 0);
+    assert(pChart1 != nullptr);
+    assert(pChart2 != nullptr);
+    assert(ppFinialChart != nullptr);
     *ppFinialChart = nullptr;
 
     std::vector<uint32_t> vertMap;
@@ -942,8 +942,8 @@ HRESULT CIsochartMesh::TryMergeChart(
         if (!bSimpleChart)
         {
             CIsochartMesh* pChild = pMainChart->GetChild(0);
-            assert( pChild != 0 );
-            _Analysis_assume_( pChild != 0 );
+            assert(pChild != nullptr);
+            _Analysis_assume_(pChild != nullptr);
             pMainChart->UnlinkChild(0);
             delete pMainChart;
             pMainChart = pChild;		

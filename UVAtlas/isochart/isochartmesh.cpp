@@ -134,8 +134,8 @@ void CIsochartMesh::DeleteChildren()
 
 void CIsochartMesh::Free()
 {
-    SAFE_DELETE_ARRAY(m_pVerts);
-    SAFE_DELETE_ARRAY(m_pFaces);
+    SAFE_DELETE_ARRAY(m_pVerts)
+    SAFE_DELETE_ARRAY(m_pFaces)
 
     DestroyPakingInfoBuffer();
     DeleteChildren();
@@ -258,8 +258,8 @@ HRESULT CIsochartMesh::BuildRootChart(
     CIsochartMesh* pChart,
     bool bIsForPartition)
 {
-    assert(pFaceIndexArray != 0);
-    assert(pChart != 0);
+    assert(pFaceIndexArray != nullptr);
+    assert(pChart != nullptr);
 
     HRESULT hr = S_OK;
 
@@ -279,7 +279,7 @@ HRESULT CIsochartMesh::BuildRootChart(
     pChart->m_pVerts = new (std::nothrow) ISOCHARTVERTEX[dwVertexCount];
     if (!pChart->m_pVerts)
     {
-        SAFE_DELETE_ARRAY(pChart->m_pFaces);
+        SAFE_DELETE_ARRAY(pChart->m_pFaces)
         return E_OUTOFMEMORY;
     }
 
@@ -445,7 +445,7 @@ namespace
         for (size_t i = 0; i < 3; i++)
         {
             size_t uNeighbor = uFace * 3 + i;
-            if (pdwFalseEdges[uNeighbor] != -1)
+            if (pdwFalseEdges[uNeighbor] != uint32_t(-1))
             {
                 if (FAILED(hr = AddConnectedFalseEdges(pList, pdwAdj, pdwFalseEdges, pdwAdj[uNeighbor])))
                     return hr;
@@ -532,7 +532,7 @@ namespace
             {
                 pIdx[iVert] = static_cast<uint32_t>(dwNewVertCount++);
 
-                if (pAdjacency[iVert] == INVALID_FACE_ID || (pFalseEdge[iVert] != -1))
+                if (pAdjacency[iVert] == INVALID_FACE_ID || (pFalseEdge[iVert] != uint32_t(-1)))
                 {
                     continue;
                 }
@@ -633,7 +633,7 @@ HRESULT CIsochartMesh::ReBuildRootChartByAdjacence()
 
     if (dwNewVertCount != m_dwVertNumber)
     {
-        SAFE_DELETE_ARRAY(m_pVerts);
+        SAFE_DELETE_ARRAY(m_pVerts)
         m_dwVertNumber = dwNewVertCount;
         m_pVerts = new (std::nothrow) ISOCHARTVERTEX[m_dwVertNumber];
         if (!m_pVerts)
@@ -819,14 +819,14 @@ LEnd:
     if (!IsIMTSpecified())
     {
         assert(pfVertGeodesicDistance == pfVertCombineDistance);
-        SAFE_DELETE_ARRAY(pfVertGeodesicDistance);
+        SAFE_DELETE_ARRAY(pfVertGeodesicDistance)
     }
     else
     {
-        SAFE_DELETE_ARRAY(pfVertGeodesicDistance);
-        SAFE_DELETE_ARRAY(pfVertCombineDistance);
+        SAFE_DELETE_ARRAY(pfVertGeodesicDistance)
+        SAFE_DELETE_ARRAY(pfVertCombineDistance)
     }
-    SAFE_DELETE_ARRAY(pfVertMappingCoord);
+    SAFE_DELETE_ARRAY(pfVertMappingCoord)
     return hr;
 }
 
@@ -1012,12 +1012,12 @@ LEnd:
     if (!IsIMTSpecified())
     {
         assert(pfVertCombineDistance == pfVertGeoDistance);
-        SAFE_DELETE_ARRAY(pfVertGeoDistance);	
+        SAFE_DELETE_ARRAY(pfVertGeoDistance)	
     }
     else
     {
-        SAFE_DELETE_ARRAY(pfVertCombineDistance);
-        SAFE_DELETE_ARRAY(pfVertGeoDistance);
+        SAFE_DELETE_ARRAY(pfVertCombineDistance)
+        SAFE_DELETE_ARRAY(pfVertGeoDistance)
     }
 
     return hr;
@@ -1106,12 +1106,12 @@ LEnd:
     if (!IsIMTSpecified())
     {
         assert(pfVertCombineDistance == pfVertGeoDistance);
-        SAFE_DELETE_ARRAY(pfVertGeoDistance);	
+        SAFE_DELETE_ARRAY(pfVertGeoDistance)	
     }
     else
     {
-        SAFE_DELETE_ARRAY(pfVertCombineDistance);
-        SAFE_DELETE_ARRAY(pfVertGeoDistance);
+        SAFE_DELETE_ARRAY(pfVertCombineDistance)
+        SAFE_DELETE_ARRAY(pfVertGeoDistance)
     }
     return hr;
 }
@@ -1187,9 +1187,9 @@ HRESULT CIsochartMesh::IsomapParameterlization(
     float** ppfVertCombineDistance,
     float** ppfVertMappingCoord)
 {
-    assert(ppfVertGeodesicDistance != 0);
-    assert(ppfVertCombineDistance != 0);
-    assert(ppfVertMappingCoord != 0);
+    assert(ppfVertGeodesicDistance != nullptr);
+    assert(ppfVertCombineDistance != nullptr);
+    assert(ppfVertMappingCoord != nullptr);
 
     HRESULT hr = S_OK;	
     bIsLikePlane = false;
@@ -1271,7 +1271,7 @@ HRESULT CIsochartMesh::IsomapParameterlization(
     {
         goto LEnd;
     }
-    SAFE_DELETE_ARRAY(pfGeodesicMatrix);
+    SAFE_DELETE_ARRAY(pfGeodesicMatrix)
 
     assert(dwMaxEigenDimension >= dwCalculatedDimension);
     
@@ -1340,15 +1340,15 @@ HRESULT CIsochartMesh::IsomapParameterlization(
 
     m_bIsParameterized = true;
 LEnd:
-    SAFE_DELETE_ARRAY(pfGeodesicMatrix);
+    SAFE_DELETE_ARRAY(pfGeodesicMatrix)
     if (FAILED(hr))
     {
-        SAFE_DELETE_ARRAY(pfVertGeodesicDistance);
+        SAFE_DELETE_ARRAY(pfVertGeodesicDistance)
         if (bIsSignalSpecialized)
         {
-            SAFE_DELETE_ARRAY(pfVertCombinedDistance);
+            SAFE_DELETE_ARRAY(pfVertCombinedDistance)
         }
-        SAFE_DELETE_ARRAY(pfVertMappingCoord);
+        SAFE_DELETE_ARRAY(pfVertMappingCoord)
     }
     else
     {
@@ -1371,8 +1371,8 @@ HRESULT CIsochartMesh::BuildFullConnection(bool& bIsManifold)
 {
     HRESULT hr = S_OK;
     
-    assert (m_pVerts != 0);
-    assert (m_pFaces != 0);
+    assert (m_pVerts != nullptr);
+    assert (m_pFaces != nullptr);
 
     // 1. Clear old adjacence of each vertex.
     ClearVerticesAdjacence();
@@ -2220,7 +2220,7 @@ CIsochartMesh::SortAdjacentVerticesOfInternalVertex(
 void CIsochartMesh::GetFaceAdjacentArray(
     uint32_t* pdwFaceAdjacentArray) const
 {
-    assert(pdwFaceAdjacentArray != 0);
+    assert(pdwFaceAdjacentArray != nullptr);
 
     uint32_t *pFaceAjacence = pdwFaceAdjacentArray;
     for (size_t i=0; i<m_dwFaceNumber; i++)
@@ -2361,7 +2361,7 @@ HRESULT CIsochartMesh::ExtractIndependentObject(
     VERTEX_ARRAY& vertList,
     CIsochartMesh** ppChart) const
 {
-    assert(ppChart != 0);
+    assert(ppChart != nullptr);
     if (vertList.empty())
     {
         return S_OK;
@@ -2507,7 +2507,7 @@ HRESULT CIsochartMesh::FindAllBoundaries(
     std::vector<uint32_t>& boundaryRecord,
     uint32_t *pdwVertBoundaryID)
 {
-    assert(pdwVertBoundaryID != 0);
+    assert(pdwVertBoundaryID != nullptr);
 
     HRESULT hr = S_OK;
 
@@ -2825,7 +2825,7 @@ HRESULT CIsochartMesh::DecreaseBoundary(
     std::vector<uint32_t>& boundaryRecord,
     uint32_t *pdwVertBoundaryID)
 {
-    assert(pdwVertBoundaryID != 0);
+    assert(pdwVertBoundaryID != nullptr);
     assert(!allBoundaryList.empty());
     assert(!boundaryRecord.empty());
 
@@ -2859,7 +2859,7 @@ CIsochartMesh::CalVertWithMinDijkstraDistanceToSrc(
     uint32_t& dwPeerVertID,
     uint32_t *pdwVertBoundaryID)
 {
-    assert(pdwVertBoundaryID != 0);
+    assert(pdwVertBoundaryID != nullptr);
 
     HRESULT hr = S_OK;
     if (FAILED(hr = CalculateDijkstraPathToVertex(dwSourceVertID)))

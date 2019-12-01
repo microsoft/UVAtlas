@@ -15,7 +15,6 @@
 #define NOMINMAX
 #define NODRAWTEXT
 #define NOGDI
-#define NOBITMAP
 #define NOMCX
 #define NOSERVICE
 #define NOHELP
@@ -32,8 +31,8 @@
 
 #include <dxgiformat.h>
 
-#include "uvatlas.h"
-#include "directxtex.h"
+#include "UVAtlas.h"
+#include "DirectXTex.h"
 
 #include "Mesh.h"
 
@@ -172,7 +171,9 @@ namespace
 
     typedef std::unique_ptr<void, find_closer> ScopedFindHandle;
 
+#ifdef _PREFAST_
 #pragma prefast(disable : 26018, "Only used with static internal arrays")
+#endif
 
     DWORD LookupByName(const wchar_t *pName, const SValue *pArray)
     {
@@ -185,20 +186,6 @@ namespace
         }
 
         return 0;
-    }
-
-
-    const wchar_t* LookupByValue(DWORD pValue, const SValue *pArray)
-    {
-        while (pArray->pName)
-        {
-            if (pValue == pArray->dwValue)
-                return pArray->pName;
-
-            pArray++;
-        }
-
-        return L"";
     }
 
 
@@ -364,7 +351,9 @@ extern HRESULT LoadFromOBJ(const wchar_t* szFilename, std::unique_ptr<Mesh>& inM
 //--------------------------------------------------------------------------------------
 // Entry-point
 //--------------------------------------------------------------------------------------
+#ifdef _PREFAST_
 #pragma prefast(disable : 28198, "Command-line tool, frees all memory on exit")
+#endif
 
 int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 {
@@ -751,8 +740,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             return 1;
         }
 
-        assert(inMesh->GetPositionBuffer() != 0);
-        assert(inMesh->GetIndexBuffer() != 0);
+        assert(inMesh->GetPositionBuffer() != nullptr);
+        assert(inMesh->GetIndexBuffer() != nullptr);
 
         wprintf(L"\n%zu vertices, %zu faces", nVerts, nFaces);
 
@@ -1068,7 +1057,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
         }
 
-        wprintf(L"Output # of charts: %zu, resulting stretching %f, %zu verts\n", outCharts, outStretch, vb.size());
+        wprintf(L"Output # of charts: %zu, resulting stretching %f, %zu verts\n", outCharts, double(outStretch), vb.size());
 
         assert((ib.size() / sizeof(uint32_t)) == (nFaces * 3));
         assert(facePartitioning.size() == nFaces);

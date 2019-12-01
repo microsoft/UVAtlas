@@ -10,7 +10,7 @@
 // http://go.microsoft.com/fwlink/?LinkID=512686
 //--------------------------------------------------------------------------------------
 
-#include <windows.h>
+#include <Windows.h>
 
 #include <memory>
 #include <string>
@@ -24,9 +24,9 @@
 #include <d3d11_1.h>
 #endif
 
-#include <directxmath.h>
+#include <DirectXMath.h>
 
-#include "directxmesh.h"
+#include "DirectXMesh.h"
 
 class Mesh
 {

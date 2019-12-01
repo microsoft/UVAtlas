@@ -18,8 +18,8 @@ using namespace Isochart;
 using namespace GeodesicDist ;
 using namespace DirectX;
 
-// define the macro to 1 to use the exact algorithm, otherwise the fast approximate algorithm is employed    
-#if _USE_EXACT_ALGORITHM
+// define the macro to use the exact algorithm, otherwise the fast approximate algorithm is employed
+#ifdef _USE_EXACT_ALGORITHM
 #define ONE_TO_ALL_ENGINE m_ExactOneToAllEngine
 #else
 #define ONE_TO_ALL_ENGINE m_ApproximateOneToAllEngine
@@ -45,7 +45,7 @@ HRESULT CIsochartMesh::CalculateLandmarkVertices(
     size_t dwMinLandmarkNumber, 
     size_t& dwLandmarkNumber)
 {
-    assert(m_pVerts != 0);
+    assert(m_pVerts != nullptr);
     assert(m_bVertImportanceDone);
 
     std::unique_ptr<uint32_t []> landmark(new (std::nothrow) uint32_t[m_dwVertNumber]);
@@ -154,9 +154,9 @@ HRESULT CIsochartMesh::InitOneToAllEngine()
         {
             Vertex &thisVertex = ONE_TO_ALL_ENGINE.m_VertexList[i];
 
-            thisVertex.x = m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh].x;
-            thisVertex.y = m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh].y;
-            thisVertex.z = m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh].z;
+            thisVertex.x = double(m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh].x);
+            thisVertex.y = double(m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh].y);
+            thisVertex.z = double(m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh].z);
             thisVertex.bBoundary = m_pVerts[i].bIsBoundary;
         }
 
@@ -368,8 +368,8 @@ void CIsochartMesh::CombineGeodesicAndSignalDistance(
     const float* pfGeodesicDistance,
     size_t dwVertLandNumber) const
 {
-    assert(pfSignalDistance != 0);
-    assert(pfGeodesicDistance != 0);
+    assert(pfSignalDistance != nullptr);
+    assert(pfGeodesicDistance != nullptr);
 
     float fAverageSignalDifference = 0;
     float fAverageGeodesicDifference = 0;
@@ -412,9 +412,9 @@ void CIsochartMesh::UpdateAdjacentVertexGeodistance(
     bool* pbVertProcessed,
     bool bIsSignalDistance) const
 {
-    assert(pCurrentVertex != 0);
-    assert(pAdjacentVertex != 0);
-    assert(pbVertProcessed != 0);
+    assert(pCurrentVertex != nullptr);
+    assert(pAdjacentVertex != nullptr);
+    assert(pbVertProcessed != nullptr);
 
     if (pAdjacentVertex->fGeodesicDistance
         > (pCurrentVertex->fGeodesicDistance 
@@ -533,10 +533,10 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexNewGeoDist(
             std::min(m_pVerts[i].fGeodesicDistance,
                  (float)ONE_TO_ALL_ENGINE.m_VertexList[i].dGeoDistanceToSrc ) ;
 
-        if ( m_pVerts[i].fGeodesicDistance > dGeoFarest )
+        if (double(m_pVerts[i].fGeodesicDistance) > dGeoFarest)
         {
-            dGeoFarest = m_pVerts[i].fGeodesicDistance ;
-            dwFarestVertID = i ;
+            dGeoFarest = double(m_pVerts[i].fGeodesicDistance);
+            dwFarestVertID = i;
         }
     }
 
@@ -750,8 +750,8 @@ void CIsochartMesh::CalculateGeodesicMatrix(
     const float* pfVertGeodesicDistance,
     float* pfGeodesicMatrix) const
 {
-    assert(pfVertGeodesicDistance != 0);
-    assert(pfGeodesicMatrix != 0);
+    assert(pfVertGeodesicDistance != nullptr);
+    assert(pfGeodesicMatrix != nullptr);
 
     size_t dwVertLandNumber = vertList.size();
 
@@ -791,7 +791,7 @@ HRESULT CIsochartMesh::CalculateVertMappingCoord(
                                 // coordinates of each vertex in it.Not Only
                                 // store UV coordinate in vertex
 {
-    assert(pfVertGeodesicDistance != 0);
+    assert(pfVertGeodesicDistance != nullptr);
     assert(dwPrimaryEigenDimension >= 2);
     _Analysis_assume_(dwPrimaryEigenDimension >= 2);
 

@@ -9,7 +9,7 @@
 
 #pragma once
 
-#include "vis_maxflow.h"
+#include "Vis_Maxflow.h"
 
 namespace Isochart
 {

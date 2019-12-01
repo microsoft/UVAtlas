@@ -168,7 +168,7 @@ HRESULT	CIsochartMesh::CalculateFuzzyRegion(
     bool* pbIsFuzzyFatherFace)
 {
     assert(m_bVertImportanceDone);
-    assert(m_pFather != 0);
+    assert(m_pFather != nullptr);
 
     std::unique_ptr<bool[]> isFuzzyVert( new (std::nothrow) bool[m_dwVertNumber] );
     if (!isFuzzyVert)
@@ -727,7 +727,7 @@ HRESULT CIsochartMesh::CalculateLandmarkAndFuzzyRegion(
     uint32_t& dwFuzzyLevel)
 {
     assert(m_bVertImportanceDone);
-    assert(m_pFather != 0);
+    assert(m_pFather != nullptr);
 
     std::vector<uint32_t> canidateVertexList;
 
@@ -1050,8 +1050,8 @@ HRESULT CIsochartMesh::CalculateLandmarkUV(
 {
     HRESULT hr = S_OK;
 
-    assert(pfVertGeodesicDistance != 0);
-    assert(m_pFather != 0);
+    assert(pfVertGeodesicDistance != nullptr);
+    assert(m_pFather != nullptr);
 
     size_t dwSubLandmarkNumber = m_landmarkVerts.size();
 
@@ -1464,7 +1464,7 @@ void CIsochartMesh::CalculateVertGeodesicCoord(
             pfCoord[k] += pfWorkSpace[i]*pfEigenVector[k*dwLandmarkNumber+i];
         }
 
-        pfCoord[k] /= static_cast<float>(IsochartSqrt(pfEigenValue[k]) * 2);
+        pfCoord[k] /= static_cast<float>(IsochartSqrt(double(pfEigenValue[k])) * 2);
     }
 }
 
@@ -1521,7 +1521,7 @@ float CIsochartMesh::CalculateFaceGeodesicDistortion(
 
         temp = (pfMapCoord[1]-pSubVertex->uv.y); 
         fEulerDistance += temp*temp; 
-        fEulerDistance = static_cast<float>(IsochartSqrt(fEulerDistance));
+        fEulerDistance = static_cast<float>(IsochartSqrt(double(fEulerDistance)));
 
         fGeodesicDistance = 0;
         for (size_t j=0; j<3; j++)
@@ -1554,8 +1554,8 @@ HRESULT CIsochartMesh::ApplyBoundaryOptResult(
 {
     HRESULT hr = S_OK;
 
-    assert(pdwFaceChartID != 0);
-    assert(pdwFaceChartIDBackup != 0);
+    assert(pdwFaceChartID != nullptr);
+    assert(pdwFaceChartIDBackup != nullptr);
     
     bIsOptimized = true;
 

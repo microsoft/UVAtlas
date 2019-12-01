@@ -35,7 +35,7 @@ CIsoMap::~CIsoMap()
 HRESULT CIsoMap::Init(size_t dwDimension, float *pGeodesicMatrix)
 {
     Clear();	
-    assert(pGeodesicMatrix != 0);
+    assert(pGeodesicMatrix != nullptr);
     assert(m_dwCalculatedDimension == 0);
     assert(m_fSumOfEigenValue == 0);
     assert(m_dwPrimaryDimension == 0);
@@ -129,10 +129,10 @@ HRESULT CIsoMap::ComputeLargestEigen(
     size_t dwSelectedDimension,
     size_t &dwCalculatedDimension)
 {
-    assert(m_pfMatrixB != 0);
-    _Analysis_assume_(m_pfMatrixB != 0);
-    assert(m_pfAvgSquaredDstColumn != 0);
-    _Analysis_assume_(m_pfAvgSquaredDstColumn != 0);
+    assert(m_pfMatrixB != nullptr);
+    _Analysis_assume_(m_pfMatrixB != nullptr);
+    assert(m_pfAvgSquaredDstColumn != nullptr);
+    _Analysis_assume_(m_pfAvgSquaredDstColumn != nullptr);
     assert(dwSelectedDimension <= m_dwMatrixDimension);
     _Analysis_assume_(dwSelectedDimension <= m_dwMatrixDimension);
 
@@ -199,7 +199,7 @@ HRESULT CIsoMap::GetPrimaryEnergyDimension(
         return S_OK;
     }
 
-    if (fEnergyPercent >= 1.0)
+    if (fEnergyPercent >= 1.0f)
     {
         dwPrimaryEnergyDimension = m_dwCalculatedDimension;				
     }
@@ -209,7 +209,7 @@ HRESULT CIsoMap::GetPrimaryEnergyDimension(
     float fPrecision = m_pfEigenValue[0] + m_pfEigenValue[1];
 
     
-    while(fPrecision <0.99 * m_fSumOfEigenValue
+    while(fPrecision < 0.99f * m_fSumOfEigenValue
         && dwDestineDimension < m_dwCalculatedDimension)
     {
         fPrecision += m_pfEigenValue[dwDestineDimension];
@@ -242,7 +242,7 @@ HRESULT CIsoMap::GetPrimaryEnergyDimension(
         dwAccumulateDimension++;
     }
 
-    if (fEnergyPercent >= 0.91)
+    if (fEnergyPercent >= 0.91f)
     {
         dwPrimaryEnergyDimension = dwAccumulateDimension;
         if (dwPrimaryEnergyDimension < 2)
@@ -294,7 +294,7 @@ bool CIsoMap::GetDestineVectors(size_t dwPrimaryEigenDimension, float* pfDestCoo
         if (m_pfEigenValue[i] < 0)
             m_pfEigenValue[i] = 0;
         
-        float fTemp = static_cast<float>(IsochartSqrt(m_pfEigenValue[i]));
+        float fTemp = static_cast<float>(IsochartSqrt(double(m_pfEigenValue[i])));
         for (size_t j=0; j<m_dwMatrixDimension; j++)
         {
             pfDestCoord[j*dwPrimaryEigenDimension+i] = (fTemp* fpEigenVector[j]);
@@ -308,9 +308,9 @@ bool CIsoMap::GetDestineVectors(size_t dwPrimaryEigenDimension, float* pfDestCoo
 
 void CIsoMap::Clear()
 {
-    SAFE_DELETE_ARRAY(m_pfEigenValue);
-    SAFE_DELETE_ARRAY(m_pfEigenVector);
-    SAFE_DELETE_ARRAY(m_pfAvgSquaredDstColumn);
+    SAFE_DELETE_ARRAY(m_pfEigenValue)
+    SAFE_DELETE_ARRAY(m_pfEigenVector)
+    SAFE_DELETE_ARRAY(m_pfAvgSquaredDstColumn)
 
     m_dwMatrixDimension = 0;
     m_dwCalculatedDimension = 0;

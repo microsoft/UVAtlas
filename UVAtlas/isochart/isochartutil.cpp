@@ -248,8 +248,8 @@ namespace
             v2[1] /= fLength;
 
             // 2. Two lines are parallel. 
-            if (static_cast<float>(fabs(v1[0] * v2[1] - v1[1] * v2[0]))
-                < ISOCHART_ZERO_EPS / 2.0)
+            if (fabsf(v1[0] * v2[1] - v1[1] * v2[0])
+                < ISOCHART_ZERO_EPS / 2.0f)
             {
                 v1[0] = (x3 - x0) / (x1 - x0);
                 v1[1] = (y3 - y0) / (y1 - y0);

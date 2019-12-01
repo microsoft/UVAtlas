@@ -138,7 +138,7 @@ namespace Isochart
 
                 upheap(pItem->m_position);
                 return true;
-            };
+            }
 
             bool insertData(data_type data, weight_type weight)
             {
@@ -162,7 +162,14 @@ namespace Isochart
                 item_type* pTop = removeAt(0);
                 if (!pTop)
                 {
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+#endif
                     return 0;
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
                 }
                 
                 data_type data = pTop->m_data;

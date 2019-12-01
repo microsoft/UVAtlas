@@ -23,7 +23,7 @@ class CIsochartEngine : public IIsochartEngine
 {
 public:
     CIsochartEngine();
-    virtual ~CIsochartEngine();
+    virtual ~CIsochartEngine() override;
 
     // IIsochartEngine
     STDMETHODIMP Initialize(
@@ -212,7 +212,7 @@ private:
     // Indicate whether to consider IMT
     bool IsIMTSpecified() const
     {
-        return (m_baseInfo.pfIMTArray != 0);
+        return (m_baseInfo.pfIMTArray != nullptr);
     }
 
 private:

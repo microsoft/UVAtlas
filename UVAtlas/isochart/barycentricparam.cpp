@@ -148,16 +148,16 @@ HRESULT CIsochartMesh::GenerateBoundaryCoord(
     double totoLength = 0;
     while((dwCurr = it.Next()) != INVALID_VERT_ID)
     {
-        totoLength += it.GetCurrentEdgeLength();
+        totoLength += double(it.GetCurrentEdgeLength());
         boundTable[vertMap[dwCurr]*2] = totoLength;
     }
-    totoLength += it.GetCurrentEdgeLength();
+    totoLength += double(it.GetCurrentEdgeLength());
 
     for (size_t ii=0; ii<boundTable.size(); ii+=2)
     {
         double angle = 2 * boundTable[ii] * M_PI / totoLength;
-        boundTable[ii] = static_cast<double>(cos(angle));
-        boundTable[ii+1] = static_cast<double>(sin(angle));		
+        boundTable[ii] = cos(angle);
+        boundTable[ii+1] = sin(angle);		
     }
     return hr;
 }
@@ -321,7 +321,7 @@ HRESULT CIsochartMesh::BarycentricParameterization(
             A,
             BU,
             BC_MAX_ITERATION,
-            static_cast<double>(1e-8),
+            1e-8,
             nIterCount) ? S_OK : E_FAIL));
     if (nIterCount >= BC_MAX_ITERATION)
     {
@@ -335,7 +335,7 @@ HRESULT CIsochartMesh::BarycentricParameterization(
             A,
             BV,
             BC_MAX_ITERATION,
-            static_cast<double>(1e-8),
+            1e-8,
             nIterCount) ? S_OK : E_FAIL));
     if (nIterCount >= BC_MAX_ITERATION)
     {

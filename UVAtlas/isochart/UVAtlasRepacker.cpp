@@ -9,7 +9,7 @@
 
 #include "pch.h"
 
-#include "uvatlasrepacker.h"
+#include "UVAtlasRepacker.h"
 #include "UVAtlas.h"
 
 using namespace DirectX;
@@ -168,7 +168,7 @@ HRESULT CUVAtlasRepacker::Repack()
         m_OutOfRange = false;
         if ( FAILED( hr = CreateUVAtlas()) )
             return hr ;
-        DPF(3, "Estimated Space Percent = %.3f%%", m_EstimatedSpacePercent * 100);
+        DPF(3, "Estimated Space Percent = %.3f%%", double(m_EstimatedSpacePercent * 100.f));
 
         if ( m_iIterationTimes <= 9 )
         {
@@ -215,7 +215,7 @@ HRESULT CUVAtlasRepacker::Repack()
 
     if (m_bDwIndex)
     {
-        double percentOur = GetTotalArea<uint32_t>();
+        auto percentOur = double(GetTotalArea<uint32_t>());
         DPF(0, "Final space utilization ratio after pack = %.3f%%", percentOur * 100);
         
         if ( m_pPercentOur )
@@ -223,7 +223,7 @@ HRESULT CUVAtlasRepacker::Repack()
     }
     else
     {
-        double percentOur = GetTotalArea<uint16_t>();
+        auto percentOur = double(GetTotalArea<uint16_t>());
         DPF(0, "Final space utilization ratio after pack = %.3f%%", percentOur * 100);
 
         if ( m_pPercentOur )
@@ -338,7 +338,7 @@ void CUVAtlasRepacker::AdjustEstimatedPercent()
     {
         float unpackedArea = 1.0f - m_packedArea / m_fChartsTotalArea;
         float unpackedCharts = 1.0f - (float) m_packedCharts / m_iNumCharts;
-        DPF(3, "Unpacked area ratio= %.4f\tunpacked charts ratio= %.4f", unpackedArea, unpackedCharts);
+        DPF(3, "Unpacked area ratio= %.4f\tunpacked charts ratio= %.4f", double(unpackedArea), double(unpackedCharts));
 
         float factor = unpackedArea / 4.0f + unpackedCharts / 10.0f;
                 
@@ -350,7 +350,7 @@ void CUVAtlasRepacker::AdjustEstimatedPercent()
         m_EstimatedSpacePercent -= factor;
         //m_EstimatedSpacePercent /= 1.02f;
 
-        if (m_iIterationTimes > MAX_ITERATION)
+        if (size_t(m_iIterationTimes) > MAX_ITERATION)
         {
             m_bStopIteration = true;
             return;
@@ -360,7 +360,7 @@ void CUVAtlasRepacker::AdjustEstimatedPercent()
     if (m_EstimatedSpacePercent <= 0)
         m_EstimatedSpacePercent = oldp * 0.9f;
 
-    m_PixelWidth = (float) sqrt(m_fChartsTotalArea / 
+    m_PixelWidth = sqrtf(m_fChartsTotalArea / 
         (m_EstimatedSpacePercent * m_dwAtlasWidth * m_dwAtlasHeight));
 }
 
@@ -400,7 +400,7 @@ void CUVAtlasRepacker::InitialSpacePercent()
 
     for(;;)
     {
-        m_PixelWidth = (float)sqrt(m_fChartsTotalArea / 
+        m_PixelWidth = sqrtf(m_fChartsTotalArea / 
             (m_EstimatedSpacePercent * m_dwAtlasWidth * m_dwAtlasHeight));
         ChartsInfo *pCInfo = (ChartsInfo *)&(m_ChartsInfo[m_SortedChartIndex[0]]);
         _PositionInfo *pPosInfo = (_PositionInfo *)&(pCInfo->PosInfo[0]);
@@ -792,8 +792,9 @@ HRESULT CUVAtlasRepacker::GenerateAdjacentInfo()
                         m = 3;
                         break;
                     }
-            if (m_AdjacentInfo[i * 3] != -1 && m_AdjacentInfo[i * 3 + 1] != -1 && 
-                m_AdjacentInfo[i * 3 + 2] != -1)
+            if (m_AdjacentInfo[i * 3] != uint32_t(-1)
+                && m_AdjacentInfo[i * 3 + 1] != uint32_t(-1)
+                && m_AdjacentInfo[i * 3 + 2] != uint32_t(-1))
                 break;
         }
     }
@@ -850,7 +851,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
         int facestart = 0;
         for (uint32_t i = 0; i < m_iNumFaces; i++)
         {
-            if (pAB[i] == -1)
+            if (pAB[i] == uint32_t(-1))
             {
                 ab.clear();
                 if (!bUsedFace[i]) 
@@ -870,7 +871,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                         for (uint32_t j = 0; j < 3; j++)
                         {
                             uint32_t index = 3 * ab[t] + j;
-                            if (m_AdjacentInfo[index] != -1 && !bUsedFace[m_AdjacentInfo[index]])
+                            if (m_AdjacentInfo[index] != uint32_t(-1) && !bUsedFace[m_AdjacentInfo[index]])
                             {
                                 ab.push_back(m_AdjacentInfo[index]);
                                 bUsedFace[m_AdjacentInfo[index]] = true;
@@ -932,7 +933,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
 
                     // create an index partition buffer which store each vertex's original position
                     // to recover the vertex buffer after repacking.
-                    if (m_IndexPartition[index1] == -1) 
+                    if (m_IndexPartition[index1] == uint32_t(-1))
                     {
                         m_IndexPartition[index1] = indexnum++; 
                         UVAtlasVertex vert;
@@ -943,7 +944,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                         vert.uv.y = p1->y;
                         m_VertexBuffer.push_back(vert);
                     }
-                    if (m_IndexPartition[index2] == -1) 
+                    if (m_IndexPartition[index2] == uint32_t(-1))
                     {
                         m_IndexPartition[index2] = indexnum++;
                         UVAtlasVertex vert;
@@ -954,7 +955,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                         vert.uv.y = p2->y; 
                         m_VertexBuffer.push_back(vert);
                     }
-                    if (m_IndexPartition[index3] == -1) 
+                    if (m_IndexPartition[index3] == uint32_t(-1))
                     {
                         m_IndexPartition[index3] = indexnum++;
                         UVAtlasVertex vert;
@@ -1170,11 +1171,11 @@ HRESULT CUVAtlasRepacker::PrepareChartsInfo()
 
                 // if the triangle has a edge without adjacent triangle
                 // the edge is one outer edge
-                if (m_NewAdjacentInfo[Base] == -1)
+                if (m_NewAdjacentInfo[Base] == uint32_t(-1))
                     m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(Vertex1, Vertex2));
-                if (m_NewAdjacentInfo[Base + 1] == -1)
+                if (m_NewAdjacentInfo[Base + 1] == uint32_t(-1))
                     m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(Vertex2, Vertex3));
-                if (m_NewAdjacentInfo[Base + 2] == -1)
+                if (m_NewAdjacentInfo[Base + 2] == uint32_t(-1))
                     m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(Vertex3, Vertex1));
             }
         }
@@ -1459,7 +1460,7 @@ void CUVAtlasRepacker::TryPut(int chartPutSide, int PutSide,
         //		is more inside than before	
         if ((ratio < m_triedAspectRatio && (PutSide == UV_UPSIDE || PutSide == UV_DOWNSIDE)) || 
             (ratio > m_triedAspectRatio && (PutSide == UV_LEFTSIDE || PutSide == UV_RIGHTSIDE)) ||
-            ((fabs(ratio - m_triedAspectRatio) < 1e-6f) && 
+            ((fabsf(ratio - m_triedAspectRatio) < 1e-6f) && 
             (internalSpace < m_triedInternalSpace || 
             (abs(internalSpace - m_triedInternalSpace) < m_triedInternalSpace * 0.05f && 
             m_triedOverlappedLen < minDistant))))
@@ -1587,7 +1588,7 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
         pPosInfo->angle);
 
     m_currAspectRatio = m_triedAspectRatio;
-    XMMATRIX transMatrix = XMMatrixIdentity();;
+    XMMATRIX transMatrix = XMMatrixIdentity();
     switch (m_triedPutRotation)
     {
     case 0:
@@ -1819,7 +1820,7 @@ void CUVAtlasRepacker::OutPutPackResult()
     {
         // handle the situation when the chart has only one vertex.
         // we just move all these vertex UV into coordinates (0, 0)
-        if (m_IndexPartition[i] == -1)
+        if (m_IndexPartition[i] == uint32_t(-1))
         {
             float *pp = (float *)(pVB + i * m_iNumBytesPerVertex);
             *pp = 0;
@@ -1975,7 +1976,7 @@ bool CUVAtlasRepacker::DoTessellation(uint32_t ChartIndex, size_t AngleIndex)
         float b = p1->y - p1->x * slope;
         float x, y;
 
-        if (fabs(slope) < 1.0f)
+        if (fabsf(slope) < 1.0f)
         {
             for (n = fromX + 1; n < toX; n++)
             {

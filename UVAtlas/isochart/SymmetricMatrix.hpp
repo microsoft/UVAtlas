@@ -15,6 +15,11 @@
 
 #pragma once
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdouble-promotion"
+#endif
+
 namespace Isochart
 {
     template<class TYPE>
@@ -43,7 +48,7 @@ namespace Isochart
             value_type scale,
             size_t dwDimension)
         {
-            assert(_finite(scale) != 0);
+            assert(_finite(double(scale)) != 0);
             for (size_t ii=0; ii<dwDimension; ii++)
             {
                 v[ii] *= scale;
@@ -432,7 +437,7 @@ namespace Isochart
                             pSubDiagVec[n] = 0.0;					
                         }
                     }
-                };
+                }
             }
             // Sort eigenvalues and corresponding vectors.
             for (size_t i = 0; i < dwDimension - 1; i++)
@@ -464,3 +469,7 @@ namespace Isochart
         }
     };
 }
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
