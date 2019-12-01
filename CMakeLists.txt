@@ -86,8 +86,15 @@ string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
 string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
 string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 
-add_subdirectory(../DirectXMesh ${CMAKE_BINARY_DIR}/bin/CMake/DirectXMesh)
-add_subdirectory(../DirectXTex ${CMAKE_BINARY_DIR}/bin/CMake/DirectXTex)
+if(NOT EXISTS "${CMAKE_SOURCE_DIR}/../DirectXMesh/CMakeLists.txt")
+    message(FATAL_ERROR "uvatalastool requires DirectXMesh library from http://go.microsoft.com/fwlink/?LinkID=324981" )
+endif()
+if(NOT EXISTS "${CMAKE_SOURCE_DIR}/../DirectXTex/CMakeLists.txt")
+    message(FATAL_ERROR "uvatalastool requires DirectXTex library from http://go.microsoft.com/fwlink/?LinkId=248926" )
+endif()
+
+add_subdirectory(${CMAKE_SOURCE_DIR}/../DirectXMesh ${CMAKE_BINARY_DIR}/bin/CMake/DirectXMesh)
+add_subdirectory(${CMAKE_SOURCE_DIR}/../DirectXTex ${CMAKE_BINARY_DIR}/bin/CMake/DirectXTex)
 
 add_executable(uvatlastool
     UVAtlasTool/uvatlas.cpp
