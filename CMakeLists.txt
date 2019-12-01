@@ -74,17 +74,20 @@ source_group(isochart REGULAR_EXPRESSION UVAtlas/isochart/*.*)
 source_group(isochart REGULAR_EXPRESSION UVAtlas/isochart/*.*)
 
 target_include_directories(${PROJECT_NAME} PUBLIC UVAtlas/inc)
-target_include_directories(${PROJECT_NAME} PRIVATE UVAtlas/ UVAtlas/geodesics UVAtlas/isochart)
+target_include_directories(${PROJECT_NAME} PRIVATE UVAtlas UVAtlas/UVAtlas/geodesics UVAtlas/isochart)
 
-# Use max Warning Level 
-string(REPLACE "/W3" "/Wall" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-string(REPLACE "/W3" "/Wall" CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
-string(REPLACE "/W3" "/Wall" CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
+# Use higher Warning Level 
+string(REPLACE "/W3 " "/W4 " CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+string(REPLACE "/W3 " "/W4 " CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
+string(REPLACE "/W3 " "/W4 " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 
 # Not using typeid or dynamic_cast, so disable RTTI to save binary size
-string(REPLACE "/GR" "/GR-" CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-string(REPLACE "/GR" "/GR-" CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
-string(REPLACE "/GR" "/GR-" CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
+string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
+string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
+
+add_subdirectory(../DirectXMesh ${CMAKE_BINARY_DIR}/bin/CMake/DirectXMesh)
+add_subdirectory(../DirectXTex ${CMAKE_BINARY_DIR}/bin/CMake/DirectXTex)
 
 add_executable(uvatlastool
     UVAtlasTool/uvatlas.cpp
@@ -92,7 +95,7 @@ add_executable(uvatlastool
     UVAtlasTool/Mesh.h
     UVAtlasTool/MeshOBJ.cpp
     UVAtlasTool/SDKMesh.h)
-target_link_libraries(uvatlastool ${PROJECT_NAME})
+target_link_libraries(uvatlastool ${PROJECT_NAME} DirectXMesh DirectXTex)
 target_include_directories(uvatlastool PRIVATE ../DirectXMesh/DirectXMesh ../DirectXMesh/Utilities ../DirectXTex/DirectXTex)
 
 target_compile_options(${PROJECT_NAME} PRIVATE /fp:fast)
