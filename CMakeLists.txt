@@ -76,15 +76,17 @@ source_group(isochart REGULAR_EXPRESSION UVAtlas/isochart/*.*)
 target_include_directories(${PROJECT_NAME} PUBLIC UVAtlas/inc)
 target_include_directories(${PROJECT_NAME} PRIVATE UVAtlas UVAtlas/UVAtlas/geodesics UVAtlas/isochart)
 
-# Use higher Warning Level 
-string(REPLACE "/W3 " "/W4 " CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-string(REPLACE "/W3 " "/W4 " CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
-string(REPLACE "/W3 " "/W4 " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
+if(MSVC)
+    # Use higher Warning Level 
+    string(REPLACE "/W3 " "/W4 " CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+    string(REPLACE "/W3 " "/W4 " CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
+    string(REPLACE "/W3 " "/W4 " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 
-# Not using typeid or dynamic_cast, so disable RTTI to save binary size
-string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
-string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
-string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
+    # Not using typeid or dynamic_cast, so disable RTTI to save binary size
+    string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+    string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
+    string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
+endif()
 
 if(NOT EXISTS "${CMAKE_SOURCE_DIR}/../DirectXMesh/CMakeLists.txt")
     message(FATAL_ERROR "uvatalastool requires DirectXMesh library from http://go.microsoft.com/fwlink/?LinkID=324981" )
@@ -105,12 +107,14 @@ add_executable(uvatlastool
 target_link_libraries(uvatlastool ${PROJECT_NAME} DirectXMesh DirectXTex)
 target_include_directories(uvatlastool PRIVATE ../DirectXMesh/DirectXMesh ../DirectXMesh/Utilities ../DirectXTex/DirectXTex)
 
-target_compile_options(${PROJECT_NAME} PRIVATE /fp:fast)
-target_compile_options(uvatlastool PRIVATE /fp:fast)
+if(MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /fp:fast)
+    target_compile_options(uvatlastool PRIVATE /fp:fast)
 
-if (${CMAKE_SIZEOF_VOID_P} EQUAL "4")
-    target_compile_options(${PROJECT_NAME} PRIVATE /arch:SSE2)
-    target_compile_options(uvatlastool PRIVATE /arch:SSE2)
+    if (${CMAKE_SIZEOF_VOID_P} EQUAL "4")
+        target_compile_options(${PROJECT_NAME} PRIVATE /arch:SSE2)
+        target_compile_options(uvatlastool PRIVATE /arch:SSE2)
+    endif()
 endif()
 
 if ( CMAKE_CXX_COMPILER_ID MATCHES "Clang" )
