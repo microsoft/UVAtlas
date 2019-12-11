@@ -99,7 +99,7 @@ add_subdirectory(${CMAKE_SOURCE_DIR}/../DirectXMesh ${CMAKE_BINARY_DIR}/bin/CMak
 add_subdirectory(${CMAKE_SOURCE_DIR}/../DirectXTex ${CMAKE_BINARY_DIR}/bin/CMake/DirectXTex)
 
 add_executable(uvatlastool
-    UVAtlasTool/uvatlas.cpp
+    UVAtlasTool/UVAtlas.cpp
     UVAtlasTool/Mesh.cpp
     UVAtlasTool/Mesh.h
     UVAtlasTool/MeshOBJ.cpp
