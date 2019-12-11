@@ -132,5 +132,8 @@ if ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     target_compile_options(uvatlastool PRIVATE ${WarningsEXE})
 endif()
 
-# We use Windows 7 here
-add_compile_definitions(_UNICODE UNICODE _WIN32_WINNT=0x0601)
+if(MSVC)
+    # We use Windows 7 here
+    target_compile_definitions(${PROJECT_NAME} PRIVATE _UNICODE UNICODE _WIN32_WINNT=0x0601)
+    target_compile_definitions(uvatlastool PRIVATE _UNICODE UNICODE _WIN32_WINNT=0x0601)
+endif()
