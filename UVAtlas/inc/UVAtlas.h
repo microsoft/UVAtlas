@@ -23,7 +23,7 @@
 #include <functional>
 #include <vector>
 
-#define UVATLAS_VERSION 160
+#define UVATLAS_VERSION 170
 
 namespace DirectX
 {
@@ -149,7 +149,7 @@ namespace DirectX
         _Inout_opt_ std::vector<uint32_t>*  pvFacePartitioning = nullptr,
         _Inout_opt_ std::vector<uint32_t>*  pvVertexRemapArray = nullptr,
         _Out_opt_                           float *maxStretchOut = nullptr,
-        _Out_opt_                           size_t *numChartsOut = nullptr);
+        _Out_opt_                           size_t *numChartsOut = nullptr) noexcept;
 
     // This has the same exact arguments as Create, except that it does not perform the
     // final packing step. This method allows one to get a partitioning out, and possibly
@@ -196,7 +196,7 @@ namespace DirectX
         _Inout_opt_                 std::vector<uint32_t>* pvVertexRemapArray,
         _Inout_                     std::vector<uint32_t>& vPartitionResultAdjacency,
         _Out_opt_                   float *maxStretchOut = nullptr,
-        _Out_opt_                   size_t *numChartsOut = nullptr);
+        _Out_opt_                   size_t *numChartsOut = nullptr) noexcept;
 
     // This takes the face partitioning result from Partition and packs it into an
     // atlas of the given size. pPartitionResultAdjacency should be derived from
@@ -210,7 +210,7 @@ namespace DirectX
         _In_                    float gutter,
         _In_                    const std::vector<uint32_t>& vPartitionResultAdjacency,
         _In_opt_                std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        _In_                    float callbackFrequency);
+        _In_                    float callbackFrequency) noexcept;
 
 
     //============================================================================
@@ -252,7 +252,7 @@ namespace DirectX
         _In_                                size_t signalDimension,
         _In_                                size_t signalStride,
         _In_opt_                            std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        _Out_writes_(nFaces * 3)            float* pIMTArray);
+        _Out_writes_(nFaces * 3)            float* pIMTArray) noexcept;
 
     // This function is used to calculate the IMT from data that varies over the
     // surface of the mesh (generally at a higher frequency than vertex data).
@@ -285,7 +285,7 @@ namespace DirectX
                                             signalCallback,
         _In_opt_                            void *userData,
         _In_opt_                            std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        _Out_writes_(nFaces * 3)            float* pIMTArray);
+        _Out_writes_(nFaces * 3)            float* pIMTArray) noexcept;
 
     // This function is used to calculate the IMT from texture data. Given a texture
     // that maps over the surface of the mesh, the algorithm computes the IMT for
@@ -309,7 +309,7 @@ namespace DirectX
         _In_                                size_t height,
         _In_                                DWORD options,
         _In_opt_                            std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        _Out_writes_(nFaces * 3)            float* pIMTArray);
+        _Out_writes_(nFaces * 3)            float* pIMTArray) noexcept;
 
     // This function is very similar to UVAtlasComputeIMTFromTexture, but it can
     // calculate higher dimensional values than 4.
@@ -325,18 +325,18 @@ namespace DirectX
         _In_reads_(nVerts)                      const XMFLOAT3* positions,
         _In_reads_(nVerts)                      const XMFLOAT2* texcoords,
         _In_                                    size_t nVerts,
-        _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces*sizeof(uint16_t)))
-        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces*sizeof(uint32_t))) const void* indices,
+        _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * sizeof(uint16_t)))
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * sizeof(uint32_t))) const void* indices,
         _In_                                    DXGI_FORMAT indexFormat,
         _In_                                    size_t nFaces,
-        _In_reads_(width*height*nComponents)    const float *pTexelSignal,
+        _In_reads_(width* height* nComponents)    const float* pTexelSignal,
         _In_                                    size_t width,
         _In_                                    size_t height,
         _In_                                    size_t signalDimension,
         _In_                                    size_t nComponents,
         _In_                                    DWORD options,
         _In_opt_                                std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        _Out_writes_(nFaces * 3)                float* pIMTArray);
+        _Out_writes_(nFaces * 3)                float* pIMTArray) noexcept;
 
     // This function is for applying the a vertex remap array from UVAtlasCreate/UVAtlasPartition to a vertex buffer
     //
@@ -344,10 +344,10 @@ namespace DirectX
     // vbout        - This is the output vertex buffer and is nNewVerts*stride in size
     // nNewVerts    - This should be >= nVerts
     HRESULT __cdecl UVAtlasApplyRemap(
-        _In_reads_bytes_(nVerts*stride)         const void* vbin,
+        _In_reads_bytes_(nVerts* stride)        const void* vbin,
         _In_                                    size_t stride,
         _In_                                    size_t nVerts,
         _In_                                    size_t nNewVerts,
         _In_reads_(nNewVerts)                   const uint32_t* vertexRemap,
-        _Out_writes_bytes_(nNewVerts*stride)    void* vbout );
+        _Out_writes_bytes_(nNewVerts* stride)   void* vbout) noexcept;
 }

@@ -26,7 +26,7 @@ public:
     virtual ~CIsochartEngine() override;
 
     // IIsochartEngine
-    STDMETHODIMP Initialize(
+    virtual HRESULT Initialize(
         const void* pVertexArray,
         size_t VertexCount,
         size_t VertexStride,
@@ -36,18 +36,18 @@ public:
         const FLOAT3* pIMTArray,
         const uint32_t* pOriginalAjacency,
         const uint32_t* pSplitHint,
-        DWORD dwOptions) override;
+        DWORD dwOptions) noexcept override;
 
-    STDMETHODIMP Free() override;
+    virtual HRESULT Free() noexcept override;
 
-    STDMETHODIMP Partition(
+    virtual HRESULT Partition(
         size_t MaxChartNumber,
         float Stretch,
         size_t& ChartNumberOut,
         float& MaxChartStretchOut,
-        uint32_t* pFaceAttributeIDOut) override;
+        uint32_t* pFaceAttributeIDOut) noexcept override;
 
-    STDMETHODIMP Pack(
+    virtual HRESULT Pack(
         size_t Width,
         size_t Height,
         float Gutter,
@@ -55,29 +55,29 @@ public:
         std::vector<DirectX::UVAtlasVertex>* pvVertexArrayOut,
         std::vector<uint8_t>* pvFaceIndexArrayOut,
         std::vector<uint32_t>* pvVertexRemapArrayOut,
-        _In_opt_ std::vector<uint32_t>* pvAttributeID) override;
+        _In_opt_ std::vector<uint32_t>* pvAttributeID) noexcept override;
 
-    STDMETHODIMP SetCallback(
+    virtual HRESULT SetCallback(
         LPISOCHARTCALLBACK pCallback,
-        float Frequency) override;
+        float Frequency) noexcept override;
 
-    STDMETHODIMP SetStage(
+    virtual HRESULT SetStage(
         unsigned int TotalStageCount,
-        unsigned int DoneStageCount) override;
+        unsigned int DoneStageCount) noexcept override;
 
-    STDMETHODIMP ExportPartitionResult(
+    virtual HRESULT ExportPartitionResult(
         std::vector<DirectX::UVAtlasVertex>* pvVertexArrayOut,
         std::vector<uint8_t>* pvFaceIndexArrayOut,
         std::vector<uint32_t>* pvVertexRemapArrayOut,
         std::vector<uint32_t>* pvAttributeIDOut,
-        std::vector<uint32_t>* pvAdjacencyOut) override;
+        std::vector<uint32_t>* pvAdjacencyOut) noexcept override;
 
-    STDMETHODIMP InitializePacking(
+    virtual HRESULT InitializePacking(
         std::vector<DirectX::UVAtlasVertex>* pvVertexBuffer,
         size_t VertexCount,
         std::vector<uint8_t>* pvFaceIndexBuffer,
         size_t FaceCount,
-        const uint32_t* pdwFaceAdjacentArrayIn) override;
+        const uint32_t* pdwFaceAdjacentArrayIn) noexcept override;
 
     HRESULT CreateEngineMutex();
 private:

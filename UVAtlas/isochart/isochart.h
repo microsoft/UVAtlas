@@ -116,7 +116,7 @@ public:
     static IIsochartEngine* CreateIsochartEngine();
     static void ReleaseIsochartEngine(IIsochartEngine* pIsochartEngine);
 
-    STDMETHOD(Initialize)(
+    virtual HRESULT Initialize(
         const void* pVertexArray,
         size_t VertexCount,
         size_t VertexStride,
@@ -126,18 +126,18 @@ public:
         const FLOAT3* pIMTArray,
         const uint32_t* pOriginalAjacency,
         const uint32_t* pSplitHint,
-        DWORD dwOptions) PURE;
+        DWORD dwOptions) noexcept = 0;
 
-    STDMETHOD(Free)() PURE;
+    virtual HRESULT Free() noexcept = 0;
 
-    STDMETHOD(Partition)(
+    virtual HRESULT  Partition(
         size_t MaxChartNumber,
         float Stretch,
         size_t& ChartNumberOut,
         float& MaxChartStretchOut,
-        uint32_t* pFaceAttributeIDOut) PURE;
+        uint32_t* pFaceAttributeIDOut) noexcept = 0;
 
-    STDMETHOD(Pack)(
+    virtual HRESULT Pack(
         size_t Width,
         size_t Height,
         float Gutter,
@@ -145,31 +145,29 @@ public:
         std::vector<DirectX::UVAtlasVertex>* pvVertexArrayOut,
         std::vector<uint8_t>* pvFaceIndexArrayOut,
         std::vector<uint32_t>* pvVertexRemapArrayOut,
-        _In_opt_ std::vector<uint32_t>* pvAttributeID) PURE;
+        _In_opt_ std::vector<uint32_t>* pvAttributeID) noexcept = 0;
 
-    STDMETHOD(SetCallback)(
+    virtual HRESULT SetCallback(
         LPISOCHARTCALLBACK pCallback,
-        float Frequency) PURE;
+        float Frequency) noexcept = 0;
 
-    STDMETHOD(SetStage)(
+    virtual HRESULT SetStage(
         unsigned int TotalStageCount,
-        unsigned int DoneStageCount) PURE;
-    
+        unsigned int DoneStageCount) noexcept = 0;
 
-    STDMETHOD (ExportPartitionResult)(
+    virtual HRESULT ExportPartitionResult(
         std::vector<DirectX::UVAtlasVertex>* pvVertexArrayOut,
         std::vector<uint8_t>* pvFaceIndexArrayOut,
         std::vector<uint32_t>* pvVertexRemapArrayOut,
         std::vector<uint32_t>* pvAttributeIDOut,
-        std::vector<uint32_t>* pvAdjacencyOut) PURE;
-
+        std::vector<uint32_t>* pvAdjacencyOut) noexcept = 0;
     
-    STDMETHOD (InitializePacking)(
+    virtual HRESULT InitializePacking(
         std::vector<DirectX::UVAtlasVertex>* pvVertexBuffer,
         size_t VertexCount,
         std::vector<uint8_t>* pvFaceIndexBuffer,
         size_t FaceCount,
-        const uint32_t* pdwFaceAdjacentArrayIn) PURE;
+        const uint32_t* pdwFaceAdjacentArrayIn) noexcept = 0;
 };
 
 /////////////////////////////////////////////////////////////////////////

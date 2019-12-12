@@ -90,7 +90,7 @@ HRESULT CIsochartEngine::Initialize(
     const FLOAT3* pIMTArray,
     const uint32_t* pOriginalAjacency,
     const uint32_t* pSplitHint,
-    DWORD dwOptions)
+    DWORD dwOptions) noexcept
 {
     DPF(1, "Initialize...");
 
@@ -168,7 +168,7 @@ LEnd:
 }
 
 //  Release all buffers and reset CIsochartEngine
-HRESULT CIsochartEngine::Free()
+HRESULT CIsochartEngine::Free() noexcept
 {
     HRESULT hr = S_OK;
 
@@ -202,7 +202,7 @@ HRESULT CIsochartEngine::Partition(
     float Stretch,
     size_t& ChartNumberOut,
     float& MaxChartStretchOut,
-    uint32_t* pFaceAttributeIDOut)
+    uint32_t* pFaceAttributeIDOut) noexcept
 {
     DPF(1, "Partition....");
 
@@ -711,7 +711,7 @@ HRESULT CIsochartEngine::Pack(
     std::vector<UVAtlasVertex>* pvVertexArrayOut,
     std::vector<uint8_t>* pvFaceIndexArrayOut,
     std::vector<uint32_t>* pvVertexRemapArrayOut,
-    _In_opt_ std::vector<uint32_t>* pvAttributeID)
+    _In_opt_ std::vector<uint32_t>* pvAttributeID) noexcept
 {
     DPF(1, "Packing Charts...");
     if (!CheckPackParameters(
@@ -841,7 +841,7 @@ void CIsochartEngine::ExportPackResultToOrgMesh(
 //
 HRESULT CIsochartEngine::SetCallback(
     LPISOCHARTCALLBACK pCallback,  
-    float Frequency)
+    float Frequency) noexcept
 {
     if (!CheckSetCallbackParameters(
         pCallback,
@@ -869,7 +869,7 @@ HRESULT CIsochartEngine::SetCallback(
 
 HRESULT CIsochartEngine::SetStage(
     unsigned int TotalStageCount,
-    unsigned int DoneStageCount)
+    unsigned int DoneStageCount) noexcept
 {
     if (TotalStageCount < DoneStageCount)
     {
@@ -899,7 +899,7 @@ HRESULT CIsochartEngine::ExportPartitionResult(
     std::vector<uint8_t>* pvFaceIndexArrayOut,
     std::vector<uint32_t>* pvVertexRemapArrayOut,
     std::vector<uint32_t>* pvAttributeIDOut,
-    std::vector<uint32_t>* pvAdjacencyOut)
+    std::vector<uint32_t>* pvAdjacencyOut) noexcept
 {
 
     if (!CheckExportPartitionResultParameters(
@@ -936,7 +936,7 @@ HRESULT CIsochartEngine::InitializePacking(
     size_t VertexCount,
     std::vector<uint8_t>* pvFaceIndexBuffer,
     size_t FaceCount,
-    const uint32_t* pdwFaceAdjacentArrayIn)
+    const uint32_t* pdwFaceAdjacentArrayIn) noexcept
 {
     if (!CheckInitializePackingParameters(
         pvVertexBuffer,
