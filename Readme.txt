@@ -4,7 +4,7 @@ UVAtlas - isochart texture atlasing
 
 Copyright (c) Microsoft Corporation. All rights reserved.
 
-April 26, 2019
+December 17, 2019
 
 This package contains UVAtlas, a shared source library for creating and packing an
 isochart texture atlas.
@@ -12,7 +12,7 @@ isochart texture atlas.
 This code is designed to build with Visual Studio 2015 Update 3, Visual Studio 2017,
 or Visual Studio 2019. It is recommended that you make use of VS 2015 Update 3,
 Windows Tools 1.4.1, and the Windows 10 Anniversary Update SDK (14393) -or-
-VS 2017 (15.9 update) / VS 2019 with the Windows 10 October 2018 Update SDK (17763).
+VS 2017 (15.9 update) / VS 2019 with the Windows 10 May 2019 Update SDK (18362).
 
 These components are designed to work without requiring any content from the
 legacy DirectX SDK. For details, see "Where is the DirectX SDK?"
@@ -97,6 +97,13 @@ RELEASE NOTES
 ---------------
 RELEASE HISTORY
 ---------------
+
+December 17, 2019
+    Added VS 2019 UWP project
+    Added ARM64 platform to VS 2019 Win32 desktop Win10 project
+    Renamed UVAtlas_Windows10.vcxproj to _Windows10_2017.vcxproj
+    Added CMake project files
+    Code cleanup
 
 April 26, 2019
     uvatlas command-line tool: Updated for latest DirectXMesh
