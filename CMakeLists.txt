@@ -9,10 +9,10 @@ cmake_minimum_required (VERSION 3.11)
 
 project (UVAtlas LANGUAGES CXX)
 
-# #pragma omp is used to specify Directives and Clauses. If /openmp is not specified in a compilation, the compiler ignores OpenMP clauses and directives
-add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/openmp>)
-
 option(BUILD_TOOLS "Build UVAtlasTool" ON)
+
+# Enable the use of OpenMP
+option(UVATLAS_USE_OPENMP "Build with OpenMP support" ON)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -141,6 +141,11 @@ endif()
 if ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     target_compile_options(${PROJECT_NAME} PRIVATE /permissive- /JMC- /Zc:__cplusplus)
     target_compile_options(uvatlastool PRIVATE /permissive- /Zc:__cplusplus)
+
+    if(UVATLAS_USE_OPENMP MATCHES ON)
+        target_compile_options(${PROJECT_NAME} PRIVATE /openmp /Zc:twoPhase-)
+        target_compile_options(uvatlastool PRIVATE /openmp /Zc:twoPhase-)
+    endif()
 
     if(BUILD_TOOLS MATCHES ON)
         set(WarningsEXE "/wd4365" "/wd4710" "/wd4820" "/wd5039" "/wd5045")

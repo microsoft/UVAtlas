@@ -395,16 +395,12 @@ float CIsochartMesh::CalOptimalAvgL2SquaredStretch(
     bool bAllChartSatisfiedStretch = true;
     const CBaseMeshInfo& baseInfo = chartList[0]->m_baseInfo;
     float fSumSqrtEiiaii = 0;
-#pragma omp parallel for
-    for (int ii = 0; ii < chartList.size(); ii++)
+    for (int ii = 0; ii < static_cast<int>(chartList.size()); ii++)
     {
         float fEii = chartList[ii]->m_fParamStretchL2;
         float faii = chartList[ii]->m_fChart2DArea;
-        bAllChartSatisfiedStretch =
-            (bAllChartSatisfiedStretch && (fEii == faii));
-
-        auto temp = IsochartSqrtf(fEii * faii); // For better profiling
-#pragma atomic
+        bAllChartSatisfiedStretch = (bAllChartSatisfiedStretch && (fEii == faii));
+        float temp = IsochartSqrtf(fEii * faii); // For better profiling
         fSumSqrtEiiaii += temp;
     }
 
