@@ -9,6 +9,9 @@ cmake_minimum_required (VERSION 3.11)
 
 project (UVAtlas LANGUAGES CXX)
 
+# #pragma omp is used to specify Directives and Clauses. If /openmp is not specified in a compilation, the compiler ignores OpenMP clauses and directives
+add_compile_options($<$<CXX_COMPILER_ID:MSVC>:/openmp>)
+
 option(BUILD_TOOLS "Build UVAtlasTool" ON)
 
 set(CMAKE_CXX_STANDARD 14)
