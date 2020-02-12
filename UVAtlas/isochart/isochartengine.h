@@ -122,6 +122,7 @@ private:
         float& MaxChartStretchOut,
         uint32_t* pFaceAttributeIDOut);
 
+    HRESULT ParameterizeChartsInHeapParallelized(bool bFirstTime, size_t MaxChartNumber);
     HRESULT ParameterizeChartsInHeap(
         bool bFirstTime,
         size_t MaxChartNumber);

@@ -11,6 +11,10 @@
 #include "isochartengine.h"
 #include "isochart.h"
 #include "isochartmesh.h"
+#include <chrono>
+#include <ostream>
+#include <iostream>
+#include <string>
 
 using namespace DirectX;
 using namespace Isochart;
@@ -271,6 +275,125 @@ HRESULT CIsochartEngine::InitializeCurrentChartHeap()
             return E_OUTOFMEMORY;	
         }
     }
+    return S_OK;
+}
+
+
+HRESULT CIsochartEngine::ParameterizeChartsInHeapParallelized(
+    bool bFirstTime,
+    size_t MaxChartNumber)
+{
+    // 3.1 If Any charts needed to be partitioned
+
+    /// Parallelization:
+    /// 1st Move heap to vector `parent`
+    /// 2nd run through parent in parallel, add children to `children`
+    /// 3rd children = parent, goto 2nd 
+    std::vector<CIsochartMesh*> parent;
+    while (!m_currentChartHeap.empty())
+        parent.emplace_back(m_currentChartHeap.cutTopData());
+
+    HRESULT hrOut = S_OK;
+    int runs = 0;
+    while (!parent.empty() && !FAILED(hrOut))
+    {
+        // std::cout << "Run " << runs++ << " parent size: " << parent.size() << " :"; 
+        std::vector<CIsochartMesh*> children;
+#pragma omp parallel 
+        {
+
+            std::vector<CIsochartMesh*> children_thrd;
+#pragma omp for
+            for (int n = 0; n < parent.size(); ++n)
+            {
+                if (FAILED(hrOut)) // for the other threads
+                    break;
+
+                auto start = std::chrono::system_clock::now();
+
+                auto pChart = parent[n];
+                assert(pChart != nullptr);
+                _Analysis_assume_(pChart != nullptr);
+
+                // Process current chart, if it's needed to be partitioned again, 
+                // Just partition it.
+                HRESULT hr = pChart->Partition(); /// Adds children to pChart->m_children						// hotspot
+                if (FAILED(hr))
+                {
+                    hrOut = hr; // doesn't need pragma atomic as all changes to hrOut are to set it to FAILED
+                    break;
+                }
+
+                // If current chart has been partitoned, just children add to heap to be
+                // processed later.
+                if (pChart->HasChildren())
+                {
+                    /// Add children to children vector to be ran in the following parallelization run
+                    for (uint32_t i = 0; i < pChart->GetChildrenCount(); i++)
+                    {
+                        CIsochartMesh* pChild = pChart->GetChild(i);
+                        assert(pChild != nullptr);
+
+                        if (pChild->GetVertexNumber() == 4 && (pChild->GetVertexBuffer()[0]).dwIDInRootMesh == 228)
+                        {
+                            DPF(3, "hello...");
+                        }
+
+                        children_thrd.emplace_back(pChild);
+                    }
+                    pChart->UnlinkAllChildren();
+                    if (!pChart->IsInitChart())
+                        delete pChart;
+                }
+                else // A right parameterization (with acceptable face overturn) has been gotten, add current chart to final Chart List
+                {
+                    try
+                    {
+#pragma omp critical
+                        m_finalChartList.push_back(pChart);
+                    }
+                    catch (std::bad_alloc&)
+                    {
+                        hrOut = E_OUTOFMEMORY;
+                    }
+                }
+
+                std::chrono::duration<double> elapsed_seconds2 = std::chrono::system_clock::now() - start;
+                std::string temp = " " + std::to_string(elapsed_seconds2.count()) + "s";
+                // std::cout << temp;
+            }
+#pragma omp critical
+            {
+                children.insert(children.end(), children_thrd.begin(), children_thrd.end());
+                // std::move(children_thrd.begin(), children_thrd.end(), std::back_inserter(children)); // Might be faster if the objects in vector have move constructor. Needs testing
+            }
+        }
+        parent = children;
+        // std::cout << std::endl;
+    }
+
+    // 3.2 Update status
+    if (bFirstTime)
+    {
+        HRESULT hr = m_callbackSchemer.FinishWorkAdapt();
+        if (FAILED(hr))
+            return hr;
+
+        if (dwExpectChartCount > 0)
+        {
+            size_t dwStep = 0;
+            if (MaxChartNumber > m_currentChartHeap.size())
+            {
+                dwStep = MaxChartNumber - m_currentChartHeap.size();
+            }
+            m_callbackSchemer.InitCallBackAdapt(dwStep, 0.70f, 0.40f);
+        }
+        else
+        {
+            m_callbackSchemer.InitCallBackAdapt(1, 0.40f, 0.40f);
+        }
+    }
+
     return S_OK;
 }
 
@@ -545,7 +668,9 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
     {
         // 3.1. Generate initial parameterization for charts in current chart heap
         FAILURE_RETURN(
-            ParameterizeChartsInHeap(bCountParition, MaxChartNumber));
+            ParameterizeChartsInHeap(bCountParition, MaxChartNumber)
+            // ParameterizeChartsInHeapParallelized(bCountParition, MaxChartNumber)
+        );
         bCountParition = false;
 
         DPF(1,"Current charts number is : %zu", m_finalChartList.size());
