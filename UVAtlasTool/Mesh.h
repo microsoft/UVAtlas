@@ -41,6 +41,9 @@ public:
     // Methods
     void Clear();
 
+    void SetMTLFileName(const std::wstring& name) { mtlFileName = name; }
+    void SetFirstMaterialName(const std::wstring& name) { firstMaterialName = name; }
+
     HRESULT SetIndexData(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint16_t* indices, _In_reads_opt_(nFaces) uint32_t* attributes = nullptr);
     HRESULT SetIndexData(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t* indices, _In_reads_opt_(nFaces) uint32_t* attributes = nullptr);
 
@@ -143,6 +146,9 @@ public:
         }
     };
 
+    void ExportToOBJ(const wchar_t* szFileName) const;
+    void ExportToOBJ(std::string filePath) const;
+    void ExportToOBJ(std::ostream& os) const;
     HRESULT ExportToVBO(_In_z_ const wchar_t* szFileName) const;
     HRESULT ExportToCMO(_In_z_ const wchar_t* szFileName, _In_ size_t nMaterials, _In_reads_opt_(nMaterials) const Material* materials) const;
     HRESULT ExportToSDKMESH(_In_z_ const wchar_t* szFileName, _In_ size_t nMaterials, _In_reads_opt_(nMaterials) const Material* materials, bool force32bit = false, bool version2 = false) const;
@@ -164,4 +170,7 @@ private:
     std::unique_ptr<DirectX::XMFLOAT4[]>        mColors;
     std::unique_ptr<DirectX::XMFLOAT4[]>        mBlendIndices;
     std::unique_ptr<DirectX::XMFLOAT4[]>        mBlendWeights;
+
+    std::wstring                                mtlFileName;
+    std::wstring                                firstMaterialName;
 };

@@ -1250,6 +1250,10 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
             hr = inMesh->ExportToCMO(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
         }
+        else if (!_wcsicmp(outputExt, L".obj"))
+        {
+            inMesh->ExportToOBJ(outputPath);
+        }
         else if (!_wcsicmp(outputExt, L".x"))
         {
             wprintf(L"\nERROR: Legacy Microsoft X files not supported\n");

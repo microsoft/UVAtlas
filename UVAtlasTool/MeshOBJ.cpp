@@ -146,5 +146,11 @@ HRESULT LoadFromOBJ(
         }
     }
 
+    if (wfReader.materials.size() > 1)
+    {
+        inMesh->SetMTLFileName(wfReader.name);
+        inMesh->SetFirstMaterialName(wfReader.materials[1].strName);
+    }
+
     return S_OK;
 }
