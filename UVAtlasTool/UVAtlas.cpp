@@ -1252,7 +1252,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         }
         else if (!_wcsicmp(outputExt, L".obj"))
         {
-            inMesh->ExportToOBJ(outputPath);
+            hr = inMesh->ExportToOBJ(outputPath);
         }
         else if (!_wcsicmp(outputExt, L".x"))
         {

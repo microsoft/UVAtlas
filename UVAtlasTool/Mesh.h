@@ -12,11 +12,11 @@
 
 #include <Windows.h>
 
+#include <cstdint>
 #include <memory>
+#include <ostream>
 #include <string>
-#include <vector>
 
-#include <stdint.h>
 
 #if defined(_XBOX_ONE) && defined(_TITLE)
 #include <d3d11_x.h>
@@ -146,9 +146,7 @@ public:
         }
     };
 
-    void ExportToOBJ(const wchar_t* szFileName) const;
-    void ExportToOBJ(std::string filePath) const;
-    void ExportToOBJ(std::ostream& os) const;
+    HRESULT ExportToOBJ(const wchar_t* szFileName) const;
     HRESULT ExportToVBO(_In_z_ const wchar_t* szFileName) const;
     HRESULT ExportToCMO(_In_z_ const wchar_t* szFileName, _In_ size_t nMaterials, _In_reads_opt_(nMaterials) const Material* materials) const;
     HRESULT ExportToSDKMESH(_In_z_ const wchar_t* szFileName, _In_ size_t nMaterials, _In_reads_opt_(nMaterials) const Material* materials, bool force32bit = false, bool version2 = false) const;
@@ -173,4 +171,7 @@ private:
 
     std::wstring                                mtlFileName;
     std::wstring                                firstMaterialName;
+
+    HRESULT ExportToOBJ(std::string filePath) const;
+    void ExportToOBJ(std::wostream& os) const;
 };
