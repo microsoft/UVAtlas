@@ -121,12 +121,15 @@ private:
         size_t& ChartNumberOut,
         float& MaxChartStretchOut,
         uint32_t* pFaceAttributeIDOut);
-
-    HRESULT ParameterizeChartsInHeapParallelized(bool bFirstTime, size_t MaxChartNumber);
+#ifdef _OPENMP
+    HRESULT ParameterizeChartsInHeapParallelized(
+        bool bFirstTime,
+        size_t MaxChartNumber);
+#else
     HRESULT ParameterizeChartsInHeap(
         bool bFirstTime,
         size_t MaxChartNumber);
-
+#endif
     HRESULT GenerateNewChartsToParameterize();
 
     HRESULT OptimizeParameterizedCharts(
