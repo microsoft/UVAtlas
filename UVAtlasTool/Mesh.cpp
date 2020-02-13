@@ -28,6 +28,8 @@
 #include <DirectXCollision.h>
 #include <UVAtlas.h>
 
+#include <fstream>
+
 using namespace DirectX;
 
 namespace

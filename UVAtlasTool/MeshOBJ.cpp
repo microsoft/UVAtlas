@@ -146,5 +146,66 @@ HRESULT LoadFromOBJ(
         }
     }
 
+    if (wfReader.materials.size() > 1)
+    {
+        inMesh->SetMTLFileName(wfReader.name);
+        inMesh->SetFirstMaterialName(wfReader.materials[1].strName);
+    }
+
     return S_OK;
+}
+
+//--------------------------------------------------------------------------------------
+HRESULT Mesh::ExportToOBJ(std::string filePath) const
+{
+    return ExportToOBJ(std::wstring(filePath.begin(), filePath.end()).c_str());
+}
+/// Write to file
+HRESULT Mesh::ExportToOBJ(const wchar_t* szFileName) const
+{
+    std::ofstream os;
+    os.open(szFileName);
+    ExportToOBJ(os);
+    os.close();
+    return (os.bad()) ? E_FAIL : S_OK;
+}
+/// Writing to cout or to a file stream
+void Mesh::ExportToOBJ(std::wostream& os) const
+{
+    if (!mtlFileName.empty())
+        os << "mtllib ./" << mtlFileName << ".mtl" << std::endl; // https://stackoverflow.com/questions/4804298/how-to-convert-wstring-into-string converting wstring to string this way works for almost everything except chinese characters
+
+    for (size_t vert = 0; vert < mnVerts; ++vert)
+        os << "v " << mPositions[vert].x << " " << mPositions[vert].y << " " << mPositions[vert].z << std::endl;
+
+    if (mTexCoords)
+        for (size_t vert = 0; vert < mnVerts; ++vert) // in this Mesh format the number of texture vertices is always the same as mnVerts
+            os << "vt " << mTexCoords[vert].x << " " << mTexCoords[vert].y << std::endl;
+
+    if (mNormals)
+        for (size_t vert = 0; vert < mnVerts; ++vert) // in this Mesh format the number of texture vertices is always the same as mnVerts
+            os << "vn " << mNormals[vert].x << " " << mNormals[vert].y << " " << mNormals[vert].z << std::endl;
+
+    // Using the first material entry as they are all the same for our use cases
+    if (!firstMaterialName.empty())
+        os << "usemtl " << firstMaterialName << std::endl; // https://stackoverflow.com/questions/4804298/how-to-convert-wstring-into-string converting wstring to string this way works for almost everything except chinese characters
+
+    /// Now the faces, a face is the first 3 indexes in indexes on the faces vertex
+    for (size_t face = 0; face < mnFaces; ++face)
+    {
+        os << "f ";
+        for (size_t point = 0; point < 3; ++point)
+        {
+            auto i = mIndices[face * 3 + point] + 1;
+
+            os << i << "/";
+            if (mTexCoords)
+                os << i;
+            os << "/";
+            if (mNormals)
+                os << i;
+            os << " ";
+        }
+        os << std::endl;
+    }
 }
