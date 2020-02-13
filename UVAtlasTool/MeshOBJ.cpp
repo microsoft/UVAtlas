@@ -163,7 +163,7 @@ HRESULT Mesh::ExportToOBJ(std::string filePath) const
 /// Write to file
 HRESULT Mesh::ExportToOBJ(const wchar_t* szFileName) const
 {
-    std::ofstream os;
+    std::wofstream os;
     os.open(szFileName);
     ExportToOBJ(os);
     os.close();
