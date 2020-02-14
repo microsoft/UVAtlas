@@ -70,6 +70,7 @@ enum OPTIONS
     OPT_SDKMESH_V2,
     OPT_CMO,
     OPT_VBO,
+    OPT_WAVEFRONT_OBJ,
     OPT_OUTPUTFILE,
     OPT_CLOCKWISE,
     OPT_FORCE_32BIT_IB,
@@ -146,6 +147,7 @@ const SValue g_pOptions [] =
     { L"sdkmesh2",  OPT_SDKMESH_V2 },
     { L"cmo",       OPT_CMO },
     { L"vbo",       OPT_VBO },
+    { L"wf",        OPT_WAVEFRONT_OBJ },
     { L"cw",        OPT_CLOCKWISE },
     { L"ib32",      OPT_FORCE_32BIT_IB },
     { L"y",         OPT_OVERWRITE },
@@ -281,12 +283,13 @@ namespace
 
         wprintf(L"Usage: uvatlas <options> <files>\n");
         wprintf(L"\n");
-        wprintf(L"   Input file type must be Wavefront OBJ\n\n");
+        wprintf(L"   Input file type must be Wavefront Object (.obj)\n\n");
         wprintf(L"   Output file type:\n");
         wprintf(L"       -sdkmesh        DirectX SDK .sdkmesh format (default)\n");
         wprintf(L"       -sdkmesh2       .sdkmesh format version 2 (PBR materials)\n");
         wprintf(L"       -cmo            Visual Studio Content Pipeline .cmo format\n");
         wprintf(L"       -vbo            Vertex Buffer Object (.vbo) format\n\n");
+        wprintf(L"       -wf             WaveFront Object (.obj) format\n\n");
         wprintf(L"   -r                  wildcard filename search is recursive\n");
         wprintf(L"   -q <level>          sets quality level to DEFAULT, FAST or QUALITY\n");
         wprintf(L"   -n <number>         maximum number of charts to generate (def: 0)\n");
@@ -575,9 +578,9 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
             case OPT_SDKMESH:
             case OPT_SDKMESH_V2:
-                if (dwOptions & ((DWORD64(1) << OPT_VBO) | (DWORD64(1) << OPT_CMO)))
+                if (dwOptions & ((DWORD64(1) << OPT_VBO) | (DWORD64(1) << OPT_CMO) | (DWORD64(1) << OPT_WAVEFRONT_OBJ)))
                 {
-                    wprintf(L"Can only use one of sdkmesh, cmo, or vbo\n");
+                    wprintf(L"Can only use one of sdkmesh, cmo, vbo, or wf\n");
                     return 1;
                 }
                 if (dwOption == OPT_SDKMESH_V2)
@@ -587,17 +590,25 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
 
             case OPT_CMO:
-                if (dwOptions & ((DWORD64(1) << OPT_VBO) | (DWORD64(1) << OPT_SDKMESH)))
+                if (dwOptions & ((DWORD64(1) << OPT_VBO) | (DWORD64(1) << OPT_SDKMESH) | (DWORD64(1) << OPT_WAVEFRONT_OBJ)))
                 {
-                    wprintf(L"Can only use one of sdkmesh, cmo, or vbo\n");
+                    wprintf(L"Can only use one of sdkmesh, cmo, vbo, or wf\n");
                     return 1;
                 }
                 break;
 
             case OPT_VBO:
-                if (dwOptions & ((DWORD64(1) << OPT_SDKMESH) | (DWORD64(1) << OPT_CMO)))
+                if (dwOptions & ((DWORD64(1) << OPT_SDKMESH) | (DWORD64(1) << OPT_CMO) | (DWORD64(1) << OPT_WAVEFRONT_OBJ)))
                 {
-                    wprintf(L"Can only use one of sdkmesh, cmo, or vbo\n");
+                    wprintf(L"Can only use one of sdkmesh, cmo, vbo, or wf\n");
+                    return 1;
+                }
+                break;
+
+            case OPT_WAVEFRONT_OBJ:
+                if (dwOptions & ((DWORD64(1) << OPT_VBO) | (DWORD64(1) << OPT_SDKMESH) | (DWORD64(1) << OPT_CMO)))
+                {
+                    wprintf(L"Can only use one of sdkmesh, cmo, vbo, or wf\n");
                     return 1;
                 }
                 break;
@@ -1190,6 +1201,10 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             {
                 wcscpy_s(outputExt, L".cmo");
             }
+            else if (dwOptions & (DWORD64(1) << OPT_WAVEFRONT_OBJ))
+            {
+                wcscpy_s(outputExt, L".obj");
+            }
             else
             {
                 wcscpy_s(outputExt, L".sdkmesh");
@@ -1250,9 +1265,9 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
             hr = inMesh->ExportToCMO(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
         }
-        else if (!_wcsicmp(outputExt, L".obj"))
+        else if (!_wcsicmp(outputExt, L".obj") || !_wcsicmp(outputExt, L"._obj"))
         {
-            hr = inMesh->ExportToOBJ(outputPath);
+            hr = inMesh->ExportToOBJ(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
         }
         else if (!_wcsicmp(outputExt, L".x"))
         {

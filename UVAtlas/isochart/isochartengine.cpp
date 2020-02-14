@@ -290,7 +290,6 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeapParallelized(
         parent.emplace_back(m_currentChartHeap.cutTopData());
 
     HRESULT hrOut = S_OK;
-    int runs = 0;
     while (!parent.empty() && !FAILED(hrOut))
     {
         std::vector<CIsochartMesh*> children;

@@ -49,6 +49,7 @@ namespace
     }
 }
 
+//--------------------------------------------------------------------------------------
 HRESULT LoadFromOBJ(
     const wchar_t* szFilename,
     std::unique_ptr<Mesh>& inMesh,
@@ -149,62 +150,96 @@ HRESULT LoadFromOBJ(
     if (wfReader.materials.size() > 1)
     {
         inMesh->SetMTLFileName(wfReader.name);
-        inMesh->SetFirstMaterialName(wfReader.materials[1].strName);
     }
 
     return S_OK;
 }
 
 //--------------------------------------------------------------------------------------
-HRESULT Mesh::ExportToOBJ(std::string filePath) const
+_Use_decl_annotations_
+HRESULT Mesh::ExportToOBJ(const wchar_t* szFileName, size_t nMaterials, const Material* materials) const
 {
-    return ExportToOBJ(std::wstring(filePath.begin(), filePath.end()).c_str());
-}
-/// Write to file
-HRESULT Mesh::ExportToOBJ(const wchar_t* szFileName) const
-{
+    if (!szFileName)
+        return E_INVALIDARG;
+
+    if (nMaterials > 0 && !materials)
+        return E_INVALIDARG;
+
     std::wofstream os;
     os.open(szFileName);
-    ExportToOBJ(os);
+    if (!os)
+        return E_FAIL;
+
+    os << L"# " << szFileName << std::endl << L"#" << std::endl << std::endl;
+
+    ExportToOBJ(os, nMaterials, materials);
+
     os.close();
+
     return (os.bad()) ? E_FAIL : S_OK;
 }
-/// Writing to cout or to a file stream
-void Mesh::ExportToOBJ(std::wostream& os) const
+
+_Use_decl_annotations_
+void Mesh::ExportToOBJ(std::wostream& os, size_t nMaterials, const Material* materials) const
 {
     if (!mtlFileName.empty())
-        os << "mtllib ./" << mtlFileName << ".mtl" << std::endl; // https://stackoverflow.com/questions/4804298/how-to-convert-wstring-into-string converting wstring to string this way works for almost everything except chinese characters
+        os << L"mtllib ./" << mtlFileName << L".mtl" << std::endl;
 
     for (size_t vert = 0; vert < mnVerts; ++vert)
-        os << "v " << mPositions[vert].x << " " << mPositions[vert].y << " " << mPositions[vert].z << std::endl;
+    {
+        os << L"v " << mPositions[vert].x << L" " << mPositions[vert].y << L" " << mPositions[vert].z << std::endl;
+    }
+    os << std::endl;
 
     if (mTexCoords)
-        for (size_t vert = 0; vert < mnVerts; ++vert) // in this Mesh format the number of texture vertices is always the same as mnVerts
-            os << "vt " << mTexCoords[vert].x << " " << mTexCoords[vert].y << std::endl;
+    {
+        for (size_t vert = 0; vert < mnVerts; ++vert)
+        {
+            os << L"vt " << mTexCoords[vert].x << L" " << mTexCoords[vert].y << std::endl;
+        }
+        os << std::endl;
+    }
 
     if (mNormals)
-        for (size_t vert = 0; vert < mnVerts; ++vert) // in this Mesh format the number of texture vertices is always the same as mnVerts
-            os << "vn " << mNormals[vert].x << " " << mNormals[vert].y << " " << mNormals[vert].z << std::endl;
+    {
+        for (size_t vert = 0; vert < mnVerts; ++vert)
+        {
+            os << L"vn " << mNormals[vert].x << L" " << mNormals[vert].y << L" " << mNormals[vert].z << std::endl;
+        }
+        os << std::endl;
+    }
 
     // Using the first material entry as they are all the same for our use cases
-    if (!firstMaterialName.empty())
-        os << "usemtl " << firstMaterialName << std::endl; // https://stackoverflow.com/questions/4804298/how-to-convert-wstring-into-string converting wstring to string this way works for almost everything except chinese characters
+    if (!materials || !mAttributes)
+    {
+        os << L"usemtl default" << std::endl;
+    }
 
     /// Now the faces, a face is the first 3 indexes in indexes on the faces vertex
+    uint32_t lastAttribute = uint32_t(-1);
     for (size_t face = 0; face < mnFaces; ++face)
     {
-        os << "f ";
+        if (mAttributes && mAttributes[face] != lastAttribute)
+        {
+            lastAttribute = mAttributes[face];
+            if (lastAttribute < nMaterials)
+            {
+                os << L"usemtl " << materials[lastAttribute].name << std::endl;
+            }
+        }
+
+        os << L"f ";
         for (size_t point = 0; point < 3; ++point)
         {
-            auto i = mIndices[face * 3 + point] + 1;
+            uint32_t i = mIndices[face * 3 + point] + 1;
 
-            os << i << "/";
+            os << i << L"/";
             if (mTexCoords)
                 os << i;
-            os << "/";
+            os << L"/";
             if (mNormals)
                 os << i;
-            os << " ";
+            os << L" ";
         }
         os << std::endl;
     }
