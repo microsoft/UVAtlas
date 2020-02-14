@@ -395,7 +395,7 @@ float CIsochartMesh::CalOptimalAvgL2SquaredStretch(
     bool bAllChartSatisfiedStretch = true;
     const CBaseMeshInfo& baseInfo = chartList[0]->m_baseInfo;
     float fSumSqrtEiiaii = 0;
-    for (int ii = 0; ii < static_cast<int>(chartList.size()); ii++)
+    for (size_t ii = 0; ii < chartList.size(); ii++)
     {
         float fEii = chartList[ii]->m_fParamStretchL2;
         float faii = chartList[ii]->m_fChart2DArea;

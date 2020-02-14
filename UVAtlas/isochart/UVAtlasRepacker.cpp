@@ -889,7 +889,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                      pAB[ab[t]] = uint32_t(num);
                         for (size_t j = 0; j < 3; j++)
                         {
-                            uint32_t index = *(T *) (pIB + (3 * ab[t] + j) * sizeof(T));
+                            uint32_t index = *reinterpret_cast<const T*>(pIB + (3 * ab[t] + j) * sizeof(T));
                             for (size_t k = 0; k < m_VertexAdjInfo[index].size(); k++)
                                 if (!bUsedFace[m_VertexAdjInfo[index][k]])
                                 {
@@ -910,9 +910,9 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                 {
 
                     // find the original index of the triangle's vertex
-                    uint32_t index1 = *(T *) (pIB + 3 * ab[j] * sizeof(T));
-                    uint32_t index2 = *(T *) (pIB + (3 * ab[j] + 1) * sizeof(T));
-                    uint32_t index3 = *(T *) (pIB + (3 * ab[j] + 2) * sizeof(T));
+                    uint32_t index1 = *reinterpret_cast<const T*>(pIB + 3 * ab[j] * sizeof(T));
+                    uint32_t index2 = *reinterpret_cast<const T*>(pIB + (3 * ab[j] + 1) * sizeof(T));
+                    uint32_t index3 = *reinterpret_cast<const T*>(pIB + (3 * ab[j] + 2) * sizeof(T));
 
                     // copy the original adjacent information continuously in new adjacent buffer
                     memcpy(&m_NewAdjacentInfo[j * 3 + facestart * 3], 
@@ -924,14 +924,14 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                     m_IndexBuffer.push_back(index3);
                 
                     // find the original UV coordinates of each vertex
-                    XMFLOAT2 *p1 = (XMFLOAT2 *)(pVB + index1 * m_iNumBytesPerVertex + m_TexCoordOffset);
-                    XMFLOAT2 *p2 = (XMFLOAT2 *)(pVB + index2 * m_iNumBytesPerVertex + m_TexCoordOffset);
-                    XMFLOAT2 *p3 = (XMFLOAT2 *)(pVB + index3 * m_iNumBytesPerVertex + m_TexCoordOffset);
+                    auto p1 = reinterpret_cast<const XMFLOAT2*>(pVB + index1 * m_iNumBytesPerVertex + m_TexCoordOffset);
+                    auto p2 = reinterpret_cast<const XMFLOAT2*>(pVB + index2 * m_iNumBytesPerVertex + m_TexCoordOffset);
+                    auto p3 = reinterpret_cast<const XMFLOAT2*>(pVB + index3 * m_iNumBytesPerVertex + m_TexCoordOffset);
 
                     // find the original 3D coordinates of each vertex
-                    XMFLOAT3 *pp1 = (XMFLOAT3 *)(pVB + index1 * m_iNumBytesPerVertex);
-                    XMFLOAT3 *pp2 = (XMFLOAT3 *)(pVB + index2 * m_iNumBytesPerVertex);
-                    XMFLOAT3 *pp3 = (XMFLOAT3 *)(pVB + index3 * m_iNumBytesPerVertex);
+                    auto pp1 = reinterpret_cast<const XMFLOAT3*>(pVB + index1 * m_iNumBytesPerVertex);
+                    auto pp2 = reinterpret_cast<const XMFLOAT3*>(pVB + index2 * m_iNumBytesPerVertex);
+                    auto pp3 = reinterpret_cast<const XMFLOAT3*>(pVB + index3 * m_iNumBytesPerVertex);
 
                     // create an index partition buffer which store each vertex's original position
                     // to recover the vertex buffer after repacking.
@@ -1824,7 +1824,7 @@ void CUVAtlasRepacker::OutPutPackResult()
         // we just move all these vertex UV into coordinates (0, 0)
         if (m_IndexPartition[i] == uint32_t(-1))
         {
-            float *pp = (float *)(pVB + i * m_iNumBytesPerVertex);
+            auto pp = reinterpret_cast<float *>(pVB + i * m_iNumBytesPerVertex);
             *pp = 0;
             *(pp + 1) = 0;
             *(pp + 2) = 0;
@@ -1882,17 +1882,10 @@ float CUVAtlasRepacker::GetTotalArea() const
     float Area = 0;
     for (size_t i = 0; i < m_iNumFaces; i++)
     {
-        XMFLOAT2 *p1 =
-            (XMFLOAT2 *)(pVB + *(T *)(pIB + 3 * i * sizeof(T)) *
-            m_iNumBytesPerVertex + m_TexCoordOffset);
-        XMFLOAT2 *p2 =
-            (XMFLOAT2 *)(pVB + *(T *)(pIB + (3 * i + 1) * sizeof(T)) *
-            m_iNumBytesPerVertex + m_TexCoordOffset);
-        XMFLOAT2 *p3 =
-            (XMFLOAT2 *)(pVB + *(T *)(pIB + (3 * i + 2) * sizeof(T)) *
-            m_iNumBytesPerVertex + m_TexCoordOffset);
-        float s = fabsf((p1->x - p3->x)*(p2->y - p3->y) - 
-                    (p2->x - p3->x)*(p1->y - p3->y)) / 2;
+        auto p1 = reinterpret_cast<const XMFLOAT2*>(pVB + *reinterpret_cast<const T*>(pIB + 3 * i * sizeof(T))* m_iNumBytesPerVertex + m_TexCoordOffset);
+        auto p2 = reinterpret_cast<const XMFLOAT2*>(pVB + *reinterpret_cast<const T*>(pIB + (3 * i + 1) * sizeof(T))* m_iNumBytesPerVertex + m_TexCoordOffset);
+        auto p3 = reinterpret_cast<const XMFLOAT2*>(pVB + *reinterpret_cast<const T*>(pIB + (3 * i + 2) * sizeof(T))* m_iNumBytesPerVertex + m_TexCoordOffset);
+        float s = fabsf((p1->x - p3->x) * (p2->y - p3->y) - (p2->x - p3->x) * (p1->y - p3->y)) / 2;
         Area += s;
     }
 

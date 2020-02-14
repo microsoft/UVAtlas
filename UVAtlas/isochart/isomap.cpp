@@ -171,7 +171,7 @@ HRESULT CIsoMap::ComputeLargestEigen(
     {
         if (m_pfEigenValue[i] < ISOCHART_ZERO_EPS
         || (i > 0 && m_pfEigenValue[i] 
-        < m_pfEigenValue[i-1] * ISOCHART_ZERO_EPS && m_pfEigenValue[i]))
+        < m_pfEigenValue[i-1] * ISOCHART_ZERO_EPS && m_pfEigenValue[i])) // BUGBUG -Wfloat-conversion!?!
         {
             break;
         }
