@@ -58,9 +58,9 @@ bool CMaxFlow::InitGraphCut(size_t nNodes, size_t nEdges, size_t nDegree)
 // add an empty node and return it's id
 CMaxFlow::node_id CMaxFlow::AddNode()
 {
-    assert( (size_t)(m_nodeNumber) < nodes.size());
+    assert( size_t(m_nodeNumber) < nodes.size());
 
-    node_id id = (node_id)(m_nodeNumber);
+    node_id id = node_id(m_nodeNumber);
     m_nodeNumber++;
     return id;
     /*
@@ -135,7 +135,7 @@ void CMaxFlow::Initialization()
     std::queue<node_id> empty2;
     active_list.swap(empty2);
 
-    for (node_id k = 0; k <(node_id) nodes.size(); k ++)
+    for (node_id k = 0; k < node_id(nodes.size()); k ++)
     {
         // initialize each node
         // assume capacity and resident has benn assigned

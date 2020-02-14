@@ -786,7 +786,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerVertexSignal(
     {
         if (statusCallBack && ((i % 64) == 0))
         {
-            float fPct = i / (float) nFaces;
+            float fPct = float(i) / float(nFaces);
             hr = statusCallBack(fPct);
             if (FAILED(hr))
                 return E_ABORT;
@@ -899,7 +899,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromSignal(
     {
         if (statusCallBack && ((i % 64) == 0))
         {
-            float fPct = i / (float) nFaces;
+            float fPct = float(i) / float(nFaces);
             hr = statusCallBack(fPct);
             if (FAILED(hr))
                 return E_ABORT;
@@ -936,7 +936,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromSignal(
                                signalDimension,
                                signalCallback,
                                userData,
-                               (FLOAT3*)(pfIMTData + 3*i));
+                               reinterpret_cast<FLOAT3*>(pfIMTData + 3*i));
         if ( FAILED(hr) )
         {
             DPF(0, "UVAtlasComputeIMT: IMT data calculation failed.");
@@ -991,8 +991,8 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
@@ -1051,8 +1051,8 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
@@ -1117,8 +1117,8 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
@@ -1181,8 +1181,8 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
@@ -1305,7 +1305,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromTexture(
     {
         if (statusCallBack && ((i % 64) == 0))
         {
-            float fPct = i / (float) nFaces;
+            float fPct = float(i) / float(nFaces);
             hr = statusCallBack(fPct);
             if (FAILED(hr))
                 return E_ABORT;
@@ -1341,7 +1341,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromTexture(
                                  4, // dimension 4, rgba, can be zeroes if less than 4
                                  pSignalCallback,
                                  &TextureDesc,
-                                 (FLOAT3*)(pfIMTData + 3*i));
+                                 reinterpret_cast<FLOAT3*>(pfIMTData + 3*i));
         if (FAILED(hr))
         {
             DPF(0, "UVAtlasComputeIMT: IMT data calculation failed.");
@@ -1395,8 +1395,8 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
@@ -1454,8 +1454,8 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
@@ -1519,8 +1519,8 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
@@ -1582,8 +1582,8 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
@@ -1717,7 +1717,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerTexelSignal(
     {
         if (statusCallBack && ((i % 64) == 0))
         {
-            float fPct = i / (float) nFaces;
+            float fPct = float(i) / float(nFaces);
             hr = statusCallBack(fPct);
             if (FAILED(hr))
                 return E_ABORT;
@@ -1753,7 +1753,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerTexelSignal(
                                  signalDimension,
                                  pSignalCallback,
                                  &FloatArrayDesc,
-                                 (FLOAT3*)(pfIMTData + 3*i));
+                                 reinterpret_cast<FLOAT3*>(pfIMTData + 3*i));
         if (FAILED(hr))
         {
             DPF(0, "UVAtlasComputeIMT: IMT data calculation failed.");

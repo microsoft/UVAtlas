@@ -72,7 +72,7 @@
 // axis = XAxis, return v.x
 // axis = YAxis, return v.y
 // axis = ZAxis, return v.z
-#define VECTOR_ITEM(v, axis) (((float*)(v))[axis])
+#define VECTOR_ITEM(v, axis) ((reinterpret_cast<float*>(v))[axis])
 #define VECTOR_CHANGE_ITEM(v1, v2, axis, op, value) \
     {((reinterpret_cast<float*>(v1))[axis]) = ((reinterpret_cast<const float*>(v2))[axis]) op value;}
 

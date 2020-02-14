@@ -1057,7 +1057,7 @@ float CIsochartMesh::CalFaceSigL2SquraedStretch(
         m_baseInfo.pfIMTArray+ pFace->dwIDInRootMesh;
 
     FLOAT3 IMT;
-    GetIMTOnCanonicalFace((const float*)(*pMT), f3D, IMT);
+    GetIMTOnCanonicalFace(reinterpret_cast<const float*>(*pMT), f3D, IMT);
 
     if (f3D == 0)
     {
@@ -1169,15 +1169,12 @@ float CIsochartMesh::CalFaceGeoL2SquraedStretch(
             &v0,
             &v1,
             &v2,
-            (const float*)(&m_baseInfo.pVertPosition[
-                m_pVerts[pFace->dwVertexID[0]].dwIDInRootMesh]),
-            (const float*)(&m_baseInfo.pVertPosition[
-                m_pVerts[pFace->dwVertexID[1]].dwIDInRootMesh]),
-            (const float*)(&m_baseInfo.pVertPosition[
-                m_pVerts[pFace->dwVertexID[2]].dwIDInRootMesh]),
+            reinterpret_cast<const float*>(&m_baseInfo.pVertPosition[m_pVerts[pFace->dwVertexID[0]].dwIDInRootMesh]),
+            reinterpret_cast<const float*>(&m_baseInfo.pVertPosition[m_pVerts[pFace->dwVertexID[1]].dwIDInRootMesh]),
+            reinterpret_cast<const float*>(&m_baseInfo.pVertPosition[m_pVerts[pFace->dwVertexID[2]].dwIDInRootMesh]),
             3,
-            (float*)&Ss,
-            (float*)&St);
+            reinterpret_cast<float*>(&Ss),
+            reinterpret_cast<float*>(&St));
 
         XMVECTOR vSs = XMLoadFloat3(&Ss);
         XMVECTOR vSt = XMLoadFloat3(&St);
@@ -1222,15 +1219,12 @@ float CIsochartMesh::CalFaceGeoLNSquraedStretch(
             &v0,
             &v1,
             &v2,
-            (const float*)(&m_baseInfo.pVertPosition[
-                m_pVerts[pFace->dwVertexID[0]].dwIDInRootMesh]),
-            (const float*)(&m_baseInfo.pVertPosition[
-                m_pVerts[pFace->dwVertexID[1]].dwIDInRootMesh]),
-            (const float*)(&m_baseInfo.pVertPosition[
-                m_pVerts[pFace->dwVertexID[2]].dwIDInRootMesh]),
+            reinterpret_cast<const float*>(&m_baseInfo.pVertPosition[m_pVerts[pFace->dwVertexID[0]].dwIDInRootMesh]),
+            reinterpret_cast<const float*>(&m_baseInfo.pVertPosition[m_pVerts[pFace->dwVertexID[1]].dwIDInRootMesh]),
+            reinterpret_cast<const float*>(&m_baseInfo.pVertPosition[m_pVerts[pFace->dwVertexID[2]].dwIDInRootMesh]),
             3,
-            (float*)&Ss,
-            (float*)&St);
+            reinterpret_cast<float*>(&Ss),
+            reinterpret_cast<float*>(&St));
 
         XMVECTOR vSs = XMLoadFloat3(&Ss);
         XMVECTOR vSt = XMLoadFloat3(&St);
