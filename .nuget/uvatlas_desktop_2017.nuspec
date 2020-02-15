@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata minClientVersion="2.8.6">
+        <id>uvatlas_desktop_2017</id>
+        <version>0.0.0-SpecifyVersionOnCommandline</version>
+        <title>UVAtlas Library (VS 2017/2019 Win32)</title>
+        <authors>Microsoft</authors>
+        <owners>microsoft,directxtk</owners>
+        <summary>UVAtlas Isochart library</summary>
+        <description>This version is for Windows desktop applications using Visual Studio 2017 or Visual Studio 2019.
+
+UVAtlas, a shared source library for creating and packing an isochart texture atlas.</description>
+        <releaseNotes>Matches the February 14, 2020 release on GitHub.</releaseNotes>
+        <projectUrl>http://go.microsoft.com/fwlink/?LinkID=512686</projectUrl>
+        <icon>images\icon.jpg</icon>
+        <license type="expression">MIT</license>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+        <tags>DirectX  UVAtlas  native nativepackage</tags>
+    </metadata>
+
+    <files>
+
+        <file target="docs" src="Readme.*" />
+
+        <file target="include" src="UVAtlas\inc\UVAtlas.h" />
+
+        <file target="native\lib\Win32\Debug" src="UVAtlas\Bin\Desktop_2017_Win10\Win32\Debug\*.lib" />
+        <file target="native\lib\Win32\Debug" src="UVAtlas\Bin\Desktop_2017_Win10\Win32\Debug\*.pdb" />
+
+        <file target="native\lib\Win32\Release" src="UVAtlas\Bin\Desktop_2017_Win10\Win32\Release\*.lib" />
+        <file target="native\lib\Win32\Release" src="UVAtlas\Bin\Desktop_2017_Win10\Win32\Release\*.pdb" />
+
+        <file target="native\lib\x64\Debug" src="UVAtlas\Bin\Desktop_2017_Win10\x64\Debug\*.lib" />
+        <file target="native\lib\x64\Debug" src="UVAtlas\Bin\Desktop_2017_Win10\x64\Debug\*.pdb" />
+
+        <file target="native\lib\x64\Release" src="UVAtlas\Bin\Desktop_2017_Win10\x64\Release\*.lib" />
+        <file target="native\lib\x64\Release" src="UVAtlas\Bin\Desktop_2017_Win10\x64\Release\*.pdb" />
+
+        <file src=".nuget/uvatlas_desktop_2017.targets" target="build\native" />
+
+        <file src=".nuget/icon.jpg" target="images\" />
+      
+    </files>
+</package>
