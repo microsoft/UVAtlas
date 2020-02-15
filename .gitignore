@@ -23,6 +23,7 @@ Debug
 Profile
 Release
 x64
+packages
 /Tests
 /wiki
 /out
