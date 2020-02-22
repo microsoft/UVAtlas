@@ -16,6 +16,7 @@
 *.lastbuildstate
 *.ilk
 *.VC.db
+*.nupkg
 .vs
 Bin
 /ipch
@@ -23,6 +24,7 @@ Debug
 Profile
 Release
 x64
+packages
 /Tests
 /wiki
 /out
