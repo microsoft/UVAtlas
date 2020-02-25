@@ -292,7 +292,7 @@ namespace
 
 
 //-------------------------------------------------------------------------------------
-HRESULT WINAPI Isochart::IMTFromPerVertexSignal(
+HRESULT Isochart::IMTFromPerVertexSignal(
     const XMFLOAT3* pV3d,
     const float* pfSignalArray,
     size_t dwSignalDimension,
@@ -356,7 +356,7 @@ HRESULT WINAPI Isochart::IMTFromPerVertexSignal(
 
 
 //-------------------------------------------------------------------------------------
-HRESULT WINAPI
+HRESULT
 Isochart::IMTFromTextureMap(
     const XMFLOAT3* pV3d,	// [In] surface coordinates of face's vertices
     const XMFLOAT2* pUV,	// [In] Texture coordinates of each vertices in the range of 0 to 1.0f
@@ -1411,7 +1411,7 @@ namespace
 
 
 //-------------------------------------------------------------------------------------
-HRESULT WINAPI
+HRESULT
 Isochart::IMTFromTextureMapEx(
     const XMFLOAT3* pV3d,	// [In] surface coordinates of face's vertices
     const XMFLOAT2* pUV,	// [In] Texture coordinates of each vertices in the range of 0 to 1.0f

@@ -17,18 +17,19 @@ using namespace Isochart;
 using namespace IsochartRepacker;
 
 _Use_decl_annotations_
-HRESULT WINAPI IsochartRepacker::isochartpack2(std::vector<UVAtlasVertex>* pvVertexArray,
-                             size_t VertexCount, 
-                             std::vector<uint8_t>* pvIndexFaceArray,
-                             size_t FaceCount,
-                             const uint32_t *pdwAdjacency,
-                             size_t Width,
-                             size_t Height,
-                             float Gutter,
-                             unsigned int Stage,
-                             LPISOCHARTCALLBACK pCallback, 
-                             float Frequency, 
-                             size_t iNumRotate)
+HRESULT IsochartRepacker::isochartpack2(
+    std::vector<UVAtlasVertex>* pvVertexArray,
+    size_t VertexCount, 
+    std::vector<uint8_t>* pvIndexFaceArray,
+    size_t FaceCount,
+    const uint32_t *pdwAdjacency,
+    size_t Width,
+    size_t Height,
+    float Gutter,
+    unsigned int Stage,
+    LPISOCHARTCALLBACK pCallback, 
+    float Frequency, 
+    size_t iNumRotate)
 {
     HRESULT hr = S_OK ;
     

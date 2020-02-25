@@ -49,7 +49,7 @@ enum ISOCHARTOPTION
 };
 const DWORD _OPTIONMASK_ISOCHART_GEODESIC = _OPTION_ISOCHART_GEODESIC_FAST | _OPTION_ISOCHART_GEODESIC_QUALITY ;
 
-HRESULT WINAPI 
+HRESULT 
 isochart(
     const void* pVertexArray,
     size_t VertexCount,
@@ -74,7 +74,7 @@ isochart(
     float Frequency = 0.01f,	// Call callback function each time completed 1% work of all task
     DWORD dwOptions = _OPTION_ISOCHART_DEFAULT );
 
-HRESULT WINAPI 
+HRESULT 
 isochartpartition(
     _In_reads_bytes_(VertexCount*VertexStride)  const void* pVertexArray,
     _In_                                        size_t VertexCount,
@@ -175,14 +175,14 @@ public:
 /////////////////////////////////////////////////////////////////////////
 
 // Internal API, Compute IMT of one face from per-vertex signal
-HRESULT WINAPI
+HRESULT
 IMTFromPerVertexSignal(
     const DirectX::XMFLOAT3* pV3d,  // [In] surface coordinates of face's vertices
     const float* pfSignalArray,     // [In] An array of 3 * dwSignalDimension FLOATs
     size_t dwSignalDimension,       // [In] Dimension of signal
     FLOAT3* pfIMTArray);            // [Out] Result IMT
 
-HRESULT WINAPI
+HRESULT
 IMTFromTextureMap(
     const DirectX::XMFLOAT3* pV3d,	// [In] surface coordinates of face's vertices
     const DirectX::XMFLOAT2* pUV,	// [In] Texture coordinates of each vertices in the range of 0 to 1.0f
@@ -194,7 +194,7 @@ IMTFromTextureMap(
     void* lpTextureData,            // Texture data, can be accessed by pfnGetSignal
     FLOAT3* pfIMTArray);            // [Out] Result IMT
 
-HRESULT WINAPI
+HRESULT
 IMTFromTextureMapEx(
     const DirectX::XMFLOAT3* pV3d,	// [In] surface coordinates of face's vertices
     const DirectX::XMFLOAT2* pUV,	// [In] Texture coordinates of each vertices in the range of 0 to 1.0f

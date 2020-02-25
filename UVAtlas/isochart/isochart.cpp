@@ -154,7 +154,7 @@ namespace
 //		E_FAIL, Exceptional errors
 
     
-HRESULT WINAPI Isochart::isochart(
+HRESULT Isochart::isochart(
     const void* pVertexArray,
     size_t VertexCount,
     size_t VertexStride,
@@ -289,7 +289,7 @@ LEnd:
 }
 
 _Use_decl_annotations_
-HRESULT WINAPI Isochart::isochartpartition(
+HRESULT Isochart::isochartpartition(
     const void* pVertexArray,
     size_t VertexCount,
     size_t VertexStride,

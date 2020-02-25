@@ -128,18 +128,19 @@ struct UVATLASATTRIBUTERANGE
         the value is E_INVALIDARG.
 \***************************************************************************/
 
-HRESULT WINAPI isochartpack2(_In_                       std::vector<DirectX::UVAtlasVertex>* pvVertexArray,
-                             _In_                       size_t VertexCount, 
-                             _In_                       std::vector<uint8_t>* pvIndexFaceArray,
-                             _In_                       size_t FaceCount, 
-                             _In_reads_(FaceCount*3)    const uint32_t *pdwAdjacency,
-                             _In_                       size_t Width, 
-                             _In_                       size_t Height,
-                             _In_                       float Gutter,
-                             _In_                       unsigned int Stage,
-                             _In_opt_                   Isochart::LPISOCHARTCALLBACK pCallback = nullptr, 
-                             _In_                       float Frequency = 0.01f, 
-                             _In_                       size_t iNumRotate = 5);
+HRESULT isochartpack2(
+    _In_                       std::vector<DirectX::UVAtlasVertex>* pvVertexArray,
+    _In_                       size_t VertexCount, 
+    _In_                       std::vector<uint8_t>* pvIndexFaceArray,
+    _In_                       size_t FaceCount, 
+    _In_reads_(FaceCount*3)    const uint32_t *pdwAdjacency,
+    _In_                       size_t Width, 
+    _In_                       size_t Height,
+    _In_                       float Gutter,
+    _In_                       unsigned int Stage,
+    _In_opt_                   Isochart::LPISOCHARTCALLBACK pCallback = nullptr, 
+    _In_                       float Frequency = 0.01f, 
+    _In_                       size_t iNumRotate = 5);
 
 class CUVAtlasRepacker
 {
