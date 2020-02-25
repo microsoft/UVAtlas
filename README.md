@@ -38,14 +38,6 @@ These components are designed to work without requiring any content from the leg
 
   + Command line tool and sample for UVAtlas library
 
-> To build this tool, you need the DirectXTex (http://go.microsoft.com/fwlink/?LinkId=248926) and DirectXMesh (http://go.microsoft.com/fwlink/?LinkID=324981) libraries in the following directory structure:
-
-    .\DirectXTex\DirectXTex
-    .\DirectXMesh\DirectXMesh
-    .\DirectXMesh\Utilities
-    .\UVAtlas\UVAtlas
-    .\UVAtlas\UVAtlasTool
-
 ## Documentation
 
 Documentation is available on the [GitHub wiki](https://github.com/Microsoft/UVAtlas/wiki).

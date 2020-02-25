@@ -9,6 +9,15 @@ cmake_minimum_required (VERSION 3.11)
 
 project (UVAtlas LANGUAGES CXX)
 
+# To build this tool, you need the DirectXTex (http://go.microsoft.com/fwlink/?LinkId=248926) and
+# DirectXMesh (http://go.microsoft.com/fwlink/?LinkID=324981) libraries in the following directory structure:
+#
+# .\DirectXTex\DirectXTex
+# .\DirectXMesh\DirectXMesh
+# .\DirectXMesh\Utilities
+# .\UVAtlas\UVAtlas
+# .\UVAtlas\UVAtlasTool
+#
 option(BUILD_TOOLS "Build UVAtlasTool" ON)
 
 # Enable the use of OpenMP
