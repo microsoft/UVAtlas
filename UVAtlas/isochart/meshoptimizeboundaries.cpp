@@ -12,7 +12,7 @@
         Chart  boundaries should satisfy two objectives:
         (1) They should cut through areas of high curvature without
         being too jaggy.
-        (2) They should minimize the embedding distorations of the 
+        (2) They should minimize the embedding distorations of the
         charts they border
 
         See more detail in [Kun04]
@@ -20,7 +20,7 @@
         This file implements algorithms in following papers:
 
         [Kun04]:Kun Zhou, John Synder, Baining Guo, Heung-Yeung Shum:
-        Iso-charts: Stretch-driven Mesh Parameterization using Spectral 
+        Iso-charts: Stretch-driven Mesh Parameterization using Spectral
         Analysis, page 3 Eurographics Symposium on Geometry Processing (2004)
 */
 
@@ -61,34 +61,34 @@ HRESULT CIsochartMesh::OptimizeBoundaryByAngle(
     {
         return S_OK;
     }
-    
+
     // 1. Calculate dihedral angle for each edge using formula in 
     // [Kun04], section 4
-    std::unique_ptr<uint32_t []> pdwFaceChartIDBackup(new (std::nothrow) uint32_t[m_dwFaceNumber]);
-    std::unique_ptr<bool[]> pbIsFuzzyFatherFace( new (std::nothrow) bool[m_dwFaceNumber] );
-    std::unique_ptr<float[]> pfEdgeAngleDistance( new (std::nothrow) float[m_dwEdgeNumber] );
-    
+    std::unique_ptr<uint32_t[]> pdwFaceChartIDBackup(new (std::nothrow) uint32_t[m_dwFaceNumber]);
+    std::unique_ptr<bool[]> pbIsFuzzyFatherFace(new (std::nothrow) bool[m_dwFaceNumber]);
+    std::unique_ptr<float[]> pfEdgeAngleDistance(new (std::nothrow) float[m_dwEdgeNumber]);
+
     if (!pfEdgeAngleDistance || !pbIsFuzzyFatherFace || !pdwFaceChartIDBackup)
     {
         return E_OUTOFMEMORY;
     }
 
-    memcpy( pdwFaceChartIDBackup.get(),
+    memcpy(pdwFaceChartIDBackup.get(),
         pdwFaceChartID,
         sizeof(uint32_t) * m_dwFaceNumber);
 
     float fAverageAngleDistance = 0;
     if (!CalculateEdgeAngleDistance(
-            pfEdgeAngleDistance.get(),
-            fAverageAngleDistance))
+        pfEdgeAngleDistance.get(),
+        fAverageAngleDistance))
     {
         return S_OK;
     }
 
     // 2. Decide fuzzy region used in graph cut.
     HRESULT hr = S_OK;
-    memset(pbIsFuzzyFatherFace.get(), 0, sizeof(bool)*m_dwFaceNumber);
-    for (uint32_t i = 0; i<m_children.size(); i++)
+    memset(pbIsFuzzyFatherFace.get(), 0, sizeof(bool) * m_dwFaceNumber);
+    for (uint32_t i = 0; i < m_children.size(); i++)
     {
         CIsochartMesh* pChart = m_children[i];
         hr = pChart->CalculateFuzzyRegion(pbIsFuzzyFatherFace.get());
@@ -96,7 +96,7 @@ HRESULT CIsochartMesh::OptimizeBoundaryByAngle(
         {
             return hr;
         }
-        for (size_t j = 0; j<pChart->m_dwFaceNumber; j++)
+        for (size_t j = 0; j < pChart->m_dwFaceNumber; j++)
         {
             ISOCHARTFACE* pFace = pChart->m_pFaces + j;
             pdwFaceChartID[pFace->dwIDInFatherMesh] = i;
@@ -105,10 +105,10 @@ HRESULT CIsochartMesh::OptimizeBoundaryByAngle(
 
     // 3. Apply graph cut to optimize boundary.
     hr = ApplyGraphCutByAngle(
-            pdwFaceChartID,
-            pbIsFuzzyFatherFace.get(),
-            pfEdgeAngleDistance.get(),
-            fAverageAngleDistance);
+        pdwFaceChartID,
+        pbIsFuzzyFatherFace.get(),
+        pfEdgeAngleDistance.get(),
+        fAverageAngleDistance);
     if (FAILED(hr))
     {
         return hr;
@@ -120,18 +120,18 @@ HRESULT CIsochartMesh::OptimizeBoundaryByAngle(
         pdwFaceChartIDBackup.get(),
         dwMaxSubchartCount,
         bIsOptimized);
- 
+
     return hr;
 }
 
 // Caculate first term in graph cut capacity equation
 bool CIsochartMesh::CalculateEdgeAngleDistance(
-        float* pfEdgeAngleDistance,
-        float& fAverageAngleDistance) const
+    float* pfEdgeAngleDistance,
+    float& fAverageAngleDistance) const
 {
     size_t dwEdgeAngleCount = 0;
     fAverageAngleDistance = 0;
-    for (size_t i=0; i<m_dwEdgeNumber; i++)
+    for (size_t i = 0; i < m_dwEdgeNumber; i++)
     {
         const ISOCHARTEDGE& edge = m_edges[i];
         pfEdgeAngleDistance[i] = 0;
@@ -140,10 +140,10 @@ bool CIsochartMesh::CalculateEdgeAngleDistance(
             ISOCHARTFACE* pFace1 = m_pFaces + edge.dwFaceID[0];
             ISOCHARTFACE* pFace2 = m_pFaces + edge.dwFaceID[1];
 
-            pfEdgeAngleDistance[i] = 
+            pfEdgeAngleDistance[i] =
                 XMVectorGetX(XMVector3Dot(
-                XMLoadFloat3(m_baseInfo.pFaceNormalArray+pFace1->dwIDInRootMesh),
-                XMLoadFloat3(m_baseInfo.pFaceNormalArray+pFace2->dwIDInRootMesh)));
+                    XMLoadFloat3(m_baseInfo.pFaceNormalArray + pFace1->dwIDInRootMesh),
+                    XMLoadFloat3(m_baseInfo.pFaceNormalArray + pFace2->dwIDInRootMesh)));
             pfEdgeAngleDistance[i] = 1.0f - pfEdgeAngleDistance[i];
 
             fAverageAngleDistance += pfEdgeAngleDistance[i];
@@ -170,20 +170,20 @@ HRESULT	CIsochartMesh::CalculateFuzzyRegion(
     assert(m_bVertImportanceDone);
     assert(m_pFather != nullptr);
 
-    std::unique_ptr<bool[]> isFuzzyVert( new (std::nothrow) bool[m_dwVertNumber] );
+    std::unique_ptr<bool[]> isFuzzyVert(new (std::nothrow) bool[m_dwVertNumber]);
     if (!isFuzzyVert)
     {
         return E_OUTOFMEMORY;
     }
 
-    bool* pbIsFuzzyVert  = isFuzzyVert.get();
+    bool* pbIsFuzzyVert = isFuzzyVert.get();
 
     memset(pbIsFuzzyVert, 0, sizeof(bool) * m_dwVertNumber);
 
     // 1. Find new boundary vertices
     std::vector<uint32_t> canidateVertexList;
     HRESULT hr = FindNewBoundaryVert(canidateVertexList, pbIsFuzzyVert);
-    if(FAILED(hr))
+    if (FAILED(hr))
     {
         return hr;
     }
@@ -191,7 +191,7 @@ HRESULT	CIsochartMesh::CalculateFuzzyRegion(
     // 2. Getting no vertex in step 1 means no "fuzzy region"
     if (canidateVertexList.empty())
     {
-        for (size_t i=0; i<m_dwFaceNumber; i++)
+        for (size_t i = 0; i < m_dwFaceNumber; i++)
         {
             pbIsFuzzyFatherFace[m_pFaces[i].dwIDInFatherMesh] = false;
         }
@@ -201,7 +201,7 @@ HRESULT	CIsochartMesh::CalculateFuzzyRegion(
     // 3. Start from vertices find in step1 to find other "fuzzy vertex".
     //  The order to find these verices decide their fuzzy level.
     std::vector<uint32_t> levelVertCountList;
-    if(FAILED(hr = SpreadFuzzyVert(
+    if (FAILED(hr = SpreadFuzzyVert(
         canidateVertexList,
         levelVertCountList,
         pbIsFuzzyVert)))
@@ -211,22 +211,22 @@ HRESULT	CIsochartMesh::CalculateFuzzyRegion(
 
     size_t dwMaxLevel = levelVertCountList.size();
     assert(dwMaxLevel > 0);
-    size_t dwMinLevel = 
+    size_t dwMinLevel =
         std::min<size_t>(
-        size_t(dwMaxLevel*FUZYY_REGION_PERCENT + 0.5f),
-        dwMaxLevel-1);
+            size_t(dwMaxLevel * FUZYY_REGION_PERCENT + 0.5f),
+            dwMaxLevel - 1);
 
-    for (size_t i=0; i<m_dwFaceNumber; i++)
+    for (size_t i = 0; i < m_dwFaceNumber; i++)
     {
         pbIsFuzzyFatherFace[m_pFaces[i].dwIDInFatherMesh] = true;
     }
 
     for (size_t i = levelVertCountList[dwMinLevel];
-        i<canidateVertexList.size();
+        i < canidateVertexList.size();
         i++)
     {
         ISOCHARTVERTEX* pVertex = m_pVerts + canidateVertexList[i];
-        for (size_t j=0; j<pVertex->faceAdjacent.size(); j++)
+        for (size_t j = 0; j < pVertex->faceAdjacent.size(); j++)
         {
             ISOCHARTFACE* pFace = m_pFaces + pVertex->faceAdjacent[j];
             pbIsFuzzyFatherFace[pFace->dwIDInFatherMesh] = false;
@@ -246,13 +246,13 @@ HRESULT CIsochartMesh::SpreadFuzzyVert(
         uint32_t dwHead = 0;
         uint32_t dwEnd = static_cast<uint32_t>(canidateVertexList.size());
         ISOCHARTVERTEX* pVertex;
-        do{
+        do {
             levelVertCountList.push_back(dwEnd);
 
             for (size_t dwStart = dwHead; dwStart < dwEnd; dwStart++)
             {
                 pVertex = m_pVerts + canidateVertexList[dwStart];
-                for (size_t i=0; i < pVertex->vertAdjacent.size(); i++)
+                for (size_t i = 0; i < pVertex->vertAdjacent.size(); i++)
                 {
                     uint32_t dwAdjacentVertID = pVertex->vertAdjacent[i];
                     if (pbIsFuzzyVert[dwAdjacentVertID])
@@ -289,7 +289,7 @@ HRESULT CIsochartMesh::FindNewBoundaryVert(
         ISOCHARTVERTEX* pVertex;
         ISOCHARTVERTEX* pFatherVertex;
 
-        for (size_t i=0; i < m_dwVertNumber; i++)
+        for (size_t i = 0; i < m_dwVertNumber; i++)
         {
             pVertex = m_pVerts + i;
             if (!pVertex->bIsBoundary)
@@ -307,13 +307,13 @@ HRESULT CIsochartMesh::FindNewBoundaryVert(
                 ISOCHARTVERTEX* pVertex1 =
                     m_pVerts + pVertex->vertAdjacent[0];
 
-                ISOCHARTVERTEX*  pVertex2 =
+                ISOCHARTVERTEX* pVertex2 =
                     m_pVerts + pVertex->vertAdjacent[pVertex->vertAdjacent.size() - 1];
 
-                ISOCHARTVERTEX*  pFatherVertex1 =
+                ISOCHARTVERTEX* pFatherVertex1 =
                     m_pFather->m_pVerts + pVertex1->dwIDInFatherMesh;
 
-                ISOCHARTVERTEX*  pFatherVertex2 =
+                ISOCHARTVERTEX* pFatherVertex2 =
                     m_pFather->m_pVerts + pVertex2->dwIDInFatherMesh;
 
                 if (pFatherVertex1->bIsBoundary && pFatherVertex2->bIsBoundary)
@@ -341,13 +341,13 @@ HRESULT CIsochartMesh::ApplyGraphCutByAngle(
     float fAverageAngleDistance)
 {
     CGraphcut graphCut;
-    std::unique_ptr<uint32_t []> pdwFaceGraphNodeID(new (std::nothrow) uint32_t[m_dwFaceNumber]);
+    std::unique_ptr<uint32_t[]> pdwFaceGraphNodeID(new (std::nothrow) uint32_t[m_dwFaceNumber]);
     if (!pdwFaceGraphNodeID)
     {
         return E_OUTOFMEMORY;
     }
 
-    for (size_t dwIteration=0; dwIteration<2; dwIteration++)
+    for (size_t dwIteration = 0; dwIteration < 2; dwIteration++)
     {
         HRESULT hr = DriveGraphCutByAngle(
             graphCut,
@@ -375,20 +375,20 @@ HRESULT CIsochartMesh::DriveGraphCutByAngle(
 {
     HRESULT hr = S_OK;
     // 1. For each sub-chart, get its adjacent sub-charts
-    for (uint32_t i =0; i < m_children.size(); i++)
+    for (uint32_t i = 0; i < m_children.size(); i++)
     {
         CIsochartMesh* pChart = m_children[i];
         pChart->CalculateSubChartAdjacentChart(i, pdwFaceChartID);
     }
 
     // 2. Optimize boundaries between each 2 sub-charts
-    for (uint32_t dwChartIdx1=0; dwChartIdx1<m_children.size(); dwChartIdx1++)
+    for (uint32_t dwChartIdx1 = 0; dwChartIdx1 < m_children.size(); dwChartIdx1++)
     {
         CIsochartMesh* pChart1 = m_children[dwChartIdx1];
-        for (size_t i=0; i<pChart1->m_adjacentChart.size(); i++)
+        for (size_t i = 0; i < pChart1->m_adjacentChart.size(); i++)
         {
             uint32_t dwChartIdx2 = pChart1->m_adjacentChart[i];
-            if (dwChartIdx1 >= dwChartIdx2 )
+            if (dwChartIdx1 >= dwChartIdx2)
             {
                 continue;
             }
@@ -422,13 +422,13 @@ HRESULT CIsochartMesh::OptimizeOneBoundaryByAngle(
     std::vector<uint32_t> candidateFuzzyFaceList;
     try
     {
-        for (uint32_t j = 0; j<m_dwFaceNumber; j++)
+        for (uint32_t j = 0; j < m_dwFaceNumber; j++)
         {
             pdwFaceGraphNodeID[j] = INVALID_INDEX;
 
-            if (pbIsFuzzyFatherFace[j] 
+            if (pbIsFuzzyFatherFace[j]
                 && (pdwFaceChartID[j] == dwChartIdx1
-                || pdwFaceChartID[j] == dwChartIdx2))
+                    || pdwFaceChartID[j] == dwChartIdx2))
             {
                 pdwFaceGraphNodeID[j] = static_cast<uint32_t>(candidateFuzzyFaceList.size());
 
@@ -454,7 +454,7 @@ HRESULT CIsochartMesh::OptimizeOneBoundaryByAngle(
     HRESULT hr = S_OK;
     FAILURE_RETURN(graphCut.InitGraph(dwNodeNumber));
 
-    std::unique_ptr<CGraphcut::NODEHANDLE[]> hNodes( new (std::nothrow) CGraphcut::NODEHANDLE[dwNodeNumber] );
+    std::unique_ptr<CGraphcut::NODEHANDLE[]> hNodes(new (std::nothrow) CGraphcut::NODEHANDLE[dwNodeNumber]);
     if (!hNodes)
     {
         return E_OUTOFMEMORY;
@@ -462,16 +462,16 @@ HRESULT CIsochartMesh::OptimizeOneBoundaryByAngle(
 
     auto phNodes = hNodes.get();
 
-    for (size_t j=0; j<dwNodeNumber; j++)
+    for (size_t j = 0; j < dwNodeNumber; j++)
     {
         phNodes[j] = graphCut.AddNode();
     }
 
-    for (size_t j=0; j<dwNodeNumber; j++)
+    for (size_t j = 0; j < dwNodeNumber; j++)
     {
         ISOCHARTFACE* pFatherFace;
         pFatherFace = m_pFaces + candidateFuzzyFaceList[j];
-        for (size_t k=0; k<3; k++)
+        for (size_t k = 0; k < 3; k++)
         {
             ISOCHARTEDGE& edge = m_edges[pFatherFace->dwEdgeID[k]];
             if (edge.bIsBoundary)
@@ -489,11 +489,11 @@ HRESULT CIsochartMesh::OptimizeOneBoundaryByAngle(
                 dwAdjacentFaceID = edge.dwFaceID[0];
             }
 
-            if (pbIsFuzzyFatherFace[dwAdjacentFaceID] && 
+            if (pbIsFuzzyFatherFace[dwAdjacentFaceID] &&
                 pdwFaceGraphNodeID[dwAdjacentFaceID] != INVALID_INDEX)
             {
-                float fWeight = 
-                    1+pfEdgeAngleDistance[edge.dwID]/fAverageAngleDistance;
+                float fWeight =
+                    1 + pfEdgeAngleDistance[edge.dwID] / fAverageAngleDistance;
                 fWeight = 1 / fWeight;
 
                 _Analysis_assume_(pdwFaceGraphNodeID[pFatherFace->dwID] < dwNodeNumber);
@@ -535,7 +535,7 @@ HRESULT CIsochartMesh::OptimizeOneBoundaryByAngle(
         return hr;
     }
 
-    for (size_t j=0; j<dwNodeNumber; j++)
+    for (size_t j = 0; j < dwNodeNumber; j++)
     {
         uint32_t dwFaceID = candidateFuzzyFaceList[j];
         _Analysis_assume_(pdwFaceGraphNodeID[dwFaceID] < dwNodeNumber);
@@ -548,7 +548,7 @@ HRESULT CIsochartMesh::OptimizeOneBoundaryByAngle(
             pdwFaceChartID[dwFaceID] = dwChartIdx2;
         }
     }
-    
+
     return S_OK;
 }
 
@@ -564,7 +564,7 @@ HRESULT CIsochartMesh::OptimizeBoundaryByStretch(
     bool& bIsOptimized)
 {
     bIsOptimized = false;
-    if (dwMaxSubchartCount < 2  || m_children.size() < 2)
+    if (dwMaxSubchartCount < 2 || m_children.size() < 2)
     {
         return S_OK;
     }
@@ -573,10 +573,10 @@ HRESULT CIsochartMesh::OptimizeBoundaryByStretch(
     std::vector<uint32_t> oldLandmark;
     std::vector<uint32_t> newLandmark;
 
-    std::unique_ptr<float[]> pfEdgeAngleDistance( new (std::nothrow) float[m_dwEdgeNumber] );
-    std::unique_ptr<uint32_t []> pdwChartFuzzyLevel(new (std::nothrow) uint32_t[m_children.size()]);
-    std::unique_ptr<bool[]> pbIsFuzzyFatherFace( new (std::nothrow) bool[m_dwFaceNumber] );
-    std::unique_ptr<uint32_t []> pdwFaceChartIDBackup(new (std::nothrow) uint32_t[m_dwFaceNumber]);
+    std::unique_ptr<float[]> pfEdgeAngleDistance(new (std::nothrow) float[m_dwEdgeNumber]);
+    std::unique_ptr<uint32_t[]> pdwChartFuzzyLevel(new (std::nothrow) uint32_t[m_children.size()]);
+    std::unique_ptr<bool[]> pbIsFuzzyFatherFace(new (std::nothrow) bool[m_dwFaceNumber]);
+    std::unique_ptr<uint32_t[]> pdwFaceChartIDBackup(new (std::nothrow) uint32_t[m_dwFaceNumber]);
     std::unique_ptr<float[]> pfNewGeodesicDistance;
 
     if (!pfEdgeAngleDistance || !pdwChartFuzzyLevel || !pbIsFuzzyFatherFace || !pdwFaceChartIDBackup)
@@ -593,14 +593,14 @@ HRESULT CIsochartMesh::OptimizeBoundaryByStretch(
     // If failed to caculate dihedral, then just give up optimize
     float fAverageAngleDistance = 0;
     if (!CalculateEdgeAngleDistance(
-            pfEdgeAngleDistance.get(),
-            fAverageAngleDistance))
+        pfEdgeAngleDistance.get(),
+        fAverageAngleDistance))
     {
         return S_OK;
     }
 
     // 2. Compute Fuzzy region and collect local landmarks for each sub-chart
-    memset(pbIsFuzzyFatherFace.get(), 0, sizeof(bool)*m_dwFaceNumber);
+    memset(pbIsFuzzyFatherFace.get(), 0, sizeof(bool) * m_dwFaceNumber);
     HRESULT hr = CalSubchartsFuzzyRegion(
         allLandmark,
         pdwFaceChartID,
@@ -614,7 +614,7 @@ HRESULT CIsochartMesh::OptimizeBoundaryByStretch(
     // 3. Compute geodesic distance from each landmark to all other vertex
     // Note if the local landmark is also a global one, we can directly use the
     // geodesic distance computed by anterior step.
-    pfNewGeodesicDistance.reset( new (std::nothrow) float[allLandmark.size() * m_dwVertNumber] );
+    pfNewGeodesicDistance.reset(new (std::nothrow) float[allLandmark.size() * m_dwVertNumber]);
     if (!pfNewGeodesicDistance)
     {
         return E_OUTOFMEMORY;
@@ -644,14 +644,14 @@ HRESULT CIsochartMesh::OptimizeBoundaryByStretch(
     // 3.5 Apply graph cut.
     size_t dwSelectPrimaryDimension = 2;
     hr = ApplyGraphCutByStretch(
-            allLandmark.size(),
-            pdwFaceChartID,
-            pbIsFuzzyFatherFace.get(),
-            pdwChartFuzzyLevel.get(),
-            dwSelectPrimaryDimension,
-            pfNewGeodesicDistance.get(),
-            pfEdgeAngleDistance.get(),
-            fAverageAngleDistance);
+        allLandmark.size(),
+        pdwFaceChartID,
+        pbIsFuzzyFatherFace.get(),
+        pdwChartFuzzyLevel.get(),
+        dwSelectPrimaryDimension,
+        pfNewGeodesicDistance.get(),
+        pfEdgeAngleDistance.get(),
+        fAverageAngleDistance);
     if (FAILED(hr))
     {
         return hr;
@@ -673,7 +673,7 @@ HRESULT CIsochartMesh::CalSubchartsFuzzyRegion(
     bool* pbIsFuzzyFatherFace,
     uint32_t* pdwChartFuzzyLevel)
 {
-    std::unique_ptr<bool[]> isVertProcessed( new (std::nothrow) bool[m_dwVertNumber] );
+    std::unique_ptr<bool[]> isVertProcessed(new (std::nothrow) bool[m_dwVertNumber]);
     if (!isVertProcessed)
     {
         return E_OUTOFMEMORY;
@@ -681,14 +681,14 @@ HRESULT CIsochartMesh::CalSubchartsFuzzyRegion(
 
     bool* pbIsVertProcessed = isVertProcessed.get();
 
-    memset(pbIsVertProcessed, 0, sizeof(bool)*m_dwVertNumber);
+    memset(pbIsVertProcessed, 0, sizeof(bool) * m_dwVertNumber);
 
     try
     {
-        for (uint32_t i=0; i<m_children.size(); i++)
+        for (uint32_t i = 0; i < m_children.size(); i++)
         {
             CIsochartMesh* pChart = m_children[i];
-            for (size_t j = 0; j<pChart->GetFaceNumber(); j++)
+            for (size_t j = 0; j < pChart->GetFaceNumber(); j++)
             {
                 ISOCHARTFACE* pFace = pChart->m_pFaces + j;
                 pdwFaceChartID[pFace->dwIDInFatherMesh] = i;
@@ -732,7 +732,7 @@ HRESULT CIsochartMesh::CalculateLandmarkAndFuzzyRegion(
     std::vector<uint32_t> canidateVertexList;
 
     // 1. Find fuzzy region...
-    std::unique_ptr<bool[]> isFuzzyVert( new (std::nothrow) bool[m_dwVertNumber] );
+    std::unique_ptr<bool[]> isFuzzyVert(new (std::nothrow) bool[m_dwVertNumber]);
     if (!isFuzzyVert)
     {
         return E_OUTOFMEMORY;
@@ -741,8 +741,8 @@ HRESULT CIsochartMesh::CalculateLandmarkAndFuzzyRegion(
     bool* pbIsFuzzyVert = isFuzzyVert.get();
 
     memset(pbIsFuzzyVert, 0, sizeof(bool) * m_dwVertNumber);
-    
-    HRESULT hr = FindNewBoundaryVert(canidateVertexList,pbIsFuzzyVert);
+
+    HRESULT hr = FindNewBoundaryVert(canidateVertexList, pbIsFuzzyVert);
     if (FAILED(hr))
     {
         return hr;
@@ -752,13 +752,13 @@ HRESULT CIsochartMesh::CalculateLandmarkAndFuzzyRegion(
     {
         if (canidateVertexList.empty())
         {
-            for (size_t i=0; i<m_dwFaceNumber; i++)
+            for (size_t i = 0; i < m_dwFaceNumber; i++)
             {
                 pbIsFuzzyFatherFace[m_pFaces[i].dwIDInFatherMesh] = false;
             }
 
             m_landmarkVerts.resize(m_dwVertNumber);
-            for (uint32_t i = 0; i<m_dwVertNumber; i++)
+            for (uint32_t i = 0; i < m_dwVertNumber; i++)
             {
                 m_landmarkVerts[i] = i;
             }
@@ -767,7 +767,7 @@ HRESULT CIsochartMesh::CalculateLandmarkAndFuzzyRegion(
         }
 
         std::vector<uint32_t> levelVertCountList;
-        if(FAILED(hr = SpreadFuzzyVert(
+        if (FAILED(hr = SpreadFuzzyVert(
             canidateVertexList,
             levelVertCountList,
             pbIsFuzzyVert)))
@@ -779,25 +779,25 @@ HRESULT CIsochartMesh::CalculateLandmarkAndFuzzyRegion(
         assert(dwMaxLevel > 0);
         size_t dwMinLevel =
             std::min<size_t>(
-                size_t(dwMaxLevel*FUZYY_REGION_PERCENT+0.5f),
-                dwMaxLevel-1);
+                size_t(dwMaxLevel * FUZYY_REGION_PERCENT + 0.5f),
+                dwMaxLevel - 1);
 
         bool bSucceed = false;
-        size_t dwLevel = dwMinLevel+1;
-        do{
+        size_t dwLevel = dwMinLevel + 1;
+        do {
             dwLevel--;
-            if (m_dwVertNumber-levelVertCountList[dwLevel]
+            if (m_dwVertNumber - levelVertCountList[dwLevel]
                 >= MIN_LANDMARK_NUMBER)
             {
                 bSucceed = true;
             }
-        }while(dwLevel > 0 && !bSucceed);
+        } while (dwLevel > 0 && !bSucceed);
 
         dwMinLevel = dwLevel;
         if (bSucceed)
         {
-            for(size_t i=levelVertCountList[dwMinLevel];
-                i<canidateVertexList.size();
+            for (size_t i = levelVertCountList[dwMinLevel];
+                i < canidateVertexList.size();
                 i++)
             {
                 pbIsFuzzyVert[canidateVertexList[i]] = false;
@@ -805,15 +805,15 @@ HRESULT CIsochartMesh::CalculateLandmarkAndFuzzyRegion(
         }
         else
         {
-            for (size_t i=0; i<m_dwVertNumber; i++)
+            for (size_t i = 0; i < m_dwVertNumber; i++)
             {
                 pbIsFuzzyVert[i] = false;
             }
         }
 
-    // 2. Calculate local landmarks.
+        // 2. Calculate local landmarks.
         m_landmarkVerts.clear();
-        for (size_t i=0; i < m_dwVertNumber; i++)
+        for (size_t i = 0; i < m_dwVertNumber; i++)
         {
             if (!pbIsFuzzyVert[i])
             {
@@ -829,17 +829,17 @@ HRESULT CIsochartMesh::CalculateLandmarkAndFuzzyRegion(
         if (dwMinLevel >= 1)
         {
             dwFuzzyLevel = static_cast<uint32_t>(dwMinLevel - 1);
-            for (size_t i=0; i<m_dwFaceNumber; i++)
+            for (size_t i = 0; i < m_dwFaceNumber; i++)
             {
                 pbIsFuzzyFatherFace[m_pFaces[i].dwIDInFatherMesh] = true;
             }
 
-            for (size_t i=levelVertCountList[dwMinLevel];
-                i<canidateVertexList.size();
+            for (size_t i = levelVertCountList[dwMinLevel];
+                i < canidateVertexList.size();
                 i++)
             {
                 ISOCHARTVERTEX* pVertex = m_pVerts + canidateVertexList[i];
-                for (size_t j=0; j<pVertex->faceAdjacent.size(); j++)
+                for (size_t j = 0; j < pVertex->faceAdjacent.size(); j++)
                 {
                     ISOCHARTFACE* pFace =
                         m_pFaces + pVertex->faceAdjacent[j];
@@ -850,7 +850,7 @@ HRESULT CIsochartMesh::CalculateLandmarkAndFuzzyRegion(
         else
         {
             dwFuzzyLevel = 0;
-            for (size_t i=0; i<m_dwFaceNumber; i++)
+            for (size_t i = 0; i < m_dwFaceNumber; i++)
             {
                 pbIsFuzzyFatherFace[m_pFaces[i].dwIDInFatherMesh] = false;
             }
@@ -873,23 +873,23 @@ HRESULT CIsochartMesh::DecreaseLocalLandmark()
         return S_OK;
     }
 
-    size_t dwLandmarkCount =0;
+    size_t dwLandmarkCount = 0;
 
-    for (size_t i=0; i<dwLandmarkNumber-1; i++)
+    for (size_t i = 0; i < dwLandmarkNumber - 1; i++)
     {
         ISOCHARTVERTEX* pVertex1 = m_pVerts + m_landmarkVerts[i];
         if (pVertex1->nImportanceOrder != MUST_RESERVE)
         {
             int nCurrentMax = pVertex1->nImportanceOrder;
-            for (size_t j=i+1; j<dwLandmarkNumber; j++)
+            for (size_t j = i + 1; j < dwLandmarkNumber; j++)
             {
-                ISOCHARTVERTEX* pVertex2 = m_pVerts +  m_landmarkVerts[j];
+                ISOCHARTVERTEX* pVertex2 = m_pVerts + m_landmarkVerts[j];
 
                 if (pVertex2->nImportanceOrder == MUST_RESERVE
-                ||nCurrentMax < pVertex2->nImportanceOrder)
+                    || nCurrentMax < pVertex2->nImportanceOrder)
                 {
                     nCurrentMax = pVertex2->nImportanceOrder;
-                    std::swap(m_landmarkVerts[i],m_landmarkVerts[j]);
+                    std::swap(m_landmarkVerts[i], m_landmarkVerts[j]);
                 }
 
                 if (pVertex2->nImportanceOrder == MUST_RESERVE)
@@ -900,11 +900,11 @@ HRESULT CIsochartMesh::DecreaseLocalLandmark()
         }
 
         dwLandmarkCount++;
-        if (m_pVerts[m_landmarkVerts[dwLandmarkNumber-1]].nImportanceOrder > 0
-        && dwLandmarkCount >= MIN_LANDMARK_NUMBER
-        && dwLandmarkCount > 2
-        && m_pVerts[m_landmarkVerts[dwLandmarkCount-1]].nImportanceOrder
-        != m_pVerts[m_landmarkVerts[dwLandmarkCount-2]].nImportanceOrder)
+        if (m_pVerts[m_landmarkVerts[dwLandmarkNumber - 1]].nImportanceOrder > 0
+            && dwLandmarkCount >= MIN_LANDMARK_NUMBER
+            && dwLandmarkCount > 2
+            && m_pVerts[m_landmarkVerts[dwLandmarkCount - 1]].nImportanceOrder
+            != m_pVerts[m_landmarkVerts[dwLandmarkCount - 2]].nImportanceOrder)
         {
             break;
         }
@@ -937,7 +937,7 @@ HRESULT CIsochartMesh::CalParamDistanceToAllLandmarks(
 
     try
     {
-        for (size_t i=0; i < allLandmark.size(); i++)
+        for (size_t i = 0; i < allLandmark.size(); i++)
         {
             ISOCHARTVERTEX* pVertex = m_pVerts + allLandmark[i];
             if (pVertex->bIsLandmark)
@@ -950,8 +950,8 @@ HRESULT CIsochartMesh::CalParamDistanceToAllLandmarks(
                     }
 
                     memcpy(
-                        pfNewGeodesicDistance + oldLandmark.size()*m_dwVertNumber,
-                        pfOldGeodesicDistance + j*m_dwVertNumber,
+                        pfNewGeodesicDistance + oldLandmark.size() * m_dwVertNumber,
+                        pfOldGeodesicDistance + j * m_dwVertNumber,
                         m_dwVertNumber * sizeof(float));
 
                     oldLandmark.push_back(pVertex->dwID);
@@ -973,22 +973,22 @@ HRESULT CIsochartMesh::CalParamDistanceToAllLandmarks(
     if (!newLandmark.empty())
     {
         FAILURE_RETURN(
-        CalculateGeodesicDistance(
-            newLandmark,
-            nullptr,
-            pfNewGeodesicDistance+oldLandmark.size()*m_dwVertNumber));
+            CalculateGeodesicDistance(
+                newLandmark,
+                nullptr,
+                pfNewGeodesicDistance + oldLandmark.size() * m_dwVertNumber));
     }
 
-    assert(allLandmark.size() == 
-        oldLandmark.size()+newLandmark.size());
+    assert(allLandmark.size() ==
+        oldLandmark.size() + newLandmark.size());
 
     size_t dwOldLandmarkNumber = oldLandmark.size();
-    for (size_t i=0; i<dwOldLandmarkNumber; i++)
+    for (size_t i = 0; i < dwOldLandmarkNumber; i++)
     {
         allLandmark[i] = oldLandmark[i];
     }
 
-    for (size_t i=0; i<newLandmark.size(); i++)
+    for (size_t i = 0; i < newLandmark.size(); i++)
     {
         allLandmark[dwOldLandmarkNumber + i] = newLandmark[i];
     }
@@ -1003,17 +1003,17 @@ HRESULT CIsochartMesh::CalSubchartsLandmarkUV(
 {
     HRESULT hr = S_OK;
     bIsDone = false;
-    for (size_t i=0; i < allLandmark.size(); i++)
+    for (size_t i = 0; i < allLandmark.size(); i++)
     {
         m_pVerts[allLandmark[i]].dwIndexInLandmarkList = static_cast<uint32_t>(i);
     }
 
-    for (size_t i=0; i<m_children.size(); i++)
+    for (size_t i = 0; i < m_children.size(); i++)
     {
         CIsochartMesh* pChart = m_children[i];
-        for (size_t j=0; j<pChart->m_landmarkVerts.size(); j++)
+        for (size_t j = 0; j < pChart->m_landmarkVerts.size(); j++)
         {
-            ISOCHARTVERTEX* pVertex 
+            ISOCHARTVERTEX* pVertex
                 = pChart->m_pVerts + pChart->m_landmarkVerts[j];
 
             pVertex->dwIndexInLandmarkList
@@ -1024,16 +1024,16 @@ HRESULT CIsochartMesh::CalSubchartsLandmarkUV(
     size_t dwSelectPrimaryDimension = 2;
     size_t dwCalculatedPrimaryDimension = 0;
     // 3.3 for each chart comput the vertices's embedding coordinates.
-    for (size_t i=0; i<m_children.size(); i++)
+    for (size_t i = 0; i < m_children.size(); i++)
     {
         CIsochartMesh* pChart = m_children[i];
         FAILURE_RETURN(
             pChart->CalculateLandmarkUV(
-            pfNewGeodesicDistance, 
-            dwSelectPrimaryDimension,
-            dwCalculatedPrimaryDimension));
+                pfNewGeodesicDistance,
+                dwSelectPrimaryDimension,
+                dwCalculatedPrimaryDimension));
 
-        if(dwSelectPrimaryDimension
+        if (dwSelectPrimaryDimension
             != dwCalculatedPrimaryDimension)
         {
             return hr;
@@ -1055,7 +1055,7 @@ HRESULT CIsochartMesh::CalculateLandmarkUV(
 
     size_t dwSubLandmarkNumber = m_landmarkVerts.size();
 
-    std::unique_ptr<float[]> subDistanceMatrix( new (std::nothrow) float[dwSubLandmarkNumber * dwSubLandmarkNumber] );
+    std::unique_ptr<float[]> subDistanceMatrix(new (std::nothrow) float[dwSubLandmarkNumber * dwSubLandmarkNumber]);
     if (!subDistanceMatrix)
     {
         return E_OUTOFMEMORY;
@@ -1064,25 +1064,25 @@ HRESULT CIsochartMesh::CalculateLandmarkUV(
     float* pfSubDistanceMatrix = subDistanceMatrix.get();
 
     size_t dwFatherVertNumber = m_pFather->GetVertexNumber();
-    for (size_t j=0; j<dwSubLandmarkNumber; j++)
+    for (size_t j = 0; j < dwSubLandmarkNumber; j++)
     {
         ISOCHARTVERTEX* pVertex1 = m_pVerts + m_landmarkVerts[j];
-        pfSubDistanceMatrix[j*dwSubLandmarkNumber + j] = 0;
-        for (size_t k = j + 1; k<dwSubLandmarkNumber; k++)
+        pfSubDistanceMatrix[j * dwSubLandmarkNumber + j] = 0;
+        for (size_t k = j + 1; k < dwSubLandmarkNumber; k++)
         {
-            ISOCHARTVERTEX* pVertex2 = m_pVerts+m_landmarkVerts[k];
+            ISOCHARTVERTEX* pVertex2 = m_pVerts + m_landmarkVerts[k];
 
-            uint32_t dwIndex1 = static_cast<uint32_t>(pVertex1->dwIndexInLandmarkList*dwFatherVertNumber +
+            uint32_t dwIndex1 = static_cast<uint32_t>(pVertex1->dwIndexInLandmarkList * dwFatherVertNumber +
                 pVertex2->dwIDInFatherMesh);
 
-            uint32_t dwIndex2 = static_cast<uint32_t>(pVertex2->dwIndexInLandmarkList*dwFatherVertNumber + 
+            uint32_t dwIndex2 = static_cast<uint32_t>(pVertex2->dwIndexInLandmarkList * dwFatherVertNumber +
                 pVertex1->dwIDInFatherMesh);
 
-            pfSubDistanceMatrix[j*dwSubLandmarkNumber + k] 
-            = pfSubDistanceMatrix[k*dwSubLandmarkNumber + j]
-            = std::min(
-                pfVertGeodesicDistance[dwIndex1],
-                pfVertGeodesicDistance[dwIndex2]);
+            pfSubDistanceMatrix[j * dwSubLandmarkNumber + k]
+                = pfSubDistanceMatrix[k * dwSubLandmarkNumber + j]
+                = std::min(
+                    pfVertGeodesicDistance[dwIndex1],
+                    pfVertGeodesicDistance[dwIndex2]);
         }
     }
 
@@ -1101,12 +1101,12 @@ HRESULT CIsochartMesh::CalculateLandmarkUV(
     }
     assert(dwSelectPrimaryDimension == dwCalculatedPrimaryDimension);
 
-    std::unique_ptr<float[]> vertMappingCoord( new (std::nothrow) float[dwSubLandmarkNumber*dwSelectPrimaryDimension] );
+    std::unique_ptr<float[]> vertMappingCoord(new (std::nothrow) float[dwSubLandmarkNumber * dwSelectPrimaryDimension]);
     if (!vertMappingCoord)
     {
         return E_OUTOFMEMORY;
     }
-    float *pfVertMappingCoord = vertMappingCoord.get();
+    float* pfVertMappingCoord = vertMappingCoord.get();
 
 
     m_isoMap.GetDestineVectors(
@@ -1114,7 +1114,7 @@ HRESULT CIsochartMesh::CalculateLandmarkUV(
         pfVertMappingCoord);
 
     const float* pfTempVertMappingCoord = pfVertMappingCoord;
-    for (size_t j=0; j<dwSubLandmarkNumber; j++)
+    for (size_t j = 0; j < dwSubLandmarkNumber; j++)
     {
         ISOCHARTVERTEX* pVertex = m_pVerts + m_landmarkVerts[j];
         pVertex->uv.x = pfTempVertMappingCoord[0];
@@ -1131,19 +1131,19 @@ HRESULT CIsochartMesh::CalculateSubChartAdjacentChart(
     uint32_t* pdwFaceChartID)
 {
     m_adjacentChart.clear();
-    for (size_t i=0; i<m_dwVertNumber; i++)
+    for (size_t i = 0; i < m_dwVertNumber; i++)
     {
         ISOCHARTVERTEX* pFatherVertex;
-        pFatherVertex = 
+        pFatherVertex =
             m_pFather->m_pVerts + m_pVerts[i].dwIDInFatherMesh;
 
-        for (size_t j=0; j<pFatherVertex->faceAdjacent.size(); j++)
+        for (size_t j = 0; j < pFatherVertex->faceAdjacent.size(); j++)
         {
             uint32_t dwAdjacentFaceID = pFatherVertex->faceAdjacent[j];
             if (pdwFaceChartID[dwAdjacentFaceID] != dwSelfChartID)
             {
                 if (!addNoduplicateItem(m_adjacentChart,
-                pdwFaceChartID[dwAdjacentFaceID]))
+                    pdwFaceChartID[dwAdjacentFaceID]))
                 {
                     return E_OUTOFMEMORY;
                 }
@@ -1169,7 +1169,7 @@ HRESULT CIsochartMesh::ApplyGraphCutByStretch(
     // This is due to vertices being cloned in CIsochartMesh::CleanNonmanifoldMesh function.
     // For this allocation simply use the max number of landmark vertices for the size.
     size_t workspaceSize = dwLandmarkNumber;
-    for(size_t i = 0; i < m_children.size(); ++i)
+    for (size_t i = 0; i < m_children.size(); ++i)
     {
         size_t numChildLandmark = m_children[i]->m_landmarkVerts.size();
         if (workspaceSize < numChildLandmark)
@@ -1178,18 +1178,18 @@ HRESULT CIsochartMesh::ApplyGraphCutByStretch(
         }
     }
 
-    std::unique_ptr<float[]> pfWorkSpace( new (std::nothrow) float[workspaceSize] );
-    std::unique_ptr<float[]> pfFacesStretchDiff( new (std::nothrow) float[m_dwFaceNumber] );
-    std::unique_ptr<uint32_t []> pdwFaceGraphNodeID(new (std::nothrow) uint32_t[m_dwFaceNumber]);
+    std::unique_ptr<float[]> pfWorkSpace(new (std::nothrow) float[workspaceSize]);
+    std::unique_ptr<float[]> pfFacesStretchDiff(new (std::nothrow) float[m_dwFaceNumber]);
+    std::unique_ptr<uint32_t[]> pdwFaceGraphNodeID(new (std::nothrow) uint32_t[m_dwFaceNumber]);
 
-    if ( !pfWorkSpace || !pfFacesStretchDiff || !pdwFaceGraphNodeID)
+    if (!pfWorkSpace || !pfFacesStretchDiff || !pdwFaceGraphNodeID)
     {
         return E_OUTOFMEMORY;
     }
 
     // 3.4 For each sub-chart , getting adjacent sub-charts.
     HRESULT hr = S_OK;
-    for (uint32_t i=0; i<m_children.size(); i++)
+    for (uint32_t i = 0; i < m_children.size(); i++)
     {
         CIsochartMesh* pChart = m_children[i];
         hr = pChart->CalculateSubChartAdjacentChart(i, pdwFaceChartID);
@@ -1203,18 +1203,18 @@ HRESULT CIsochartMesh::ApplyGraphCutByStretch(
     {
         CIsochartMesh* pChart1 = m_children[dwChartIdx1];
 
-        for (size_t i=0; i<pChart1->m_adjacentChart.size(); i++)
+        for (size_t i = 0; i < pChart1->m_adjacentChart.size(); i++)
         {
-            
+
             uint32_t dwChartIdx2 = pChart1->m_adjacentChart[i];
-            if (dwChartIdx1 >= dwChartIdx2 
-            || (pdwChartFuzzyLevel[dwChartIdx1] < 1
-                && pdwChartFuzzyLevel[dwChartIdx2] < 1))
+            if (dwChartIdx1 >= dwChartIdx2
+                || (pdwChartFuzzyLevel[dwChartIdx1] < 1
+                    && pdwChartFuzzyLevel[dwChartIdx2] < 1))
             {
                 continue;
             }
 
-            hr = 
+            hr =
                 OptimizeOneBoundaryByAngle(
                     dwChartIdx1,
                     dwChartIdx2,
@@ -1266,7 +1266,7 @@ OptimizeOneBoundaryByAngle(
             pdwFaceGraphNodeID[j] = INVALID_INDEX;
             if (pbIsFuzzyFatherFace[j]
                 && (pdwFaceChartID[j] == dwChartIdx1
-                || pdwFaceChartID[j] == dwChartIdx2))
+                    || pdwFaceChartID[j] == dwChartIdx2))
             {
                 pdwFaceGraphNodeID[j] = static_cast<uint32_t>(candidateFuzzyFaceList.size());
                 candidateFuzzyFaceList.push_back(j);
@@ -1285,7 +1285,7 @@ OptimizeOneBoundaryByAngle(
 
     size_t dwNodeNumber = candidateFuzzyFaceList.size();
     float fAverageStetchDiff = 0;
-    for (size_t j=0; j<dwNodeNumber; j++)
+    for (size_t j = 0; j < dwNodeNumber; j++)
     {
         ISOCHARTFACE* pFatherFace
             = m_pFaces + candidateFuzzyFaceList[j];
@@ -1297,7 +1297,7 @@ OptimizeOneBoundaryByAngle(
                 pfWorkSpace,
                 dwDimension,
                 pfVertGeodesicDistance);
-                
+
         float fStretch2 =
             CalculateFaceGeodesicDistortion(
                 pFatherFace,
@@ -1306,14 +1306,14 @@ OptimizeOneBoundaryByAngle(
                 dwDimension,
                 pfVertGeodesicDistance);
 
-        pfFacesStretchDiff[pFatherFace->dwID] = 
+        pfFacesStretchDiff[pFatherFace->dwID] =
             fabsf(fStretch1 - fStretch2);
         fAverageStetchDiff += pfFacesStretchDiff[pFatherFace->dwID];
     }
-    fAverageStetchDiff = 2*fAverageStetchDiff / dwNodeNumber;
+    fAverageStetchDiff = 2 * fAverageStetchDiff / dwNodeNumber;
 
     // Initialize graph
-    std::unique_ptr<CGraphcut::NODEHANDLE[]> hNodes( new (std::nothrow) CGraphcut::NODEHANDLE[dwNodeNumber] );
+    std::unique_ptr<CGraphcut::NODEHANDLE[]> hNodes(new (std::nothrow) CGraphcut::NODEHANDLE[dwNodeNumber]);
     if (!hNodes)
     {
         return E_OUTOFMEMORY;
@@ -1323,23 +1323,23 @@ OptimizeOneBoundaryByAngle(
 
     graphCut.Clear();
     HRESULT hr = graphCut.InitGraph(dwNodeNumber);
-    if ( FAILED(hr))
+    if (FAILED(hr))
     {
         return hr;
     }
 
     // Add Nodes to graph
-    for (size_t j=0; j<dwNodeNumber; j++)
+    for (size_t j = 0; j < dwNodeNumber; j++)
     {
         phNodes[j] = graphCut.AddNode();
     }
 
     // Set Nodes and Edge capacity of graph
-    for (size_t j=0; j<dwNodeNumber; j++)
+    for (size_t j = 0; j < dwNodeNumber; j++)
     {
         ISOCHARTFACE* pFatherFace;
         pFatherFace = m_pFaces + candidateFuzzyFaceList[j];
-        for (size_t k=0; k<3; k++)
+        for (size_t k = 0; k < 3; k++)
         {
             ISOCHARTEDGE& edge = m_edges[pFatherFace->dwEdgeID[k]];
 
@@ -1359,16 +1359,16 @@ OptimizeOneBoundaryByAngle(
             }
 
             if (pbIsFuzzyFatherFace[dwAdjacentFaceID]
-                && pdwFaceGraphNodeID[dwAdjacentFaceID]!=INVALID_INDEX)
+                && pdwFaceGraphNodeID[dwAdjacentFaceID] != INVALID_INDEX)
             {
-                float fWeight = 
-                    (1 - OPTIMAL_CUT_STRETCH_WEIGHT)/
+                float fWeight =
+                    (1 - OPTIMAL_CUT_STRETCH_WEIGHT) /
                     (1 + pfEdgeAngleDistance[edge.dwID] / fAverageAngleDistance);
 
-                fWeight += 
-                    (pfFacesStretchDiff[pFatherFace->dwID] 
-                    + pfFacesStretchDiff[dwAdjacentFaceID]) /
-                    fAverageStetchDiff *OPTIMAL_CUT_STRETCH_WEIGHT;
+                fWeight +=
+                    (pfFacesStretchDiff[pFatherFace->dwID]
+                        + pfFacesStretchDiff[dwAdjacentFaceID]) /
+                    fAverageStetchDiff * OPTIMAL_CUT_STRETCH_WEIGHT;
 
                 _Analysis_assume_(pdwFaceGraphNodeID[dwAdjacentFaceID] < dwNodeNumber);
                 _Analysis_assume_(pdwFaceGraphNodeID[pFatherFace->dwID] < dwNodeNumber);
@@ -1378,7 +1378,7 @@ OptimizeOneBoundaryByAngle(
                     fWeight,
                     fWeight);
             }
-            else if(!pbIsFuzzyFatherFace[dwAdjacentFaceID])
+            else if (!pbIsFuzzyFatherFace[dwAdjacentFaceID])
             {
                 _Analysis_assume_(pdwFaceGraphNodeID[pFatherFace->dwID] < dwNodeNumber);
                 if (pdwFaceChartID[dwAdjacentFaceID] == dwChartIdx1)
@@ -1405,13 +1405,13 @@ OptimizeOneBoundaryByAngle(
 
     // Perform graph cut
     float fMaxFlow = 0;
-    if (FAILED(hr=graphCut.CutGraph(fMaxFlow)))
+    if (FAILED(hr = graphCut.CutGraph(fMaxFlow)))
     {
         return hr;
     }
 
     // Use graph cut result to partition
-    for (size_t j=0; j<dwNodeNumber; j++)
+    for (size_t j = 0; j < dwNodeNumber; j++)
     {
         uint32_t dwFaceID = candidateFuzzyFaceList[j];
         _Analysis_assume_(pdwFaceGraphNodeID[dwFaceID] < dwNodeNumber);
@@ -1439,29 +1439,29 @@ void CIsochartMesh::CalculateVertGeodesicCoord(
 {
     size_t dwLandmarkNumber = pChart->m_landmarkVerts.size();
     const float* pfAverageColumn = pChart->m_isoMap.GetAverageColumn();
-    
-    for (size_t i=0; i<dwLandmarkNumber; i++)
+
+    for (size_t i = 0; i < dwLandmarkNumber; i++)
     {
-        ISOCHARTVERTEX* pVertex = 
+        ISOCHARTVERTEX* pVertex =
             pChart->m_pVerts + pChart->m_landmarkVerts[i];
 
-        uint32_t dwIndex = static_cast<uint32_t>(pVertex->dwIndexInLandmarkList*m_dwVertNumber
-            +pFatherVertex->dwID);
-        
+        uint32_t dwIndex = static_cast<uint32_t>(pVertex->dwIndexInLandmarkList * m_dwVertNumber
+            + pFatherVertex->dwID);
+
         float fDistance = pfVertGeodesicDistance[dwIndex];
-        pfWorkSpace[i] = fDistance*fDistance;
-        pfWorkSpace[i] = pfAverageColumn[i] - pfWorkSpace[i] ;
+        pfWorkSpace[i] = fDistance * fDistance;
+        pfWorkSpace[i] = pfAverageColumn[i] - pfWorkSpace[i];
     }
 
     const float* pfEigenValue = pChart->m_isoMap.GetEigenValue();
     const float* pfEigenVector = pChart->m_isoMap.GetEigenVector();
-    
-    for (size_t k=0; k<dwDimension; k++)
+
+    for (size_t k = 0; k < dwDimension; k++)
     {
         pfCoord[k] = 0;
-        for(size_t i=0; i<dwLandmarkNumber; i++)
+        for (size_t i = 0; i < dwLandmarkNumber; i++)
         {
-            pfCoord[k] += pfWorkSpace[i]*pfEigenVector[k*dwLandmarkNumber+i];
+            pfCoord[k] += pfWorkSpace[i] * pfEigenVector[k * dwLandmarkNumber + i];
         }
 
         pfCoord[k] /= static_cast<float>(IsochartSqrt(double(pfEigenValue[k])) * 2);
@@ -1477,29 +1477,29 @@ float CIsochartMesh::CalculateFaceGeodesicDistortion(
     size_t dwDimension,
     float* pfVertGeodesicDistance) const
 {
-    assert (dwDimension <= ORIGINAL_CHART_EIGEN_DIMENSION);
+    assert(dwDimension <= ORIGINAL_CHART_EIGEN_DIMENSION);
     _Analysis_assume_(dwDimension <= ORIGINAL_CHART_EIGEN_DIMENSION);
 
     float pfCoord[ORIGINAL_CHART_EIGEN_DIMENSION];
     float pfMapCoord[ORIGINAL_CHART_EIGEN_DIMENSION];
 
-    memset(pfMapCoord, 0, dwDimension*sizeof(float));
-    for (size_t i=0; i<3; i++)
+    memset(pfMapCoord, 0, dwDimension * sizeof(float));
+    for (size_t i = 0; i < 3; i++)
     {
         CalculateVertGeodesicCoord(
             pfCoord,
-            m_pVerts+pFatherFace->dwVertexID[i],
+            m_pVerts + pFatherFace->dwVertexID[i],
             pChart,
             pfWorkSpace,
             dwDimension,
             pfVertGeodesicDistance);
-        
-        for (size_t j=0; j<dwDimension; j++)
+
+        for (size_t j = 0; j < dwDimension; j++)
         {
             pfMapCoord[j] += pfCoord[j];
         }
     }
-    for (size_t i=0; i<dwDimension; i++)
+    for (size_t i = 0; i < dwDimension; i++)
     {
         pfMapCoord[i] /= 3;
     }
@@ -1510,38 +1510,38 @@ float CIsochartMesh::CalculateFaceGeodesicDistortion(
     size_t dwLandmarkNumber = pChart->m_landmarkVerts.size();
     fError = 0;
 
-    for (size_t i=0; i<dwLandmarkNumber; i++)
+    for (size_t i = 0; i < dwLandmarkNumber; i++)
     {
         float temp;
         ISOCHARTVERTEX* pSubVertex = pChart->m_pVerts + pChart->m_landmarkVerts[i];
         fEulerDistance = 0;
 
-        temp = (pfMapCoord[0]-pSubVertex->uv.x);
-        fEulerDistance +=  temp*temp; 
+        temp = (pfMapCoord[0] - pSubVertex->uv.x);
+        fEulerDistance += temp * temp;
 
-        temp = (pfMapCoord[1]-pSubVertex->uv.y); 
-        fEulerDistance += temp*temp; 
+        temp = (pfMapCoord[1] - pSubVertex->uv.y);
+        fEulerDistance += temp * temp;
         fEulerDistance = static_cast<float>(IsochartSqrt(double(fEulerDistance)));
 
         fGeodesicDistance = 0;
-        for (size_t j=0; j<3; j++)
+        for (size_t j = 0; j < 3; j++)
         {
             uint32_t dwVertexID = pFatherFace->dwVertexID[j];
             assert(m_pVerts[dwVertexID].dwID == dwVertexID);
-            
+
             fGeodesicDistance
                 += pfVertGeodesicDistance[
-                pSubVertex->dwIndexInLandmarkList*m_dwVertNumber+dwVertexID];
+                    pSubVertex->dwIndexInLandmarkList * m_dwVertNumber + dwVertexID];
         }
 
         fGeodesicDistance /= 3;
 
-        temp = (fEulerDistance-fGeodesicDistance);
+        temp = (fEulerDistance - fGeodesicDistance);
         fError += temp * temp;
     }
 
     fError /= dwLandmarkNumber;
-    
+
     return fError;
 }
 
@@ -1556,12 +1556,12 @@ HRESULT CIsochartMesh::ApplyBoundaryOptResult(
 
     assert(pdwFaceChartID != nullptr);
     assert(pdwFaceChartIDBackup != nullptr);
-    
+
     bIsOptimized = true;
 
     // 1. If all faces have the same chart ID to abandon the boundary optimization.
     bool bHasDifferentID = false;
-    for (size_t i=1; i<m_dwFaceNumber; i++)
+    for (size_t i = 1; i < m_dwFaceNumber; i++)
     {
         if (pdwFaceChartID[0] != pdwFaceChartID[i])
         {
@@ -1574,7 +1574,7 @@ HRESULT CIsochartMesh::ApplyBoundaryOptResult(
         memcpy(pdwFaceChartID, pdwFaceChartIDBackup, m_dwFaceNumber * sizeof(uint32_t));
     }
 
-    
+
     // 2. Using MakePartitionValid to try to make each sub-chart valid.
     if (FAILED(hr = MakePartitionValid(
         dwMaxSubchartCount,

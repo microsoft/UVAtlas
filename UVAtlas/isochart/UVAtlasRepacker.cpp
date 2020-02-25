@@ -19,38 +19,38 @@ using namespace IsochartRepacker;
 _Use_decl_annotations_
 HRESULT IsochartRepacker::isochartpack2(
     std::vector<UVAtlasVertex>* pvVertexArray,
-    size_t VertexCount, 
+    size_t VertexCount,
     std::vector<uint8_t>* pvIndexFaceArray,
     size_t FaceCount,
-    const uint32_t *pdwAdjacency,
+    const uint32_t* pdwAdjacency,
     size_t Width,
     size_t Height,
     float Gutter,
     unsigned int Stage,
-    LPISOCHARTCALLBACK pCallback, 
-    float Frequency, 
+    LPISOCHARTCALLBACK pCallback,
+    float Frequency,
     size_t iNumRotate)
 {
-    HRESULT hr = S_OK ;
-    
+    HRESULT hr = S_OK;
+
     if (Width < 1 || Height < 1 || Gutter < 1 || iNumRotate <= 0)
         return E_INVALIDARG;
 
-    CUVAtlasRepacker repacker(pvVertexArray, VertexCount, pvIndexFaceArray, 
+    CUVAtlasRepacker repacker(pvVertexArray, VertexCount, pvIndexFaceArray,
         FaceCount, pdwAdjacency, iNumRotate, Width, Height, Gutter,
         nullptr, nullptr, nullptr, nullptr, nullptr);
 
-    if ( !repacker.SetCallback( pCallback, Frequency ) )
-        return E_INVALIDARG ;
+    if (!repacker.SetCallback(pCallback, Frequency))
+        return E_INVALIDARG;
 
     unsigned int dwTotalStage = STAGE_TOTAL(Stage);
     unsigned int dwDoneStage = STAGE_DONE(Stage);
 
-    if ( !repacker.SetStage( dwTotalStage, dwDoneStage ) )
-        return E_INVALIDARG ;
+    if (!repacker.SetStage(dwTotalStage, dwDoneStage))
+        return E_INVALIDARG;
 
-    if ( FAILED(hr = repacker.Repack()) )
-        return hr ;
+    if (FAILED(hr = repacker.Repack()))
+        return hr;
 
     return S_OK;
 }
@@ -60,19 +60,19 @@ HRESULT IsochartRepacker::isochartpack2(
 //-------------------------------------------------------------------------
 
 CUVAtlasRepacker::CUVAtlasRepacker(std::vector<UVAtlasVertex>* pvVertexArray,
-                                    size_t VertexCount, 
-                                    std::vector<uint8_t>* pvFaceIndexArray,
-                                    size_t FaceCount,
-                                    const uint32_t *pdwAdjacency,
-                                    size_t iNumRotate,
-                                    size_t Width,
-                                    size_t Height,
-                                    float Gutter,
-                                    double *pPercentOur,    
-                                    size_t *pFinalWidth,
-                                    size_t *pFinalHeight,
-                                    size_t *pChartNumber,
-                                    size_t *pIterationTimes) :
+    size_t VertexCount,
+    std::vector<uint8_t>* pvFaceIndexArray,
+    size_t FaceCount,
+    const uint32_t* pdwAdjacency,
+    size_t iNumRotate,
+    size_t Width,
+    size_t Height,
+    float Gutter,
+    double* pPercentOur,
+    size_t* pFinalWidth,
+    size_t* pFinalHeight,
+    size_t* pChartNumber,
+    size_t* pIterationTimes) :
     m_pPartitionAdj(pdwAdjacency),
     m_pvVertexBuffer(pvVertexArray),
     m_pvIndexBuffer(pvFaceIndexArray),
@@ -124,13 +124,13 @@ CUVAtlasRepacker::CUVAtlasRepacker(std::vector<UVAtlasVertex>* pvVertexArray,
     m_pFinalHeight(pFinalHeight),
     m_pOurChartNumber(pChartNumber),
     m_pOurIterationTimes(pIterationTimes)
-{		                    
+{
 }
 
 /***************************************************************************\
     Function Description:
         Destructor of CUVAtlasRepacker.
-    
+
     Arguments:
     Return Value:
 \***************************************************************************/
@@ -147,34 +147,34 @@ CUVAtlasRepacker::~CUVAtlasRepacker()
 /***************************************************************************\
     Function Description:
         Public function provided for the user to produce UV atlas.
-    
+
     Arguments:
-            
+
     Return Value:
         If the function succeeds, the return value is S_OK
 \***************************************************************************/
 HRESULT CUVAtlasRepacker::Repack()
 {
-    HRESULT hr = S_OK ;
-    
+    HRESULT hr = S_OK;
+
     DPF(3, "Pack preparing...");
-    if ( FAILED(hr = Initialize()) )
-        return hr ;
-    DPF(3, "Ready\n");	
+    if (FAILED(hr = Initialize()))
+        return hr;
+    DPF(3, "Ready\n");
 
     do {
-        if ( m_iIterationTimes <= 9 )
-            m_callbackSchemer.InitCallBackAdapt( m_iNumCharts, 0.090f, float(m_iIterationTimes*0.090+0.05) ) ;
-        
+        if (m_iIterationTimes <= 9)
+            m_callbackSchemer.InitCallBackAdapt(m_iNumCharts, 0.090f, float(m_iIterationTimes * 0.090 + 0.05));
+
         m_OutOfRange = false;
-        if ( FAILED( hr = CreateUVAtlas()) )
-            return hr ;
+        if (FAILED(hr = CreateUVAtlas()))
+            return hr;
         DPF(3, "Estimated Space Percent = %.3f%%", double(m_EstimatedSpacePercent * 100.f));
 
-        if ( m_iIterationTimes <= 9 )
+        if (m_iIterationTimes <= 9)
         {
-            if ( FAILED( hr = m_callbackSchemer.FinishWorkAdapt()) ) 
-                return hr ;
+            if (FAILED(hr = m_callbackSchemer.FinishWorkAdapt()))
+                return hr;
         }
 
         if (m_OutOfRange)
@@ -191,36 +191,36 @@ HRESULT CUVAtlasRepacker::Repack()
         return E_INVALIDARG;
     }
 
-    if ( m_iIterationTimes > 9 )
+    if (m_iIterationTimes > 9)
     {
-        if ( FAILED( hr = m_callbackSchemer.FinishWorkAdapt()) ) 
-            return hr ;
+        if (FAILED(hr = m_callbackSchemer.FinishWorkAdapt()))
+            return hr;
     }
 
-    m_callbackSchemer.InitCallBackAdapt( 3, 0.05f, 0.95f ) ;
-    
+    m_callbackSchemer.InitCallBackAdapt(3, 0.05f, 0.95f);
+
     ComputeFinalAtlasRect();
-    if ( FAILED(hr = m_callbackSchemer.UpdateCallbackAdapt( 1 )) )
-        return hr ;
+    if (FAILED(hr = m_callbackSchemer.UpdateCallbackAdapt(1)))
+        return hr;
 
     Normalize();
-    if ( FAILED(hr = m_callbackSchemer.UpdateCallbackAdapt( 1 )) )
-        return hr ;
+    if (FAILED(hr = m_callbackSchemer.UpdateCallbackAdapt(1)))
+        return hr;
 
     OutPutPackResult();
-    if ( FAILED(hr = m_callbackSchemer.UpdateCallbackAdapt( 1 )) )
-        return hr ;
+    if (FAILED(hr = m_callbackSchemer.UpdateCallbackAdapt(1)))
+        return hr;
 
-    if ( FAILED(hr = m_callbackSchemer.FinishWorkAdapt()) )
-        return hr ;
+    if (FAILED(hr = m_callbackSchemer.FinishWorkAdapt()))
+        return hr;
 
     if (m_bDwIndex)
     {
         auto percentOur = double(GetTotalArea<uint32_t>());
         DPF(0, "Final space utilization ratio after pack = %.3f%%", percentOur * 100);
-        
-        if ( m_pPercentOur )
-            *m_pPercentOur = percentOur ;
+
+        if (m_pPercentOur)
+            *m_pPercentOur = percentOur;
     }
     else
     {
@@ -231,7 +231,7 @@ HRESULT CUVAtlasRepacker::Repack()
             *m_pPercentOur = percentOur;
     }
 
-    if ( m_pFinalHeight )
+    if (m_pFinalHeight)
         *m_pFinalHeight = m_RealHeight;
 
     if (m_pFinalWidth)
@@ -251,7 +251,7 @@ HRESULT CUVAtlasRepacker::Repack()
 }
 
 // added for checking and setting parameters for callback
-bool CUVAtlasRepacker::SetCallback( LPISOCHARTCALLBACK pCallback, float Frequency ) 
+bool CUVAtlasRepacker::SetCallback(LPISOCHARTCALLBACK pCallback, float Frequency)
 {
     if (Frequency < 0 || Frequency > 1.0f)
     {
@@ -259,7 +259,7 @@ bool CUVAtlasRepacker::SetCallback( LPISOCHARTCALLBACK pCallback, float Frequenc
     }
 
     m_callbackSchemer.SetCallback(
-        pCallback, 
+        pCallback,
         Frequency);
 
     return true;
@@ -268,12 +268,12 @@ bool CUVAtlasRepacker::SetCallback( LPISOCHARTCALLBACK pCallback, float Frequenc
 // added for checking and setting parameters for managing stages in progress
 bool CUVAtlasRepacker::SetStage(unsigned int TotalStageCount, unsigned int DoneStageCount)
 {
-    if ( TotalStageCount < DoneStageCount )
+    if (TotalStageCount < DoneStageCount)
     {
         return false;
     }
 
-    m_callbackSchemer.SetStage( TotalStageCount, DoneStageCount ) ;
+    m_callbackSchemer.SetStage(TotalStageCount, DoneStageCount);
 
     return true;
 }
@@ -291,10 +291,10 @@ bool CUVAtlasRepacker::SetStage(unsigned int TotalStageCount, unsigned int DoneS
 \***************************************************************************/
 HRESULT CUVAtlasRepacker::CreateUVAtlas()
 {
-    HRESULT hr = S_OK ;
+    HRESULT hr = S_OK;
 
-    if ( FAILED( hr = PrepareRepack()) )
-        return hr ;
+    if (FAILED(hr = PrepareRepack()))
+        return hr;
 
     m_packedArea = m_ChartsInfo[m_SortedChartIndex[0]].area;
     m_packedCharts = 1;
@@ -302,29 +302,29 @@ HRESULT CUVAtlasRepacker::CreateUVAtlas()
     {
         PutChart(m_SortedChartIndex[i]);
         if (!m_OutOfRange)
-        {			
-            if ( FAILED( hr = m_callbackSchemer.UpdateCallbackAdapt( 1 ) ) )
-                return hr ;
+        {
+            if (FAILED(hr = m_callbackSchemer.UpdateCallbackAdapt(1)))
+                return hr;
 
             m_packedCharts++;
             m_packedArea += m_ChartsInfo[m_SortedChartIndex[i]].area;
-        } 
+        }
         else
         {
             break;
         }
     }
-    
-    return hr ;
+
+    return hr;
 }
 
 /***************************************************************************\
     Function Description:
-        This function adjust the estimated percent which represent the 
+        This function adjust the estimated percent which represent the
         ratio of final charts area to the total area of UV atlas.
 
     Arguments:
-    Return Value:		
+    Return Value:
 \***************************************************************************/
 void CUVAtlasRepacker::AdjustEstimatedPercent()
 {
@@ -342,7 +342,7 @@ void CUVAtlasRepacker::AdjustEstimatedPercent()
         DPF(3, "Unpacked area ratio= %.4f\tunpacked charts ratio= %.4f", double(unpackedArea), double(unpackedCharts));
 
         float factor = unpackedArea / 4.0f + unpackedCharts / 10.0f;
-                
+
         if (factor < 0.02f)
             factor = 0.01f;
         if (factor > 0.2f)
@@ -361,16 +361,16 @@ void CUVAtlasRepacker::AdjustEstimatedPercent()
     if (m_EstimatedSpacePercent <= 0)
         m_EstimatedSpacePercent = oldp * 0.9f;
 
-    m_PixelWidth = sqrtf(m_fChartsTotalArea / 
+    m_PixelWidth = sqrtf(m_fChartsTotalArea /
         (m_EstimatedSpacePercent * m_dwAtlasWidth * m_dwAtlasHeight));
 }
 
 /***************************************************************************\
     Function Description:
         Compute the final width and height of result uv atlas.
-    
-    Arguments:		
-    Return Value:		
+
+    Arguments:
+    Return Value:
 \***************************************************************************/
 void CUVAtlasRepacker::ComputeFinalAtlasRect()
 {
@@ -380,7 +380,8 @@ void CUVAtlasRepacker::ComputeFinalAtlasRect()
     {
         m_NormalizeLen = numY;
         numX = int(floorf(float(numY) / m_AspectRatio + 0.5f));
-    } else {
+    }
+    else {
         m_NormalizeLen = numX;
         numY = int(floorf(float(numX) * m_AspectRatio + 0.5f));
     }
@@ -391,7 +392,7 @@ void CUVAtlasRepacker::ComputeFinalAtlasRect()
 /***************************************************************************\
     Function Description:
         Find a suitable estimated percent
-    
+
     Arguments:
     Return Value:
 \***************************************************************************/
@@ -399,12 +400,12 @@ void CUVAtlasRepacker::InitialSpacePercent()
 {
     const float AdjustFactor = 1.01f;
 
-    for(;;)
+    for (;;)
     {
-        m_PixelWidth = sqrtf(m_fChartsTotalArea / 
+        m_PixelWidth = sqrtf(m_fChartsTotalArea /
             (m_EstimatedSpacePercent * m_dwAtlasWidth * m_dwAtlasHeight));
-        auto pCInfo = reinterpret_cast<ChartsInfo *>(&(m_ChartsInfo[m_SortedChartIndex[0]]));
-        auto pPosInfo = reinterpret_cast<_PositionInfo *>(&(pCInfo->PosInfo[0]));
+        auto pCInfo = reinterpret_cast<ChartsInfo*>(&(m_ChartsInfo[m_SortedChartIndex[0]]));
+        auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(pCInfo->PosInfo[0]));
 
         int numX = int(ceilf((pPosInfo->maxPoint.x - pPosInfo->minPoint.x) / m_PixelWidth));
         int numY = int(ceilf((pPosInfo->maxPoint.y - pPosInfo->minPoint.y) / m_PixelWidth));
@@ -419,20 +420,20 @@ void CUVAtlasRepacker::InitialSpacePercent()
     Function Description:
         After fix a new space ratio, we must compute the new chart's width
         and height in pixel.
-    
-    Arguments:	
-    Return Value:	
+
+    Arguments:
+    Return Value:
 \***************************************************************************/
 void CUVAtlasRepacker::ComputeChartsLengthInPixel()
 {
     // compute the width and height of the new chart in pixel 
     for (size_t i = 0; i < m_iNumCharts; i++)
     {
-        auto pCInfo = reinterpret_cast<ChartsInfo *>(&(m_ChartsInfo[i]));
+        auto pCInfo = reinterpret_cast<ChartsInfo*>(&(m_ChartsInfo[i]));
         if (!pCInfo->valid) continue;
         for (size_t j = 0; j < m_iRotateNum; j++)
         {
-            auto pPosInfo = reinterpret_cast<_PositionInfo *>(&(pCInfo->PosInfo[j]));
+            auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(pCInfo->PosInfo[j]));
 
             // compute the width and height of current chart
             int numX = int(ceilf((pPosInfo->maxPoint.x - pPosInfo->minPoint.x) / m_PixelWidth));
@@ -464,12 +465,12 @@ void CUVAtlasRepacker::ComputeChartsLengthInPixel()
 /***************************************************************************\
     Function Description:
         Prepare the information of charts.
-    
+
     Arguments:
-    
+
     Return Value:
         TRUE if success.
-        FALSE otherwise.		
+        FALSE otherwise.
 \***************************************************************************/
 HRESULT CUVAtlasRepacker::PrepareRepack()
 {
@@ -478,7 +479,7 @@ HRESULT CUVAtlasRepacker::PrepareRepack()
 
     // initialize UVAtlas space
     for (size_t i = 0; i < m_PreparedAtlasHeight; i++)
-        memset(reinterpret_cast<void*>(&(m_UVBoard[i][0])), 0, sizeof(uint8_t) * m_PreparedAtlasWidth);
+        memset(reinterpret_cast<void*>(&(m_UVBoard[i][0])), 0, sizeof(uint8_t)* m_PreparedAtlasWidth);
 
     // find the index of the longest chart
     uint32_t index = m_SortedChartIndex[0];
@@ -493,7 +494,7 @@ HRESULT CUVAtlasRepacker::PrepareRepack()
     int numY = m_ChartsInfo[index].PosInfo[0].numY;
     int size = 2 * std::max(numX, numY);
     if (size <= 0)
-        return E_INVALIDARG ;
+        return E_INVALIDARG;
 
     auto usize = size_t(size);
 
@@ -532,8 +533,8 @@ HRESULT CUVAtlasRepacker::PrepareRepack()
     m_toX = m_fromX + numX;
 
     // put the longest chart into the atlas first
-    for (int i =  m_fromY; i < m_toY; i++)
-        for (int j =  m_fromX; j < m_toX; j++)
+    for (int i = m_fromY; i < m_toY; i++)
+        for (int j = m_fromX; j < m_toX; j++)
             m_UVBoard[size_t(i)][size_t(j)] = m_currChartUVBoard[size_t(i - m_fromY)][size_t(j - m_fromX)];
 
     // save the first chart's transform matrix
@@ -545,28 +546,28 @@ HRESULT CUVAtlasRepacker::PrepareRepack()
     // prepare the space information of UV atlas
     PrepareSpaceInfo(m_SpaceInfo, m_UVBoard, m_fromX, m_toX, m_fromY, m_toY, false);
 
-    return S_OK ;
+    return S_OK;
 }
 
 /***************************************************************************\
     Function Description:
         Check if the pack operation is possible
-    
-    Arguments:	
+
+    Arguments:
     Return Value:
         TRUE if possible;
         FALSE otherwise.
 \***************************************************************************/
 bool CUVAtlasRepacker::PossiblePack()
 {
-    if (m_dwAtlasHeight / size_t(m_iGutter + 1) * m_dwAtlasWidth / 
+    if (m_dwAtlasHeight / size_t(m_iGutter + 1) * m_dwAtlasWidth /
         size_t(m_iGutter + 1) <= m_iNumCharts)
     {
         DPF(0, "Warning : \nGutter is too large or the atlas resolution is too small.\n");
         DPF(0, "Chart number = %zu", m_iNumCharts);
         DPF(0, "Gutter = %d", m_iGutter);
         DPF(0, "User specified atlas : width = %zu, height = %zu", m_dwAtlasWidth, m_dwAtlasHeight);
-        DPF(0, "The theoretic maximum charts the atlas can hold is %zu\n", 
+        DPF(0, "The theoretic maximum charts the atlas can hold is %zu\n",
             m_dwAtlasHeight / size_t(m_iGutter + 1) * m_dwAtlasWidth / size_t(m_iGutter + 1));
         DPF(0, "So it is impossible to pack it into user specified atlas.\n");
         return false;
@@ -578,8 +579,8 @@ bool CUVAtlasRepacker::PossiblePack()
 /***************************************************************************\
     Function Description:
         Check whether the input is valid.
-    
-    Arguments:	
+
+    Arguments:
     Return Value:
         TRUE if valid;
         FALSE otherwise.
@@ -588,28 +589,28 @@ bool CUVAtlasRepacker::CheckUserInput()
 {
     if (!m_pvVertexBuffer)
     {
-        DPF( 0, "Pack input vertex buffer pointer is nullptr!" ) ;
+        DPF(0, "Pack input vertex buffer pointer is nullptr!");
         return false;
     }
     if (m_pvVertexBuffer->size() != m_iNumVertices)
     {
-        DPF( 0, "Pack input vertex structure should be (x,y,z,u,v)" ) ;
+        DPF(0, "Pack input vertex structure should be (x,y,z,u,v)");
         return false;
     }
 
     if (!m_pvIndexBuffer)
     {
-        DPF( 0, "Pack input face index buffer pointer is nullptr!" ) ;
+        DPF(0, "Pack input face index buffer pointer is nullptr!");
         return false;
     }
     if (m_pvIndexBuffer->size() != m_iNumFaces * 3 * sizeof(uint32_t) &&
         m_pvIndexBuffer->size() != m_iNumFaces * 3 * sizeof(uint16_t))
     {
-        DPF( 0, "Pack input face index buffer is neither a uint16_t array nor a uint32_t array" ) ;
+        DPF(0, "Pack input face index buffer is neither a uint16_t array nor a uint32_t array");
         return false;
     }
 
-    if ( m_iNumVertices == 0 || m_iNumFaces == 0 )
+    if (m_iNumVertices == 0 || m_iNumFaces == 0)
     {
         return false;
     }
@@ -623,20 +624,20 @@ bool CUVAtlasRepacker::CheckUserInput()
 /***************************************************************************\
     Function Description:
         Do some initialization work.
-    
+
     Arguments:
     Return Value:
-        S_OK if possible;			
+        S_OK if possible;
 \***************************************************************************/
 HRESULT CUVAtlasRepacker::Initialize()
 {
-    HRESULT hr = S_OK ;
-    
-    // check whether the input is valid
-    if ( !CheckUserInput() )
-        return E_INVALIDARG ;
+    HRESULT hr = S_OK;
 
-    m_callbackSchemer.InitCallBackAdapt( 3, 0.05f, 0 ) ;
+    // check whether the input is valid
+    if (!CheckUserInput())
+        return E_INVALIDARG;
+
+    m_callbackSchemer.InitCallBackAdapt(3, 0.05f, 0);
 
     // set initial estimated space percent
     m_EstimatedSpacePercent = 0.6f;
@@ -652,21 +653,22 @@ HRESULT CUVAtlasRepacker::Initialize()
     // vertex buffer and attribute buffer
     if (m_bDwIndex) {
         if (FAILED(hr = GenerateAdjacentInfo<uint32_t>()))
-            return hr ;
+            return hr;
         if (FAILED(hr = GenerateNewBuffers<uint32_t>()))
-            return hr ;
-    } else {
-        if ( FAILED(hr = GenerateAdjacentInfo<uint16_t>()) )
-            return hr ;
-        if ( FAILED(hr = GenerateNewBuffers<uint16_t>() ) )
-            return hr ;
+            return hr;
+    }
+    else {
+        if (FAILED(hr = GenerateAdjacentInfo<uint16_t>()))
+            return hr;
+        if (FAILED(hr = GenerateNewBuffers<uint16_t>()))
+            return hr;
     }
 
-    if ( !PossiblePack() )
-        return E_INVALIDARG ;
+    if (!PossiblePack())
+        return E_INVALIDARG;
 
-    if ( FAILED( hr = m_callbackSchemer.UpdateCallbackAdapt( 1 )) )
-        return hr ;
+    if (FAILED(hr = m_callbackSchemer.UpdateCallbackAdapt(1)))
+        return hr;
 
     try
     {
@@ -693,23 +695,23 @@ HRESULT CUVAtlasRepacker::Initialize()
         return E_OUTOFMEMORY;
     }
 
-    if ( FAILED( hr = m_callbackSchemer.UpdateCallbackAdapt( 1 )) )
-        return hr ;
+    if (FAILED(hr = m_callbackSchemer.UpdateCallbackAdapt(1)))
+        return hr;
 
-    if ( FAILED(hr = PrepareChartsInfo() ) )
-        return hr ;
+    if (FAILED(hr = PrepareChartsInfo()))
+        return hr;
 
     // sort the chart by length
     SortCharts();
 
-    if ( FAILED( hr = m_callbackSchemer.UpdateCallbackAdapt( 1 )) )
-        return hr ;
+    if (FAILED(hr = m_callbackSchemer.UpdateCallbackAdapt(1)))
+        return hr;
 
     //	Find a suitable estimated percent
     InitialSpacePercent();
 
-    if ( FAILED( hr = m_callbackSchemer.FinishWorkAdapt()) )
-        return hr ;
+    if (FAILED(hr = m_callbackSchemer.FinishWorkAdapt()))
+        return hr;
 
     return hr;
 }
@@ -718,9 +720,9 @@ HRESULT CUVAtlasRepacker::Initialize()
     Function Description:
         When one pack operation is aborted, this step is to clean up some
         unused information.
-    
+
     Arguments:
-    Return Value:	
+    Return Value:
 \***************************************************************************/
 void CUVAtlasRepacker::CleanUp()
 {
@@ -732,14 +734,14 @@ void CUVAtlasRepacker::CleanUp()
         Generate the adjacent info for input mesh or vertex buffer.
         We do not use the GenerateAdjacency.
         Use template to handle the 16-bit index and 32-bit index buffer.
-    
-    Arguments:	
-    Return Value:			
+
+    Arguments:
+    Return Value:
 \***************************************************************************/
 template <class T>
 HRESULT CUVAtlasRepacker::GenerateAdjacentInfo()
 {
-    auto ib = reinterpret_cast<const _Triangle<T> *>( m_pvIndexBuffer->data() );
+    auto ib = reinterpret_cast<const _Triangle<T>*>(m_pvIndexBuffer->data());
 
     try
     {
@@ -784,10 +786,10 @@ HRESULT CUVAtlasRepacker::GenerateAdjacentInfo()
         {
             for (size_t m = 0; m < 3; m++) if (m_AdjacentInfo[i * 3 + m] == uint32_t(-1))
                 for (size_t n = 0; n < 3; n++) if (m_AdjacentInfo[j * 3 + n] == uint32_t(-1))
-                    if ((ib[i].vertex[order[m][0]] == ib[j].vertex[order[n][0]] && 
+                    if ((ib[i].vertex[order[m][0]] == ib[j].vertex[order[n][0]] &&
                         ib[i].vertex[order[m][1]] == ib[j].vertex[order[n][1]]) ||
-                        (ib[i].vertex[order[m][0]] == ib[j].vertex[order[n][1]] && 
-                        ib[i].vertex[order[m][1]] == ib[j].vertex[order[n][0]]))
+                        (ib[i].vertex[order[m][0]] == ib[j].vertex[order[n][1]] &&
+                            ib[i].vertex[order[m][1]] == ib[j].vertex[order[n][0]]))
                         // if two triangles have two common vertices, they are adjacent
                     {
                         m_AdjacentInfo[i * 3 + m] = j;
@@ -802,20 +804,20 @@ HRESULT CUVAtlasRepacker::GenerateAdjacentInfo()
         }
     }
 
-    return S_OK ;
+    return S_OK;
 }
 
 /***************************************************************************\
     Function Description:
         Generate some necessary information about the input mesh.
         Use template to handle the 16-bit index and 32-bit index buffer.
-        This function create our sorted vertex buffer, index buffer and 
-        adjacent information buffer. 
-        The buffer is sorted by put together all the faces that belong to 
-        the same chart. 
+        This function create our sorted vertex buffer, index buffer and
+        adjacent information buffer.
+        The buffer is sorted by put together all the faces that belong to
+        the same chart.
 
-    Arguments:	
-    Return Value:	
+    Arguments:
+    Return Value:
 \***************************************************************************/
 template <class T>
 HRESULT CUVAtlasRepacker::GenerateNewBuffers()
@@ -837,16 +839,16 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
         for (size_t i = 0; i < m_iNumVertices; i++)
             m_IndexPartition[i] = uint32_t(-1);
 
-        auto pVB = reinterpret_cast<const uint8_t*>( m_pvVertexBuffer->data() );
-        auto pIB = reinterpret_cast<const uint8_t*>( m_pvIndexBuffer->data() );
+        auto pVB = reinterpret_cast<const uint8_t*>(m_pvVertexBuffer->data());
+        auto pIB = reinterpret_cast<const uint8_t*>(m_pvIndexBuffer->data());
 
         UVATLASATTRIBUTERANGE ar;
 
-        std::unique_ptr<bool[]> bUsedFace( new (std::nothrow) bool[ m_iNumFaces ] );
-        if ( !bUsedFace )
+        std::unique_ptr<bool[]> bUsedFace(new (std::nothrow) bool[m_iNumFaces]);
+        if (!bUsedFace)
             return E_OUTOFMEMORY;
 
-        memset( bUsedFace.get(), 0, sizeof(bool)*m_iNumFaces);
+        memset(bUsedFace.get(), 0, sizeof(bool) * m_iNumFaces);
 
         std::vector<uint32_t> ab;
         uint32_t num = 0;
@@ -857,7 +859,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
             if (pAB[i] == uint32_t(-1))
             {
                 ab.clear();
-                if (!bUsedFace[i]) 
+                if (!bUsedFace[i])
                 {
                     ab.push_back(i);
                     bUsedFace[i] = true;
@@ -868,7 +870,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                 // store the result into m_pAttributeBuffer 
                 if (m_pPartitionAdj)
                 {
-                    while(t < ab.size())
+                    while (t < ab.size())
                     {
                         pAB[ab[t]] = uint32_t(num);
                         for (uint32_t j = 0; j < 3; j++)
@@ -881,13 +883,13 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                             }
                         }
                         t++;
-                    }			
+                    }
                 }
                 else
                 {
-                    while(t < ab.size())
+                    while (t < ab.size())
                     {
-                     pAB[ab[t]] = uint32_t(num);
+                        pAB[ab[t]] = uint32_t(num);
                         for (size_t j = 0; j < 3; j++)
                         {
                             uint32_t index = *reinterpret_cast<const T*>(pIB + (3 * ab[t] + j) * sizeof(T));
@@ -916,14 +918,14 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                     uint32_t index3 = *reinterpret_cast<const T*>(pIB + (3 * ab[j] + 2) * sizeof(T));
 
                     // copy the original adjacent information continuously in new adjacent buffer
-                    memcpy(&m_NewAdjacentInfo[j * 3 + facestart * 3], 
+                    memcpy(&m_NewAdjacentInfo[j * 3 + facestart * 3],
                         &m_AdjacentInfo[3 * ab[j]], sizeof(uint32_t) * 3);
 
                     // copy the original index information continuously in new index buffer
                     m_IndexBuffer.push_back(index1);
                     m_IndexBuffer.push_back(index2);
                     m_IndexBuffer.push_back(index3);
-                
+
                     // find the original UV coordinates of each vertex
                     auto p1 = reinterpret_cast<const XMFLOAT2*>(pVB + index1 * m_iNumBytesPerVertex + m_TexCoordOffset);
                     auto p2 = reinterpret_cast<const XMFLOAT2*>(pVB + index2 * m_iNumBytesPerVertex + m_TexCoordOffset);
@@ -955,7 +957,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                         vert.pos.y = pp2->y;
                         vert.pos.z = pp2->z;
                         vert.uv.x = p2->x;
-                        vert.uv.y = p2->y; 
+                        vert.uv.y = p2->y;
                         m_VertexBuffer.push_back(vert);
                     }
                     if (m_IndexPartition[index3] == uint32_t(-1))
@@ -989,7 +991,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
         return E_OUTOFMEMORY;
     }
 
-    return S_OK ;
+    return S_OK;
 }
 
 /***************************************************************************\
@@ -1000,8 +1002,8 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
         [in]	Vec		-	A array of XMFLOAT2.
         [out]	minV	-	top left corner in XMFLOAT2 format.
         [out]	maxV	-	bottom right corner in XMFLOAT2 format.
-    
-    Return Value:	
+
+    Return Value:
 \***************************************************************************/
 void CUVAtlasRepacker::ComputeBoundingBox(
     std::vector<XMFLOAT2>& Vec,
@@ -1022,10 +1024,10 @@ void CUVAtlasRepacker::ComputeBoundingBox(
         Set each chart into its best position (the bounding box is smallest).
         Save the chart edges information for later use.
 
-    Arguments:	
+    Arguments:
     Return Value:
         TRUE if possible;
-        FALSE otherwise.	
+        FALSE otherwise.
 \***************************************************************************/
 HRESULT CUVAtlasRepacker::PrepareChartsInfo()
 {
@@ -1057,13 +1059,13 @@ HRESULT CUVAtlasRepacker::PrepareChartsInfo()
             XMMATRIX rotateMatrix = XMMatrixRotationZ(angle);
 
             XMVector2TransformCoordStream(
-                &OutVec[0], 
+                &OutVec[0],
                 sizeof(XMFLOAT2),
                 &m_VertexBuffer[m_AttrTable[i].VertexStart].uv,
-                VertexSize, 
+                VertexSize,
                 m_AttrTable[i].VertexCount,
                 rotateMatrix
-                );
+            );
 
             XMFLOAT2 minV(1e10f, 1e10f);
             XMFLOAT2 maxV(-1e10f, -1e10f);
@@ -1078,7 +1080,7 @@ HRESULT CUVAtlasRepacker::PrepareChartsInfo()
             }
 
             // find the smallest bounding box
-            if ( (maxV.x - minV.x) * (maxV.y - minV.y) < minArea)
+            if ((maxV.x - minV.x) * (maxV.y - minV.y) < minArea)
             {
                 minArea = (maxV.x - minV.x) * (maxV.y - minV.y);
                 bestMatrix = rotateMatrix;
@@ -1088,12 +1090,12 @@ HRESULT CUVAtlasRepacker::PrepareChartsInfo()
         // copy the rotated vertex buffer back into the original one
         XMVector2TransformCoordStream(
             &m_VertexBuffer[m_AttrTable[i].VertexStart].uv,
-            VertexSize, 
+            VertexSize,
             &m_VertexBuffer[m_AttrTable[i].VertexStart].uv,
-            VertexSize, 
+            VertexSize,
             m_AttrTable[i].VertexCount,
             bestMatrix
-            );
+        );
 
         m_ChartsInfo[i].valid = true;
         m_ChartsInfo[i].area = GetChartArea(i);
@@ -1101,19 +1103,19 @@ HRESULT CUVAtlasRepacker::PrepareChartsInfo()
 
         // rotate the chart to different position and store the 
         // edges and other useful information
-        for (size_t j = 0; j < m_iRotateNum; j++) 
+        for (size_t j = 0; j < m_iRotateNum; j++)
         {
             float angle = j * XM_PI / m_iRotateNum / 2.0f;
             XMMATRIX rotateMatrix = XMMatrixRotationZ(angle);
 
             XMVector2TransformCoordStream(
-                &OutVec[0], 
+                &OutVec[0],
                 sizeof(XMFLOAT2),
                 &m_VertexBuffer[m_AttrTable[i].VertexStart].uv,
-                VertexSize, 
+                VertexSize,
                 m_AttrTable[i].VertexCount,
                 rotateMatrix
-                );
+            );
 
             XMFLOAT2 minV(1e10f, 1e10f);
             XMFLOAT2 maxV(-1e10f, -1e10f);
@@ -1136,9 +1138,9 @@ HRESULT CUVAtlasRepacker::PrepareChartsInfo()
 
                 uint32_t indexbase = m_AttrTable[i].VertexStart;
 
-                XMFLOAT2 &Vertex1 = *reinterpret_cast<XMFLOAT2*>(&OutVec[a - indexbase]);
-                XMFLOAT2 &Vertex2 = *reinterpret_cast<XMFLOAT2*>(&OutVec[b - indexbase]);
-                XMFLOAT2 &Vertex3 = *reinterpret_cast<XMFLOAT2*>(&OutVec[c - indexbase]);
+                XMFLOAT2& Vertex1 = *reinterpret_cast<XMFLOAT2*>(&OutVec[a - indexbase]);
+                XMFLOAT2& Vertex2 = *reinterpret_cast<XMFLOAT2*>(&OutVec[b - indexbase]);
+                XMFLOAT2& Vertex3 = *reinterpret_cast<XMFLOAT2*>(&OutVec[c - indexbase]);
 
                 // handle the situation when the triangle have two uniform vertices
                 // bases on our experiment we just recognize every line segment as one edge
@@ -1159,14 +1161,14 @@ HRESULT CUVAtlasRepacker::PrepareChartsInfo()
 
                         if (a0 >= indexbase0 && b0 >= indexbase0 && c0 >= indexbase0)
                         {
-                            XMFLOAT2 &vert1 = *reinterpret_cast<XMFLOAT2*>(&OutVec[a0 - indexbase0]);
-                            XMFLOAT2 &vert2 = *reinterpret_cast<XMFLOAT2*>(&OutVec[b0 - indexbase0]);
-                            XMFLOAT2 &vert3 = *reinterpret_cast<XMFLOAT2*>(&OutVec[c0 - indexbase0]);
+                            XMFLOAT2& vert1 = *reinterpret_cast<XMFLOAT2*>(&OutVec[a0 - indexbase0]);
+                            XMFLOAT2& vert2 = *reinterpret_cast<XMFLOAT2*>(&OutVec[b0 - indexbase0]);
+                            XMFLOAT2& vert3 = *reinterpret_cast<XMFLOAT2*>(&OutVec[c0 - indexbase0]);
                             m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(vert1, vert2));
                             m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(vert2, vert3));
                             m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(vert3, vert1));
                         }
-                        else 
+                        else
                             return E_FAIL;
                     }
                     break;
@@ -1182,18 +1184,18 @@ HRESULT CUVAtlasRepacker::PrepareChartsInfo()
                     m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(Vertex3, Vertex1));
             }
         }
-        NEXT:;
+    NEXT:;
     }
 
-    return S_OK ;
+    return S_OK;
 }
 
 /***************************************************************************\
     Function Description:
         Sort the charts by the their length.
-    
-    Arguments:	
-    Return Value:	
+
+    Arguments:
+    Return Value:
 \***************************************************************************/
 void CUVAtlasRepacker::SortCharts()
 {
@@ -1211,30 +1213,30 @@ void CUVAtlasRepacker::SortCharts()
     Function Description:
         Compute the distance between the chart edge to its corresponding
         edge of bounding box.
-    
+
     Arguments:
-        [in/out]	spaceInfo	-	array into which the result will be 
+        [in/out]	spaceInfo	-	array into which the result will be
                                     saved.
-        [in]		board		-	uv board of the chart which will be 
+        [in]		board		-	uv board of the chart which will be
                                     processed.
         [in]		fromX, toX, fromY, toY
-                                -	the top left corner and bottom right 
+                                -	the top left corner and bottom right
                                     corner of uv board.
-        [in]		bNeglectGrows	-	whether to count the edges growed 
+        [in]		bNeglectGrows	-	whether to count the edges growed
                                     by program
-    Return Value:	
+    Return Value:
 \***************************************************************************/
-void CUVAtlasRepacker::PrepareSpaceInfo(SpaceInfo &spaceInfo, 
-                                        UVBoard &board, int fromX, 
-                                        int toX, int fromY, int toY, 
-                                        bool bNeglectGrows)
+void CUVAtlasRepacker::PrepareSpaceInfo(SpaceInfo& spaceInfo,
+    UVBoard& board, int fromX,
+    int toX, int fromY, int toY,
+    bool bNeglectGrows)
 {
     // top
     for (int i = fromX; i < toX; i++)
     {
         int j = fromY;
-        if (bNeglectGrows) while(j < toY && board[size_t(j++)][size_t(i)] != 1);
-        else while(j < toY && board[size_t(j++)][size_t(i)] == 0);
+        if (bNeglectGrows) while (j < toY && board[size_t(j++)][size_t(i)] != 1);
+        else while (j < toY && board[size_t(j++)][size_t(i)] == 0);
         spaceInfo[UV_UPSIDE][size_t(i)] = j - fromY - 1;
     }
 
@@ -1242,26 +1244,26 @@ void CUVAtlasRepacker::PrepareSpaceInfo(SpaceInfo &spaceInfo,
     for (int i = fromX; i < toX; i++)
     {
         int j = toY;
-        if (bNeglectGrows) while(j > fromY && board[size_t(--j)][size_t(i)] != 1);
-        else while(j > fromY && board[size_t(--j)][size_t(i)] == 0);
+        if (bNeglectGrows) while (j > fromY&& board[size_t(--j)][size_t(i)] != 1);
+        else while (j > fromY&& board[size_t(--j)][size_t(i)] == 0);
         spaceInfo[UV_DOWNSIDE][size_t(i)] = toY - j - 1;
-    }	
+    }
 
     // left
     for (int i = fromY; i < toY; i++)
     {
         int j = fromX;
-        if (bNeglectGrows) while(j < toX && board[size_t(i)][size_t(j++)] != 1);
-        else while(j < toX && board[size_t(i)][size_t(j++)] == 0);
+        if (bNeglectGrows) while (j < toX && board[size_t(i)][size_t(j++)] != 1);
+        else while (j < toX && board[size_t(i)][size_t(j++)] == 0);
         spaceInfo[UV_LEFTSIDE][size_t(i)] = j - fromX - 1;
-    }	
+    }
 
     // right
     for (int i = fromY; i < toY; i++)
     {
         int j = toX;
-        if (bNeglectGrows) while(j > fromX && board[size_t(i)][size_t(--j)] != 1);
-        else while(j > fromX && board[size_t(i)][size_t(--j)] == 0);
+        if (bNeglectGrows) while (j > fromX&& board[size_t(i)][size_t(--j)] != 1);
+        else while (j > fromX&& board[size_t(i)][size_t(--j)] == 0);
         spaceInfo[UV_RIGHTSIDE][size_t(i)] = toX - j - 1;
     }
 }
@@ -1269,9 +1271,9 @@ void CUVAtlasRepacker::PrepareSpaceInfo(SpaceInfo &spaceInfo,
 /***************************************************************************\
     Function Description:
         Reverse the array.
-    
-    Arguments:	
-    Return Value:	
+
+    Arguments:
+    Return Value:
 \***************************************************************************/
 void CUVAtlasRepacker::Reverse(std::vector<int>& data, size_t len)
 {
@@ -1279,33 +1281,33 @@ void CUVAtlasRepacker::Reverse(std::vector<int>& data, size_t len)
     {
         std::swap(data[i], data[len - i - 1]);
     }
-} 
+}
 
 /***************************************************************************\
     Function Description:
         Find a best position and angle to put current chart into atlas.
-    
+
     Arguments:
         [in]	index	-	the index of chart to be packed
-    
-    Return Value:	
+
+    Return Value:
 \***************************************************************************/
 void CUVAtlasRepacker::PutChart(uint32_t index)
 {
-    ChartsInfo *pCInfo = &m_ChartsInfo[index];
+    ChartsInfo* pCInfo = &m_ChartsInfo[index];
 
-    if (!pCInfo->valid) 
+    if (!pCInfo->valid)
         return;
 
     m_triedInternalSpace = int(1e8f);
 
-    for (uint32_t i = 0; i < m_iRotateNum; i++) 
+    for (uint32_t i = 0; i < m_iRotateNum; i++)
     {
         // for every position of chart, first do tessellation on it
         // then try to put it into the atlas after rotate 0, 90, 180, 270 degrees
         auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(pCInfo->PosInfo[i]));
         DoTessellation(index, i);
-        PrepareSpaceInfo(m_currSpaceInfo, m_currChartUVBoard, 
+        PrepareSpaceInfo(m_currSpaceInfo, m_currChartUVBoard,
             0, pPosInfo->numX, 0, pPosInfo->numY, true);
 
         m_currRotate = int(i);
@@ -1319,65 +1321,65 @@ void CUVAtlasRepacker::PutChart(uint32_t index)
             PutSide = int(floorf(rand() + 0.5f));
 
         if (PutSide == 0) // put on left or right side
-        {	
+        {
             if (i == 0) m_triedAspectRatio = -1e10;
             // try to put left side
-            TryPut(UV_RIGHTSIDE, UV_LEFTSIDE, 0, pPosInfo->numX, 
+            TryPut(UV_RIGHTSIDE, UV_LEFTSIDE, 0, pPosInfo->numX,
                 m_toX - m_fromX, m_fromY, m_toY, pPosInfo->numY);
-            TryPut(UV_UPSIDE, UV_LEFTSIDE, 90, pPosInfo->numY, 
+            TryPut(UV_UPSIDE, UV_LEFTSIDE, 90, pPosInfo->numY,
                 m_toX - m_fromX, m_fromY, m_toY, pPosInfo->numX);
 
             // try to put right side
-            TryPut(UV_LEFTSIDE, UV_RIGHTSIDE, 0, pPosInfo->numX, 
+            TryPut(UV_LEFTSIDE, UV_RIGHTSIDE, 0, pPosInfo->numX,
                 m_toX - m_fromX, m_fromY, m_toY, pPosInfo->numY);
-            TryPut(UV_DOWNSIDE, UV_RIGHTSIDE, 90, pPosInfo->numY, 
+            TryPut(UV_DOWNSIDE, UV_RIGHTSIDE, 90, pPosInfo->numY,
                 m_toX - m_fromX, m_fromY, m_toY, pPosInfo->numX);
 
             // try to put left side
             Reverse(m_currSpaceInfo[UV_LEFTSIDE], size_t(pPosInfo->numY));
-            TryPut(UV_LEFTSIDE, UV_LEFTSIDE, 180, pPosInfo->numX, 
+            TryPut(UV_LEFTSIDE, UV_LEFTSIDE, 180, pPosInfo->numX,
                 m_toX - m_fromX, m_fromY, m_toY, pPosInfo->numY);
             Reverse(m_currSpaceInfo[UV_DOWNSIDE], size_t(pPosInfo->numX));
-            TryPut(UV_DOWNSIDE, UV_LEFTSIDE, 270, pPosInfo->numY, 
+            TryPut(UV_DOWNSIDE, UV_LEFTSIDE, 270, pPosInfo->numY,
                 m_toX - m_fromX, m_fromY, m_toY, pPosInfo->numX);
 
             // try to put right side
             Reverse(m_currSpaceInfo[UV_RIGHTSIDE], size_t(pPosInfo->numY));
-            TryPut(UV_RIGHTSIDE, UV_RIGHTSIDE, 180, pPosInfo->numX, 
+            TryPut(UV_RIGHTSIDE, UV_RIGHTSIDE, 180, pPosInfo->numX,
                 m_toX - m_fromX, m_fromY, m_toY, pPosInfo->numY);
             Reverse(m_currSpaceInfo[UV_UPSIDE], size_t(pPosInfo->numX));
-            TryPut(UV_UPSIDE, UV_RIGHTSIDE, 270, pPosInfo->numY, 
+            TryPut(UV_UPSIDE, UV_RIGHTSIDE, 270, pPosInfo->numY,
                 m_toX - m_fromX, m_fromY, m_toY, pPosInfo->numX);
-        } 
+        }
         else // put on top or bottom side
         {
             if (i == 0) m_triedAspectRatio = 1e10;
             // try to put top side
-            TryPut(UV_DOWNSIDE, UV_UPSIDE, 0, pPosInfo->numY, 
+            TryPut(UV_DOWNSIDE, UV_UPSIDE, 0, pPosInfo->numY,
                 m_toY - m_fromY, m_fromX, m_toX, pPosInfo->numX);
-            TryPut(UV_LEFTSIDE, UV_UPSIDE, 270, pPosInfo->numX, 
+            TryPut(UV_LEFTSIDE, UV_UPSIDE, 270, pPosInfo->numX,
                 m_toY - m_fromY, m_fromX, m_toX, pPosInfo->numY);
 
             // try to put down side
-            TryPut(UV_RIGHTSIDE, UV_DOWNSIDE, 270, pPosInfo->numX, 
+            TryPut(UV_RIGHTSIDE, UV_DOWNSIDE, 270, pPosInfo->numX,
                 m_toY - m_fromY, m_fromX, m_toX, pPosInfo->numY);
-            TryPut(UV_UPSIDE, UV_DOWNSIDE, 0, pPosInfo->numY, 
+            TryPut(UV_UPSIDE, UV_DOWNSIDE, 0, pPosInfo->numY,
                 m_toY - m_fromY, m_fromX, m_toX, pPosInfo->numX);
 
             // try to put top side
             Reverse(m_currSpaceInfo[UV_RIGHTSIDE], size_t(pPosInfo->numY));
-            TryPut(UV_RIGHTSIDE, UV_UPSIDE, 90, pPosInfo->numX, 
+            TryPut(UV_RIGHTSIDE, UV_UPSIDE, 90, pPosInfo->numX,
                 m_toY - m_fromY, m_fromX, m_toX, pPosInfo->numY);
             Reverse(m_currSpaceInfo[UV_UPSIDE], size_t(pPosInfo->numX));
-            TryPut(UV_UPSIDE, UV_UPSIDE, 180, pPosInfo->numY, 
+            TryPut(UV_UPSIDE, UV_UPSIDE, 180, pPosInfo->numY,
                 m_toY - m_fromY, m_fromX, m_toX, pPosInfo->numX);
 
             // try to put down side
             Reverse(m_currSpaceInfo[UV_LEFTSIDE], size_t(pPosInfo->numY));
-            TryPut(UV_LEFTSIDE, UV_DOWNSIDE, 90, pPosInfo->numX, 
+            TryPut(UV_LEFTSIDE, UV_DOWNSIDE, 90, pPosInfo->numX,
                 m_toY - m_fromY, m_fromX, m_toX, pPosInfo->numY);
             Reverse(m_currSpaceInfo[UV_DOWNSIDE], size_t(pPosInfo->numX));
-            TryPut(UV_DOWNSIDE, UV_DOWNSIDE, 180, pPosInfo->numY, 
+            TryPut(UV_DOWNSIDE, UV_DOWNSIDE, 180, pPosInfo->numY,
                 m_toY - m_fromY, m_fromX, m_toX, pPosInfo->numX);
         }
 
@@ -1396,31 +1398,31 @@ void CUVAtlasRepacker::PutChart(uint32_t index)
 /***************************************************************************\
     Function Description:
         Find the best position to put one rotated chart into the atlas.
-    
+
     Arguments:
-        [in]	chartPutSide	-	Specify which side of the chart will face 
+        [in]	chartPutSide	-	Specify which side of the chart will face
                                     the atlas edges.
                                     It will be the following :
                                         UV_UPSIDE = 0;
                                         UV_RIGHTSIDE = 1;
                                         UV_DOWNSIDE = 2;
                                         UV_LEFTSIDE = 3;
-        [in]	PutSide			-	Specify which side of the atlas will face 
+        [in]	PutSide			-	Specify which side of the atlas will face
                                     the chart edges.
         [in]	Rotation		-	Specify the degrees which the chart has
                                     rotated.
-        [in]	chartWidth		-	Specify the width of another side to 
+        [in]	chartWidth		-	Specify the width of another side to
                                     chartPutside.
         [in]	width			-	Specify the width of another side to
                                     PutSide.
         [in]	from, to		-	Describe the PutSide ranges.
-        [in]	chartSideLen	-	Describe the chartPutSide ranges.		
-    
-    Return Value:	
+        [in]	chartSideLen	-	Describe the chartPutSide ranges.
+
+    Return Value:
 \***************************************************************************/
 void CUVAtlasRepacker::TryPut(int chartPutSide, int PutSide,
-                              int Rotation, int chartWidth, int width, 
-                              int from, int to, int chartSideLen)
+    int Rotation, int chartWidth, int width,
+    int from, int to, int chartSideLen)
 {
     auto& chartSpaceInfo = m_currSpaceInfo[chartPutSide];
     auto& spaceInfo = m_SpaceInfo[PutSide];
@@ -1447,26 +1449,26 @@ void CUVAtlasRepacker::TryPut(int chartPutSide, int PutSide,
         float ratio;
         if (minDistant <= chartWidth)
             if (PutSide == UV_UPSIDE || PutSide == UV_DOWNSIDE)
-                ratio =  float(width + chartWidth - minDistant) / float(to - from);
+                ratio = float(width + chartWidth - minDistant) / float(to - from);
             else
-                ratio =  float(to - from) / float(width + chartWidth - minDistant);
+                ratio = float(to - from) / float(width + chartWidth - minDistant);
         else
             if (PutSide == UV_UPSIDE || PutSide == UV_DOWNSIDE)
-                ratio =  float(width) / float(to - from);
+                ratio = float(width) / float(to - from);
             else
-                ratio =  float(to - from) / float(width);
+                ratio = float(to - from) / float(width);
 
         // accept the new putting position if 
         //	1.	new ratio is more closer to user specified one
         //	2.	the ratio is the same but the internal space is smaller than before
         //	3.	the ratio and the internal space are all the same but the position 
         //		is more inside than before	
-        if ((ratio < m_triedAspectRatio && (PutSide == UV_UPSIDE || PutSide == UV_DOWNSIDE)) || 
+        if ((ratio < m_triedAspectRatio && (PutSide == UV_UPSIDE || PutSide == UV_DOWNSIDE)) ||
             (ratio > m_triedAspectRatio && (PutSide == UV_LEFTSIDE || PutSide == UV_RIGHTSIDE)) ||
-            ((fabsf(ratio - m_triedAspectRatio) < 1e-6f) && 
-            (internalSpace < m_triedInternalSpace || 
-            (abs(internalSpace - m_triedInternalSpace) < m_triedInternalSpace * 0.05f && 
-            m_triedOverlappedLen < minDistant))))
+            ((fabsf(ratio - m_triedAspectRatio) < 1e-6f) &&
+            (internalSpace < m_triedInternalSpace ||
+                (abs(internalSpace - m_triedInternalSpace) < m_triedInternalSpace * 0.05f &&
+                    m_triedOverlappedLen < minDistant))))
         {
             m_triedRotate = size_t(m_currRotate);
             m_triedAspectRatio = ratio;
@@ -1482,11 +1484,11 @@ void CUVAtlasRepacker::TryPut(int chartPutSide, int PutSide,
 /***************************************************************************\
     Function Description:
         Check if the current atlas is out of user defined range.
-    
-    Arguments:	
+
+    Arguments:
     Return Value:
         TRUE if not out of range.
-        FALSE otherwise.	
+        FALSE otherwise.
 \***************************************************************************/
 bool CUVAtlasRepacker::CheckAtlasRange()
 {
@@ -1520,32 +1522,32 @@ bool CUVAtlasRepacker::CheckAtlasRange()
 /***************************************************************************\
     Function Description:
         Get coordinates ranges where current chart should be put.
-    
-    Arguments:	
+
+    Arguments:
         [in]	index	-	the index of current chart
 
-    Return Value:	
+    Return Value:
 \***************************************************************************/
 void CUVAtlasRepacker::GetChartPutPosition(uint32_t index)
 {
-    auto pPosInfo =  reinterpret_cast<_PositionInfo *>(&(m_ChartsInfo[index].PosInfo[m_triedRotate]));
+    auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(m_ChartsInfo[index].PosInfo[m_triedRotate]));
 
     switch (m_triedPutSide)
     {
     case UV_UPSIDE:
-        m_chartFromX = m_triedPutPos;  
+        m_chartFromX = m_triedPutPos;
         if (m_triedPutRotation == 0 || m_triedPutRotation == 180)
             m_chartFromY = m_fromY - pPosInfo->numY + m_triedOverlappedLen;
         else
             m_chartFromY = m_fromY - pPosInfo->numX + m_triedOverlappedLen;
         break;
     case UV_RIGHTSIDE:
-        m_chartFromX = m_toX - m_triedOverlappedLen; 
+        m_chartFromX = m_toX - m_triedOverlappedLen;
         m_chartFromY = m_triedPutPos;
         break;
     case UV_DOWNSIDE:
         m_chartFromX = m_triedPutPos;
-        m_chartFromY = m_toY - m_triedOverlappedLen; 
+        m_chartFromY = m_toY - m_triedOverlappedLen;
         break;
     case UV_LEFTSIDE:
         m_chartFromY = m_triedPutPos;
@@ -1559,7 +1561,8 @@ void CUVAtlasRepacker::GetChartPutPosition(uint32_t index)
     if (m_triedPutRotation == 0 || m_triedPutRotation == 180) {
         m_chartToX = m_chartFromX + pPosInfo->numX;
         m_chartToY = m_chartFromY + pPosInfo->numY;
-    } else if (m_triedPutRotation == 90 || m_triedPutRotation == 270) {
+    }
+    else if (m_triedPutRotation == 90 || m_triedPutRotation == 270) {
         m_chartToX = m_chartFromX + pPosInfo->numY;
         m_chartToY = m_chartFromY + pPosInfo->numX;
     }
@@ -1568,18 +1571,18 @@ void CUVAtlasRepacker::GetChartPutPosition(uint32_t index)
 /***************************************************************************\
     Function Description:
         Put the current chart into the atlas.
-    
+
     Arguments:
         [in]	index	-	The index of chart to be put.
-    
-    Return Value:	
+
+    Return Value:
 \***************************************************************************/
 void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
 {
     GetChartPutPosition(index);
     if (!CheckAtlasRange()) return;
 
-    auto pPosInfo =  reinterpret_cast<_PositionInfo *>(&(m_ChartsInfo[index].PosInfo[m_triedRotate]));
+    auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(m_ChartsInfo[index].PosInfo[m_triedRotate]));
 
     XMMATRIX matrixRotate;
     matrixRotate = XMMatrixRotationZ(m_triedPutRotation / 180.0f * XM_PI);
@@ -1597,7 +1600,7 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
             for (int j = m_chartFromX; j < m_chartToX; j++)
                 if (m_UVBoard[size_t(i)][size_t(j)] != 1 && m_triedUVBoard[size_t(i - m_chartFromY)][size_t(j - m_chartFromX)])
                     m_UVBoard[size_t(i)][size_t(j)] =
-                        m_triedUVBoard[size_t(i - m_chartFromY)][size_t(j - m_chartFromX)];
+                    m_triedUVBoard[size_t(i - m_chartFromY)][size_t(j - m_chartFromX)];
         transMatrix = XMMatrixTranslation(
             m_PixelWidth * m_chartFromX - pPosInfo->basePoint.x,
             m_PixelWidth * m_chartFromY - pPosInfo->basePoint.y, 0.0f);
@@ -1607,7 +1610,7 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
             for (int j = m_chartFromX; j < m_chartToX; j++)
                 if (m_UVBoard[size_t(i)][size_t(j)] != 1 && m_triedUVBoard[size_t(m_chartToX - j - 1)][size_t(i - m_chartFromY)])
                     m_UVBoard[size_t(i)][size_t(j)] =
-                        m_triedUVBoard[size_t(m_chartToX - j - 1)][size_t(i - m_chartFromY)];
+                    m_triedUVBoard[size_t(m_chartToX - j - 1)][size_t(i - m_chartFromY)];
         transMatrix = XMMatrixTranslation(
             m_PixelWidth * m_chartToX - pPosInfo->basePoint.x,
             m_PixelWidth * m_chartFromY - pPosInfo->basePoint.y, 0.0f);
@@ -1617,7 +1620,7 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
             for (int j = m_chartFromX; j < m_chartToX; j++)
                 if (m_UVBoard[size_t(i)][size_t(j)] != 1 && m_triedUVBoard[size_t(m_chartToY - i - 1)][size_t(m_chartToX - j - 1)])
                     m_UVBoard[size_t(i)][size_t(j)] =
-                        m_triedUVBoard[size_t(m_chartToY - i - 1)][size_t(m_chartToX - j - 1)];
+                    m_triedUVBoard[size_t(m_chartToY - i - 1)][size_t(m_chartToX - j - 1)];
         transMatrix = XMMatrixTranslation(
             m_PixelWidth * m_chartToX - pPosInfo->basePoint.x,
             m_PixelWidth * m_chartToY - pPosInfo->basePoint.y, 0.0f);
@@ -1627,7 +1630,7 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
             for (int j = m_chartFromX; j < m_chartToX; j++)
                 if (m_UVBoard[size_t(i)][size_t(j)] != 1 && m_triedUVBoard[size_t(j - m_chartFromX)][size_t(m_chartToY - i - 1)])
                     m_UVBoard[size_t(i)][size_t(j)] =
-                        m_triedUVBoard[size_t(j - m_chartFromX)][size_t(m_chartToY - i - 1)];
+                    m_triedUVBoard[size_t(j - m_chartFromX)][size_t(m_chartToY - i - 1)];
         transMatrix = XMMatrixTranslation(
             m_PixelWidth * m_chartFromX - pPosInfo->basePoint.x,
             m_PixelWidth * m_chartToY - pPosInfo->basePoint.y, 0.0f);
@@ -1642,11 +1645,11 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
     Function Description:
         Update the distance between the atlas edges and the corresponding
         edges of newly created atlas.
-    
+
     Arguments:
-        [in]	direction	-	The side which need to be update.		
-    
-    Return Value:	
+        [in]	direction	-	The side which need to be update.
+
+    Return Value:
 \***************************************************************************/
 void CUVAtlasRepacker::UpdateSpaceInfo(int direction)
 {
@@ -1676,7 +1679,7 @@ void CUVAtlasRepacker::UpdateSpaceInfo(int direction)
             while (j < maxX && m_UVBoard[size_t(i)][size_t(j++)] == 0);
             m_SpaceInfo[UV_LEFTSIDE][size_t(i)] = j - minX - 1;
             j = maxX;
-            while (j > minX && m_UVBoard[size_t(i)][size_t(--j)] == 0);
+            while (j > minX&& m_UVBoard[size_t(i)][size_t(--j)] == 0);
             m_SpaceInfo[UV_RIGHTSIDE][size_t(i)] = maxX - j - 1;
         }
         break;
@@ -1684,13 +1687,13 @@ void CUVAtlasRepacker::UpdateSpaceInfo(int direction)
         if (m_toY < m_chartToY) {
             for (int i = m_fromX; i < m_chartFromX; i++)
                 m_SpaceInfo[UV_DOWNSIDE][size_t(i)] += m_chartToY - m_toY;
-            for (int i = m_chartToX; i < m_toX; i++) 
+            for (int i = m_chartToX; i < m_toX; i++)
                 m_SpaceInfo[UV_DOWNSIDE][size_t(i)] += m_chartToY - m_toY;
         }
         for (int i = m_chartFromX; i < m_chartToX; i++)
         {
             int j = maxY;
-            while (j > minY && m_UVBoard[size_t(--j)][size_t(i)] == 0);
+            while (j > minY&& m_UVBoard[size_t(--j)][size_t(i)] == 0);
             m_SpaceInfo[UV_DOWNSIDE][size_t(i)] = maxY - j - 1;
         }
         for (int i = m_chartFromY; i < m_chartToY; i++)
@@ -1699,9 +1702,9 @@ void CUVAtlasRepacker::UpdateSpaceInfo(int direction)
             while (j < maxX && m_UVBoard[size_t(i)][size_t(j++)] == 0);
             m_SpaceInfo[UV_LEFTSIDE][size_t(i)] = j - minX - 1;
             j = maxX;
-            while (j > minX && m_UVBoard[size_t(i)][size_t(--j)] == 0);
+            while (j > minX&& m_UVBoard[size_t(i)][size_t(--j)] == 0);
             m_SpaceInfo[UV_RIGHTSIDE][size_t(i)] = maxX - j - 1;
-        }		
+        }
         break;
     case UV_LEFTSIDE:
         if (m_chartFromX < m_fromX) {
@@ -1722,9 +1725,9 @@ void CUVAtlasRepacker::UpdateSpaceInfo(int direction)
             while (j < maxY && m_UVBoard[size_t(j++)][size_t(i)] == 0);
             m_SpaceInfo[UV_UPSIDE][size_t(i)] = j - minY - 1;
             j = maxY;
-            while (j > minY && m_UVBoard[size_t(--j)][size_t(i)] == 0);
+            while (j > minY&& m_UVBoard[size_t(--j)][size_t(i)] == 0);
             m_SpaceInfo[UV_DOWNSIDE][size_t(i)] = maxY - j - 1;
-        }	
+        }
         break;
     case UV_RIGHTSIDE:
         if (m_chartToX > m_toX) {
@@ -1736,7 +1739,7 @@ void CUVAtlasRepacker::UpdateSpaceInfo(int direction)
         for (int i = m_chartFromY; i < m_chartToY; i++)
         {
             int j = maxX;
-            while (j > minX && m_UVBoard[size_t(i)][size_t(--j)] == 0);
+            while (j > minX&& m_UVBoard[size_t(i)][size_t(--j)] == 0);
             m_SpaceInfo[UV_RIGHTSIDE][size_t(i)] = maxX - j - 1;
         }
         for (int i = m_chartFromX; i < m_chartToX; i++)
@@ -1745,9 +1748,9 @@ void CUVAtlasRepacker::UpdateSpaceInfo(int direction)
             while (j < maxY && m_UVBoard[size_t(j++)][size_t(i)] == 0);
             m_SpaceInfo[UV_UPSIDE][size_t(i)] = j - minY - 1;
             j = maxY;
-            while (j > minY && m_UVBoard[size_t(--j)][size_t(i)] == 0);
+            while (j > minY&& m_UVBoard[size_t(--j)][size_t(i)] == 0);
             m_SpaceInfo[UV_DOWNSIDE][size_t(i)] = maxY - j - 1;
-        }	
+        }
         break;
     }
 
@@ -1761,7 +1764,7 @@ void CUVAtlasRepacker::UpdateSpaceInfo(int direction)
 /***************************************************************************\
     Function Description:
         Normalize the result UV coordinates.
-    
+
     Arguments:
     Return Value:
 \***************************************************************************/
@@ -1776,19 +1779,19 @@ void CUVAtlasRepacker::Normalize()
 
     for (size_t i = 0; i < m_iNumCharts; i++)
     {
-        if (m_ChartsInfo[i].valid) 
+        if (m_ChartsInfo[i].valid)
         {
             matrix = XMLoadFloat4x4(&m_ResultMatrix[i]) * transMatrix * scalMatrix;
             XMVector2TransformCoordStream(
-                &m_VertexBuffer[m_AttrTable[i].VertexStart].uv, 
+                &m_VertexBuffer[m_AttrTable[i].VertexStart].uv,
                 VertexSize,
-                &m_VertexBuffer[m_AttrTable[i].VertexStart].uv, 
-                VertexSize, 
+                &m_VertexBuffer[m_AttrTable[i].VertexStart].uv,
+                VertexSize,
                 m_AttrTable[i].VertexCount,
                 matrix
-                );
-        } 
-        else 
+            );
+        }
+        else
         {
             for (size_t j = 0; j < m_AttrTable[i].VertexCount; j++)
             {
@@ -1802,9 +1805,9 @@ void CUVAtlasRepacker::Normalize()
 /***************************************************************************\
     Function Description:
         Output the result into user specified buffer.
-    
-    Arguments:	
-    Return Value:	
+
+    Arguments:
+    Return Value:
 \***************************************************************************/
 void CUVAtlasRepacker::OutPutPackResult()
 {
@@ -1816,21 +1819,21 @@ void CUVAtlasRepacker::OutPutPackResult()
 
     // copy the new UV coordinates from our vertex buffer to the original 
     // vertex buffer according to the original vertex order
-    auto pVB = reinterpret_cast<uint8_t*>( m_pvVertexBuffer->data() );
+    auto pVB = reinterpret_cast<uint8_t*>(m_pvVertexBuffer->data());
     for (size_t i = 0; i < m_IndexPartition.size(); i++)
     {
         // handle the situation when the chart has only one vertex.
         // we just move all these vertex UV into coordinates (0, 0)
         if (m_IndexPartition[i] == uint32_t(-1))
         {
-            auto pp = reinterpret_cast<float *>(pVB + i * m_iNumBytesPerVertex);
+            auto pp = reinterpret_cast<float*>(pVB + i * m_iNumBytesPerVertex);
             *pp = 0;
             *(pp + 1) = 0;
             *(pp + 2) = 0;
             continue;
         }
 
-        memcpy(pVB + i * m_iNumBytesPerVertex + m_TexCoordOffset, 
+        memcpy(pVB + i * m_iNumBytesPerVertex + m_TexCoordOffset,
             reinterpret_cast<uint8_t*>(&(m_VertexBuffer[m_IndexPartition[i]].uv)),
             sizeof(XMFLOAT2));
     }
@@ -1841,7 +1844,7 @@ void CUVAtlasRepacker::OutPutPackResult()
 Function Description:
 Return the area of specified chart
 
-Arguments:	
+Arguments:
 index	:	the index of chart
 
 Return Value:
@@ -1855,10 +1858,10 @@ float CUVAtlasRepacker::GetChartArea(uint32_t index) const
 
     for (size_t i = m_AttrTable[index].FaceStart; i < faceEnd; i++)
     {
-        const XMFLOAT2 *p1 = &m_VertexBuffer[m_IndexPartition[m_IndexBuffer[3 * i]]].uv;
-        const XMFLOAT2 *p2 = &m_VertexBuffer[m_IndexPartition[m_IndexBuffer[3 * i + 1]]].uv;
-        const XMFLOAT2 *p3 = &m_VertexBuffer[m_IndexPartition[m_IndexBuffer[3 * i + 2]]].uv;
-        currArea = fabsf((p1->x - p3->x)*(p2->y - p3->y) - (p2->x - p3->x)*(p1->y - p3->y)) / 2;
+        const XMFLOAT2* p1 = &m_VertexBuffer[m_IndexPartition[m_IndexBuffer[3 * i]]].uv;
+        const XMFLOAT2* p2 = &m_VertexBuffer[m_IndexPartition[m_IndexBuffer[3 * i + 1]]].uv;
+        const XMFLOAT2* p3 = &m_VertexBuffer[m_IndexPartition[m_IndexBuffer[3 * i + 2]]].uv;
+        currArea = fabsf((p1->x - p3->x) * (p2->y - p3->y) - (p2->x - p3->x) * (p1->y - p3->y)) / 2;
         Area += currArea;
     }
 
@@ -1868,15 +1871,15 @@ float CUVAtlasRepacker::GetChartArea(uint32_t index) const
 /***************************************************************************\
     Function Description:
         Compute the total area of all the charts.
-    
-    Arguments:	
-    Return Value:	
+
+    Arguments:
+    Return Value:
 \***************************************************************************/
 template <class T>
 float CUVAtlasRepacker::GetTotalArea() const
 {
-    auto pVB = reinterpret_cast<const uint8_t*>( m_pvVertexBuffer->data() );
-    auto pIB = reinterpret_cast<const uint8_t*>( m_pvIndexBuffer->data() );
+    auto pVB = reinterpret_cast<const uint8_t*>(m_pvVertexBuffer->data());
+    auto pIB = reinterpret_cast<const uint8_t*>(m_pvIndexBuffer->data());
 
     float Area = 0;
     for (size_t i = 0; i < m_iNumFaces; i++)
@@ -1894,19 +1897,19 @@ float CUVAtlasRepacker::GetTotalArea() const
 /***************************************************************************\
     Function Description:
         Do tessellation on every charts we found.
-    
+
     Arguments:
         [in]	ChartIndex	-	The index of chart into the m_ChartsInfo.
         [in]	AngleIndex	-	Specify the angle the chart is rotated.
-            
+
     Return Value:
         TRUE if success;
-        FALSE otherwise.	
+        FALSE otherwise.
 \***************************************************************************/
 bool CUVAtlasRepacker::DoTessellation(uint32_t ChartIndex, size_t AngleIndex)
 {
-    auto pCInfo = reinterpret_cast<ChartsInfo *>(&(m_ChartsInfo[ChartIndex]));
-    auto pPosInfo = reinterpret_cast<_PositionInfo *>(&(pCInfo->PosInfo[AngleIndex]));
+    auto pCInfo = reinterpret_cast<ChartsInfo*>(&(m_ChartsInfo[ChartIndex]));
+    auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(pCInfo->PosInfo[AngleIndex]));
 
     int numX = pPosInfo->numX;
     int numY = pPosInfo->numY;
@@ -1924,15 +1927,15 @@ bool CUVAtlasRepacker::DoTessellation(uint32_t ChartIndex, size_t AngleIndex)
     for (size_t i = 0; i < pPosInfo->edges.size(); i++)
     {
         // get one edge, it is constituted by two points
-        XMFLOAT2 *p1 = &(pPosInfo->edges[i].p1);
-        XMFLOAT2 *p2 = &(pPosInfo->edges[i].p2);
-        XMFLOAT2 *pMinP = &(pPosInfo->edges[i].minP);
-        XMFLOAT2 *pMaxP = &(pPosInfo->edges[i].maxP);
+        XMFLOAT2* p1 = &(pPosInfo->edges[i].p1);
+        XMFLOAT2* p2 = &(pPosInfo->edges[i].p2);
+        XMFLOAT2* pMinP = &(pPosInfo->edges[i].minP);
+        XMFLOAT2* pMaxP = &(pPosInfo->edges[i].maxP);
 
         // find the edge's bounding box
         // the intersection test will be made in the bounding box range
         int fromX = int(floorf((pMinP->x - minP.x) / m_PixelWidth));
-        int toX = int(ceilf((pMaxP->x  - minP.x) / m_PixelWidth));
+        int toX = int(ceilf((pMaxP->x - minP.x) / m_PixelWidth));
         int fromY = int(floorf((pMinP->y - minP.y) / m_PixelWidth));
         int toY = int(ceilf((pMaxP->y - minP.y) / m_PixelWidth));
 
@@ -1953,7 +1956,7 @@ bool CUVAtlasRepacker::DoTessellation(uint32_t ChartIndex, size_t AngleIndex)
                 numgrid += 2;
             }
             continue;
-        } 
+        }
         else if (toY - fromY <= 1)
         {
             m = int(floorf((p1->y - minP.y) / m_PixelWidth));
@@ -1963,7 +1966,7 @@ bool CUVAtlasRepacker::DoTessellation(uint32_t ChartIndex, size_t AngleIndex)
                 m_currChartUVBoard[size_t(m + m_iGutter)][size_t(n + m_iGutter - 1)] = 1;
                 numgrid += 2;
             }
-            continue;		
+            continue;
         }
 
         float slope = (p2->y - p1->y) / (p2->x - p1->x);
@@ -2013,14 +2016,14 @@ bool CUVAtlasRepacker::DoTessellation(uint32_t ChartIndex, size_t AngleIndex)
     Function Description:
         Grow the specified chart by the length of gutter to make the chart
         will not be too close.
-    
+
     Arguments:
         [in]	chartindex	-	The index of chart into the m_ChartsInfo.
         [in]	angleindex	-	Specify the angle the chart is rotated.
-        [in]	layer		-	Specify the layer needed to grow. Actually 
-                                it is gutter.	
+        [in]	layer		-	Specify the layer needed to grow. Actually
+                                it is gutter.
 
-    Return Value:	
+    Return Value:
 \***************************************************************************/
 void CUVAtlasRepacker::GrowChart(uint32_t chartindex, size_t angleindex, int layer)
 {
@@ -2036,16 +2039,16 @@ void CUVAtlasRepacker::GrowChart(uint32_t chartindex, size_t angleindex, int lay
                 {
                     for (int j = -1; j < 2; j++)
                     {
-                        if ( (ptrdiff_t(m)+j) < 0 || (m + size_t(j)) >= m_currChartUVBoard.size() )
+                        if ((ptrdiff_t(m) + j) < 0 || (m + size_t(j)) >= m_currChartUVBoard.size())
                             continue;
 
                         for (int k = -1; k < 2; k++)
                         {
-                            if ( (ptrdiff_t(n)+k) < 0 || (n + size_t(k)) >= m_currChartUVBoard[m + size_t(j)].size() )
+                            if ((ptrdiff_t(n) + k) < 0 || (n + size_t(k)) >= m_currChartUVBoard[m + size_t(j)].size())
                                 continue;
 
                             if (m_currChartUVBoard[m + size_t(j)][n + size_t(k)] == 0)
-                                m_currChartUVBoard[m + size_t(j)][n + size_t(k)] = static_cast<uint8_t>( i + 2 );
+                                m_currChartUVBoard[m + size_t(j)][n + size_t(k)] = static_cast<uint8_t>(i + 2);
                         }
                     }
                 }

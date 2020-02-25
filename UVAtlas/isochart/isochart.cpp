@@ -153,7 +153,7 @@ namespace
 //		E_INVALIDARG, Passed invalid argument
 //		E_FAIL, Exceptional errors
 
-    
+
 HRESULT Isochart::isochart(
     const void* pVertexArray,
     size_t VertexCount,
@@ -174,7 +174,7 @@ HRESULT Isochart::isochart(
     size_t* pChartNumberOut,
     float* pMaxStretchOut,
     LPISOCHARTCALLBACK pCallback,
-    float Frequency,  
+    float Frequency,
     unsigned int dwOptions)
 {
     // 1. Check input parameter
@@ -220,7 +220,7 @@ HRESULT Isochart::isochart(
     if (pCallback)
     {
         if (FAILED(hr = pEngine->SetCallback(
-            pCallback, 
+            pCallback,
             Frequency)))
         {
             goto LEnd;
@@ -229,13 +229,13 @@ HRESULT Isochart::isochart(
 
     // 4. Initialize isochart engine
     if (FAILED(hr = pEngine->Initialize(
-        pVertexArray, 
-        VertexCount, 
-        VertexStride, 
-        IndexFormat, 
-        pFaceIndexArray, 
-        FaceCount, 
-        pIMTArray, 
+        pVertexArray,
+        VertexCount,
+        VertexStride,
+        IndexFormat,
+        pFaceIndexArray,
+        FaceCount,
+        pIMTArray,
         pOriginalAjacency,
         nullptr,
         dwOptions)))
@@ -246,29 +246,29 @@ HRESULT Isochart::isochart(
     // 5. Partition
     dwChartNumberOut = 0;
     if (FAILED(hr = pEngine->Partition(
-            MaxChartNumber, 
-            Stretch, 
-            dwChartNumberOut, 
-            fMaxChartStretchOut, 
-            nullptr)))
+        MaxChartNumber,
+        Stretch,
+        dwChartNumberOut,
+        fMaxChartStretchOut,
+        nullptr)))
     {
         goto LEnd;
     }
 
     // 6. Pack charts to UV-atlas
     if (FAILED(hr = pEngine->Pack(
-            Width,
-            Height,
-            Gutter,
-            pFaceIndexArray,
-            pvVertexArrayOut,
-            pvFaceIndexArrayOut,
-            pvVertexRemapArrayOut,
-            nullptr)))
+        Width,
+        Height,
+        Gutter,
+        pFaceIndexArray,
+        pvVertexArrayOut,
+        pvFaceIndexArrayOut,
+        pvVertexRemapArrayOut,
+        nullptr)))
     {
         goto LEnd;
     }
-    
+
 LEnd:
 
     // 7. Free resources of isochart engine
@@ -315,10 +315,10 @@ HRESULT Isochart::isochartpartition(
 {
     unsigned int dwTotalStage = STAGE_TOTAL(Stage);
     unsigned int dwDoneStage = STAGE_DONE(Stage);
-        
+
     DPF(0, "Vertex Number:%zu\n", VertexCount);
     DPF(0, "Face Number:%zu\n", FaceCount);
-        
+
     // 2. Create isochart engine
     auto pEngine = IIsochartEngine::CreateIsochartEngine();
     if (!pEngine)
@@ -346,28 +346,28 @@ HRESULT Isochart::isochartpartition(
 
     // 4. Initialize isochart engine
     if (FAILED(hr = pEngine->Initialize(
-            pVertexArray, 
-            VertexCount, 
-            VertexStride, 
-            IndexFormat, 
-            pFaceIndexArray, 
-            FaceCount, 
-            pIMTArray, 
-            pOriginalAjacency,
-            pSplitHint,
-            dwOptions)))
+        pVertexArray,
+        VertexCount,
+        VertexStride,
+        IndexFormat,
+        pFaceIndexArray,
+        FaceCount,
+        pIMTArray,
+        pOriginalAjacency,
+        pSplitHint,
+        dwOptions)))
     {
         goto LEnd;
-    }				
-    pEngine->SetStage(dwTotalStage, dwDoneStage+1);
-        
+    }
+    pEngine->SetStage(dwTotalStage, dwDoneStage + 1);
+
     // 5. Partition
     if (FAILED(hr = pEngine->Partition(
-            MaxChartNumber,
-            Stretch,
-            dwChartNumberOut,
-            fMaxChartStretchOut,
-            nullptr)))
+        MaxChartNumber,
+        Stretch,
+        dwChartNumberOut,
+        fMaxChartStretchOut,
+        nullptr)))
     {
         goto LEnd;
     }
@@ -375,12 +375,12 @@ HRESULT Isochart::isochartpartition(
     // 6. Export Partition Result
     hr = pEngine->ExportPartitionResult(
         pvVertexArrayOut,
-        pvFaceIndexArrayOut, 
-        pvVertexRemapArrayOut, 
+        pvFaceIndexArrayOut,
+        pvVertexRemapArrayOut,
         pvAttributeIDOut,
         pvAdjacencyOut);
 
-    pEngine->SetStage(dwTotalStage, dwDoneStage+1);
+    pEngine->SetStage(dwTotalStage, dwDoneStage + 1);
 LEnd:
 
     // 7. Free resources of isochart engine

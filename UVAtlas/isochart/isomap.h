@@ -19,16 +19,16 @@ namespace Isochart
 
         HRESULT Init(
             size_t dwDimension,
-            float *pfGeodesicMatrix);
+            float* pfGeodesicMatrix);
 
         void Clear();
-        
+
         HRESULT ComputeLargestEigen(
             size_t dwSelectedDimension,	 // How many largest eigen values & vectors want to compute
-            size_t &dwCalculatedDimension);	 // How man largest eigen values & vectos have been computed.
+            size_t& dwCalculatedDimension);	 // How man largest eigen values & vectos have been computed.
 
         HRESULT GetPrimaryEnergyDimension(
-            float fEnergyPercent,	
+            float fEnergyPercent,
             size_t& dwPrimaryEnergyDimension);
 
 
@@ -37,9 +37,9 @@ namespace Isochart
             float* pfDestCoord);
 
         const float* GetEigenValue() const { return m_pfEigenValue; }
-        const float* GetEigenVector() const{ return m_pfEigenVector; }
-        const float* GetAverageColumn() const{ return m_pfAvgSquaredDstColumn;}
-        size_t GetCalculatedDimension() const{ return m_dwCalculatedDimension; }
+        const float* GetEigenVector() const { return m_pfEigenVector; }
+        const float* GetAverageColumn() const { return m_pfAvgSquaredDstColumn; }
+        size_t GetCalculatedDimension() const { return m_dwCalculatedDimension; }
     private:
         size_t m_dwMatrixDimension;
         size_t  m_dwCalculatedDimension;

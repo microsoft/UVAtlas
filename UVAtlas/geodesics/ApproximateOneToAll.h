@@ -17,6 +17,6 @@ namespace GeodesicDist
     class CApproximateOneToAll : public CExactOneToAll
     {
     private:
-        virtual void CutHeapTopData( EdgeWindow &EdgeWindowOut ) override;
+        virtual void CutHeapTopData(EdgeWindow& EdgeWindowOut) override;
     };
 }

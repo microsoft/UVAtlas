@@ -17,29 +17,29 @@ class _ReverseComparison
 public:
     _ReverseComparison()
     {
-        memset( &m_data, 0, sizeof(_Ty1) ) ;
+        memset(&m_data, 0, sizeof(_Ty1));
     }
-    _ReverseComparison( const _Ty1 &R )
+    _ReverseComparison(const _Ty1& R)
     {
-        m_data = R ;
+        m_data = R;
     }
 
-    _ReverseComparison &operator=( const _ReverseComparison &R )
+    _ReverseComparison& operator=(const _ReverseComparison& R)
     {
-        m_data = R.m_data ;
-        return *this ;
+        m_data = R.m_data;
+        return *this;
     }
-    bool operator>( const _ReverseComparison &R )
+    bool operator>(const _ReverseComparison& R)
     {
-        return m_data < R.m_data ;
+        return m_data < R.m_data;
     }
-    bool operator<( const _ReverseComparison &R )
+    bool operator<(const _ReverseComparison& R)
     {
-        return m_data > R.m_data ;
+        return m_data > R.m_data;
     }
 
 private:
-    _Ty1 m_data ;
+    _Ty1 m_data;
 };
 
 // the CMinHeap is actually a CMaxHeap, except the first template parameter is wrapped by _ReverseComparison

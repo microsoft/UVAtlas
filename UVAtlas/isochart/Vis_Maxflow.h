@@ -13,14 +13,14 @@
 Notes:
     1. If you know the number of nodes and edges, call ReserveMemory to
         improve the speed of graph construction
-     
+
 Usage:
     1. Use AddNode() to allocate nodes in graph
     2. Use AddEdge(node_id, node_id, cap_type, cap_type) to add n-links.
     3. Use SetTweights(node_id, cap_type, cap_type) to set the t-links
     4. Call compute MaxFlow() to compute s-t maxflow problem
     5. Call GetNode(id).to_s() to get the result label of node id.
-    6. [optional] Call GetFlow() to access the final maxflow result. 
+    6. [optional] Call GetFlow() to access the final maxflow result.
 */
 
 #pragma once
@@ -41,12 +41,12 @@ namespace Isochart
 
         typedef int node_id;
 
-        static node_id invalid_node_id() { return -1;}
+        static node_id invalid_node_id() { return -1; }
 
     protected:
         typedef int edge_id;
 
-        static edge_id invalid_edge_id() { return -1;}
+        static edge_id invalid_edge_id() { return -1; }
 
         static const node_id node_t = -10;
         static const node_id node_s = -11;
@@ -97,7 +97,7 @@ namespace Isochart
         // the main algorithm
         void ComputeMaxFlow()
         {
-            assert( m_nodeNumber == nodes.size());
+            assert(m_nodeNumber == nodes.size());
             Initialization();
             while (FindAugmentPath())
             {
@@ -108,13 +108,13 @@ namespace Isochart
 
         // test the given node label, after ComputeMaxFlow
         // return true if the given node is to s.
-        bool TestToS(node_id id) const { return nodes[size_t(id)].to_s();}
+        bool TestToS(node_id id) const { return nodes[size_t(id)].to_s(); }
 
         // return true if the given node is to t.
-        bool TestToT(node_id id) const { return nodes[size_t(id)].to_t();}
+        bool TestToT(node_id id) const { return nodes[size_t(id)].to_t(); }
 
         // access the final flow result
-        flow_type GetFlow() const { return current_flow;}
+        flow_type GetFlow() const { return current_flow; }
 
     protected:
         void Initialization();
@@ -139,7 +139,7 @@ namespace Isochart
             active_list.push(nid);
         }
 
-        void mark_orphan(node_id nid) { orphan_list.push(nid);}
+        void mark_orphan(node_id nid) { orphan_list.push(nid); }
 
         std::queue<node_id> active_list;
         std::queue<node_id> orphan_list;
@@ -168,24 +168,24 @@ namespace Isochart
 
             cap_type capacity;
             cap_type resident; // resident > 0 to s; or < 0 to t;
-            
+
             // the edges from this node to the n1 one
             std::vector<edge_id> edges;
 
-            void set_to_s() { m_iFlag = TO_S;}
-            void set_to_t() { m_iFlag = TO_T;}
-            void set_free() { m_iFlag = FREE;}
-            bool to_s()    const { return m_iFlag == TO_S;}
-            bool to_t()    const { return m_iFlag == TO_T;}
-            bool is_free() const { return m_iFlag == FREE;}
+            void set_to_s() { m_iFlag = TO_S; }
+            void set_to_t() { m_iFlag = TO_T; }
+            void set_free() { m_iFlag = FREE; }
+            bool to_s()    const { return m_iFlag == TO_S; }
+            bool to_t()    const { return m_iFlag == TO_T; }
+            bool is_free() const { return m_iFlag == FREE; }
 
             bool on_same_tree(const Node& q) const
             {
-                return !is_free() &&(m_iFlag == q.m_iFlag);
+                return !is_free() && (m_iFlag == q.m_iFlag);
             }
 
             void set_no_parent()
-            { 
+            {
                 parent_node = no_parent;
                 parent_edge = no_parent;
                 depth = 0;
@@ -205,18 +205,18 @@ namespace Isochart
                 depth = 1;
             }
 
-            void set_parent_node(node_id n) { parent_node = n;}
-            node_id get_parent_node() const { return parent_node;}
+            void set_parent_node(node_id n) { parent_node = n; }
+            node_id get_parent_node() const { return parent_node; }
 
-            void set_parent_edge(edge_id n) { parent_edge = n;}
-            edge_id get_parent_edge() const { return parent_edge;}
+            void set_parent_edge(edge_id n) { parent_edge = n; }
+            edge_id get_parent_edge() const { return parent_edge; }
 
             void next_level_of(const Node& n)
             {
                 depth = n.depth + 1;
             }
 
-            int get_depth() const { return depth;}
+            int get_depth() const { return depth; }
 
             static size_t m_expect_degree;
 
@@ -228,7 +228,7 @@ namespace Isochart
             typedef int FLAG;
             FLAG m_iFlag;
             int depth;   // distanst to either s or t
-            
+
 
             static const FLAG FREE = 0;
             static const FLAG TO_S = 1;

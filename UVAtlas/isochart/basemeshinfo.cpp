@@ -19,7 +19,7 @@ namespace
     const float ISOCHART_MODELSCALE = 500.0f;
 }
 
-CBaseMeshInfo::CBaseMeshInfo():
+CBaseMeshInfo::CBaseMeshInfo() :
     pVertexArray(nullptr),
     dwVertexCount(0),
     dwVertexStride(0),
@@ -58,45 +58,45 @@ HRESULT CBaseMeshInfo::Initialize(
     size_t dwFaceCountIn,
     const FLOAT3* pfIMTArrayIn,
     const uint32_t* pdwFaceAdjacentArrayIn,
-    const uint32_t*pdwSplitHintIn)
+    const uint32_t* pdwSplitHintIn)
 {
     HRESULT hr;
 
     assert(pfVertexArrayIn != nullptr);
     assert(pdwFaceIndexArrayIn != nullptr);
-    assert(dwVertexStrideIn >= sizeof(float)*3);
+    assert(dwVertexStrideIn >= sizeof(float) * 3);
     assert(
         (DXGI_FORMAT_R16_UINT == IndexFormatIn) ||
         (DXGI_FORMAT_R32_UINT == IndexFormatIn));
-    
+
     pVertexArray = pfVertexArrayIn;
     dwVertexCount = dwVertexCountIn;
     dwVertexStride = dwVertexStrideIn;
-    pdwOriginalFaceAdjacentArray = pdwFaceAdjacentArrayIn ;
-    
+    pdwOriginalFaceAdjacentArray = pdwFaceAdjacentArrayIn;
+
     dwFaceCount = dwFaceCountIn;
     IndexFormat = IndexFormatIn;
 
     pfIMTArray = pfIMTArrayIn;
     pdwSplitHint = pdwSplitHintIn;
-    
-    if (FAILED(hr=CopyAndScaleInputVertices()))
+
+    if (FAILED(hr = CopyAndScaleInputVertices()))
     {
         goto LFail;
     }
 
     if (DXGI_FORMAT_R16_UINT == IndexFormat)
     {
-        hr=ComputeInputFaceAttributes<uint16_t>(
+        hr = ComputeInputFaceAttributes<uint16_t>(
             pdwFaceIndexArrayIn,
             pdwFaceAdjacentArrayIn);
     }
     else
     {
-        hr=ComputeInputFaceAttributes<uint32_t>(
+        hr = ComputeInputFaceAttributes<uint32_t>(
             pdwFaceIndexArrayIn,
             pdwFaceAdjacentArrayIn);
-    }	
+    }
     if (FAILED(hr))
     {
         goto LFail;
@@ -117,17 +117,17 @@ HRESULT CBaseMeshInfo::Initialize(
     const uint32_t* pdwFaceAdjacentArrayIn)
 {
     assert(pfVertexArrayIn != nullptr);
-    assert(dwVertexStrideIn >= sizeof(float)*3);
-    
+    assert(dwVertexStrideIn >= sizeof(float) * 3);
+
     pVertexArray = pfVertexArrayIn;
     dwVertexCount = dwVertexCountIn;
     dwVertexStride = dwVertexStrideIn;
     dwFaceCount = dwFaceCountIn;
-    pdwOriginalFaceAdjacentArray = pdwFaceAdjacentArrayIn ;
+    pdwOriginalFaceAdjacentArray = pdwFaceAdjacentArrayIn;
 
     if (pdwFaceAdjacentArrayIn)
     {
-        pdwFaceAdjacentArray = new (std::nothrow) uint32_t[3*dwFaceCount];
+        pdwFaceAdjacentArray = new (std::nothrow) uint32_t[3 * dwFaceCount];
         if (!pdwFaceAdjacentArray)
         {
             Free();
@@ -137,7 +137,7 @@ HRESULT CBaseMeshInfo::Initialize(
         memcpy(
             pdwFaceAdjacentArray,
             pdwFaceAdjacentArrayIn,
-            3*dwFaceCount*sizeof(uint32_t));
+            3 * dwFaceCount * sizeof(uint32_t));
         bIsFaceAdjacenctArrayReady = true;
     }
 
@@ -147,14 +147,14 @@ HRESULT CBaseMeshInfo::Initialize(
 void CBaseMeshInfo::Free()
 {
     SAFE_DELETE_ARRAY(pVertPosition)
-    SAFE_DELETE_ARRAY(pFaceNormalArray)
-    SAFE_DELETE_ARRAY(pfFaceAreaArray)
-    SAFE_DELETE_ARRAY(pdwFaceAdjacentArray)
-    SAFE_DELETE_ARRAY(pFaceCanonicalUVCoordinate)
-    SAFE_DELETE_ARRAY(pFaceCanonicalParamAxis)
-    
-    pfIMTArray = nullptr;
-    
+        SAFE_DELETE_ARRAY(pFaceNormalArray)
+        SAFE_DELETE_ARRAY(pfFaceAreaArray)
+        SAFE_DELETE_ARRAY(pdwFaceAdjacentArray)
+        SAFE_DELETE_ARRAY(pFaceCanonicalUVCoordinate)
+        SAFE_DELETE_ARRAY(pFaceCanonicalParamAxis)
+
+        pfIMTArray = nullptr;
+
     dwVertexCount = 0;
     dwFaceCount = 0;
     fBoxDiagLen = 0;
@@ -172,26 +172,26 @@ HRESULT CBaseMeshInfo::CopyAndScaleInputVertices()
     }
 
     XMFLOAT3 vMinCoords(
-        FLT_MAX, 
-        FLT_MAX, 
+        FLT_MAX,
+        FLT_MAX,
         FLT_MAX);
 
     XMFLOAT3 vMaxCoords(
-        -FLT_MAX, 
-        -FLT_MAX, 
+        -FLT_MAX,
+        -FLT_MAX,
         -FLT_MAX);
-        
+
 
     float* pfMaxVector = &vMaxCoords.x;
     float* pfMinVector = &vMinCoords.x;
-    
-    auto pVertexBuffer = static_cast<uint8_t*>(const_cast<void *>(pVertexArray));
+
+    auto pVertexBuffer = static_cast<uint8_t*>(const_cast<void*>(pVertexArray));
     float* pVertexCoord = nullptr;
-    
-    for (size_t i=0; i<dwVertexCount; i++)
+
+    for (size_t i = 0; i < dwVertexCount; i++)
     {
-        pVertexCoord= reinterpret_cast<float*>(pVertexBuffer);
-        for (size_t j=0; j<3; j++)
+        pVertexCoord = reinterpret_cast<float*>(pVertexBuffer);
+        for (size_t j = 0; j < 3; j++)
         {
             if (pfMinVector[j] > pVertexCoord[j])
             {
@@ -201,42 +201,42 @@ HRESULT CBaseMeshInfo::CopyAndScaleInputVertices()
             {
                 pfMaxVector[j] = pVertexCoord[j];
             }
-            
+
         }
         pVertexBuffer += dwVertexStride;
     }
 
     XMFLOAT3 vCenter;
-    vCenter.x = (vMinCoords.x+vMaxCoords.x)/2.0f;
-    vCenter.y = (vMinCoords.y+vMaxCoords.y)/2.0f;
-    vCenter.z = (vMinCoords.z+vMaxCoords.z)/2.0f;
+    vCenter.x = (vMinCoords.x + vMaxCoords.x) / 2.0f;
+    vCenter.y = (vMinCoords.y + vMaxCoords.y) / 2.0f;
+    vCenter.z = (vMinCoords.z + vMaxCoords.z) / 2.0f;
     XMVECTOR vvCenter = XMLoadFloat3(&vCenter);
-    
+
     float scale = 1.0f;
 
-    
+
     scale = std::max(vMaxCoords.x - vMinCoords.x,
-            std::max(vMaxCoords.y - vMinCoords.y, vMaxCoords.z - vMinCoords.z));
+        std::max(vMaxCoords.y - vMinCoords.y, vMaxCoords.z - vMinCoords.z));
 
     // either all vertices are the same or there are NaN's involved, just keep
     // the same scale in this case
-    if( scale <= 0.0f )
+    if (scale <= 0.0f)
         scale = 1.0f;
 
     scale = ISOCHART_MODELSCALE / scale;
 
     DPF(0, "Scale factor is %f", double(scale));
-    pVertexBuffer = static_cast<uint8_t*>(const_cast<void *>(pVertexArray));
-    pVertexCoord= nullptr;
+    pVertexBuffer = static_cast<uint8_t*>(const_cast<void*>(pVertexArray));
+    pVertexCoord = nullptr;
 
-    for (size_t i=0; i<dwVertexCount; i++)
+    for (size_t i = 0; i < dwVertexCount; i++)
     {
-        pVertexCoord= static_cast<float*>(static_cast<void*>(pVertexBuffer));
+        pVertexCoord = static_cast<float*>(static_cast<void*>(pVertexBuffer));
         XMVECTOR vVertPos = XMVectorSet(pVertexCoord[0], pVertexCoord[1], pVertexCoord[2], 0);
         vVertPos -= vvCenter;
         vVertPos *= scale;
         XMStoreFloat3(&pVertPosition[i], vVertPos);
-        
+
         pVertexBuffer += dwVertexStride;
     }
 
@@ -258,7 +258,7 @@ HRESULT CBaseMeshInfo::ComputeInputFaceAttributes(
     const uint32_t* pdwFaceAdjacentArrayIn)
 {
     assert(pdwFaceIndexArrayIn != nullptr);
-    
+
     pFaceNormalArray = new (std::nothrow) XMFLOAT3[dwFaceCount];
     if (!pFaceNormalArray)
     {
@@ -286,7 +286,7 @@ HRESULT CBaseMeshInfo::ComputeInputFaceAttributes(
         pFaceCanonicalUVCoordinate = new (std::nothrow) XMFLOAT2[3 * dwFaceCount];
         if (!pFaceCanonicalUVCoordinate)
         {
-            Free();		
+            Free();
             return E_OUTOFMEMORY;
         }
 
@@ -303,10 +303,10 @@ HRESULT CBaseMeshInfo::ComputeInputFaceAttributes(
 
     // Compute the normal and area of each face
     const INDEXTYPE* pFace
-        = static_cast<INDEXTYPE*>(const_cast<void* >(pdwFaceIndexArrayIn));
+        = static_cast<INDEXTYPE*>(const_cast<void*>(pdwFaceIndexArrayIn));
     fMeshArea = 0;
 
-    for (size_t i=0; i<dwFaceCount; i++)
+    for (size_t i = 0; i < dwFaceCount; i++)
     {
         XMVECTOR v0 = XMLoadFloat3(&pVertPosition[pFace[1]])
             - XMLoadFloat3(&pVertPosition[pFace[0]]);
@@ -320,19 +320,19 @@ HRESULT CBaseMeshInfo::ComputeInputFaceAttributes(
 
         pfFaceAreaArray[i] = area * 0.5f;
         fMeshArea += pfFaceAreaArray[i];
-        if ( area > 0.f )
+        if (area > 0.f)
             vFaceNormal /= area;
         XMStoreFloat3(pFaceNormal, vFaceNormal);
 
         if (pFaceCanonicalUVCoordinate)
         {
             CaculateCanonicalCoordinates(
-                pVertPosition+pFace[0],
-                pVertPosition+pFace[1],
-                pVertPosition+pFace[2],
+                pVertPosition + pFace[0],
+                pVertPosition + pFace[1],
+                pVertPosition + pFace[2],
                 pCoordinate,
-                pCoordinate+1,
-                pCoordinate+2,
+                pCoordinate + 1,
+                pCoordinate + 2,
                 pAxis);
 
             pCoordinate += 3;
@@ -346,7 +346,7 @@ HRESULT CBaseMeshInfo::ComputeInputFaceAttributes(
         memcpy(
             pdwFaceAdjacentArray,
             pdwFaceAdjacentArrayIn,
-            3 * dwFaceCount*sizeof(uint32_t));
+            3 * dwFaceCount * sizeof(uint32_t));
         bIsFaceAdjacenctArrayReady = true;
     }
     return S_OK;

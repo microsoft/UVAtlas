@@ -15,59 +15,59 @@ namespace Isochart
 {
     class CGraphcut
     {
-        public:
-            typedef int NODEHANDLE;
+    public:
+        typedef int NODEHANDLE;
 
-            CGraphcut();
-            ~CGraphcut();
+        CGraphcut();
+        ~CGraphcut();
 
-            HRESULT InitGraph(
-                size_t dwNodeNumber)
-            { 
-                if (!graph.InitGraphCut(dwNodeNumber, 0, 6))
-                {
-                    return E_OUTOFMEMORY;
-                }
-                return S_OK;
+        HRESULT InitGraph(
+            size_t dwNodeNumber)
+        {
+            if (!graph.InitGraphCut(dwNodeNumber, 0, 6))
+            {
+                return E_OUTOFMEMORY;
             }
-            
-            NODEHANDLE AddNode();
-            NODEHANDLE AddNode(
-                float fSourceWeight, 
-                float fSinkWeight);
+            return S_OK;
+        }
 
-            HRESULT AddEges(
-                NODEHANDLE hFromNode, 
-                NODEHANDLE hToNode, 
-                float fWeight, 
-                float fReverseWeight);
-            
-            HRESULT SetWeights(
-                NODEHANDLE hNode, 
-                float fSourceWeight, 
-                float fSinkWeight);
-            
-            HRESULT CutGraph(float& fMaxflow);
+        NODEHANDLE AddNode();
+        NODEHANDLE AddNode(
+            float fSourceWeight,
+            float fSinkWeight);
 
-            bool IsInSourceDomain(
-                NODEHANDLE hNode);
+        HRESULT AddEges(
+            NODEHANDLE hFromNode,
+            NODEHANDLE hToNode,
+            float fWeight,
+            float fReverseWeight);
 
-            void Clear();
+        HRESULT SetWeights(
+            NODEHANDLE hNode,
+            float fSourceWeight,
+            float fSinkWeight);
 
-        private:
-            struct NODE
-            {
-                bool bIsInSourceDomain;
-                float fWeight;
-            };
+        HRESULT CutGraph(float& fMaxflow);
 
-            struct EDGE
-            {
-                float fWeight;
-            };
+        bool IsInSourceDomain(
+            NODEHANDLE hNode);
+
+        void Clear();
+
+    private:
+        struct NODE
+        {
+            bool bIsInSourceDomain;
+            float fWeight;
+        };
+
+        struct EDGE
+        {
+            float fWeight;
+        };
 
 
-            CMaxFlow graph;
-            
+        CMaxFlow graph;
+
     };
 }

@@ -268,16 +268,16 @@ namespace
 
                     fT = (intersection.x - x0) / (x1 - x0);
                     fS = (intersection.x - x3) / (x4 - x3);
-                    intersection.y = y0 + fT*(y1 - y0);
+                    intersection.y = y0 + fT * (y1 - y0);
 
                     return;
                 }
             }
             else // 3. two Lines are not parallel, resolve the original equation to get fT and fS
             {
-                fT = ((x3 - x0)*(y4 - y3) - (y3 - y0)*(x4 - x3)) / ((x1 - x0)*(y4 - y3) - (y1 - y0)*(x4 - x3));
-                intersection.x = x0 + fT*(x1 - x0);
-                intersection.y = y0 + fT*(y1 - y0);
+                fT = ((x3 - x0) * (y4 - y3) - (y3 - y0) * (x4 - x3)) / ((x1 - x0) * (y4 - y3) - (y1 - y0) * (x4 - x3));
+                intersection.x = x0 + fT * (x1 - x0);
+                intersection.y = y0 + fT * (y1 - y0);
 
                 if (fabsf(x4 - x3) > fabsf(y4 - y3))
                 {
@@ -305,23 +305,23 @@ bool Isochart::IsochartIsSegmentsIntersect(
     float fS, fT;
 
     CalculateSegmentsIntersection(
-        p0, p1, p3, p4,  intersection, fS, fT);
+        p0, p1, p3, p4, intersection, fS, fT);
 
-    float epsion2 = ISOCHART_ZERO_EPS*ISOCHART_ZERO_EPS;
-    if (fS>-epsion2 && fS<epsion2+1 && fT>-epsion2 && fT<epsion2+1)
+    float epsion2 = ISOCHART_ZERO_EPS * ISOCHART_ZERO_EPS;
+    if (fS > -epsion2 && fS<epsion2 + 1 && fT>-epsion2 && fT < epsion2 + 1)
     {
         if (pIntersection)
         {
             *pIntersection = intersection;
         }
-        
+
         return true;
     }
     return false;
 }
 
 float Isochart::CalL2SquaredStretchLowBoundOnFace(
-       const float* pMT,
+    const float* pMT,
     float fFace3DArea,
     float fMaxDistortionRate,
     float* fRotMatrix)
@@ -329,7 +329,7 @@ float Isochart::CalL2SquaredStretchLowBoundOnFace(
     assert(!IsInZeroRange2(fMaxDistortionRate));
     if (fRotMatrix)
     {
-        fRotMatrix[0] = fRotMatrix[3] =1;
+        fRotMatrix[0] = fRotMatrix[3] = 1;
         fRotMatrix[1] = fRotMatrix[2] = 0;
     }
     if (!pMT)
@@ -339,17 +339,17 @@ float Isochart::CalL2SquaredStretchLowBoundOnFace(
 
     float IMT[IMT_DIM];
     GetIMTOnCanonicalFace(
-        pMT, 
-        fFace3DArea, 
+        pMT,
+        fFace3DArea,
         IMT);
 
     // Solve Eigen value d1, d2, d1 >= d2
-    float b = IMT[0]+IMT[2];
-    float c = IMT[0]*IMT[2] - IMT[1]*IMT[1];
+    float b = IMT[0] + IMT[2];
+    float c = IMT[0] * IMT[2] - IMT[1] * IMT[1];
 
-    float fTemp = IsochartSqrtf(b*b-4*c);
-    float d1 = (b+fTemp)/2;
-    float d2 = (b-fTemp)/2;
+    float fTemp = IsochartSqrtf(b * b - 4 * c);
+    float d1 = (b + fTemp) / 2;
+    float d2 = (b - fTemp) / 2;
 
     if (IsInZeroRange(d1) && IsInZeroRange(d2))
     {
@@ -364,8 +364,8 @@ float Isochart::CalL2SquaredStretchLowBoundOnFace(
     float a10 = IMT[1];
     float a11 = IMT[2] - d1;
 
-    
-    
+
+
     //assert(IsInZeroRange(a00/a01 - a10/a11));
 
     float b00 = IMT[0] - d2;
@@ -378,8 +378,8 @@ float Isochart::CalL2SquaredStretchLowBoundOnFace(
     float v1[2];
     float v2[2];
 
-    float delta1 = IsochartSqrtf(a01*a01 + a00*a00);
-    float delta2 = IsochartSqrtf(a11*a11 + a10*a10);
+    float delta1 = IsochartSqrtf(a01 * a01 + a00 * a00);
+    float delta2 = IsochartSqrtf(a11 * a11 + a10 * a10);
 
     if (IsInZeroRange2(delta1) && IsInZeroRange2(delta2))
     {
@@ -396,8 +396,8 @@ float Isochart::CalL2SquaredStretchLowBoundOnFace(
         v1[1] = -a10 / delta2;
     }
 
-    delta1 = IsochartSqrtf(b01*b01 + b00*b00);
-    delta2 = IsochartSqrtf(b11*b11 + b10*b10);
+    delta1 = IsochartSqrtf(b01 * b01 + b00 * b00);
+    delta2 = IsochartSqrtf(b11 * b11 + b10 * b10);
     if (IsInZeroRange2(delta1) && IsInZeroRange2(delta2))
     {
         return CombineSigAndGeoStretch(pMT, 0, fFace3DArea);
@@ -425,22 +425,22 @@ float Isochart::CalL2SquaredStretchLowBoundOnFace(
 
     //assert(IsInZeroRange(v1[0]*v1[0] + v2[0]*v2[0]-1));
     //assert(IsInZeroRange(v1[1]*v1[1] + v2[1]*v2[1]-1));
-    float m0 = v1[0]*v1[0]*d1+v2[0]*v2[0]*d2;
-    float m1 = v1[0]*v1[1]*d1+v2[0]*v2[1]*d2;
-    float m2 = v1[1]*v1[1]*d1+v2[1]*v2[1]*d2;		
-        
-    float d = IsochartSqrtf(IsochartSqrtf(d2/d1));
-    if (d < 1/fMaxDistortionRate)
-    {
-        d = 1/fMaxDistortionRate;
-    }
-        
-    float a0, a1, a2, a3;
-    a0 = v1[0]*v1[0]*d + v2[0]*v2[0]/d;
-    a3 = v1[1]*v1[1]*d + v2[1]*v2[1]/d;
-    a1 = a2 = v1[0]*v1[1]*d + v2[0]*v2[1]/d;
+    float m0 = v1[0] * v1[0] * d1 + v2[0] * v2[0] * d2;
+    float m1 = v1[0] * v1[1] * d1 + v2[0] * v2[1] * d2;
+    float m2 = v1[1] * v1[1] * d1 + v2[1] * v2[1] * d2;
 
-    float delta = a3*a0 - a1*a2;
+    float d = IsochartSqrtf(IsochartSqrtf(d2 / d1));
+    if (d < 1 / fMaxDistortionRate)
+    {
+        d = 1 / fMaxDistortionRate;
+    }
+
+    float a0, a1, a2, a3;
+    a0 = v1[0] * v1[0] * d + v2[0] * v2[0] / d;
+    a3 = v1[1] * v1[1] * d + v2[1] * v2[1] / d;
+    a1 = a2 = v1[0] * v1[1] * d + v2[0] * v2[1] / d;
+
+    float delta = a3 * a0 - a1 * a2;
     if (IsInZeroRange2(delta))
     {
         return CombineSigAndGeoStretch(pMT, 0, fFace3DArea);
@@ -448,8 +448,8 @@ float Isochart::CalL2SquaredStretchLowBoundOnFace(
 
     if (fRotMatrix)
     {
-        fRotMatrix[0] = a3/delta;
-        fRotMatrix[1] = -a1/delta;
+        fRotMatrix[0] = a3 / delta;
+        fRotMatrix[1] = -a1 / delta;
         fRotMatrix[2] = -a2 / delta;
         fRotMatrix[3] = a0 / delta;
     }
@@ -458,8 +458,8 @@ float Isochart::CalL2SquaredStretchLowBoundOnFace(
     //float fTesttretch1 = IsochartSqrtf(d1*d2);
     //float fTestStretch2 = IMT[0]*IMT[2] - IMT[1]*IMT[1];
 
-    float fSigStretch = ((a0*a0+a2*a2)*m0 + 2*(a0*a1+a2*a3)*m1+(a1*a1+a3*a3)*m2)/2;
-    float fGeoStretch = (d*d + 1/(d*d))*fFace3DArea;
+    float fSigStretch = ((a0 * a0 + a2 * a2) * m0 + 2 * (a0 * a1 + a2 * a3) * m1 + (a1 * a1 + a3 * a3) * m2) / 2;
+    float fGeoStretch = (d * d + 1 / (d * d)) * fFace3DArea;
 
     return CombineSigAndGeoStretch(
         pMT, fSigStretch, fGeoStretch);

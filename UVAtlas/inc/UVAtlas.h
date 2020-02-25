@@ -129,8 +129,8 @@ namespace DirectX
     HRESULT __cdecl UVAtlasCreate(
         _In_reads_(nVerts)                  const XMFLOAT3* positions,
         _In_                                size_t nVerts,
-        _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces*sizeof(uint16_t)))
-        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces*sizeof(uint32_t))) const void* indices,
+        _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * sizeof(uint16_t)))
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * sizeof(uint32_t))) const void* indices,
         _In_                                DXGI_FORMAT indexFormat,
         _In_                                size_t nFaces,
         _In_                                size_t maxChartNumber,
@@ -138,18 +138,18 @@ namespace DirectX
         _In_                                size_t width,
         _In_                                size_t height,
         _In_                                float gutter,
-        _In_reads_(nFaces*3)                const uint32_t *adjacency,
-        _In_reads_opt_(nFaces*3)            const uint32_t *falseEdgeAdjacency,
-        _In_reads_opt_(nFaces*3)            const float *pIMTArray,
+        _In_reads_(nFaces * 3)                const uint32_t* adjacency,
+        _In_reads_opt_(nFaces * 3)            const uint32_t* falseEdgeAdjacency,
+        _In_reads_opt_(nFaces * 3)            const float* pIMTArray,
         _In_opt_                            std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
         _In_                                float callbackFrequency,
         _In_                                unsigned int options,
         _Inout_ std::vector<UVAtlasVertex>& vMeshOutVertexBuffer,
-        _Inout_ std::vector<uint8_t>&       vMeshOutIndexBuffer,
-        _Inout_opt_ std::vector<uint32_t>*  pvFacePartitioning = nullptr,
-        _Inout_opt_ std::vector<uint32_t>*  pvVertexRemapArray = nullptr,
-        _Out_opt_                           float *maxStretchOut = nullptr,
-        _Out_opt_                           size_t *numChartsOut = nullptr) noexcept;
+        _Inout_ std::vector<uint8_t>& vMeshOutIndexBuffer,
+        _Inout_opt_ std::vector<uint32_t>* pvFacePartitioning = nullptr,
+        _Inout_opt_ std::vector<uint32_t>* pvVertexRemapArray = nullptr,
+        _Out_opt_                           float* maxStretchOut = nullptr,
+        _Out_opt_                           size_t* numChartsOut = nullptr) noexcept;
 
     // This has the same exact arguments as Create, except that it does not perform the
     // final packing step. This method allows one to get a partitioning out, and possibly
@@ -178,15 +178,15 @@ namespace DirectX
     HRESULT __cdecl UVAtlasPartition(
         _In_reads_(nVerts)          const XMFLOAT3* positions,
         _In_                        size_t nVerts,
-        _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces*sizeof(uint16_t)))
-        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces*sizeof(uint32_t))) const void* indices,
+        _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * sizeof(uint16_t)))
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * sizeof(uint32_t))) const void* indices,
         _In_                        DXGI_FORMAT indexFormat,
         _In_                        size_t nFaces,
         _In_                        size_t maxChartNumber,
         _In_                        float maxStretch,
-        _In_reads_(nFaces*3)        const uint32_t *adjacency,
-        _In_reads_opt_(nFaces*3)    const uint32_t *falseEdgeAdjacency,
-        _In_reads_opt_(nFaces*3)    const float *pIMTArray,
+        _In_reads_(nFaces * 3)        const uint32_t* adjacency,
+        _In_reads_opt_(nFaces * 3)    const uint32_t* falseEdgeAdjacency,
+        _In_reads_opt_(nFaces * 3)    const float* pIMTArray,
         _In_opt_ std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
         _In_                        float callbackFrequency,
         _In_                        unsigned int options,
@@ -195,8 +195,8 @@ namespace DirectX
         _Inout_opt_                 std::vector<uint32_t>* pvFacePartitioning,
         _Inout_opt_                 std::vector<uint32_t>* pvVertexRemapArray,
         _Inout_                     std::vector<uint32_t>& vPartitionResultAdjacency,
-        _Out_opt_                   float *maxStretchOut = nullptr,
-        _Out_opt_                   size_t *numChartsOut = nullptr) noexcept;
+        _Out_opt_                   float* maxStretchOut = nullptr,
+        _Out_opt_                   size_t* numChartsOut = nullptr) noexcept;
 
     // This takes the face partitioning result from Partition and packs it into an
     // atlas of the given size. pPartitionResultAdjacency should be derived from
@@ -244,11 +244,11 @@ namespace DirectX
     HRESULT __cdecl UVAtlasComputeIMTFromPerVertexSignal(
         _In_reads_(nVerts)                  const XMFLOAT3* positions,
         _In_                                size_t nVerts,
-        _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces*sizeof(uint16_t)))
-        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces*sizeof(uint32_t))) const void* indices,
+        _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * sizeof(uint16_t)))
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * sizeof(uint32_t))) const void* indices,
         _In_                                DXGI_FORMAT indexFormat,
         _In_                                size_t nFaces,
-        _In_reads_(signalStride*nVerts)     const float *pVertexSignal,
+        _In_reads_(signalStride* nVerts)     const float* pVertexSignal,
         _In_                                size_t signalDimension,
         _In_                                size_t signalStride,
         _In_opt_                            std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
@@ -275,15 +275,15 @@ namespace DirectX
         _In_reads_(nVerts)                  const XMFLOAT3* positions,
         _In_reads_(nVerts)                  const XMFLOAT2* texcoords,
         _In_                                size_t nVerts,
-        _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces*sizeof(uint16_t)))
-        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces*sizeof(uint32_t))) const void* indices,
+        _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * sizeof(uint16_t)))
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * sizeof(uint32_t))) const void* indices,
         _In_                                DXGI_FORMAT indexFormat,
         _In_                                size_t nFaces,
         _In_                                size_t signalDimension,
         _In_                                float maxUVDistance,
-        _In_ std::function<HRESULT __cdecl(const DirectX::XMFLOAT2 *uv, size_t primitiveID, size_t signalDimension, void* userData, float* signalOut)>
-                                            signalCallback,
-        _In_opt_                            void *userData,
+        _In_ std::function<HRESULT __cdecl(const DirectX::XMFLOAT2 * uv, size_t primitiveID, size_t signalDimension, void* userData, float* signalOut)>
+        signalCallback,
+        _In_opt_                            void* userData,
         _In_opt_                            std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
         _Out_writes_(nFaces * 3)            float* pIMTArray) noexcept;
 
@@ -300,11 +300,11 @@ namespace DirectX
         _In_reads_(nVerts)                  const XMFLOAT3* positions,
         _In_reads_(nVerts)                  const XMFLOAT2* texcoords,
         _In_                                size_t nVerts,
-        _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces*sizeof(uint16_t)))
-        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces*sizeof(uint32_t))) const void* indices,
+        _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * sizeof(uint16_t)))
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * sizeof(uint32_t))) const void* indices,
         _In_                                DXGI_FORMAT indexFormat,
         _In_                                size_t nFaces,
-        _In_reads_(width*height*4)          const float* pTexture,
+        _In_reads_(width* height * 4)          const float* pTexture,
         _In_                                size_t width,
         _In_                                size_t height,
         _In_                                unsigned int options,

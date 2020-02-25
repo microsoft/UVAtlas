@@ -9,7 +9,7 @@
 
 /*
     Terms:
-        L2 Stretch: 
+        L2 Stretch:
             Corresponds to the root-mean-square stretch over all directions
             in the domain.
 
@@ -19,7 +19,7 @@
         Vertex Stretch:
             The sum of adjacent faces' stretch
 
-        Note that both L2 and Ln increase to infinity as the parametrization of 
+        Note that both L2 and Ln increase to infinity as the parametrization of
         face becomes degenerate, since its parametric area A drops to zero.
 
         See more detail in [SSGH01]
@@ -27,7 +27,7 @@
         This file implements algorithms in following papers:
 
         [Kun04]:Kun Zhou, John Synder, Baining Guo, Heung-Yeung Shum:
-        Iso-charts: Stretch-driven Mesh Parameterization using Spectral 
+        Iso-charts: Stretch-driven Mesh Parameterization using Spectral
         Analysis, page 3 Eurographics Symposium on Geometry Processing (2004)
 
         [SSGH01]: SANDER P., SNYDER J., GORTLER S., HOPPE H. :
@@ -108,8 +108,8 @@ namespace Isochart
         ~CHARTOPTIMIZEINFO()
         {
             SAFE_DELETE_ARRAY(pfVertStretch)
-            SAFE_DELETE_ARRAY(pfFaceStretch)
-            SAFE_DELETE_ARRAY(pHeapItems)
+                SAFE_DELETE_ARRAY(pfFaceStretch)
+                SAFE_DELETE_ARRAY(pHeapItems)
         }
     };
 
@@ -158,36 +158,36 @@ bool CIsochartMesh::IsReachExpectedTotalAvgL2SqrStretch(
     float fCurrAvgL2SqrStretch,
     float fExpectRatio)
 {
-    return 
-        (fCurrAvgL2SqrStretch - 
-        ISOCHART_ZERO_EPS*10<= 
-        fExpectRatio);
+    return
+        (fCurrAvgL2SqrStretch -
+            ISOCHART_ZERO_EPS * 10 <=
+            fExpectRatio);
 }
 
 uint32_t CIsochartMesh::GetChartWidthLargestGeoAvgStretch(
-    ISOCHARTMESH_ARRAY &chartList,
+    ISOCHARTMESH_ARRAY& chartList,
     float& fMaxAvgL2Stretch)
 {
     fMaxAvgL2Stretch = 0;
     uint32_t dwIdx = 0;
-    for (uint32_t ii = 0; ii<chartList.size(); ii++)
+    for (uint32_t ii = 0; ii < chartList.size(); ii++)
     {
         if (IsInZeroRange(chartList[ii]->m_fChart2DArea)
-        || IsInZeroRange(chartList[ii]->m_fChart3DArea))
+            || IsInZeroRange(chartList[ii]->m_fChart3DArea))
         {
             continue;
         }
 
-        float fScale = 
-            chartList[ii]->m_fChart3DArea / 
+        float fScale =
+            chartList[ii]->m_fChart3DArea /
             chartList[ii]->m_fChart2DArea;
-                
+
         chartList[ii]->ScaleChart(IsochartSqrtf(fScale));
-        
-        if (fMaxAvgL2Stretch < 
+
+        if (fMaxAvgL2Stretch <
             chartList[ii]->m_fParamStretchL2 / chartList[ii]->m_fChart3DArea)
         {
-            fMaxAvgL2Stretch = 
+            fMaxAvgL2Stretch =
                 chartList[ii]->m_fParamStretchL2 / chartList[ii]->m_fChart3DArea;
             dwIdx = ii;
         }
@@ -197,27 +197,27 @@ uint32_t CIsochartMesh::GetChartWidthLargestGeoAvgStretch(
 }
 
 uint32_t CIsochartMesh::GetBestPartitionCanidate(
-    ISOCHARTMESH_ARRAY &chartList)
+    ISOCHARTMESH_ARRAY& chartList)
 {
     uint32_t dwMaxIdx = INVALID_INDEX;
     float fMaxL2SquaredStretch = -1;
 
-    for (uint32_t ii = 0; ii<chartList.size(); ii++)
+    for (uint32_t ii = 0; ii < chartList.size(); ii++)
     {
         // The average chart stretch has reached the minimal point, No use to parition
         // it again.
-        if (chartList[ii]->GetL2SquaredStretch() == 
+        if (chartList[ii]->GetL2SquaredStretch() ==
             chartList[ii]->GetBaseL2SquaredStretch())
         {
             continue;
         }
 
         // The chart has only one face, can not be partitioned again.
-        if (chartList[ii]->GetFaceNumber()==1)
+        if (chartList[ii]->GetFaceNumber() == 1)
         {
             continue;
         }
-        
+
         if (fMaxL2SquaredStretch < chartList[ii]->GetL2SquaredStretch())
         {
             fMaxL2SquaredStretch = chartList[ii]->GetL2SquaredStretch();
@@ -227,7 +227,7 @@ uint32_t CIsochartMesh::GetBestPartitionCanidate(
 
     if (INVALID_INDEX == dwMaxIdx)
     {
-        for (uint32_t ii = 0; ii<chartList.size(); ii++)
+        for (uint32_t ii = 0; ii < chartList.size(); ii++)
         {
             if (chartList[ii]->GetFaceNumber() > 1)
             {
@@ -243,11 +243,11 @@ uint32_t CIsochartMesh::GetBestPartitionCanidate(
 }
 
 HRESULT CIsochartMesh::OptimizeAllL2SquaredStretch(
-        ISOCHARTMESH_ARRAY &chartList,
-        bool bOptimizeSignal)
+    ISOCHARTMESH_ARRAY& chartList,
+    bool bOptimizeSignal)
 {
     HRESULT hr = S_OK;
-    for (size_t ii=0; ii<chartList.size(); ii++)
+    for (size_t ii = 0; ii < chartList.size(); ii++)
     {
         FAILURE_RETURN(chartList[ii]->OptimizeChartL2Stretch(bOptimizeSignal));
     }
@@ -261,17 +261,17 @@ float CIsochartMesh::ComputeGeoAvgL2Stretch(
     float fTotalGeoL2Stretch = 0;
     float fTotal2DArea = 0;
     float fTotal3DArea = chartList[0]->m_baseInfo.fMeshArea;
-    for (size_t ii=0; ii<chartList.size(); ii++)
+    for (size_t ii = 0; ii < chartList.size(); ii++)
     {
         if (bReCompute)
-            chartList[ii]->m_fGeoL2Stretch = 
-                chartList[ii]->CalChartL2GeoSquaredStretch();
+            chartList[ii]->m_fGeoL2Stretch =
+            chartList[ii]->CalChartL2GeoSquaredStretch();
 
         fTotalGeoL2Stretch += chartList[ii]->m_fGeoL2Stretch;
         fTotal2DArea += chartList[ii]->m_fChart2DArea;
-    }	
+    }
 
-    return fTotal2DArea*fTotalGeoL2Stretch / (fTotal3DArea*fTotal3DArea);
+    return fTotal2DArea * fTotalGeoL2Stretch / (fTotal3DArea * fTotal3DArea);
 }
 
 HRESULT CIsochartMesh::OptimalScaleChart(
@@ -286,7 +286,7 @@ HRESULT CIsochartMesh::OptimalScaleChart(
 
     const CBaseMeshInfo& baseInfo = chartList[0]->m_baseInfo;
 
-    float fSumSqrtEiiaii = 
+    float fSumSqrtEiiaii =
         IsochartSqrtf(fOpticalAvgL2SquaredStretch) * baseInfo.fMeshArea;
     if (IsInZeroRange2(fSumSqrtEiiaii))
     {
@@ -295,19 +295,19 @@ HRESULT CIsochartMesh::OptimalScaleChart(
 
     // 1. Decide the largest chart area after scale
     float fTotalDomainArea = 0;
-    for (size_t ii=0; ii<chartList.size(); ii++)
+    for (size_t ii = 0; ii < chartList.size(); ii++)
     {
         fTotalDomainArea += chartList[ii]->m_fChart2DArea;
     }
     fTotalDomainArea /= STANDARD_SPACE_RATE;
-    
-    float fSmallest2DChartArea = 
+
+    float fSmallest2DChartArea =
         fTotalDomainArea * SMALLEST_CHART_PIXEL_AREA;
-    float fSmallest3DChartArea = 
+    float fSmallest3DChartArea =
         baseInfo.fMeshArea * SMALLEST_CHART_PIXEL_AREA;
 
     float fTotalOpticalDomainArea = 0;
-    for (size_t ii=0; ii<chartList.size(); ii++)
+    for (size_t ii = 0; ii < chartList.size(); ii++)
     {
         float fEii = chartList[ii]->m_fParamStretchL2;
         float faii = chartList[ii]->m_fChart2DArea;
@@ -317,55 +317,55 @@ HRESULT CIsochartMesh::OptimalScaleChart(
             continue;
         }
 
-        float fAlpha = 
-            (IsochartSqrtf(fEii/faii)) * fTotalDomainArea/
+        float fAlpha =
+            (IsochartSqrtf(fEii / faii)) * fTotalDomainArea /
             (fSumSqrtEiiaii);
 
-        if ( chartList[ii]->m_dwFaceNumber == 1 && baseInfo.pfIMTArray)
+        if (chartList[ii]->m_dwFaceNumber == 1 && baseInfo.pfIMTArray)
         {
-            const FLOAT3* p = 
-                baseInfo.pfIMTArray+chartList[ii]->m_pFaces->dwIDInRootMesh;
+            const FLOAT3* p =
+                baseInfo.pfIMTArray + chartList[ii]->m_pFaces->dwIDInRootMesh;
             if (((*p)[0] > (*p)[2] && (*p)[2] / (*p)[0] < 1e-8f) ||
-                ((*p)[0] < (*p)[2] && (*p)[0] / (*p)[2] < 1e-8f) )
+                ((*p)[0] < (*p)[2] && (*p)[0] / (*p)[2] < 1e-8f))
             {
                 continue;
             }
         }
-        
+
         if (baseInfo.pfIMTArray &&
-             chartList[ii]->m_fChart2DArea*fAlpha < fSmallest2DChartArea && 
-             chartList[ii]->m_fChart2DArea > fSmallest2DChartArea &&
-             chartList[ii]->m_fChart3DArea > fSmallest3DChartArea)
+            chartList[ii]->m_fChart2DArea * fAlpha < fSmallest2DChartArea &&
+            chartList[ii]->m_fChart2DArea > fSmallest2DChartArea&&
+            chartList[ii]->m_fChart3DArea > fSmallest3DChartArea)
         {
             fAlpha = fSmallest2DChartArea / chartList[ii]->m_fChart2DArea;
         }
 
         if (bOptimizeSignal)
         {
-            if (chartList[ii]->m_fGeoL2Stretch > 
-            baseInfo.fExpectAvgL2SquaredStretch*chartList[ii]->m_fChart3DArea
-            *fAlpha)
+            if (chartList[ii]->m_fGeoL2Stretch >
+                baseInfo.fExpectAvgL2SquaredStretch* chartList[ii]->m_fChart3DArea
+                * fAlpha)
             {
-                fAlpha = 
-                    baseInfo.fExpectAvgL2SquaredStretch*
+                fAlpha =
+                    baseInfo.fExpectAvgL2SquaredStretch *
                     chartList[ii]->m_fChart3DArea /
-                    chartList[ii]->m_fGeoL2Stretch;					
+                    chartList[ii]->m_fGeoL2Stretch;
             }
 
-            if (chartList[ii]->m_fGeoL2Stretch < 
-            baseInfo.fExpectMinAvgL2SquaredStretch*chartList[ii]->m_fChart3DArea
-            *fAlpha)
+            if (chartList[ii]->m_fGeoL2Stretch <
+                baseInfo.fExpectMinAvgL2SquaredStretch * chartList[ii]->m_fChart3DArea
+                * fAlpha)
             {
-                fAlpha = 
-                    baseInfo.fExpectMinAvgL2SquaredStretch*
+                fAlpha =
+                    baseInfo.fExpectMinAvgL2SquaredStretch *
                     chartList[ii]->m_fChart3DArea /
-                    chartList[ii]->m_fGeoL2Stretch;	
+                    chartList[ii]->m_fGeoL2Stretch;
             }
         }
         /*
         if (fAlpha > OPTIMAL_SCALE_FACTOR)
         {
-            fAlpha = OPTIMAL_SCALE_FACTOR;			
+            fAlpha = OPTIMAL_SCALE_FACTOR;
         }
         if (fAlpha < 1.0f / OPTIMAL_SCALE_FACTOR)
         {
@@ -408,10 +408,10 @@ float CIsochartMesh::CalOptimalAvgL2SquaredStretch(
     {
         return 1;
     }
-    
-    return (fSumSqrtEiiaii/baseInfo.fMeshArea)*(fSumSqrtEiiaii/baseInfo.fMeshArea);
+
+    return (fSumSqrtEiiaii / baseInfo.fMeshArea) * (fSumSqrtEiiaii / baseInfo.fMeshArea);
 }
-    
+
 //////////////Main Functions////////////////////////////////
 
 HRESULT CIsochartMesh::OptimizeWholeChart(
@@ -427,16 +427,16 @@ HRESULT CIsochartMesh::OptimizeWholeChart(
     // 2. Calculate sum of IMT of all triangles.	
     float f2D = 0;
 
-    double dm[3] = {0, 0, 0};	
-    double dGeoM[3] = {0, 0, 0};	
+    double dm[3] = { 0, 0, 0 };
+    double dGeoM[3] = { 0, 0, 0 };
 
     float m[3];
-    float geoM[3];	
+    float geoM[3];
 
     float matrix[4];
-    
+
     ISOCHARTFACE* pFace = m_pFaces;
-    for (size_t ii=0; ii<m_dwFaceNumber; ii++)
+    for (size_t ii = 0; ii < m_dwFaceNumber; ii++)
     {
         float fStretch = CalFaceSigL2SquraedStretch(
             pFace,
@@ -459,13 +459,13 @@ HRESULT CIsochartMesh::OptimizeWholeChart(
         dGeoM[2] += double(geoM[2] * fFace3DArea);
         pFace++;
     }
-    
+
     m[0] = static_cast<float>(dm[0] / m_dwFaceNumber);
     m[1] = static_cast<float>(dm[1] / m_dwFaceNumber);
     m[2] = static_cast<float>(dm[2] / m_dwFaceNumber);
 
     // 3. Get Transform matrix.
-    
+
     CalL2SquaredStretchLowBoundOnFace(
         m,
         1,
@@ -477,19 +477,19 @@ HRESULT CIsochartMesh::OptimizeWholeChart(
         (dGeoM[0] * double(matrix[0] * matrix[0] + matrix[2] * matrix[2])
             + dGeoM[2] * double(matrix[1] * matrix[1] + matrix[3] * matrix[3])
             + 2 * dGeoM[1] * double(matrix[1] * matrix[0] + matrix[2] * matrix[3])) / 2);
-    if (fNewGeoL2Stretch > fMaxAvgGeoL2Stretch*m_fChart3DArea)
+    if (fNewGeoL2Stretch > fMaxAvgGeoL2Stretch* m_fChart3DArea)
     {
         goto LEnd;
     }
     // 4. transform each vertex.
-    for (size_t ii=0; ii<m_dwVertNumber; ii++)
+    for (size_t ii = 0; ii < m_dwVertNumber; ii++)
     {
         TransformUV(
-            m_pVerts[ii].uv, 
-            m_pVerts[ii].uv, 
+            m_pVerts[ii].uv,
+            m_pVerts[ii].uv,
             matrix);
     }
-    
+
 LEnd:
     return hr;
 }
@@ -512,9 +512,9 @@ HRESULT CIsochartMesh::InitOptimizeInfo(
     if (bUseBoundingBox)
     {
         CalculateChartMinimalBoundingBox(
-             BOUND_DIRECTION_NUMBER,
-             optimizeInfo.minBound,
-             optimizeInfo.maxBound);
+            BOUND_DIRECTION_NUMBER,
+            optimizeInfo.minBound,
+            optimizeInfo.maxBound);
     }
 
     // If Never allocated working memory, allocate it.
@@ -536,9 +536,9 @@ HRESULT CIsochartMesh::InitOptimizeInfo(
         float fChartArea2D = 0;
         float fChartArea3D = 0;
         if (!CalculateChart2DTo3DScale(
-                optimizeInfo.fStretchScale,
-                fChartArea3D,
-                fChartArea2D))
+            optimizeInfo.fStretchScale,
+            fChartArea3D,
+            fChartArea2D))
         {
             return S_OK;
         }
@@ -547,12 +547,12 @@ HRESULT CIsochartMesh::InitOptimizeInfo(
     {
         optimizeInfo.fStretchScale = 1;
     }
-    
+
     if (0 == optimizeInfo.fAverageEdgeLength)
     {
         optimizeInfo.fAverageEdgeLength = CalculateAverageEdgeLength();
     }
-    
+
     optimizeInfo.fTolerance = OPTIMIZE_TOLERANCE;
     optimizeInfo.bOptLn = bOptLn;
     optimizeInfo.bOptSignal = bOptSignal;
@@ -562,14 +562,14 @@ HRESULT CIsochartMesh::InitOptimizeInfo(
     optimizeInfo.fBarToStopOptAll = fBarToStopOpt;
     optimizeInfo.dwOptTimes = dwOptTimes;
     optimizeInfo.dwRandOptOneVertTimes = dwRandOptOneVertTimes;
-    optimizeInfo.fInfiniteStretch = INFINITE_STRETCH/2;
+    optimizeInfo.fInfiniteStretch = INFINITE_STRETCH / 2;
 
     if (bCalStretch)
     {
-        float f2D = 0;	
+        float f2D = 0;
         ISOCHARTFACE* pFace = m_pFaces;
 
-        for (size_t i=0; i<m_dwFaceNumber; i++)
+        for (size_t i = 0; i < m_dwFaceNumber; i++)
         {
             optimizeInfo.pfFaceStretch[i] =
                 CalFaceSquraedStretch(
@@ -582,7 +582,7 @@ HRESULT CIsochartMesh::InitOptimizeInfo(
                     optimizeInfo.fStretchScale,
                     f2D);
 
-            if (bOptLn && 
+            if (bOptLn &&
                 optimizeInfo.pfFaceStretch[i] > optimizeInfo.fPreveMaxFaceStretch)
             {
                 optimizeInfo.fPreveMaxFaceStretch = optimizeInfo.pfFaceStretch[i];
@@ -593,25 +593,25 @@ HRESULT CIsochartMesh::InitOptimizeInfo(
 
         // 2. Compute Stretch for each vertex.
         ISOCHARTVERTEX* pVertex = m_pVerts;
-        for (size_t i=0; i<m_dwVertNumber; i++)
-        {		
-            optimizeInfo.pfVertStretch[i] = 
-                CalculateVertexStretch(	
+        for (size_t i = 0; i < m_dwVertNumber; i++)
+        {
+            optimizeInfo.pfVertStretch[i] =
+                CalculateVertexStretch(
                     optimizeInfo.bOptLn,
-                    pVertex, 
+                    pVertex,
                     optimizeInfo.pfFaceStretch);
 
-            if (bOptLn && 
+            if (bOptLn &&
                 optimizeInfo.pfVertStretch[i] >= optimizeInfo.fInfiniteStretch)
             {
                 optimizeInfo.dwInfinitStretchVertexCount++;
-            }	
+            }
             pVertex++;
         }
     }
-    
+
     bCanOptimize = true;
-    
+
     return S_OK;
 }
 
@@ -619,18 +619,18 @@ void CIsochartMesh::ReleaseOptimizeInfo(
     CHARTOPTIMIZEINFO& optimizeInfo)
 {
     SAFE_DELETE_ARRAY(optimizeInfo.pfFaceStretch)
-    SAFE_DELETE_ARRAY(optimizeInfo.pfVertStretch)
-    SAFE_DELETE_ARRAY(optimizeInfo.pHeapItems)
+        SAFE_DELETE_ARRAY(optimizeInfo.pfVertStretch)
+        SAFE_DELETE_ARRAY(optimizeInfo.pHeapItems)
 }
 
 HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)
 {
-    #if OPT_CHART_L2_STRETCH_ONCE
+#if OPT_CHART_L2_STRETCH_ONCE
     if (m_bOptimizedL2Stretch && !bOptimizeSignal)
     {
         return S_OK;
     }
-    #endif
+#endif
 
     if (IsInZeroRange(fabsf(m_fParamStretchL2 - m_fBaseL2Stretch)) && !bOptimizeSignal)
     {
@@ -641,8 +641,8 @@ HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)
     if (m_dwFaceNumber == 1)
     {
         ParameterizeOneFace(
-            bOptimizeSignal, 
-            m_pFaces);		
+            bOptimizeSignal,
+            m_pFaces);
         m_fChart2DArea = m_fChart3DArea;
         m_bOptimizedL2Stretch = true;
         return S_OK;
@@ -653,8 +653,8 @@ HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)
 
     bool bCanOptimize = false;
     if (bOptimizeSignal)
-    {	
-        if (FAILED (hr =
+    {
+        if (FAILED(hr =
             InitOptimizeInfo(
                 false,
                 true,
@@ -664,7 +664,7 @@ HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)
                 0,
                 L2_PREV_OPTIMIZESIG_COUNT,
                 RAND_OPTIMIZE_L2_COUNT,
-                true, 
+                true,
                 optimizeInfo,
                 bCanOptimize)) || !bCanOptimize)
         {
@@ -674,7 +674,7 @@ HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)
 
         OptimizeWholeChart(m_baseInfo.fExpectAvgL2SquaredStretch);
 
-        if (FAILED (hr =
+        if (FAILED(hr =
             InitOptimizeInfo(
                 false,
                 true,
@@ -694,7 +694,7 @@ HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)
     }
     else
     {
-        if (FAILED (hr =
+        if (FAILED(hr =
             InitOptimizeInfo(
                 true,
                 false,
@@ -712,7 +712,7 @@ HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)
         }
         FAILURE_RETURN(OptimizeStretch(optimizeInfo));
 
-        if (FAILED (hr =
+        if (FAILED(hr =
             InitOptimizeInfo(
                 false,
                 false,
@@ -732,9 +732,9 @@ HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)
     }
 
     m_fParamStretchL2 = 0;
-    for (size_t ii=0; ii<m_dwFaceNumber; ii++)
+    for (size_t ii = 0; ii < m_dwFaceNumber; ii++)
     {
-        m_fParamStretchL2 += optimizeInfo.pfFaceStretch[ii];		
+        m_fParamStretchL2 += optimizeInfo.pfFaceStretch[ii];
     }
     m_fChart2DArea = CalculateChart2DArea();
 
@@ -752,7 +752,7 @@ HRESULT CIsochartMesh::OptimizeGeoLnInfiniteStretch(
     HRESULT hr = S_OK;
 
     bool bCanOptimize = false;
-    if (FAILED (hr =
+    if (FAILED(hr =
         InitOptimizeInfo(
             true,
             false,
@@ -779,7 +779,7 @@ HRESULT CIsochartMesh::OptimizeGeoLnInfiniteStretch(
         }
 
         auto pHeapItems = optimizeInfo.pHeapItems;
-        for (uint32_t i = 0; i<m_dwVertNumber; i++)
+        for (uint32_t i = 0; i < m_dwVertNumber; i++)
         {
             pHeapItems[i].m_weight = optimizeInfo.pfVertStretch[i];
             pHeapItems[i].m_data = i;
@@ -791,32 +791,32 @@ HRESULT CIsochartMesh::OptimizeGeoLnInfiniteStretch(
 
         optimizeInfo.fInfinitFacesArea = 0;
         optimizeInfo.dwInfinitStretchVertexCount = 0;
-        for (size_t i=0; i<m_dwFaceNumber; i++)
+        for (size_t i = 0; i < m_dwFaceNumber; i++)
         {
             if (optimizeInfo.pfFaceStretch[i] >= optimizeInfo.fInfiniteStretch)
             {
                 optimizeInfo.dwInfinitStretchVertexCount++;
-                optimizeInfo.fInfinitFacesArea += 
+                optimizeInfo.fInfinitFacesArea +=
                     m_baseInfo.pfFaceAreaArray[m_pFaces[i].dwIDInRootMesh];
 
-                bool bBondary = 
+                bool bBondary =
                     m_pVerts[m_pFaces[i].dwVertexID[0]].bIsBoundary
-                    ||m_pVerts[m_pFaces[i].dwVertexID[1]].bIsBoundary
-                    ||m_pVerts[m_pFaces[i].dwVertexID[2]].bIsBoundary;
-                dwBoundaryInfFaces += (bBondary?1:0);				
+                    || m_pVerts[m_pFaces[i].dwVertexID[1]].bIsBoundary
+                    || m_pVerts[m_pFaces[i].dwVertexID[2]].bIsBoundary;
+                dwBoundaryInfFaces += (bBondary ? 1 : 0);
             }
         }
 
-        bSucceed = 
-            ((optimizeInfo.fInfinitFacesArea / m_fChart3DArea) <= 
-             m_baseInfo.fOverturnTolerance);
+        bSucceed =
+            ((optimizeInfo.fInfinitFacesArea / m_fChart3DArea) <=
+                m_baseInfo.fOverturnTolerance);
     }
 
     if (!bSucceed)
     {
         DPF(1, "Infinite Optimize faild, %zu Internal infinite vertices,%zu boundary vert",
-        optimizeInfo.dwInfinitStretchVertexCount-dwBoundaryInfFaces,
-        dwBoundaryInfFaces);
+            optimizeInfo.dwInfinitStretchVertexCount - dwBoundaryInfFaces,
+            dwBoundaryInfFaces);
     }
     return hr;
 
@@ -833,7 +833,7 @@ HRESULT CIsochartMesh::OptimizeStretch(
     }
 
     auto pHeapItems = optimizeInfo.pHeapItems;
-    for (uint32_t i = 0; i<m_dwVertNumber; i++)
+    for (uint32_t i = 0; i < m_dwVertNumber; i++)
     {
         pHeapItems[i].m_weight = optimizeInfo.pfVertStretch[i];
         pHeapItems[i].m_data = i;
@@ -850,7 +850,7 @@ float CIsochartMesh::CalChartL2GeoSquaredStretch()
     ISOCHARTFACE* pFace = m_pFaces;
     float f2D = 0;
     float fTotalParamStretchL2 = 0;
-    for (size_t i=0; i<m_dwFaceNumber; i++)
+    for (size_t i = 0; i < m_dwFaceNumber; i++)
     {
         float fFaceStretchL2 = CalFaceGeoL2SquraedStretch(
             pFace,
@@ -886,10 +886,10 @@ float CIsochartMesh::CalCharLnSquaredStretch()
         return 1.0f;
     }
     // 2. Caculate stretch	
-    
+
     ISOCHARTFACE* pFace = m_pFaces;
     float f2D;
-    for (size_t i=0; i<m_dwFaceNumber; i++)
+    for (size_t i = 0; i < m_dwFaceNumber; i++)
     {
         float fFaceStretchN = INFINITE_STRETCH;
 
@@ -919,8 +919,8 @@ float CIsochartMesh::CalCharLnSquaredStretch()
 }
 
 float CIsochartMesh::CalCharBaseL2SquaredStretch()
-{	
-    m_fBaseL2Stretch =  m_fChart3DArea;
+{
+    m_fBaseL2Stretch = m_fChart3DArea;
     return m_fBaseL2Stretch;
 }
 
@@ -934,7 +934,7 @@ float CIsochartMesh::CalculateVertexStretch(
     float fVertStretch = 0;
     if (bOptLn)
     {
-        for (size_t j=0; j<pVertex->faceAdjacent.size(); j++)
+        for (size_t j = 0; j < pVertex->faceAdjacent.size(); j++)
         {
             if (fVertStretch <
                 pfFaceStretch[pVertex->faceAdjacent[j]])
@@ -946,7 +946,7 @@ float CIsochartMesh::CalculateVertexStretch(
     }
     else
     {
-        for (size_t j=0; j<pVertex->faceAdjacent.size(); j++)
+        for (size_t j = 0; j < pVertex->faceAdjacent.size(); j++)
         {
             ISOCHARTFACE* pFace = m_pFaces + pVertex->faceAdjacent[j];
             if (fVertStretch == INFINITE_STRETCH)
@@ -973,7 +973,7 @@ float CIsochartMesh::CalFaceSquraedStretch(
 {
     if (bOptSignal)
     {
-        return 
+        return
             CalFaceSigL2SquraedStretch(
                 pFace,
                 v0,
@@ -985,7 +985,7 @@ float CIsochartMesh::CalFaceSquraedStretch(
     }
     else if (bOptLn)
     {
-        return 
+        return
             CalFaceGeoLNSquraedStretch(
                 pFace,
                 v0,
@@ -996,7 +996,7 @@ float CIsochartMesh::CalFaceSquraedStretch(
     }
     else
     {
-        return 
+        return
             CalFaceGeoL2SquraedStretch(
                 pFace,
                 v0,
@@ -1004,13 +1004,13 @@ float CIsochartMesh::CalFaceSquraedStretch(
                 v2,
                 f2D);
     }
-        
+
 }
 
 static inline void SetAffineParameter(
     float* pGeoM,
-    float fGeoMValue,	
-    const float* pGeoMBuffer,	
+    float fGeoMValue,
+    const float* pGeoMBuffer,
     float* pM,
     float fMValue,
     const float* pMBuffer)
@@ -1019,7 +1019,7 @@ static inline void SetAffineParameter(
     {
         if (pGeoMBuffer)
         {
-            memcpy(pGeoM, pGeoMBuffer, 3*sizeof(float));	
+            memcpy(pGeoM, pGeoMBuffer, 3 * sizeof(float));
         }
         else
         {
@@ -1031,7 +1031,7 @@ static inline void SetAffineParameter(
     {
         if (pMBuffer)
         {
-            memcpy(pM, pMBuffer, IMT_DIM*sizeof(float));
+            memcpy(pM, pMBuffer, IMT_DIM * sizeof(float));
         }
         else
         {
@@ -1053,8 +1053,8 @@ float CIsochartMesh::CalFaceSigL2SquraedStretch(
     f2D = Cal2DTriangleArea(
         v0, v1, v2);
 
-    const FLOAT3* pMT = 
-        m_baseInfo.pfIMTArray+ pFace->dwIDInRootMesh;
+    const FLOAT3* pMT =
+        m_baseInfo.pfIMTArray + pFace->dwIDInRootMesh;
 
     FLOAT3 IMT;
     GetIMTOnCanonicalFace(reinterpret_cast<const float*>(*pMT), f3D, IMT);
@@ -1067,16 +1067,16 @@ float CIsochartMesh::CalFaceSigL2SquraedStretch(
     else if (f2D < 0)
     {
         SetAffineParameter(
-            pGeoM, 
-            FLT_MAX, 
+            pGeoM,
+            FLT_MAX,
             nullptr,
             pM,
-            FLT_MAX, 
+            FLT_MAX,
             nullptr);
-        
+
         return INFINITE_STRETCH;
     }
-    
+
     else if (f2D < ISOCHART_ZERO_EPS2)
     {
         if (IsInZeroRange2(f3D))
@@ -1087,22 +1087,22 @@ float CIsochartMesh::CalFaceSigL2SquraedStretch(
         else
         {
             SetAffineParameter(
-                pGeoM, 
-                FLT_MAX, 
+                pGeoM,
+                FLT_MAX,
                 nullptr,
                 pM,
-                FLT_MAX, 
+                FLT_MAX,
                 nullptr);
             return INFINITE_STRETCH;
         }
     }
     else
     {
-        XMFLOAT2* pCanonicalUV = 
+        XMFLOAT2* pCanonicalUV =
             m_baseInfo.pFaceCanonicalUVCoordinate + pFace->dwIDInRootMesh * 3;
 
         FLOAT3 newIMT;
-        float geo[3] = {0.0};
+        float geo[3] = { 0.0 };
         AffineIMTOn2D(
             f2D,
             &v0,
@@ -1110,26 +1110,26 @@ float CIsochartMesh::CalFaceSigL2SquraedStretch(
             &v2,
             newIMT,
             pCanonicalUV,
-            pCanonicalUV+1,
-            pCanonicalUV+2,	
+            pCanonicalUV + 1,
+            pCanonicalUV + 2,
             IMT,
             geo);
-    
-        float fGeoStretch = (geo[0]+geo[1])/2 * f3D;		
 
-        #if PIECEWISE_CONSTANT_IMT
-        float fSigStretch = (newIMT[0]+newIMT[2])/2;
-        #else
-        #endif
+        float fGeoStretch = (geo[0] + geo[1]) / 2 * f3D;
+
+#if PIECEWISE_CONSTANT_IMT
+        float fSigStretch = (newIMT[0] + newIMT[2]) / 2;
+#else
+#endif
 
         SetAffineParameter(
             pGeoM,
             0,
             geo,
             pM,
-            0, 
+            0,
             newIMT);
-        
+
         return CombineSigAndGeoStretch(
             *pMT, fSigStretch, fGeoStretch);
     }
@@ -1150,13 +1150,13 @@ float CIsochartMesh::CalFaceGeoL2SquraedStretch(
     if (f3D == 0)
     {
         return 0;
-    }	
-    else if (f2D < 0 || 
-        (f2D < ISOCHART_ZERO_EPS2 && f2D < f3D /2))
+    }
+    else if (f2D < 0 ||
+        (f2D < ISOCHART_ZERO_EPS2 && f2D < f3D / 2))
     {
         return INFINITE_STRETCH;
     }
-    else if (IsInZeroRange2(f2D) && 
+    else if (IsInZeroRange2(f2D) &&
         IsInZeroRange2(f3D))
     {
         return 0;
@@ -1181,7 +1181,7 @@ float CIsochartMesh::CalFaceGeoL2SquraedStretch(
         float a = XMVectorGetX(XMVector3Dot(vSs, vSs));
         float c = XMVectorGetX(XMVector3Dot(vSt, vSt));
 
-        return (a+c)*f3D / 2;
+        return (a + c) * f3D / 2;
     }
 }
 
@@ -1201,9 +1201,9 @@ float CIsochartMesh::CalFaceGeoLNSquraedStretch(
     if (f3D == 0)
     {
         return 1;
-    }	
-    else if (f2D < 0 || 
-        (f2D < ISOCHART_ZERO_EPS2 && f2D < f3D /2))
+    }
+    else if (f2D < 0 ||
+        (f2D < ISOCHART_ZERO_EPS2 && f2D < f3D / 2))
     {
         return INFINITE_STRETCH;
     }
@@ -1232,25 +1232,25 @@ float CIsochartMesh::CalFaceGeoLNSquraedStretch(
         float c = XMVectorGetX(XMVector3Dot(vSt, vSt));
         float b = XMVectorGetX(XMVector3Dot(vSs, vSt));
 
-        float fTemp = (a-c)*(a-c)+4*b*b;
+        float fTemp = (a - c) * (a - c) + 4 * b * b;
         assert(fTemp >= 0);
 
-        float fTemp1 = (a+c+IsochartSqrtf(fTemp))/2;
+        float fTemp1 = (a + c + IsochartSqrtf(fTemp)) / 2;
         assert(fTemp1 >= 0);
 
-        float fFaceStretchN = 
+        float fFaceStretchN =
             fScale * IsochartSqrtf(fTemp1);
 
 
         float fMinSingleValue;
-        fTemp1 = (a+c-IsochartSqrtf(fTemp))/2;
-        if (fTemp1 >=0 )
+        fTemp1 = (a + c - IsochartSqrtf(fTemp)) / 2;
+        if (fTemp1 >= 0)
         {
-            assert(fTemp1 >=0 );
+            assert(fTemp1 >= 0);
             fTemp = fScale * IsochartSqrtf(fTemp1);
-            if (!IsInZeroRange(fTemp) )
+            if (!IsInZeroRange(fTemp))
             {
-                fMinSingleValue = static_cast<float>(1/fTemp);
+                fMinSingleValue = static_cast<float>(1 / fTemp);
                 if (fFaceStretchN < fMinSingleValue)
                 {
                     fFaceStretchN = fMinSingleValue;
@@ -1263,9 +1263,9 @@ float CIsochartMesh::CalFaceGeoLNSquraedStretch(
         }
         else
         {
-            if (fFaceStretchN  < 1.0f)
+            if (fFaceStretchN < 1.0f)
             {
-                fFaceStretchN = 1/fFaceStretchN;
+                fFaceStretchN = 1 / fFaceStretchN;
             }
         }
         return fFaceStretchN;
@@ -1278,7 +1278,7 @@ float CIsochartMesh::CalFaceGeoLNSquraedStretch(
 float CIsochartMesh::CalculateAverageEdgeLength()
 {
     float fAverageEdgeLength = 0;
-    for (size_t i=0; i<m_edges.size(); i++)
+    for (size_t i = 0; i < m_edges.size(); i++)
     {
         ISOCHARTVERTEX* pVertex1 = m_pVerts + m_edges[i].dwVertexID[0];
         ISOCHARTVERTEX* pVertex2 = m_pVerts + m_edges[i].dwVertexID[1];
@@ -1286,18 +1286,18 @@ float CIsochartMesh::CalculateAverageEdgeLength()
         float x = pVertex1->uv.x - pVertex2->uv.x;
         float y = pVertex1->uv.y - pVertex2->uv.y;
 
-        fAverageEdgeLength += (x*x + y*y);
+        fAverageEdgeLength += (x * x + y * y);
     }
-    fAverageEdgeLength = 
-        IsochartSqrtf(fAverageEdgeLength/m_edges.size());
+    fAverageEdgeLength =
+        IsochartSqrtf(fAverageEdgeLength / m_edges.size());
 
     return fAverageEdgeLength;
 }
 
 // Caculate chart 3D surface area and 2D area.
 bool CIsochartMesh::CalculateChart2DTo3DScale(
-    float& fScale, 
-    float& fChart3DArea, 
+    float& fScale,
+    float& fChart3DArea,
     float& fChart2DArea)
 
 {
@@ -1309,7 +1309,7 @@ bool CIsochartMesh::CalculateChart2DTo3DScale(
         return false;
     }
 
-    fScale = IsochartSqrtf(fChart2DArea/fChart3DArea);
+    fScale = IsochartSqrtf(fChart2DArea / fChart3DArea);
     return true;
 }
 
@@ -1318,12 +1318,12 @@ HRESULT CIsochartMesh::OptimizeVertexWithInfiniteStretch(
     CHARTOPTIMIZEINFO& optimizeInfo)
 {
     HRESULT hr = S_OK;
-    
-    for (size_t dwIteration=0;
-        dwIteration<optimizeInfo.dwOptTimes;
+
+    for (size_t dwIteration = 0;
+        dwIteration < optimizeInfo.dwOptTimes;
         dwIteration++)
     {
-        optimizeInfo.dwInfinitStretchVertexCount = 
+        optimizeInfo.dwInfinitStretchVertexCount =
             CollectInfiniteVerticesInHeap(
                 optimizeInfo);
 
@@ -1332,7 +1332,7 @@ HRESULT CIsochartMesh::OptimizeVertexWithInfiniteStretch(
             return hr;
         }
         if (FAILED(hr = OptimizeVerticesInHeap(
-                optimizeInfo)) )
+            optimizeInfo)))
         {
             return hr;
         }
@@ -1350,16 +1350,16 @@ HRESULT CIsochartMesh::OptimizeAllVertex(
     auto pHeapItems = optimizeInfo.pHeapItems;
 
     float fCurrentMaxFaceStretch;
-    size_t dwIteration = 0;	
-    do{
-        for (size_t i=0; i<m_dwVertNumber; i++)
+    size_t dwIteration = 0;
+    do {
+        for (size_t i = 0; i < m_dwVertNumber; i++)
         {
             assert(!pHeapItems[i].isItemInHeap());
-            heap.insert(pHeapItems+i);
+            heap.insert(pHeapItems + i);
         }
 
         if (FAILED(hr = OptimizeVerticesInHeap(
-                optimizeInfo)))
+            optimizeInfo)))
         {
             return hr;
         }
@@ -1367,25 +1367,25 @@ HRESULT CIsochartMesh::OptimizeAllVertex(
         if (!optimizeInfo.bOptLn)
         {
             fCurrentMaxFaceStretch = 0;
-            for (size_t i=0; i<m_dwFaceNumber; i++)
+            for (size_t i = 0; i < m_dwFaceNumber; i++)
             {
                 if (optimizeInfo.pfFaceStretch[i] > fCurrentMaxFaceStretch)
                 {
                     fCurrentMaxFaceStretch = optimizeInfo.pfFaceStretch[i];
                 }
             }
-            
+
             // The iteration is convergent.
-            if (optimizeInfo.fPreveMaxFaceStretch-fCurrentMaxFaceStretch
-                <MINIMAL_OPTIMIZE_CHANGE)
+            if (optimizeInfo.fPreveMaxFaceStretch - fCurrentMaxFaceStretch
+                < MINIMAL_OPTIMIZE_CHANGE)
             {
                 break;
             }
-            
+
             optimizeInfo.fPreveMaxFaceStretch = fCurrentMaxFaceStretch;
         }
         dwIteration++;
-    }while(dwIteration < optimizeInfo.dwOptTimes);
+    } while (dwIteration < optimizeInfo.dwOptTimes);
     return hr;
 }
 
@@ -1399,7 +1399,7 @@ size_t CIsochartMesh::CollectInfiniteVerticesInHeap(
     auto pHeapItems = optimizeInfo.pHeapItems;
 
     size_t dwBadVertexCount = 0;
-    for (size_t i=0; i<m_dwVertNumber; i++)
+    for (size_t i = 0; i < m_dwVertNumber; i++)
     {
         // Add vertices with infinite stretch and its
         // adjacent vertices into heap
@@ -1407,16 +1407,16 @@ size_t CIsochartMesh::CollectInfiniteVerticesInHeap(
         {
             if (!pHeapItems[i].isItemInHeap())
             {
-                heap.insert(pHeapItems+i);
+                heap.insert(pHeapItems + i);
             }
 
             ISOCHARTVERTEX* pVertex1 = m_pVerts + i;
-            for (size_t j=0; j<pVertex1->vertAdjacent.size(); j++)
+            for (size_t j = 0; j < pVertex1->vertAdjacent.size(); j++)
             {
                 uint32_t dwAdjacentVertID = pVertex1->vertAdjacent[j];
                 if (!pHeapItems[dwAdjacentVertID].isItemInHeap())
                 {
-                    heap.insert(pHeapItems+dwAdjacentVertID);
+                    heap.insert(pHeapItems + dwAdjacentVertID);
                 }
             }
             dwBadVertexCount++;
@@ -1433,8 +1433,8 @@ HRESULT CIsochartMesh::OptimizeVerticesInHeap(
 
     auto& heap = optimizeInfo.heap;
     auto pHeapItems = optimizeInfo.pHeapItems;
-    
-    while(!heap.empty())
+
+    while (!heap.empty())
     {
         auto pTop = heap.cutTop();
         assert(pTop != nullptr);
@@ -1453,7 +1453,7 @@ HRESULT CIsochartMesh::OptimizeVerticesInHeap(
         {
             continue;
         }
-        
+
         bool bIsUpdated = false;
         FAILURE_RETURN(
             OptimizeVertexParamStretch(
@@ -1464,17 +1464,17 @@ HRESULT CIsochartMesh::OptimizeVerticesInHeap(
         if (bIsUpdated)
         {
             assert(!pHeapItems[pVertex->dwID].isItemInHeap());
-            pHeapItems[pVertex->dwID].m_weight = 
+            pHeapItems[pVertex->dwID].m_weight =
                 optimizeInfo.pfVertStretch[pVertex->dwID];
-            
-            for (size_t j=0; j<pVertex->vertAdjacent.size(); j++)
+
+            for (size_t j = 0; j < pVertex->vertAdjacent.size(); j++)
             {
                 uint32_t dwAdjacentVertID = pVertex->vertAdjacent[j];
-                if(pHeapItems[dwAdjacentVertID].isItemInHeap())
-                {			
+                if (pHeapItems[dwAdjacentVertID].isItemInHeap())
+                {
 
                     heap.update(
-                        pHeapItems+dwAdjacentVertID,
+                        pHeapItems + dwAdjacentVertID,
                         optimizeInfo.pfVertStretch[dwAdjacentVertID]);
                 }
                 else
@@ -1520,8 +1520,8 @@ HRESULT CIsochartMesh::OptimizeVertexParamStretch(
     vertInfo.start = pOptimizeVertex->uv;
     vertInfo.fStartStretch =
         optimizeInfo.pfVertStretch[pOptimizeVertex->dwID];
-    
-    for (size_t i=0; i<dwAdjacentFaceCount; i++)
+
+    for (size_t i = 0; i < dwAdjacentFaceCount; i++)
     {
         vertInfo.pfStartFaceStretch[i] =
             optimizeInfo.pfFaceStretch[pOptimizeVertex->faceAdjacent[i]];
@@ -1552,19 +1552,19 @@ HRESULT CIsochartMesh::OptimizeVertexParamStretch(
     // leave its current position. So no need to continue optimizing.
     if (IsInZeroRange(vertInfo.fRadius))
     {
-        delete []vertInfo.pfStartFaceStretch;
+        delete[]vertInfo.pfStartFaceStretch;
         bIsUpdated = false;
         return S_OK;
     }
 
     // 3. Move vertex around the center to find a position with minimal
     // stretch.
-    bIsUpdated = 
+    bIsUpdated =
         OptimizeVertexStretchAroundCenter(
             optimizeInfo,
             vertInfo);
 
-    delete []vertInfo.pfStartFaceStretch;
+    delete[]vertInfo.pfStartFaceStretch;
 
     return S_OK;
 }
@@ -1586,16 +1586,16 @@ void CIsochartMesh::PrepareBoundaryVertOpt(
     // To a boundary vertex, use its original position as center of optimization
     vertInfo.center = pOptimizeVertex->uv;
     vertInfo.end = pOptimizeVertex->uv;
-    vertInfo.fEndStretch = 
+    vertInfo.fEndStretch =
         optimizeInfo.pfVertStretch[vertInfo.pOptimizeVertex->dwID];
 
-    vertInfo.fRadius =  FLT_MAX;
+    vertInfo.fRadius = FLT_MAX;
 
     // 1. Don't move the vertex outside the 1-ring neighborhood.
-    for (size_t i=0; i<dwAdjacentVertexCount; i++)
+    for (size_t i = 0; i < dwAdjacentVertexCount; i++)
     {
         pVertex1 = m_pVerts + pOptimizeVertex->vertAdjacent[i];
-        float fLength = 
+        float fLength =
             CaculateUVDistanceSquare(pOptimizeVertex->uv, pVertex1->uv);
         if (vertInfo.fRadius > fLength)
         {
@@ -1604,7 +1604,7 @@ void CIsochartMesh::PrepareBoundaryVertOpt(
     }
 
     // 2. Don't move the vertex across other boundary edges.
-    for (size_t i=0; i<m_edges.size(); i++)
+    for (size_t i = 0; i < m_edges.size(); i++)
     {
         float fLength;
         ISOCHARTEDGE& edge = m_edges[i];
@@ -1613,7 +1613,7 @@ void CIsochartMesh::PrepareBoundaryVertOpt(
             continue;
         }
         if (edge.dwVertexID[0] == pOptimizeVertex->dwID
-        ||edge.dwVertexID[1] == pOptimizeVertex->dwID)
+            || edge.dwVertexID[1] == pOptimizeVertex->dwID)
         {
             continue;
         }
@@ -1625,7 +1625,7 @@ void CIsochartMesh::PrepareBoundaryVertOpt(
             pOptimizeVertex->uv,
             pVertex0->uv,
             pVertex1->uv);
-        
+
         if (vertInfo.fRadius > fLength)
         {
             vertInfo.fRadius = fLength;
@@ -1634,7 +1634,7 @@ void CIsochartMesh::PrepareBoundaryVertOpt(
 
     // 3. Don's move the vertex and make the adjacent boundary edges move across
     // other boundary vertices.
-    for (size_t i=0; i<pOptimizeVertex->edgeAdjacent.size(); i++)
+    for (size_t i = 0; i < pOptimizeVertex->edgeAdjacent.size(); i++)
     {
         float fLength;
         ISOCHARTEDGE& edge = m_edges[pOptimizeVertex->edgeAdjacent[i]];
@@ -1646,14 +1646,14 @@ void CIsochartMesh::PrepareBoundaryVertOpt(
         pVertex0 = m_pVerts + edge.dwVertexID[0];
         pVertex1 = m_pVerts + edge.dwVertexID[1];
 
-        for (size_t j=0; j<m_dwVertNumber; j++)
+        for (size_t j = 0; j < m_dwVertNumber; j++)
         {
             ISOCHARTVERTEX* pVertex2 = m_pVerts + j;
             if (!pVertex2->bIsBoundary)
             {
                 continue;
             }
-            if ( j==edge.dwVertexID[0] || j==edge.dwVertexID[1])
+            if (j == edge.dwVertexID[0] || j == edge.dwVertexID[1])
             {
                 continue;
             }
@@ -1694,7 +1694,7 @@ void CIsochartMesh::PrepareInternalVertOpt(
     // 1. Calculate the center position
     ISOCHARTVERTEX* pVertex1 = nullptr;
     vertInfo.end.x = vertInfo.end.y = 0;
-    for (size_t i=0; i<dwAdjacentVertexCount; i++)
+    for (size_t i = 0; i < dwAdjacentVertexCount; i++)
     {
         pVertex1 = m_pVerts + pOptimizeVertex->vertAdjacent[i];
         vertInfo.end.x += pVertex1->uv.x;
@@ -1717,7 +1717,7 @@ void CIsochartMesh::PrepareInternalVertOpt(
     // assign the position with smallest stretch to vertInfo.end,
     // this position is a candidate of finial position
     XMFLOAT2 middle;
-    for (size_t i=0; i<dwAdjacentVertexCount; i++)
+    for (size_t i = 0; i < dwAdjacentVertexCount; i++)
     {
         pVertex1 = m_pVerts + pOptimizeVertex->vertAdjacent[i];
         XMStoreFloat2(&middle,
@@ -1740,7 +1740,7 @@ void CIsochartMesh::PrepareInternalVertOpt(
             memcpy(
                 vertInfo.pfEndFaceStretch,
                 vertInfo.pfWorkStretch,
-                sizeof(float)*dwAdjacentFaceCount);
+                sizeof(float) * dwAdjacentFaceCount);
             vertInfo.end = middle;
         }
     }
@@ -1749,7 +1749,7 @@ void CIsochartMesh::PrepareInternalVertOpt(
     // circle.
     // Don't move current vertex out of 1-ring neighborhood.
     vertInfo.fRadius = FLT_MAX;
-    for (size_t i=0; i<dwAdjacentVertexCount; i++)
+    for (size_t i = 0; i < dwAdjacentVertexCount; i++)
     {
         pVertex1 = m_pVerts + pOptimizeVertex->vertAdjacent[i];
         float fTemp =
@@ -1760,7 +1760,7 @@ void CIsochartMesh::PrepareInternalVertOpt(
         }
     }
 
-    vertInfo.fRadius = 
+    vertInfo.fRadius =
         IsochartSqrtf(vertInfo.fRadius) * CONSERVATIVE_OPTIMIZE_FACTOR;
 }
 
@@ -1776,25 +1776,25 @@ bool CIsochartMesh::OptimizeVertexStretchAroundCenter(
 
     XMFLOAT2 originalEnd = vertInfo.end;
     float fOriginalEndStretch = vertInfo.fEndStretch;
-    
-    float fToleranceLength 
-        = optimizeInfo.fAverageEdgeLength*optimizeInfo.fAverageEdgeLength
-        *optimizeInfo.fTolerance*optimizeInfo.fTolerance;
+
+    float fToleranceLength
+        = optimizeInfo.fAverageEdgeLength * optimizeInfo.fAverageEdgeLength
+        * optimizeInfo.fTolerance * optimizeInfo.fTolerance;
 
     float fTempStretch = 0;
     XMFLOAT2 middle;
     // As the decription in [SSGH01], randomly moving vertex will have more
     // chance to find the optimal position. To make consistent results, srand
     // with a specified value 2
-    srand(2); 
+    srand(2);
     size_t iteration = 0;
     while (iteration < optimizeInfo.dwRandOptOneVertTimes)
     {
         // 1. Get a new random position in the optimizing circle range
         float fAngle = rand() * 2.f * XM_PI / RAND_MAX;
-        vertInfo.end.x = 
+        vertInfo.end.x =
             vertInfo.center.x + vertInfo.fRadius * cosf(fAngle);
-        vertInfo.end.y = 
+        vertInfo.end.y =
             vertInfo.center.y + vertInfo.fRadius * sinf(fAngle);
 
         // 2. When optimizing an boundary vertex during sigal-specified 
@@ -1814,24 +1814,24 @@ bool CIsochartMesh::OptimizeVertexStretchAroundCenter(
             pOptimizeVertex,
             optimizeInfo.bOptLn,
             optimizeInfo.bOptSignal,
-            optimizeInfo.fStretchScale,			
+            optimizeInfo.fStretchScale,
             vertInfo.end,
             vertInfo.fEndStretch,
             vertInfo.pfEndFaceStretch);
 
         float fDiffernece =
-                CaculateUVDistanceSquare(vertInfo.start, vertInfo.end);
+            CaculateUVDistanceSquare(vertInfo.start, vertInfo.end);
 
         // 4. Bisearch the position along the segment between center and end.
         // get the position with smallest vertex stretch
         float fPrevDiff = fDiffernece;
-        while(fDiffernece > fToleranceLength)
+        while (fDiffernece > fToleranceLength)
         {
             middle.x = (vertInfo.start.x + vertInfo.end.x) / 2;
             middle.y = (vertInfo.start.y + vertInfo.end.y) / 2;
 
             TryAdjustVertexParamStretch(
-                pOptimizeVertex,				
+                pOptimizeVertex,
                 optimizeInfo.bOptLn,
                 optimizeInfo.bOptSignal,
                 optimizeInfo.fStretchScale,
@@ -1842,7 +1842,7 @@ bool CIsochartMesh::OptimizeVertexStretchAroundCenter(
             // When Optimize bounday vertex signal stretch, if the L2 squared Stretch is 0,
             // this mean's no signal change on faces around the vertex, we can decrease their
             // 2D area.
-            if (vertInfo.fStartStretch == vertInfo.fEndStretch && 								
+            if (vertInfo.fStartStretch == vertInfo.fEndStretch &&
                 pOptimizeVertex->bIsBoundary &&
                 optimizeInfo.bOptSignal &&
                 IsInZeroRange(vertInfo.fEndStretch))
@@ -1872,7 +1872,7 @@ bool CIsochartMesh::OptimizeVertexStretchAroundCenter(
                 vertInfo.fStartStretch = fTempStretch;
                 vertInfo.start = middle;
             }
-                        
+
             fDiffernece =
                 CaculateUVDistanceSquare(vertInfo.start, vertInfo.end);
             if (IsInZeroRange2(fPrevDiff - fDiffernece) || fPrevDiff < fDiffernece)
@@ -1922,7 +1922,7 @@ bool CIsochartMesh::OptimizeVertexStretchAroundCenter(
         float fNewArea = GetFaceAreaAroundVertex(
             pOptimizeVertex, vertInfo.end);
 
-        if (fOldArea >fNewArea)
+        if (fOldArea > fNewArea)
         {
             TryAdjustVertexParamStretch(
                 pOptimizeVertex,
@@ -1961,14 +1961,14 @@ bool CIsochartMesh::OptimizeVertexStretchAroundCenter(
         vertInfo.end = vertInfo.start;
     }
     // Update vertex adjacent faces' stretch
-    if (vertInfo.fEndStretch < INFINITE_STRETCH && 
+    if (vertInfo.fEndStretch < INFINITE_STRETCH &&
         vertInfo.fEndStretch < fOriginalStartStretch)
     {
         TryAdjustVertexParamStretch(
             pOptimizeVertex,
             optimizeInfo.bOptLn,
             optimizeInfo.bOptSignal,
-            optimizeInfo.fStretchScale,			
+            optimizeInfo.fStretchScale,
             vertInfo.end,
             vertInfo.fEndStretch,
             vertInfo.pfEndFaceStretch);
@@ -1994,18 +1994,18 @@ float CIsochartMesh::GetFaceAreaAroundVertex(
 {
     float fTotalFaceArea = 0;
 
-    for (size_t j=0; j<pOptimizeVertex->faceAdjacent.size(); j++)	
+    for (size_t j = 0; j < pOptimizeVertex->faceAdjacent.size(); j++)
     {
         ISOCHARTFACE* pFace = m_pFaces + pOptimizeVertex->faceAdjacent[j];
-    
+
         // Calculate face Ln stretch using new UV-coordinates.
         if (pFace->dwVertexID[0] == pOptimizeVertex->dwID)
         {
-            fTotalFaceArea+= Cal2DTriangleArea(
+            fTotalFaceArea += Cal2DTriangleArea(
                 &newUV,
                 &(m_pVerts[pFace->dwVertexID[1]].uv),
                 &(m_pVerts[pFace->dwVertexID[2]].uv));
-        
+
         }
         else if (pFace->dwVertexID[1] == pOptimizeVertex->dwID)
         {
@@ -2035,20 +2035,20 @@ float CIsochartMesh::CalcuateAdjustedVertexStretch(
     float fVertStretch = 0;
     if (!bOptLn)
     {
-        for (size_t j=0; j<pVertex->faceAdjacent.size(); j++)
+        for (size_t j = 0; j < pVertex->faceAdjacent.size(); j++)
         {
             if (pfAdjFaceStretch[j] == INFINITE_STRETCH)
             {
                 fVertStretch = INFINITE_STRETCH;
                 break;
             }
-            
+
             fVertStretch += pfAdjFaceStretch[j];
         }
     }
     else
     {
-        for (size_t j=0; j<pVertex->faceAdjacent.size(); j++)
+        for (size_t j = 0; j < pVertex->faceAdjacent.size(); j++)
         {
             if (fVertStretch < pfAdjFaceStretch[j])
             {
@@ -2091,7 +2091,7 @@ void CIsochartMesh::UpdateOptimizeResult(
     pOptimizeVertex->uv = vertexNewCoordinate;
 
     // 2. Update the adjacent faces' stretch
-    for (size_t i=0; i<dwAdjacentFaceCount; i++)
+    for (size_t i = 0; i < dwAdjacentFaceCount; i++)
     {
         uint32_t dwAdjacentFaceID = pOptimizeVertex->faceAdjacent[i];
         optimizeInfo.pfFaceStretch[dwAdjacentFaceID]
@@ -2100,23 +2100,23 @@ void CIsochartMesh::UpdateOptimizeResult(
 
     // 3. Update adjacent vertices' stretch.
     ISOCHARTVERTEX* pVertex1;
-    for (size_t i=0; i<dwAdjacentVertexCount; i++)
+    for (size_t i = 0; i < dwAdjacentVertexCount; i++)
     {
         pVertex1 = m_pVerts + pOptimizeVertex->vertAdjacent[i];
-        optimizeInfo.pfVertStretch[pVertex1->dwID] = 
+        optimizeInfo.pfVertStretch[pVertex1->dwID] =
             CalculateVertexStretch(
                 optimizeInfo.bOptLn,
-                pVertex1, 
+                pVertex1,
                 optimizeInfo.pfFaceStretch);
     }
-    
+
 }
 
 // Using the expression given by [SSGH01]
 void CIsochartMesh::TryAdjustVertexParamStretch(
     ISOCHARTVERTEX* pOptimizeVertex,
-    bool bOptLn,	
-    bool bOptSignal,	
+    bool bOptLn,
+    bool bOptSignal,
     float fStretchScale,
     XMFLOAT2& newUV,
     float& fStretch,
@@ -2126,7 +2126,7 @@ void CIsochartMesh::TryAdjustVertexParamStretch(
 
     float f2D;
     float fGeoM[3]; // fGeoM[0] = Ss*Ss, fGeoM[1] = Ss*St, fGeoM[2] = St*St
-    for (size_t i=0; i<pOptimizeVertex->faceAdjacent.size(); i++)
+    for (size_t i = 0; i < pOptimizeVertex->faceAdjacent.size(); i++)
     {
         ISOCHARTFACE* pFace = m_pFaces + pOptimizeVertex->faceAdjacent[i];
 
@@ -2135,7 +2135,7 @@ void CIsochartMesh::TryAdjustVertexParamStretch(
         {
             pfFaceStretch[i] = CalFaceSquraedStretch(
                 bOptLn,
-                bOptSignal,		
+                bOptSignal,
                 pFace,
                 newUV,
                 m_pVerts[pFace->dwVertexID[1]].uv,
@@ -2148,7 +2148,7 @@ void CIsochartMesh::TryAdjustVertexParamStretch(
         {
             pfFaceStretch[i] = CalFaceSquraedStretch(
                 bOptLn,
-                bOptSignal,		
+                bOptSignal,
                 pFace,
                 m_pVerts[pFace->dwVertexID[0]].uv,
                 newUV,
@@ -2161,7 +2161,7 @@ void CIsochartMesh::TryAdjustVertexParamStretch(
         {
             pfFaceStretch[i] = CalFaceSquraedStretch(
                 bOptLn,
-                bOptSignal,		
+                bOptSignal,
                 pFace,
                 m_pVerts[pFace->dwVertexID[0]].uv,
                 m_pVerts[pFace->dwVertexID[1]].uv,
@@ -2172,28 +2172,28 @@ void CIsochartMesh::TryAdjustVertexParamStretch(
         }
 
         float f3DArea = m_baseInfo.pfFaceAreaArray[pFace->dwIDInRootMesh];
-        if (!bOptLn && 
-            bOptSignal && 
+        if (!bOptLn &&
+            bOptSignal &&
             !IsInZeroRange2(f3DArea))
         {
-            if (f2D < 0 
+            if (f2D < 0
                 || fGeoM[0] == INFINITE_STRETCH
                 || fGeoM[2] == INFINITE_STRETCH)
             {
                 fStretch = INFINITE_STRETCH;
             }
-            
-            if (fGeoM[0] + fGeoM[2] > 
+
+            if (fGeoM[0] + fGeoM[2] >
                 m_baseInfo.fExpectAvgL2SquaredStretch * 2)
             {
                 fStretch = INFINITE_STRETCH;
             }
 
-            if (fGeoM[0] + fGeoM[2] < 
+            if (fGeoM[0] + fGeoM[2] <
                 m_baseInfo.fExpectMinAvgL2SquaredStretch * 2)
             {
-                fStretch = INFINITE_STRETCH;	
-            }			
+                fStretch = INFINITE_STRETCH;
+            }
         }
     }
 
@@ -2203,8 +2203,8 @@ void CIsochartMesh::TryAdjustVertexParamStretch(
     }
 
     fStretch = CalcuateAdjustedVertexStretch(
-        bOptLn, 
-        pOptimizeVertex, 
+        bOptLn,
+        pOptimizeVertex,
         pfFaceStretch);
 }
 
@@ -2216,19 +2216,19 @@ void CIsochartMesh::ParameterizeOneFace(
     {
         float fMatrix[4];
         m_fParamStretchL2 = CalL2SquaredStretchLowBoundOnFace(
-            m_baseInfo.pfIMTArray[pFace->dwIDInRootMesh], 
+            m_baseInfo.pfIMTArray[pFace->dwIDInRootMesh],
             m_baseInfo.pfFaceAreaArray[pFace->dwIDInRootMesh],
             FACE_MAX_SCALE_FACTOR,
             fMatrix);
 
-        
-        XMFLOAT2* p = 
-            m_baseInfo.pFaceCanonicalUVCoordinate+m_pFaces->dwIDInRootMesh*3;
+
+        XMFLOAT2* p =
+            m_baseInfo.pFaceCanonicalUVCoordinate + m_pFaces->dwIDInRootMesh * 3;
 
         TransformUV(m_pVerts[m_pFaces->dwVertexID[0]].uv, p[0], fMatrix);
         TransformUV(m_pVerts[m_pFaces->dwVertexID[1]].uv, p[1], fMatrix);
         TransformUV(m_pVerts[m_pFaces->dwVertexID[2]].uv, p[2], fMatrix);
-        
+
 
         float fNew2DArea = Cal2DTriangleArea(
             m_pVerts[m_pFaces->dwVertexID[0]].uv,
@@ -2240,12 +2240,12 @@ void CIsochartMesh::ParameterizeOneFace(
 #ifdef _DEBUG
         float fNewStretch =
 #endif
-        CalFaceSigL2SquraedStretch(
-            pFace, 
-            m_pVerts[m_pFaces->dwVertexID[0]].uv, 
-            m_pVerts[m_pFaces->dwVertexID[1]].uv, 
-            m_pVerts[m_pFaces->dwVertexID[2]].uv,
-            fNew2DArea);
+            CalFaceSigL2SquraedStretch(
+                pFace,
+                m_pVerts[m_pFaces->dwVertexID[0]].uv,
+                m_pVerts[m_pFaces->dwVertexID[1]].uv,
+                m_pVerts[m_pFaces->dwVertexID[2]].uv,
+                fNew2DArea);
 
         DPF(1, "New Area %f", double(fNew2DArea));
         DPF(3, "Theory Stretch %f, New Stretch %f", double(m_fParamStretchL2), double(fNewStretch));
@@ -2264,5 +2264,5 @@ void CIsochartMesh::ParameterizeOneFace(
         m_fParamStretchL2 = m_baseInfo.pfFaceAreaArray[pFace->dwIDInRootMesh];
     }
     m_fChart2DArea = m_fChart3DArea;
-    m_bIsParameterized  = true;
+    m_bIsParameterized = true;
 }

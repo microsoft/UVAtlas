@@ -36,7 +36,7 @@ bool CVertIter::Init(
     m_bclockwise = false;
 
     size_t dwItCount = 0;
-    while(HasNextFace() && dwItCount <= dwTotoalFaceCount)
+    while (HasNextFace() && dwItCount <= dwTotoalFaceCount)
     {
         if (!NextFace())
         {
@@ -64,12 +64,12 @@ uint32_t CVertIter::GetNextFace()
     if (m_bclockwise)
     {
         return
-        m_rgdwAdjacency[m_dwCurrentFaceID*3 + (m_dwCurrentVertIdx+2)%3];
+            m_rgdwAdjacency[m_dwCurrentFaceID * 3 + (m_dwCurrentVertIdx + 2) % 3];
     }
     else
     {
         return
-        m_rgdwAdjacency[m_dwCurrentFaceID*3 + m_dwCurrentVertIdx];
+            m_rgdwAdjacency[m_dwCurrentFaceID * 3 + m_dwCurrentVertIdx];
     }
 }
 
@@ -77,7 +77,7 @@ bool CVertIter::HasNextFace()
 {
     uint32_t dwNextFaceID = GetNextFace();
     if (dwNextFaceID == INVALID_FACE_ID
-        ||dwNextFaceID == m_dwBeginFaceID)
+        || dwNextFaceID == m_dwBeginFaceID)
     {
         return false;
     }
@@ -89,9 +89,9 @@ bool CVertIter::NextFace()
     uint32_t dwNextFaceID = GetNextFace();
 
     uint32_t dwNextVertIdx = INVALID_INDEX;
-    const uint32_t *pAdj = m_rgdwAdjacency + dwNextFaceID * 3;
+    const uint32_t* pAdj = m_rgdwAdjacency + dwNextFaceID * 3;
 
-    for (uint32_t i=0; i<3; i++)
+    for (uint32_t i = 0; i < 3; i++)
     {
         if (pAdj[i] == m_dwCurrentFaceID)
         {
@@ -102,14 +102,14 @@ bool CVertIter::NextFace()
             }
             else
             {
-                dwNextVertIdx = (i+1)%3;
+                dwNextVertIdx = (i + 1) % 3;
                 break;
             }
         }
     }
     assert(dwNextVertIdx != INVALID_INDEX);
-    
-    if(dwNextFaceID != INVALID_FACE_ID
+
+    if (dwNextFaceID != INVALID_FACE_ID
         && dwNextFaceID == m_dwPrevFaceID
         && dwNextVertIdx == m_dwPrevVertIdx)
     {

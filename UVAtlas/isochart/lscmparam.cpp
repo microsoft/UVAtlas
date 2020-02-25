@@ -69,8 +69,8 @@ HRESULT CIsochartMesh::FindTwoFarestBoundaryVertices(
     HRESULT hr = S_OK;
 
     dwVertId1 = INVALID_VERT_ID;
-    dwVertId2 = INVALID_VERT_ID;	
-    for (uint32_t ii=0; ii<m_dwVertNumber; ii++)
+    dwVertId2 = INVALID_VERT_ID;
+    for (uint32_t ii = 0; ii < m_dwVertNumber; ii++)
     {
         if (m_pVerts[ii].bIsBoundary)
         {
@@ -88,7 +88,7 @@ HRESULT CIsochartMesh::FindTwoFarestBoundaryVertices(
 
     if (dwVertId1 > dwVertId2)
     {
-        std::swap(dwVertId1,dwVertId2);
+        std::swap(dwVertId1, dwVertId2);
     }
 
     return hr;
@@ -116,14 +116,14 @@ HRESULT CIsochartMesh::AddFaceWeight(
         m_baseInfo.pVertPosition + m_pVerts[face.dwVertexID[1]].dwIDInRootMesh,
         m_baseInfo.pVertPosition + m_pVerts[face.dwVertexID[2]].dwIDInRootMesh,
         v2d,
-        v2d+1,
-        v2d+2,
+        v2d + 1,
+        v2d + 2,
         axis);
 
-    double t = 
-        double(v2d[0].x*v2d[1].y - v2d[0].y*v2d[1].x) +
-        double(v2d[1].x*v2d[2].y - v2d[1].y*v2d[2].x) +
-        double(v2d[2].x*v2d[0].y - v2d[2].y*v2d[0].x);
+    double t =
+        double(v2d[0].x * v2d[1].y - v2d[0].y * v2d[1].x) +
+        double(v2d[1].x * v2d[2].y - v2d[1].y * v2d[2].x) +
+        double(v2d[2].x * v2d[0].y - v2d[2].y * v2d[0].x);
 
     t = IsochartSqrt(t);
     if (IsInZeroRange2(static_cast<float>(t)))
@@ -132,19 +132,19 @@ HRESULT CIsochartMesh::AddFaceWeight(
     }
 
     CSparseMatrix<double>* pA = nullptr;
-    for (size_t ii=0; ii<3; ii++)
+    for (size_t ii = 0; ii < 3; ii++)
     {
         ISOCHARTVERTEX& vert = m_pVerts[face.dwVertexID[ii]];
 
-        double w_r = double(v2d[(ii+2)%3].x - v2d[(ii+1)%3].x);
-        double w_i = double(v2d[(ii+2)%3].y - v2d[(ii+1)%3].y);
+        double w_r = double(v2d[(ii + 2) % 3].x - v2d[(ii + 1) % 3].x);
+        double w_i = double(v2d[(ii + 2) % 3].y - v2d[(ii + 1) % 3].y);
 
         size_t dwCol1;
         size_t dwCol2;
 
-        if ( IN_CONSTANT == GetPosInMatrix(
-            vert.dwID, 
-            m_dwVertNumber, 
+        if (IN_CONSTANT == GetPosInMatrix(
+            vert.dwID,
+            m_dwVertNumber,
             dwBaseVertId1,
             dwBaseVertId2,
             dwCol1,
@@ -157,23 +157,23 @@ HRESULT CIsochartMesh::AddFaceWeight(
             pA = &A;
         }
 
-        if (!pA->setItem(dwFaceID, dwCol1, w_r/t))
+        if (!pA->setItem(dwFaceID, dwCol1, w_r / t))
         {
             return E_OUTOFMEMORY;
         }
-        if (!pA->setItem(dwFaceID, dwCol2, -w_i/t))
+        if (!pA->setItem(dwFaceID, dwCol2, -w_i / t))
         {
             return E_OUTOFMEMORY;
         }
 
-        if (!pA->setItem(dwFaceID+m_dwFaceNumber, dwCol1, w_i/t))
+        if (!pA->setItem(dwFaceID + m_dwFaceNumber, dwCol1, w_i / t))
         {
             return E_OUTOFMEMORY;
-        }		
-        if (!pA->setItem(dwFaceID+m_dwFaceNumber, dwCol2, w_r/t))
+        }
+        if (!pA->setItem(dwFaceID + m_dwFaceNumber, dwCol2, w_r / t))
         {
             return E_OUTOFMEMORY;
-        }		
+        }
     }
     return hr;
 }
@@ -209,9 +209,9 @@ HRESULT CIsochartMesh::AssignLSCMResult(
 {
     HRESULT hr = S_OK;
 
-    CVector<double> *pV = nullptr;
-    for (uint32_t ii=0; ii<m_dwVertNumber; ii++)
-    {	
+    CVector<double>* pV = nullptr;
+    for (uint32_t ii = 0; ii < m_dwVertNumber; ii++)
+    {
         size_t dwCol1, dwCol2;
         if (IN_CONSTANT == GetPosInMatrix(
             ii,
@@ -247,16 +247,16 @@ HRESULT CIsochartMesh::InitializeLSCMEquation(
     CSparseMatrix<double> M;
     CVector<double> orgB;
 
-    if (!orgA.resize(2*m_dwFaceNumber, (m_dwVertNumber-2)*2))
+    if (!orgA.resize(2 * m_dwFaceNumber, (m_dwVertNumber - 2) * 2))
     {
         return E_OUTOFMEMORY;
     }
-    if (!M.resize(2*m_dwFaceNumber, 2*2))
+    if (!M.resize(2 * m_dwFaceNumber, 2 * 2))
     {
         return E_OUTOFMEMORY;
     }
-    
-    for (uint32_t ii=0; ii<m_dwFaceNumber; ii++)
+
+    for (uint32_t ii = 0; ii < m_dwFaceNumber; ii++)
     {
         FAILURE_RETURN(
             AddFaceWeight(ii, orgA, M, dwBaseVertId1, dwBaseVertId2));
@@ -267,7 +267,7 @@ HRESULT CIsochartMesh::InitializeLSCMEquation(
     {
         return E_OUTOFMEMORY;
     }
-    assert(orgB.size() == 2*m_dwFaceNumber);
+    assert(orgB.size() == 2 * m_dwFaceNumber);
     CVector<double>::scale(orgB, orgB, -1.0);
 
     // A' = A^T * A
@@ -281,7 +281,7 @@ HRESULT CIsochartMesh::InitializeLSCMEquation(
     {
         return E_OUTOFMEMORY;
     }
-    
+
     return hr;
 }
 
@@ -293,7 +293,7 @@ HRESULT CIsochartMesh::CheckLinearEquationParamResult(
     HRESULT hr = S_OK;
 
     double fTotal2D = 0;
-    for (size_t ii=0; ii<m_dwFaceNumber; ii++)
+    for (size_t ii = 0; ii < m_dwFaceNumber; ii++)
     {
         ISOCHARTFACE& face = m_pFaces[ii];
         float fA = Cal2DTriangleArea(
@@ -310,7 +310,7 @@ HRESULT CIsochartMesh::CheckLinearEquationParamResult(
     }
 
     bIsOverLap = false;
-    ScaleChart(static_cast<float>(IsochartSqrt(double(m_fChart3DArea)/fTotal2D)));
+    ScaleChart(static_cast<float>(IsochartSqrt(double(m_fChart3DArea) / fTotal2D)));
     m_fChart2DArea = m_fChart3DArea;
 
     m_bIsParameterized = true;
@@ -344,13 +344,13 @@ HRESULT CIsochartMesh::LSCMParameterization(
     // 2. Setup the linear equation set	
     FAILURE_GOTO_END(
         EstimateSolution(U));
-    
+
     FAILURE_GOTO_END(
         InitializeLSCMEquation(
-            A, 
-            B, 
-            U, 
-            dwBaseVertId1, 
+            A,
+            B,
+            U,
+            dwBaseVertId1,
             dwBaseVertId2));
 
     // 3. Solve the linear equation set
@@ -370,9 +370,9 @@ HRESULT CIsochartMesh::LSCMParameterization(
     // 4. Assign UV coordinates
     FAILURE_GOTO_END(
         AssignLSCMResult(
-            U, 
-            X, 
-            dwBaseVertId1, 
+            U,
+            X,
+            dwBaseVertId1,
             dwBaseVertId2));
 
     // 5. Check Results

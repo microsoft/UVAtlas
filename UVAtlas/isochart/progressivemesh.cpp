@@ -32,9 +32,9 @@ namespace
     const float MAX_PM_ERROR = 0.90f;
 
     void IsochartVec3Substract(
-        XMFLOAT3 *pOut,
-        const XMFLOAT3 *pV1,
-        const XMFLOAT3 *pV2)
+        XMFLOAT3* pOut,
+        const XMFLOAT3* pV1,
+        const XMFLOAT3* pV2)
     {
         pOut->x = float(DOUBLE_OP(pV1->x, pV2->x, -));
         pOut->y = float(DOUBLE_OP(pV1->y, pV2->y, -));
@@ -42,9 +42,9 @@ namespace
     }
 
     void IsochartVec3Cross(
-        XMFLOAT3 *pOut,
-        const XMFLOAT3 *pV1,
-        const XMFLOAT3 *pV2)
+        XMFLOAT3* pOut,
+        const XMFLOAT3* pV1,
+        const XMFLOAT3* pV2)
     {
         XMFLOAT3 v;
 
@@ -56,8 +56,8 @@ namespace
     }
 
     float IsochartVec3Dot(
-        const XMFLOAT3 *pV1,
-        const XMFLOAT3 *pV2)
+        const XMFLOAT3* pV1,
+        const XMFLOAT3* pV2)
     {
         return float(
             DOUBLE_OP(pV1->x, pV2->x, *) +
@@ -68,7 +68,7 @@ namespace
 
 // Constructor
 CProgressiveMesh::CProgressiveMesh(
-    const CBaseMeshInfo &baseInfo,
+    const CBaseMeshInfo& baseInfo,
     CCallbackSchemer& callbackSchemer)
     : m_pVertArray(nullptr),
     m_pFaceArray(nullptr),
@@ -92,11 +92,11 @@ CProgressiveMesh::~CProgressiveMesh()
 void CProgressiveMesh::Clear()
 {
     SAFE_DELETE_ARRAY(m_pVertArray)
-    SAFE_DELETE_ARRAY(m_pFaceArray)
-    SAFE_DELETE_ARRAY(m_pEdgeArray)
-    SAFE_DELETE_ARRAY(m_pQuadricArray)
+        SAFE_DELETE_ARRAY(m_pFaceArray)
+        SAFE_DELETE_ARRAY(m_pEdgeArray)
+        SAFE_DELETE_ARRAY(m_pQuadricArray)
 
-    m_dwVertNumber = 0;
+        m_dwVertNumber = 0;
     m_dwFaceNumber = 0;
     m_dwEdgeNumber = 0;
 }
@@ -123,14 +123,14 @@ HRESULT CProgressiveMesh::Initialize(CIsochartMesh& mesh)
     }
 
     // 2. Create progressive mesh or original mesh
-    if (FAILED( hr = CreateProgressiveMesh(mesh)))
+    if (FAILED(hr = CreateProgressiveMesh(mesh)))
     {
         Clear();
         return hr;
     }
 
     // 3. Caculated quadric error for each edge and vertex
-    if (FAILED( hr = CalculateQuadricErrorMetric()))
+    if (FAILED(hr = CalculateQuadricErrorMetric()))
     {
         Clear();
         return hr;
@@ -161,7 +161,7 @@ HRESULT CProgressiveMesh::Simplify()
         return  E_OUTOFMEMORY;
     }
 
-    std::unique_ptr<CCostHeapItem[]> heapItems( new (std::nothrow) CCostHeapItem[m_dwEdgeNumber] );
+    std::unique_ptr<CCostHeapItem[]> heapItems(new (std::nothrow) CCostHeapItem[m_dwEdgeNumber]);
     if (!heapItems)
     {
         return E_OUTOFMEMORY;
@@ -170,25 +170,25 @@ HRESULT CProgressiveMesh::Simplify()
     auto pHeapItems = heapItems.get();
 
     // 1. Initialize a heap
-    for (uint32_t i=0; i < m_dwEdgeNumber; i++)
+    for (uint32_t i = 0; i < m_dwEdgeNumber; i++)
     {
         pHeapItems[i].m_weight = -m_pEdgeArray[i].fDeleteCost;
-        
+
         if (pHeapItems[i].m_weight > double(-ISOCHART_ZERO_EPS))
         {
             pHeapItems[i].m_weight = double(-ISOCHART_ZERO_EPS);
         }
         pHeapItems[i].m_data = i;
-        if (!heap.insert(pHeapItems+i))
+        if (!heap.insert(pHeapItems + i))
         {
             return E_OUTOFMEMORY;
         }
         assert(pHeapItems[i].getPos() != NOT_IN_HEAP);
     }
 
-    DPF(3,"----Begin Simplify----");
+    DPF(3, "----Begin Simplify----");
     HRESULT hr = m_callbackSchemer.CheckPointAdapt();
-    if ( FAILED(hr) )
+    if (FAILED(hr))
         return hr;
 
     // 2. Iteration of deleting edges.
@@ -196,7 +196,7 @@ HRESULT CProgressiveMesh::Simplify()
     int nImportanceOrder = 1;
     uint32_t dwRemainVertNumber = m_dwVertNumber;
     size_t dwRepeat = 0;
-    while (dwEdgeCount < m_dwEdgeNumber 
+    while (dwEdgeCount < m_dwEdgeNumber
         && dwRemainVertNumber > dwMinVertNumber)
     {
         // 2.1 Fetch a candidate edge to be deleted.
@@ -206,16 +206,16 @@ HRESULT CProgressiveMesh::Simplify()
             break;
         }
 
-        PMISOCHARTEDGE* pCurrentEdge = 
+        PMISOCHARTEDGE* pCurrentEdge =
             m_pEdgeArray + pNeedCutEdgeItem->m_data;
         assert(!pCurrentEdge->bIsDeleted);
 
         // 2.2 If deleting current edge makes distortion more than some limit, then stop
         // deleting edges.
-        
+
         if (static_cast<float>(fabs(pNeedCutEdgeItem->m_weight))
-            > fMaxError*m_fBoxDiagLen)
-        {	
+            > fMaxError* m_fBoxDiagLen)
+        {
             break;
         }
 
@@ -275,8 +275,8 @@ HRESULT CProgressiveMesh::Simplify()
         {
             break;
         }
-        
-        PMISOCHARTEDGE* pCurrentEdge = 
+
+        PMISOCHARTEDGE* pCurrentEdge =
             m_pEdgeArray + pNeedCutEdgeItem->m_data;
 
         // 2.3 Decide if current edge can be deleted, which vertex of current edge
@@ -308,9 +308,9 @@ HRESULT CProgressiveMesh::Simplify()
         {
             return hr;
         }
-    }	
+    }
 
-    DPF(3,"#Remained vert: %d\n", dwRemainVertNumber);
+    DPF(3, "#Remained vert: %d\n", dwRemainVertNumber);
     DPF(3, "Exported simplified mesh");
 
     return S_OK;
@@ -329,8 +329,8 @@ bool CProgressiveMesh::PrepareDeletingEdge(
     bIsGeodesicValid = true;
 
     // 1. If current has been deleted, return
-    if (pCurrentEdge->bIsDeleted 
-        || pCurrentEdge->dwVertexID[0]==pCurrentEdge->dwVertexID[1])
+    if (pCurrentEdge->bIsDeleted
+        || pCurrentEdge->dwVertexID[0] == pCurrentEdge->dwVertexID[1])
     {
         return false;
     }
@@ -339,7 +339,7 @@ bool CProgressiveMesh::PrepareDeletingEdge(
     // be deleted
     *ppReserveVertex =
         m_pVertArray +
-        pCurrentEdge->dwVertexID[1-pCurrentEdge->dwDeleteWhichVertex];
+        pCurrentEdge->dwVertexID[1 - pCurrentEdge->dwDeleteWhichVertex];
 
     *ppDeleteVertex =
         m_pVertArray +
@@ -363,7 +363,7 @@ bool CProgressiveMesh::PrepareDeletingEdge(
 
     // 5. Check if toplogic is valid after deleting current edge.
     // Logic invalid is not acceptable. See detail in the function
-    if( !IsProgressiveMeshToplogicValid(
+    if (!IsProgressiveMeshToplogicValid(
         pCurrentEdge, *ppReserveVertex, *ppDeleteVertex))
     {
         return false;
@@ -389,7 +389,7 @@ bool CProgressiveMesh::IsProgressiveMeshToplogicValid(
     PMISOCHARTVERTEX* pReserveVertex,
     PMISOCHARTVERTEX* pDeleteVertex) const
 {
-    for (size_t k=0; k<2; k++)
+    for (size_t k = 0; k < 2; k++)
     {
         if (pEdge->dwOppositVertID[k] == INVALID_VERT_ID)
         {
@@ -398,11 +398,11 @@ bool CProgressiveMesh::IsProgressiveMeshToplogicValid(
 
         PMISOCHARTVERTEX* pThirdVertex =
             m_pVertArray + pEdge->dwOppositVertID[k];
-        for (size_t j=0; j<pThirdVertex->edgeAdjacent.size(); j++)
+        for (size_t j = 0; j < pThirdVertex->edgeAdjacent.size(); j++)
         {
             PMISOCHARTEDGE* pEdge1 = m_pEdgeArray + pThirdVertex->edgeAdjacent[j];
             if (IsEdgeOppositeToVertex(pEdge1, pReserveVertex)
-            &&(IsEdgeOppositeToVertex(pEdge1, pDeleteVertex)))
+                && (IsEdgeOppositeToVertex(pEdge1, pDeleteVertex)))
             {
                 return false;
             }
@@ -418,12 +418,12 @@ bool CProgressiveMesh::IsProgressiveMeshToplogicValid(
         pFace2 = m_pFaceArray + pEdge->dwFaceID[1];
     }
 
-    for (size_t j=0; j<pReserveVertex->edgeAdjacent.size(); j++)
+    for (size_t j = 0; j < pReserveVertex->edgeAdjacent.size(); j++)
     {
         PMISOCHARTEDGE* pEdge1 = m_pEdgeArray + pReserveVertex->edgeAdjacent[j];
         if (pEdge1->dwID == pFace1->dwEdgeID[0]
-        || pEdge1->dwID == pFace1->dwEdgeID[1]
-        || pEdge1->dwID == pFace1->dwEdgeID[2])
+            || pEdge1->dwID == pFace1->dwEdgeID[1]
+            || pEdge1->dwID == pFace1->dwEdgeID[2])
         {
             continue;
         }
@@ -431,19 +431,19 @@ bool CProgressiveMesh::IsProgressiveMeshToplogicValid(
         if (pFace2)
         {
             if (pEdge1->dwID == pFace2->dwEdgeID[0]
-            || pEdge1->dwID == pFace2->dwEdgeID[1]
-            || pEdge1->dwID == pFace2->dwEdgeID[2])
+                || pEdge1->dwID == pFace2->dwEdgeID[1]
+                || pEdge1->dwID == pFace2->dwEdgeID[2])
             {
                 continue;
             }
         }
 
-        for (size_t k=0; k<pDeleteVertex->edgeAdjacent.size(); k++)
+        for (size_t k = 0; k < pDeleteVertex->edgeAdjacent.size(); k++)
         {
             PMISOCHARTEDGE* pEdge2 = m_pEdgeArray + pDeleteVertex->edgeAdjacent[k];
             if (pEdge2->dwID == pFace1->dwEdgeID[0]
-            || pEdge2->dwID == pFace1->dwEdgeID[1]
-            || pEdge2->dwID == pFace1->dwEdgeID[2])
+                || pEdge2->dwID == pFace1->dwEdgeID[1]
+                || pEdge2->dwID == pFace1->dwEdgeID[2])
             {
                 continue;
             }
@@ -451,8 +451,8 @@ bool CProgressiveMesh::IsProgressiveMeshToplogicValid(
             if (pFace2)
             {
                 if (pEdge2->dwID == pFace2->dwEdgeID[0]
-                || pEdge2->dwID == pFace2->dwEdgeID[1]
-                || pEdge2->dwID == pFace2->dwEdgeID[2])
+                    || pEdge2->dwID == pFace2->dwEdgeID[1]
+                    || pEdge2->dwID == pFace2->dwEdgeID[2])
                 {
                     continue;
                 }
@@ -462,9 +462,9 @@ bool CProgressiveMesh::IsProgressiveMeshToplogicValid(
             // or face (pReserveVertex, pDeleteVertex, pEdge1->dwVertexID[1) will 
             // degenerate to a segment.
             if (pEdge2->dwVertexID[0] == pEdge1->dwVertexID[0]
-            || pEdge2->dwVertexID[0] == pEdge1->dwVertexID[1]
-            || pEdge2->dwVertexID[1] == pEdge1->dwVertexID[0]
-            || pEdge2->dwVertexID[1] == pEdge1->dwVertexID[1])
+                || pEdge2->dwVertexID[0] == pEdge1->dwVertexID[1]
+                || pEdge2->dwVertexID[1] == pEdge1->dwVertexID[0]
+                || pEdge2->dwVertexID[1] == pEdge1->dwVertexID[1])
             {
                 return false;
             }
@@ -481,16 +481,16 @@ bool CProgressiveMesh::IsProgressiveMeshGeometricValid(
     XMFLOAT3* pv[3];
     XMFLOAT3 v1, v2, normal;
 
-    for (size_t j=0; j<pDeleteVertex->faceAdjacent.size(); j++)
+    for (size_t j = 0; j < pDeleteVertex->faceAdjacent.size(); j++)
     {
-        if (isInArray(pReserveVertex->faceAdjacent,pDeleteVertex->faceAdjacent[j]))
+        if (isInArray(pReserveVertex->faceAdjacent, pDeleteVertex->faceAdjacent[j]))
         {
             continue;
         }
 
-        PMISOCHARTFACE* pFace = 
+        PMISOCHARTFACE* pFace =
             m_pFaceArray + pDeleteVertex->faceAdjacent[j];
-        for (size_t k=0; k<3; k++)
+        for (size_t k = 0; k < 3; k++)
         {
             if (pFace->dwVertexID[k] == pDeleteVertex->dwID)
             {
@@ -509,11 +509,11 @@ bool CProgressiveMesh::IsProgressiveMeshGeometricValid(
 
         XMStoreFloat3(&v1, XMVector3Normalize(XMLoadFloat3(&v1)));
         XMStoreFloat3(&v2, XMVector3Normalize(XMLoadFloat3(&v2)));
-        IsochartVec3Cross( &normal, &v1, &v2);
+        IsochartVec3Cross(&normal, &v1, &v2);
 
-        float fDotResult  = IsochartVec3Dot(&normal, &(pFace->normal));
+        float fDotResult = IsochartVec3Dot(&normal, &(pFace->normal));
         // if true deleting edge will make face pFace overturn!
-        
+
         if (fDotResult < ISOCHART_ZERO_EPS)
         {
             return false;
@@ -525,11 +525,11 @@ bool CProgressiveMesh::IsProgressiveMeshGeometricValid(
 
 
 bool CProgressiveMesh::IsEdgeOppositeToVertex
-    (PMISOCHARTEDGE* pEdge,
+(PMISOCHARTEDGE* pEdge,
     PMISOCHARTVERTEX* pVertex) const
 {
     return (pEdge->dwOppositVertID[0] == pVertex->dwID
-    || pEdge->dwOppositVertID[1] == pVertex->dwID);
+        || pEdge->dwOppositVertID[1] == pVertex->dwID);
 }
 
 // Delete current edge and correspond topology.
@@ -562,9 +562,9 @@ HRESULT CProgressiveMesh::DeleteCurrentEdge(
     // 3. Changed all connecting relationship with pDeleteVertex
     // to pReserveVertex.
     FAILURE_RETURN(
-    ReplaceDeleteVertWithReserveVert(
-        pReserveVertex,
-        pDeleteVertex));
+        ReplaceDeleteVertWithReserveVert(
+            pReserveVertex,
+            pDeleteVertex));
 
     // 4. Adjust the atrributes of the reserved vertex.
     UpdateReservedVertsAttrib(pReserveVertex, pDeleteVertex);
@@ -583,7 +583,7 @@ void CProgressiveMesh::DeleteFacesFromSufferedVertsList(
     PMISOCHARTEDGE* pCurrentEdge,
     PMISOCHARTVERTEX* pReserveVertex)
 {
-    for (size_t k=0; k<2; k++)
+    for (size_t k = 0; k < 2; k++)
     {
         if (pCurrentEdge->bIsBoundary && k == 1)
         {
@@ -591,7 +591,7 @@ void CProgressiveMesh::DeleteFacesFromSufferedVertsList(
         }
 
         //Delete the faces which share current edge
-        PMISOCHARTFACE* pFace = 
+        PMISOCHARTFACE* pFace =
             m_pFaceArray + pCurrentEdge->dwFaceID[k];
         pFace->bIsDeleted = true;
 
@@ -602,9 +602,9 @@ void CProgressiveMesh::DeleteFacesFromSufferedVertsList(
         // Remove deleted face from adjacence list of 
         // vertex opposite to current edge.
         removeItem(
-        m_pVertArray[
-            pCurrentEdge->dwOppositVertID[k]].faceAdjacent,
-                    pFace->dwID);
+            m_pVertArray[
+                pCurrentEdge->dwOppositVertID[k]].faceAdjacent,
+            pFace->dwID);
     }
     return;
 }
@@ -616,7 +616,7 @@ void CProgressiveMesh::UpdateSufferedEdgesAttrib(
     PMISOCHARTVERTEX* pReserveVertex,
     PMISOCHARTVERTEX* pDeleteVertex)
 {
-    for (size_t j=0; j<pDeleteVertex->edgeAdjacent.size(); j++)
+    for (size_t j = 0; j < pDeleteVertex->edgeAdjacent.size(); j++)
     {
         if (pDeleteVertex->edgeAdjacent[j] == pCurrentEdge->dwID)
         {
@@ -632,9 +632,9 @@ void CProgressiveMesh::UpdateSufferedEdgesAttrib(
         }
 
         pEdgeToDeleteVert->bIsDeleted = true;
-        heap.remove(pHeapItems+pEdgeToDeleteVert->dwID);
+        heap.remove(pHeapItems + pEdgeToDeleteVert->dwID);
 
-        PMISOCHARTEDGE* pEdgeToReserveVert = 
+        PMISOCHARTEDGE* pEdgeToReserveVert =
             GetSufferedEdges(
                 pCurrentEdge,
                 pEdgeToDeleteVert,
@@ -678,14 +678,14 @@ PMISOCHARTEDGE* CProgressiveMesh::GetSufferedEdges(
     {
         assert(
             (pEdgeToDeleteVert->dwOppositVertID[1]
-            == pReserveVertex->dwID));
+                == pReserveVertex->dwID));
         pFace = m_pFaceArray + pEdgeToDeleteVert->dwFaceID[1];
     }
 
-    for (size_t k=0; k<3; k++)
+    for (size_t k = 0; k < 3; k++)
     {
         if (pFace->dwEdgeID[k] != pCurrentEdge->dwID
-        && pFace->dwEdgeID[k] != pEdgeToDeleteVert->dwID)
+            && pFace->dwEdgeID[k] != pEdgeToDeleteVert->dwID)
         {
             return m_pEdgeArray + pFace->dwEdgeID[k];
         }
@@ -707,7 +707,7 @@ void CProgressiveMesh::ProcessBoundaryEdge(
         //Now pEdgeToReserveVert is a independent boundary edge with no face
         // aside. it must be deleted
         pEdgeToReserveVert->bIsDeleted = true;
-        heap.remove(pHeapItems+ pEdgeToReserveVert->dwID);
+        heap.remove(pHeapItems + pEdgeToReserveVert->dwID);
         if (pEdgeToReserveVert->dwVertexID[0] != pReserveVertex->dwID)
         {
             pThirdVertex = m_pVertArray + pEdgeToReserveVert->dwVertexID[0];
@@ -731,10 +731,10 @@ void CProgressiveMesh::ProcessBoundaryEdge(
         pEdgeToReserveVert->bIsBoundary = true;
         if (pEdgeToReserveVert->dwOppositVertID[0] == pDeleteVertex->dwID)
         {
-            pEdgeToReserveVert->dwOppositVertID[0] = 
+            pEdgeToReserveVert->dwOppositVertID[0] =
                 pEdgeToReserveVert->dwOppositVertID[1];
-            
-            pEdgeToReserveVert->dwFaceID[0] = 
+
+            pEdgeToReserveVert->dwFaceID[0] =
                 pEdgeToReserveVert->dwFaceID[1];
         }
         if (pEdgeToReserveVert->dwVertexID[0] == pReserveVertex->dwID)
@@ -764,21 +764,21 @@ void CProgressiveMesh::ProcessInternalEdge(
     {
         if (pEdgeToDeleteVert->dwOppositVertID[0] == pReserveVertex->dwID)
         {
-            pEdgeToReserveVert->dwOppositVertID[0] = 
+            pEdgeToReserveVert->dwOppositVertID[0] =
                 pEdgeToDeleteVert->dwOppositVertID[1];
-            
-            pEdgeToReserveVert->dwFaceID[0] = 
+
+            pEdgeToReserveVert->dwFaceID[0] =
                 pEdgeToDeleteVert->dwFaceID[1];
         }
         else
         {
-            pEdgeToReserveVert->dwOppositVertID[0] = 
+            pEdgeToReserveVert->dwOppositVertID[0] =
                 pEdgeToDeleteVert->dwOppositVertID[0];
 
-            pEdgeToReserveVert->dwFaceID[0] = 
+            pEdgeToReserveVert->dwFaceID[0] =
                 pEdgeToDeleteVert->dwFaceID[0];
         }
-        
+
         if (pEdgeToReserveVert->dwVertexID[0] == pReserveVertex->dwID)
         {
             pThirdVertex = m_pVertArray + pEdgeToReserveVert->dwVertexID[1];
@@ -789,7 +789,7 @@ void CProgressiveMesh::ProcessInternalEdge(
         }
         removeItem(pThirdVertex->edgeAdjacent, pEdgeToDeleteVert->dwID);
         pFace = m_pFaceArray + pEdgeToReserveVert->dwFaceID[0];
-        for (size_t k=0; k<3; k++)
+        for (size_t k = 0; k < 3; k++)
         {
             if (pFace->dwEdgeID[k] == pEdgeToDeleteVert->dwID)
             {
@@ -808,7 +808,7 @@ void CProgressiveMesh::ProcessInternalEdge(
         }
         else
         {
-            
+
             pThirdVertex = m_pVertArray + pEdgeToDeleteVert->dwOppositVertID[0];
             pFace1 = m_pFaceArray + pEdgeToDeleteVert->dwFaceID[0];
         }
@@ -822,7 +822,7 @@ void CProgressiveMesh::ProcessInternalEdge(
             pEdgeToReserveVert->dwOppositVertID[1] = pThirdVertex->dwID;
             pEdgeToReserveVert->dwFaceID[1] = pFace1->dwID;
         }
-        for (size_t k=0; k<3; k++)
+        for (size_t k = 0; k < 3; k++)
         {
             if (pFace1->dwEdgeID[k] == pEdgeToDeleteVert->dwID)
             {
@@ -852,7 +852,7 @@ HRESULT CProgressiveMesh::ReplaceDeleteVertWithReserveVert(
     // 1. Add all vertices adjacent to pDeleteVertex to the list of
     //  pReserveVertex'sadjacence
     removeItem(pReserveVertex->vertAdjacent, pDeleteVertex->dwID);
-    for (size_t j=0; j<pDeleteVertex->vertAdjacent.size(); j++)
+    for (size_t j = 0; j < pDeleteVertex->vertAdjacent.size(); j++)
     {
         if (pDeleteVertex->vertAdjacent[j] == pReserveVertex->dwID)
         {
@@ -875,9 +875,9 @@ HRESULT CProgressiveMesh::ReplaceDeleteVertWithReserveVert(
 
     // 2. Connect all edges which connected to pDeleteVertex before 
     // to pReserveVertex
-    for (size_t j=0; j<pDeleteVertex->edgeAdjacent.size(); j++)
+    for (size_t j = 0; j < pDeleteVertex->edgeAdjacent.size(); j++)
     {
-        PMISOCHARTEDGE* pEdge1 = 
+        PMISOCHARTEDGE* pEdge1 =
             m_pEdgeArray + pDeleteVertex->edgeAdjacent[j];
         if (pEdge1->bIsDeleted)
         {
@@ -899,9 +899,9 @@ HRESULT CProgressiveMesh::ReplaceDeleteVertWithReserveVert(
         }
     }
 
-    for (size_t j=0; j<pReserveVertex->edgeAdjacent.size();)
+    for (size_t j = 0; j < pReserveVertex->edgeAdjacent.size();)
     {
-        PMISOCHARTEDGE* pEdge1 = 
+        PMISOCHARTEDGE* pEdge1 =
             m_pEdgeArray + pReserveVertex->edgeAdjacent[j];
         if (pEdge1->bIsDeleted)
         {
@@ -915,16 +915,16 @@ HRESULT CProgressiveMesh::ReplaceDeleteVertWithReserveVert(
 
     // 3. connect all faces which connected to pDeleteVertex 
     // before to pReserveVertex
-    for (size_t j=0; j<pDeleteVertex->faceAdjacent.size(); j++)
+    for (size_t j = 0; j < pDeleteVertex->faceAdjacent.size(); j++)
     {
-        PMISOCHARTFACE* pFace = 
+        PMISOCHARTFACE* pFace =
             m_pFaceArray + pDeleteVertex->faceAdjacent[j];
         if (pFace->bIsDeleted)
         {
             continue;
         }
 
-        for (size_t k=0; k<3; k++)
+        for (size_t k = 0; k < 3; k++)
         {
             if (pFace->dwVertexID[k] == pDeleteVertex->dwID)
             {
@@ -941,22 +941,22 @@ HRESULT CProgressiveMesh::ReplaceDeleteVertWithReserveVert(
 
     // 4. Replace pDeleteVertex with pReserveVertex for every egdges which
     // are opposite to pDeleteVertex before deleting current edge.
-    for (size_t j=0; j<pDeleteVertex->faceAdjacent.size(); j++)
+    for (size_t j = 0; j < pDeleteVertex->faceAdjacent.size(); j++)
     {
-        PMISOCHARTFACE* pFace = 
+        PMISOCHARTFACE* pFace =
             m_pFaceArray + pDeleteVertex->faceAdjacent[j];
 
         if (pFace->bIsDeleted)
         {
             continue;
         }
-        for (size_t k=0; k<3; k++)
+        for (size_t k = 0; k < 3; k++)
         {
             PMISOCHARTEDGE* pEdge1 =
                 m_pEdgeArray + pFace->dwEdgeID[k];
 
             if (pEdge1->dwVertexID[0] == pReserveVertex->dwID
-            ||pEdge1->dwVertexID[1] == pReserveVertex->dwID)
+                || pEdge1->dwVertexID[1] == pReserveVertex->dwID)
             {
                 continue;
             }
@@ -983,7 +983,7 @@ void CProgressiveMesh::UpdateReservedVertsAttrib(
         pReserveVertex->bIsBoundary = true;
     }
 
-    for (size_t j=0; j<pDeleteVertex->quadricList.size(); j++)
+    for (size_t j = 0; j < pDeleteVertex->quadricList.size(); j++)
     {
         addNoduplicateItem(pReserveVertex->quadricList,
             pDeleteVertex->quadricList[j]);
@@ -993,24 +993,24 @@ void CProgressiveMesh::UpdateReservedVertsAttrib(
     CalculateVertexQuadricError(pReserveVertex);
 
     XMFLOAT3 v1, v2;
-    for (size_t j=0; j<pReserveVertex->faceAdjacent.size(); j++)
+    for (size_t j = 0; j < pReserveVertex->faceAdjacent.size(); j++)
     {
-        PMISOCHARTFACE* pFace = 
+        PMISOCHARTFACE* pFace =
             m_pFaceArray + pReserveVertex->faceAdjacent[j];
 
         IsochartVec3Substract(
-            &v1, 
+            &v1,
             m_baseInfo.pVertPosition
-                +m_pVertArray[pFace->dwVertexID[1]].dwIDInRootMesh,
+            + m_pVertArray[pFace->dwVertexID[1]].dwIDInRootMesh,
             m_baseInfo.pVertPosition
-                +m_pVertArray[pFace->dwVertexID[0]].dwIDInRootMesh);
+            + m_pVertArray[pFace->dwVertexID[0]].dwIDInRootMesh);
 
         IsochartVec3Substract(
-            &v2, 
+            &v2,
             m_baseInfo.pVertPosition
-                +m_pVertArray[pFace->dwVertexID[2]].dwIDInRootMesh,
+            + m_pVertArray[pFace->dwVertexID[2]].dwIDInRootMesh,
             m_baseInfo.pVertPosition
-                +m_pVertArray[pFace->dwVertexID[0]].dwIDInRootMesh);
+            + m_pVertArray[pFace->dwVertexID[0]].dwIDInRootMesh);
 
         XMStoreFloat3(&v1, XMVector3Normalize(XMLoadFloat3(&v1)));
         XMStoreFloat3(&v2, XMVector3Normalize(XMLoadFloat3(&v2)));
@@ -1024,11 +1024,11 @@ void CProgressiveMesh::UpdateSufferedEdgesCost(
     CCostHeapItem* pHeapItems,
     PMISOCHARTVERTEX* pReserveVertex)
 {
-    for (size_t j=0; j<pReserveVertex->edgeAdjacent.size(); j++)
+    for (size_t j = 0; j < pReserveVertex->edgeAdjacent.size(); j++)
     {
         uint32_t dwCurrentEdgeIndex = pReserveVertex->edgeAdjacent[j];
 
-        PMISOCHARTEDGE* pEdge1 = 
+        PMISOCHARTEDGE* pEdge1 =
             m_pEdgeArray + dwCurrentEdgeIndex;
 
         CalculateEdgeQuadricError(pEdge1);
@@ -1040,7 +1040,7 @@ void CProgressiveMesh::UpdateSufferedEdgesCost(
 
         if (pHeapItems[dwCurrentEdgeIndex].isItemInHeap())
         {
-            heap.update(pHeapItems+dwCurrentEdgeIndex, double(fNewDeleteCost));
+            heap.update(pHeapItems + dwCurrentEdgeIndex, double(fNewDeleteCost));
         }
         else
         {
@@ -1051,14 +1051,14 @@ void CProgressiveMesh::UpdateSufferedEdgesCost(
 }
 
 HRESULT CProgressiveMesh::CreateProgressiveMesh(CIsochartMesh& mesh)
-{	
+{
     ISOCHARTVERTEX* pOrgVerts = mesh.GetVertexBuffer();
     ISOCHARTFACE* pOrgFaces = mesh.GetFaceBuffer();
     auto& orgEdges = mesh.GetEdgesList();
 
     try
     {
-        for (size_t i=0; i<m_dwVertNumber; i++)
+        for (size_t i = 0; i < m_dwVertNumber; i++)
         {
             m_pVertArray[i].dwID = pOrgVerts[i].dwID;
             m_pVertArray[i].dwIDInRootMesh = pOrgVerts[i].dwIDInRootMesh;
@@ -1067,11 +1067,11 @@ HRESULT CProgressiveMesh::CreateProgressiveMesh(CIsochartMesh& mesh)
             m_pVertArray[i].nImportanceOrder = MUST_RESERVE;
 
             m_pVertArray[i].vertAdjacent.insert(m_pVertArray[i].vertAdjacent.end(),
-                                                pOrgVerts[i].vertAdjacent.cbegin(), pOrgVerts[i].vertAdjacent.cend());
+                pOrgVerts[i].vertAdjacent.cbegin(), pOrgVerts[i].vertAdjacent.cend());
             m_pVertArray[i].faceAdjacent.insert(m_pVertArray[i].faceAdjacent.end(),
-                                                pOrgVerts[i].faceAdjacent.cbegin(), pOrgVerts[i].faceAdjacent.cend());
+                pOrgVerts[i].faceAdjacent.cbegin(), pOrgVerts[i].faceAdjacent.cend());
             m_pVertArray[i].edgeAdjacent.insert(m_pVertArray[i].edgeAdjacent.end(),
-                                                pOrgVerts[i].edgeAdjacent.cbegin(), pOrgVerts[i].edgeAdjacent.cend());
+                pOrgVerts[i].edgeAdjacent.cbegin(), pOrgVerts[i].edgeAdjacent.cend());
         }
     }
     catch (std::bad_alloc&)
@@ -1079,39 +1079,39 @@ HRESULT CProgressiveMesh::CreateProgressiveMesh(CIsochartMesh& mesh)
         return  E_OUTOFMEMORY;
     }
 
-    for (size_t i=0; i<m_dwFaceNumber; i++)
+    for (size_t i = 0; i < m_dwFaceNumber; i++)
     {
         m_pFaceArray[i].dwID = pOrgFaces[i].dwID;
         m_pFaceArray[i].bIsDeleted = false;
         memcpy(
-            m_pFaceArray[i].dwVertexID, 
-            pOrgFaces[i].dwVertexID, 
+            m_pFaceArray[i].dwVertexID,
+            pOrgFaces[i].dwVertexID,
             sizeof(pOrgFaces[i].dwVertexID));
-        
+
         memcpy(
-            m_pFaceArray[i].dwEdgeID, 
-            pOrgFaces[i].dwEdgeID, 
+            m_pFaceArray[i].dwEdgeID,
+            pOrgFaces[i].dwEdgeID,
             sizeof(pOrgFaces[i].dwEdgeID));
-        
+
         m_pFaceArray[i].normal
             = m_baseInfo.pFaceNormalArray[pOrgFaces[i].dwIDInRootMesh];
     }
 
-    for (size_t i=0; i<m_dwEdgeNumber; i++)
+    for (size_t i = 0; i < m_dwEdgeNumber; i++)
     {
         const ISOCHARTEDGE& edge = orgEdges[i];
         m_pEdgeArray[i].dwID = edge.dwID;
         m_pEdgeArray[i].bIsBoundary = edge.bIsBoundary;
         m_pEdgeArray[i].bIsDeleted = false;
-        
+
         memcpy(m_pEdgeArray[i].dwVertexID, edge.dwVertexID, sizeof(edge.dwVertexID));
 
         memcpy(
-            m_pEdgeArray[i].dwOppositVertID, 
-            edge.dwOppositVertID, 
+            m_pEdgeArray[i].dwOppositVertID,
+            edge.dwOppositVertID,
             sizeof(edge.dwOppositVertID));
-        
-        memcpy(m_pEdgeArray[i].dwFaceID, edge.dwFaceID, sizeof(edge.dwFaceID));		
+
+        memcpy(m_pEdgeArray[i].dwFaceID, edge.dwFaceID, sizeof(edge.dwFaceID));
     }
 
     return S_OK;
@@ -1123,22 +1123,22 @@ HRESULT CProgressiveMesh::CalculateQuadricErrorMetric()
     HRESULT hr = S_OK;
 
     XMFLOAT3 leftTop(
-        FLT_MAX, 
-        FLT_MAX, 
+        FLT_MAX,
+        FLT_MAX,
         FLT_MAX);
 
     XMFLOAT3 rightBottom(
-        -FLT_MAX, 
-        -FLT_MAX, 
+        -FLT_MAX,
+        -FLT_MAX,
         -FLT_MAX);
 
-    for (size_t i=0; i<m_dwVertNumber; i++)
+    for (size_t i = 0; i < m_dwVertNumber; i++)
     {
         auto p = reinterpret_cast<const float*>(&m_baseInfo.pVertPosition[m_pVertArray[i].dwIDInRootMesh]);
         auto p1 = reinterpret_cast<float*>(&leftTop);
         auto p2 = reinterpret_cast<float*>(&rightBottom);
 
-        for (size_t j=0; j<3; j++)
+        for (size_t j = 0; j < 3; j++)
         {
             if (p1[j] > p[j])
             {
@@ -1158,16 +1158,16 @@ HRESULT CProgressiveMesh::CalculateQuadricErrorMetric()
     FAILURE_RETURN(m_callbackSchemer.UpdateCallbackAdapt(1));
 
     // 4. Calculate quadric error for each vertex
-    for (size_t i=0; i<m_dwVertNumber; i++)
+    for (size_t i = 0; i < m_dwVertNumber; i++)
     {
-        CalculateVertexQuadricError(m_pVertArray+i);
+        CalculateVertexQuadricError(m_pVertArray + i);
         FAILURE_RETURN(m_callbackSchemer.UpdateCallbackAdapt(1));
     }
-    
+
     // 5. Calculate quadric error for each edge
-    for (size_t i=0; i<m_dwEdgeNumber; i++)
+    for (size_t i = 0; i < m_dwEdgeNumber; i++)
     {
-        CalculateEdgeQuadricError(m_pEdgeArray+i);
+        CalculateEdgeQuadricError(m_pEdgeArray + i);
         FAILURE_RETURN(m_callbackSchemer.UpdateCallbackAdapt(1));
     }
     return hr;
@@ -1177,9 +1177,9 @@ HRESULT CProgressiveMesh::CalculateQuadricArray()
 {
     HRESULT hr = S_OK;
 
-   
+
     uint32_t dwQuadricNumber = m_dwFaceNumber;
-    for (size_t i=0; i<m_dwEdgeNumber; i++)
+    for (size_t i = 0; i < m_dwEdgeNumber; i++)
     {
         if (m_pEdgeArray[i].bIsBoundary)
         {
@@ -1202,14 +1202,14 @@ HRESULT CProgressiveMesh::CalculateQuadricArray()
     try
     {
         QUADRICERRORMETRIC* pQuadric = m_pQuadricArray;
-        for (size_t i=0; i<m_dwFaceNumber; i++)
+        for (size_t i = 0; i < m_dwFaceNumber; i++)
         {
             PMISOCHARTFACE* pFace = m_pFaceArray + i;
             PMISOCHARTVERTEX* pVert = m_pVertArray + pFace->dwVertexID[0];
             normal = pFace->normal;
             fTemp = double(IsochartVec3Dot(
-                &normal, 
-                m_baseInfo.pVertPosition+pVert->dwIDInRootMesh));
+                &normal,
+                m_baseInfo.pVertPosition + pVert->dwIDInRootMesh));
 
             fTemp = -fTemp;
             /*
@@ -1230,7 +1230,7 @@ HRESULT CProgressiveMesh::CalculateQuadricArray()
             pQuadric->fQB[2] = normal.z * fTemp;
             */
 
-            pQuadric->fQA[0][0] = DOUBLE_OP(normal.x,  normal.x, *);
+            pQuadric->fQA[0][0] = DOUBLE_OP(normal.x, normal.x, *);
             pQuadric->fQA[1][1] = DOUBLE_OP(normal.y, normal.y, *);
             pQuadric->fQA[2][2] = DOUBLE_OP(normal.z, normal.z, *);
 
@@ -1245,11 +1245,11 @@ HRESULT CProgressiveMesh::CalculateQuadricArray()
             pQuadric->fQB[0] = double(normal.x) * fTemp;
             pQuadric->fQB[1] = double(normal.y) * fTemp;
             pQuadric->fQB[2] = double(normal.z) * fTemp;
-        
+
 
             pQuadric->fQC = fTemp * fTemp;
 
-            for (uint32_t j = 0; j<3; j++)
+            for (uint32_t j = 0; j < 3; j++)
             {
                 pVert = m_pVertArray + pFace->dwVertexID[j];
                 pVert->quadricList.push_back(dwQuadricCount);
@@ -1259,7 +1259,7 @@ HRESULT CProgressiveMesh::CalculateQuadricArray()
             pQuadric++;
         }
 
-        for (size_t i=0; i<m_dwEdgeNumber; i++)
+        for (size_t i = 0; i < m_dwEdgeNumber; i++)
         {
             PMISOCHARTEDGE* pEdge = m_pEdgeArray + i;
 
@@ -1268,19 +1268,19 @@ HRESULT CProgressiveMesh::CalculateQuadricArray()
                 PMISOCHARTFACE* pFace = m_pFaceArray + pEdge->dwFaceID[0];
 
                 IsochartVec3Substract(
-                    &tempVector, 
+                    &tempVector,
                     m_baseInfo.pVertPosition
-                        +m_pVertArray[pEdge->dwVertexID[1]].dwIDInRootMesh,
+                    + m_pVertArray[pEdge->dwVertexID[1]].dwIDInRootMesh,
                     m_baseInfo.pVertPosition
-                        +m_pVertArray[pEdge->dwVertexID[0]].dwIDInRootMesh);
+                    + m_pVertArray[pEdge->dwVertexID[0]].dwIDInRootMesh);
 
                 IsochartVec3Cross(&normal, &tempVector, &(pFace->normal));
                 XMStoreFloat3(&normal, XMVector3Normalize(XMLoadFloat3(&normal)));
 
                 fTemp = double(IsochartVec3Dot(
-                    &normal, 
+                    &normal,
                     m_baseInfo.pVertPosition
-                        +m_pVertArray[pEdge->dwVertexID[0]].dwIDInRootMesh));
+                    + m_pVertArray[pEdge->dwVertexID[0]].dwIDInRootMesh));
 
                 fTemp = -fTemp;
 
@@ -1303,7 +1303,7 @@ HRESULT CProgressiveMesh::CalculateQuadricArray()
                 pQuadric->fQC = fTemp * fTemp;
 
                 PMISOCHARTVERTEX* pVert;
-                for (size_t j=0; j<2; j++)
+                for (size_t j = 0; j < 2; j++)
                 {
                     pVert = m_pVertArray + pEdge->dwVertexID[j];
 
@@ -1328,12 +1328,12 @@ void CProgressiveMesh::CalculateVertexQuadricError(
 {
     QUADRICERRORMETRIC* pQuadric = nullptr;
 
-    memset( &(pVertex->quadricError), 0, sizeof(QUADRICERRORMETRIC));
+    memset(&(pVertex->quadricError), 0, sizeof(QUADRICERRORMETRIC));
 
-    for (size_t i=0; i<pVertex->quadricList.size(); i++)
+    for (size_t i = 0; i < pVertex->quadricList.size(); i++)
     {
         pQuadric = m_pQuadricArray + pVertex->quadricList[i];
-        for (size_t j=0; j<3; j++)
+        for (size_t j = 0; j < 3; j++)
         {
             pVertex->quadricError.fQA[j][0] += pQuadric->fQA[j][0];
             pVertex->quadricError.fQA[j][1] += pQuadric->fQA[j][1];
@@ -1348,44 +1348,44 @@ void CProgressiveMesh::CalculateEdgeQuadricError(
     PMISOCHARTEDGE* pEdge)
 {
     QUADRICERRORMETRIC* pQuadric = nullptr;
-    
+
     QUADRICERRORMETRIC tempQE;
-    
+
     float tempVector[3];
-    
+
     PMISOCHARTVERTEX* pVertex1;
     PMISOCHARTVERTEX* pVertex2;
 
     pVertex1 = m_pVertArray + pEdge->dwVertexID[0];
     pVertex2 = m_pVertArray + pEdge->dwVertexID[1];
 
-    for (size_t i= 0; i<3; i++)
+    for (size_t i = 0; i < 3; i++)
     {
         tempQE.fQA[i][0]
             = pVertex1->quadricError.fQA[i][0] + pVertex2->quadricError.fQA[i][0];
         tempQE.fQA[i][1]
-            = pVertex1->quadricError.fQA[i][1]  + pVertex2->quadricError.fQA[i][1];
+            = pVertex1->quadricError.fQA[i][1] + pVertex2->quadricError.fQA[i][1];
         tempQE.fQA[i][2]
-            = pVertex1->quadricError.fQA[i][2]  + pVertex2->quadricError.fQA[i][2];
+            = pVertex1->quadricError.fQA[i][2] + pVertex2->quadricError.fQA[i][2];
         tempQE.fQB[i]
             = pVertex1->quadricError.fQB[i] + pVertex2->quadricError.fQB[i];
     }
     tempQE.fQC = pVertex1->quadricError.fQC + pVertex2->quadricError.fQC;
 
-    for (size_t i=0; i<pVertex1->quadricList.size(); i++)
+    for (size_t i = 0; i < pVertex1->quadricList.size(); i++)
     {
         size_t j;
-        for (j=0; j<pVertex2->quadricList.size(); j++)
+        for (j = 0; j < pVertex2->quadricList.size(); j++)
         {
             if (pVertex1->quadricList[i] == pVertex2->quadricList[j])
             {
                 break;
             }
         }
-        if (j<pVertex2->quadricList.size())
+        if (j < pVertex2->quadricList.size())
         {
             pQuadric = m_pQuadricArray + pVertex1->quadricList[i];
-            for (size_t k=0; k<3; k++)
+            for (size_t k = 0; k < 3; k++)
             {
                 tempQE.fQA[k][0] -= pQuadric->fQA[k][0];
                 tempQE.fQA[k][1] -= pQuadric->fQA[k][1];
@@ -1398,24 +1398,24 @@ void CProgressiveMesh::CalculateEdgeQuadricError(
 
     if (pVertex1->bIsBoundary && !pVertex2->bIsBoundary)
     {
-        XMFLOAT3* pv = 
-            m_baseInfo.pVertPosition+pVertex1->dwIDInRootMesh;
-        tempVector[0] =  pv->x;
-        tempVector[1] =  pv->y;
-        tempVector[2] =  pv->z;
+        XMFLOAT3* pv =
+            m_baseInfo.pVertPosition + pVertex1->dwIDInRootMesh;
+        tempVector[0] = pv->x;
+        tempVector[1] = pv->y;
+        tempVector[2] = pv->z;
         pEdge->fDeleteCost = QuadricError(tempQE, tempVector);
-                
+
         pEdge->dwDeleteWhichVertex = 1;
     }
 
     else if (pVertex2->bIsBoundary && !pVertex1->bIsBoundary)
     {
         XMFLOAT3* pv =
-            m_baseInfo.pVertPosition+pVertex2->dwIDInRootMesh;
-        tempVector[0] =  pv->x;
-        tempVector[1] =  pv->y;
-        tempVector[2] =  pv->z;
-        
+            m_baseInfo.pVertPosition + pVertex2->dwIDInRootMesh;
+        tempVector[0] = pv->x;
+        tempVector[1] = pv->y;
+        tempVector[2] = pv->z;
+
         pEdge->fDeleteCost = QuadricError(tempQE, tempVector);
 
         pEdge->dwDeleteWhichVertex = 0;
@@ -1423,18 +1423,18 @@ void CProgressiveMesh::CalculateEdgeQuadricError(
     else
     {
         XMFLOAT3* pv =
-            m_baseInfo.pVertPosition+pVertex1->dwIDInRootMesh;
-        tempVector[0] =  pv->x;
-        tempVector[1] =  pv->y;
-        tempVector[2] =  pv->z;
+            m_baseInfo.pVertPosition + pVertex1->dwIDInRootMesh;
+        tempVector[0] = pv->x;
+        tempVector[1] = pv->y;
+        tempVector[2] = pv->z;
 
         pEdge->fDeleteCost = QuadricError(tempQE, tempVector);
         pEdge->dwDeleteWhichVertex = 1;
 
-        pv = m_baseInfo.pVertPosition+pVertex2->dwIDInRootMesh;
-        tempVector[0] =  pv->x;
-        tempVector[1] =  pv->y;
-        tempVector[2] =  pv->z;
+        pv = m_baseInfo.pVertPosition + pVertex2->dwIDInRootMesh;
+        tempVector[0] = pv->x;
+        tempVector[1] = pv->y;
+        tempVector[2] = pv->z;
 
         double tempCost = QuadricError(tempQE, tempVector);
 
@@ -1461,21 +1461,21 @@ double CProgressiveMesh::QuadricError(
     double tempV[3];
     double quadricError = 0.0;
 
-    for (size_t i=0; i<3; i++)
+    for (size_t i = 0; i < 3; i++)
     {
         tempV[i] = 0.0;
-        for (size_t j=0; j<3; j++)
+        for (size_t j = 0; j < 3; j++)
         {
             tempV[i] = tempV[i] + double(fVector[j]) * quadricErrorMetric.fQA[i][j];
         }
     }
 
-    for (size_t i=0; i<3; i++)
+    for (size_t i = 0; i < 3; i++)
     {
         quadricError = quadricError + tempV[i] * double(fVector[i]);
     }
 
-    for (size_t i=0; i<3; i++)
+    for (size_t i = 0; i < 3; i++)
     {
         quadricError = quadricError + 2 * quadricErrorMetric.fQB[i] * double(fVector[i]);
     }

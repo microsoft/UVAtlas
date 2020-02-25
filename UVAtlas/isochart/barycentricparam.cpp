@@ -69,9 +69,9 @@ namespace
             const XMFLOAT3* p2 =
                 m_pVert3dPos + m_pVerts[m_dwPrev].dwIDInRootMesh;
 
-            return IsochartSqrtf((p1->x - p2->x)*(p1->x - p2->x) +
-                (p1->y - p2->y)*(p1->y - p2->y) +
-                (p1->z - p2->z)*(p1->z - p2->z));
+            return IsochartSqrtf((p1->x - p2->x) * (p1->x - p2->x) +
+                (p1->y - p2->y) * (p1->y - p2->y) +
+                (p1->z - p2->z) * (p1->z - p2->z));
         }
     };
 }
@@ -94,7 +94,7 @@ HRESULT CIsochartMesh::GenerateVertexMap(
 
     dwBoundaryCount = 0;
     dwInternalCount = 0;
-    for (size_t ii=0; ii<m_dwVertNumber; ii++)
+    for (size_t ii = 0; ii < m_dwVertNumber; ii++)
     {
         if (m_pVerts[ii].bIsBoundary)
         {
@@ -116,7 +116,7 @@ HRESULT CIsochartMesh::GenerateBoundaryCoord(
     HRESULT hr = S_OK;
 
     uint32_t dwInit = INVALID_VERT_ID;
-    for (uint32_t ii=0; ii<m_dwVertNumber; ii++)
+    for (uint32_t ii = 0; ii < m_dwVertNumber; ii++)
     {
         if (m_pVerts[ii].bIsBoundary)
         {
@@ -138,7 +138,7 @@ HRESULT CIsochartMesh::GenerateBoundaryCoord(
         return E_OUTOFMEMORY;
     }
 
-    boundTable[vertMap[dwInit]*2] = 0;
+    boundTable[vertMap[dwInit] * 2] = 0;
     CBoundaryIter it(
         dwInit,
         m_pVerts,
@@ -146,18 +146,18 @@ HRESULT CIsochartMesh::GenerateBoundaryCoord(
 
     uint32_t dwCurr = 0;
     double totoLength = 0;
-    while((dwCurr = it.Next()) != INVALID_VERT_ID)
+    while ((dwCurr = it.Next()) != INVALID_VERT_ID)
     {
         totoLength += double(it.GetCurrentEdgeLength());
-        boundTable[vertMap[dwCurr]*2] = totoLength;
+        boundTable[vertMap[dwCurr] * 2] = totoLength;
     }
     totoLength += double(it.GetCurrentEdgeLength());
 
-    for (size_t ii=0; ii<boundTable.size(); ii+=2)
+    for (size_t ii = 0; ii < boundTable.size(); ii += 2)
     {
         double angle = 2 * boundTable[ii] * M_PI / totoLength;
         boundTable[ii] = cos(angle);
-        boundTable[ii+1] = sin(angle);		
+        boundTable[ii + 1] = sin(angle);
     }
     return hr;
 }
@@ -175,7 +175,7 @@ HRESULT CIsochartMesh::InitializeBarycentricEquation(
     CVector<double> orgBU, orgBV;
 
     // 1. Allocate memory
-    size_t dwOrgADim = m_dwVertNumber - boundTable.size()/2;
+    size_t dwOrgADim = m_dwVertNumber - boundTable.size() / 2;
 
     try
     {
@@ -189,29 +189,29 @@ HRESULT CIsochartMesh::InitializeBarycentricEquation(
     }
 
     // 2. Fill the linear equation
-    for (size_t ii=0; ii<m_dwVertNumber; ii++)
+    for (size_t ii = 0; ii < m_dwVertNumber; ii++)
     {
         if (m_pVerts[ii].bIsBoundary)
         {
             continue;
         }
-    
+
         auto& adjacent = m_pVerts[ii].vertAdjacent;
         double bu = 0, bv = 0;
 
         orgA.setItem(vertMap[ii], vertMap[ii], double(adjacent.size()));
-        for (size_t jj=0; jj<adjacent.size(); jj++)
+        for (size_t jj = 0; jj < adjacent.size(); jj++)
         {
             uint32_t dwAdj = adjacent[jj];
-            
+
             if (m_pVerts[dwAdj].bIsBoundary)
             {
-                bu += boundTable[vertMap[dwAdj]*2];
-                bv += boundTable[vertMap[dwAdj]*2+1];
+                bu += boundTable[vertMap[dwAdj] * 2];
+                bv += boundTable[vertMap[dwAdj] * 2 + 1];
             }
             else
             {
-                orgA.setItem(vertMap[ii], vertMap[dwAdj], double(-1));	
+                orgA.setItem(vertMap[ii], vertMap[dwAdj], double(-1));
             }
         }
         orgBU[vertMap[ii]] = bu;
@@ -235,23 +235,23 @@ HRESULT CIsochartMesh::InitializeBarycentricEquation(
     {
         return E_OUTOFMEMORY;
     }
-    
+
     return hr;
 }
 
 HRESULT CIsochartMesh::AssignBarycentricResult(
     CVector<double>& U,
-    CVector<double>& V,	
+    CVector<double>& V,
     const std::vector<double>& boundTable,
     const std::vector<uint32_t>& vertMap)
 {
     HRESULT hr = S_OK;
-    for (size_t ii=0; ii<m_dwVertNumber; ii++)
+    for (size_t ii = 0; ii < m_dwVertNumber; ii++)
     {
         if (m_pVerts[ii].bIsBoundary)
         {
-            m_pVerts[ii].uv.x = static_cast<float>(boundTable[vertMap[ii]*2]);
-            m_pVerts[ii].uv.y = static_cast<float>(boundTable[vertMap[ii]*2+1]);
+            m_pVerts[ii].uv.x = static_cast<float>(boundTable[vertMap[ii] * 2]);
+            m_pVerts[ii].uv.y = static_cast<float>(boundTable[vertMap[ii] * 2 + 1]);
         }
         else
         {
@@ -259,7 +259,7 @@ HRESULT CIsochartMesh::AssignBarycentricResult(
             m_pVerts[ii].uv.y = static_cast<float>(V[vertMap[ii]]);
         }
     }
-    
+
     return hr;
 }
 
@@ -280,10 +280,10 @@ HRESULT CIsochartMesh::BarycentricParameterization(
     std::vector<double> boundTable;
     CSparseMatrix<double> A;
     CVector<double> BU;
-    CVector<double> BV;	
+    CVector<double> BV;
     CVector<double> U;
     size_t nIterCount = 0;
-    CVector<double> V;	
+    CVector<double> V;
 
     FAILURE_GOTO_END(
         GenerateVertexMap(
@@ -291,13 +291,13 @@ HRESULT CIsochartMesh::BarycentricParameterization(
             dwBoundaryCount,
             dwInternalCount));
 
-    if( (dwBoundaryCount == 0) || (dwBoundaryCount >= 0x80000000) )
+    if ((dwBoundaryCount == 0) || (dwBoundaryCount >= 0x80000000))
         goto LEnd;
 
     // 2. Generate the coordinates of boundary vertices
     FAILURE_GOTO_END(
         GenerateBoundaryCoord(
-            boundTable, 
+            boundTable,
             dwBoundaryCount,
             vertMap));
     if (boundTable.empty())
@@ -345,9 +345,9 @@ HRESULT CIsochartMesh::BarycentricParameterization(
     // 4. Assign UV coordinates
     FAILURE_GOTO_END(
         AssignBarycentricResult(
-            U, 
+            U,
             V,
-            boundTable, 
+            boundTable,
             vertMap));
 
     // 5. Check Results

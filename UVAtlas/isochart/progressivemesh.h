@@ -54,7 +54,7 @@ namespace Isochart
         uint32_t dwID; // Index in the faces array of current mesh
         uint32_t dwVertexID[3]; // The ID of 3 verices of this face
         uint32_t dwEdgeID[3]; // The ID of 3 edges of this face
-    
+
         DirectX::XMFLOAT3 normal; // Face normal vector
         bool bIsDeleted; // Indicate if the face has been deleted.
     };
@@ -81,7 +81,7 @@ namespace Isochart
     {
     public:
         CProgressiveMesh(
-            const CBaseMeshInfo &baseInfo,
+            const CBaseMeshInfo& baseInfo,
             CCallbackSchemer& callbackSchemer);
 
         CProgressiveMesh(CProgressiveMesh const&) = delete;
@@ -99,7 +99,7 @@ namespace Isochart
         {
             assert(m_pVertArray != nullptr);
             assert(dwIndex < m_dwVertNumber);
-            return m_pVertArray[dwIndex].nImportanceOrder; 
+            return m_pVertArray[dwIndex].nImportanceOrder;
         }
 
     private:
@@ -120,7 +120,7 @@ namespace Isochart
             PMISOCHARTVERTEX* pDeleteVertex) const;
 
         bool IsEdgeOppositeToVertex(
-            PMISOCHARTEDGE* pEdge, 
+            PMISOCHARTEDGE* pEdge,
             PMISOCHARTVERTEX* pVertex) const;
 
         HRESULT DeleteCurrentEdge(
@@ -203,7 +203,7 @@ namespace Isochart
         uint32_t m_dwEdgeNumber;
         float m_fBoxDiagLen;
 
-        const CBaseMeshInfo& m_baseInfo; 
+        const CBaseMeshInfo& m_baseInfo;
         CCallbackSchemer& m_callbackSchemer;
     };
 }

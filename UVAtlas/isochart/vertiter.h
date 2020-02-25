@@ -19,10 +19,10 @@ namespace Isochart
         uint32_t GetNextFace();
         bool HasNextFace();
         bool NextFace();
-        uint32_t GetBeginFace(){ return m_dwBeginFaceID; }
-        uint32_t GetBeginVertIdx(){ return m_dwBeginVertID; }
-        uint32_t GetCurrentFace(){ return m_dwCurrentFaceID; }
-        uint32_t GetCurrentVertIdx(){ return m_dwCurrentVertIdx; }
+        uint32_t GetBeginFace() { return m_dwBeginFaceID; }
+        uint32_t GetBeginVertIdx() { return m_dwBeginVertID; }
+        uint32_t GetCurrentFace() { return m_dwCurrentFaceID; }
+        uint32_t GetCurrentVertIdx() { return m_dwCurrentVertIdx; }
         uint32_t GetPrevFace() { return m_dwPrevFaceID; }
         uint32_t GetPrevVertIdx() { return m_dwPrevVertIdx; }
 

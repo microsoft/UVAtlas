@@ -17,7 +17,7 @@ CGraphcut::CGraphcut()
 }
 
 CGraphcut::~CGraphcut()
-{	
+{
     Clear();
 }
 
@@ -39,7 +39,7 @@ CGraphcut::NODEHANDLE CGraphcut::AddNode(float fSourceWeight, float fSinkWeight)
 }
 
 HRESULT CGraphcut::AddEges(NODEHANDLE hFromNode, NODEHANDLE hToNode, float fWeight, float fReverseWeight)
-{	
+{
     graph.AddEdge(hFromNode, hToNode, fWeight, fReverseWeight);
     return S_OK;
 }
@@ -59,5 +59,5 @@ HRESULT CGraphcut::CutGraph(float& fMaxflow)
 
 bool CGraphcut::IsInSourceDomain(NODEHANDLE hNode)
 {
-    return graph.TestToS(hNode);	
+    return graph.TestToS(hNode);
 }

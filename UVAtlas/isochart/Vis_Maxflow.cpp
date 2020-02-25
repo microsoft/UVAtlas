@@ -30,7 +30,7 @@ void CMaxFlow::ReserveMemory(size_t nNodes, size_t nEdges, size_t nDegree)
     nodes.reserve(nNodes);
     edges.reserve(nEdges * 2);  // bi-directional edges, hence *2
 }
-    
+
 bool CMaxFlow::InitGraphCut(size_t nNodes, size_t nEdges, size_t nDegree)
 {
     nodes.clear();
@@ -58,7 +58,7 @@ bool CMaxFlow::InitGraphCut(size_t nNodes, size_t nEdges, size_t nDegree)
 // add an empty node and return it's id
 CMaxFlow::node_id CMaxFlow::AddNode()
 {
-    assert( size_t(m_nodeNumber) < nodes.size());
+    assert(size_t(m_nodeNumber) < nodes.size());
 
     node_id id = node_id(m_nodeNumber);
     m_nodeNumber++;
@@ -103,13 +103,13 @@ void CMaxFlow::AddEdge(
 void CMaxFlow::ResetResident()
 {
     current_flow = 0;
-        
-    for (size_t i=0; i<nodes.size(); i++)
+
+    for (size_t i = 0; i < nodes.size(); i++)
     {
         nodes[i].resident = nodes[i].capacity;
     }
 
-    for (size_t i=0; i<edges.size(); i++)
+    for (size_t i = 0; i < edges.size(); i++)
     {
         edges[i].res = edges[i].cap;
     }
@@ -135,7 +135,7 @@ void CMaxFlow::Initialization()
     std::queue<node_id> empty2;
     active_list.swap(empty2);
 
-    for (node_id k = 0; k < node_id(nodes.size()); k ++)
+    for (node_id k = 0; k < node_id(nodes.size()); k++)
     {
         // initialize each node
         // assume capacity and resident has benn assigned
@@ -179,7 +179,7 @@ bool CMaxFlow::FindAugmentPath()
         if (n.is_free()) continue;
 
         // iterator all edges from n
-        for(size_t i=0; i<n.edges.size(); i++)
+        for (size_t i = 0; i < n.edges.size(); i++)
         {
             const edge_id eid_nm = n.edges[i];
             const Edge& e_nm = edges[size_t(eid_nm)];
@@ -203,7 +203,7 @@ bool CMaxFlow::FindAugmentPath()
                         // put n back into active list
                         push_active(nid);
                         trace_current_path(nid, mid, eid_nm);
-                           
+
                         return true;
                     }
                     else
@@ -224,7 +224,7 @@ bool CMaxFlow::FindAugmentPath()
             {
                 // otherwise, n must connecting to sink
                 assert(n.to_t());
-                    
+
                 // if m is on same tree, ignore it
                 if (m.to_t()) continue;
 
@@ -345,8 +345,8 @@ void CMaxFlow::AugmentCurrentPath()
     cap_type bottleneck = std::min(ns.resident, -mt.resident);
 
     // find the bottleneck        
-        
-    for(size_t i=0; i<current_path.size(); i++)
+
+    for (size_t i = 0; i < current_path.size(); i++)
     {
         // get the edge
         const edge_id eid = current_path[i];
@@ -375,7 +375,7 @@ void CMaxFlow::AugmentCurrentPath()
         mark_orphan(mt_id);
     }
 
-    for ( size_t i = 0; i < current_path.size(); i++)
+    for (size_t i = 0; i < current_path.size(); i++)
     {
         // get the edge
         const edge_id eid = current_path[i];
@@ -458,7 +458,7 @@ void CMaxFlow::AdoptOrphans()
         //else
         {
             int best_depth = 0;
-            for (size_t k = 0; k < p.edges.size(); k ++)
+            for (size_t k = 0; k < p.edges.size(); k++)
             {
                 edge_id eid_pq = p.edges[k];
 
@@ -492,8 +492,8 @@ void CMaxFlow::AdoptOrphans()
                         if (best_depth == 0 || best_depth > depth)
                         {
                             candidate_parent_node = qid;
-                            candidate_parent_edge = 
-                                p.to_s() ? reverse_edge(eid_pq) : eid_pq; 
+                            candidate_parent_edge =
+                                p.to_s() ? reverse_edge(eid_pq) : eid_pq;
                             best_depth = depth;
                         }
                     }
@@ -523,7 +523,7 @@ void CMaxFlow::AdoptOrphans()
         else
         {
             // make its children orphan
-            for (size_t k = 0; k < p.edges.size(); k ++)
+            for (size_t k = 0; k < p.edges.size(); k++)
             {
                 edge_id eid_pq = p.edges[k];
 

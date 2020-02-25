@@ -921,8 +921,8 @@ LEnd:
 
 template <typename IndexType>
 void CIsochartEngine::ExportPackResultToOrgMesh(
-    IndexType *pOrigIndex,
-    std::vector<CIsochartMesh*> &finalChartList)
+    IndexType* pOrigIndex,
+    std::vector<CIsochartMesh*>& finalChartList)
 {
     uint8_t* pVertex
         = reinterpret_cast<uint8_t*>(
@@ -931,7 +931,7 @@ void CIsochartEngine::ExportPackResultToOrgMesh(
 
     for (size_t i = 0; i < finalChartList.size(); i++)
     {
-        CIsochartMesh *pChart = finalChartList[i];
+        CIsochartMesh* pChart = finalChartList[i];
         const ISOCHARTFACE* pChartFaces = pChart->GetFaceBuffer();
         const ISOCHARTVERTEX* pChartVerts = pChart->GetVertexBuffer();
 
@@ -943,7 +943,7 @@ void CIsochartEngine::ExportPackResultToOrgMesh(
                 size_t uOrigId = pOrigIndex[pChartFaces[j].dwIDInRootMesh * 3 + k];
                 auto pVertexOut = reinterpret_cast<UVAtlasVertex*>(
                     pVertex +
-                    m_baseInfo.dwVertexStride*uOrigId);
+                    m_baseInfo.dwVertexStride * uOrigId);
 
                 pVertexOut->uv = pChartVerts[uId].uv;
             }
@@ -1128,21 +1128,21 @@ LEnd:
 
 
 void CIsochartEngine::AssignUVCoordinate(
-    std::vector<CIsochartMesh*> &finalChartList)
+    std::vector<CIsochartMesh*>& finalChartList)
 {
     auto pVertex = reinterpret_cast<const uint8_t*>(m_baseInfo.pVertexArray);
     assert(m_baseInfo.dwVertexStride >= sizeof(UVAtlasVertex));
 
     for (size_t i = 0; i < finalChartList.size(); i++)
     {
-        CIsochartMesh *pChart = finalChartList[i];
+        CIsochartMesh* pChart = finalChartList[i];
         ISOCHARTVERTEX* pChartVertexBuffer = pChart->GetVertexBuffer();
 
         for (size_t j = 0; j < pChart->GetVertexNumber(); j++)
         {
             auto pVertexIn = reinterpret_cast<const UVAtlasVertex*>(
                 pVertex +
-                m_baseInfo.dwVertexStride*pChartVertexBuffer[j].dwIDInRootMesh);
+                m_baseInfo.dwVertexStride * pChartVertexBuffer[j].dwIDInRootMesh);
 
             pChartVertexBuffer[j].uv.x = pVertexIn->uv.x;
             pChartVertexBuffer[j].uv.y = pVertexIn->uv.y;
@@ -1203,7 +1203,7 @@ HRESULT CIsochartEngine::InitializeBaseInfo(
 //   returns   S_OK if successful, else failure code
 
 HRESULT CIsochartEngine::ApplyInitEngine(
-    CBaseMeshInfo &baseInfo,
+    CBaseMeshInfo& baseInfo,
     DXGI_FORMAT IndexFormat,
     const void* pFaceIndexArray,
     bool bIsForPartition)
@@ -1390,7 +1390,7 @@ void CIsochartEngine::ReleaseInitialCharts()
 //  returns    S_OK if successful, else failure code 
 //
 HRESULT CIsochartEngine::ExportCurrentCharts(
-    std::vector<CIsochartMesh*> &finalChartList,
+    std::vector<CIsochartMesh*>& finalChartList,
     uint32_t* pFaceAttributeIDOut)
 {
     for (uint32_t i = 0; i < finalChartList.size(); i++)
@@ -1420,7 +1420,7 @@ HRESULT CIsochartEngine::ExportCurrentCharts(
 //   returns    S_OK if successful, else failure code 
 //
 HRESULT CIsochartEngine::ExportIsochartResult(
-    std::vector<CIsochartMesh*> &finalChartList,
+    std::vector<CIsochartMesh*>& finalChartList,
     std::vector<UVAtlasVertex>* pvVertexArrayOut,
     std::vector<uint8_t>* pvFaceIndexArrayOut,
     std::vector<uint32_t>* pvVertexRemapArrayOut,
@@ -1529,7 +1529,7 @@ LFail:
 }
 
 HRESULT CIsochartEngine::PrepareExportBuffers(
-    std::vector<CIsochartMesh*> &finalChartList,
+    std::vector<CIsochartMesh*>& finalChartList,
     DXGI_FORMAT& outFormat,
     std::vector<uint32_t>& notUsedVertList,
     std::vector<UVAtlasVertex>* pvVertexArrayOut,
@@ -1555,7 +1555,7 @@ HRESULT CIsochartEngine::PrepareExportBuffers(
         return E_OUTOFMEMORY;
     }
 
-    memset(rgbVertUsed.get(), 0, sizeof(bool)*m_baseInfo.dwVertexCount);
+    memset(rgbVertUsed.get(), 0, sizeof(bool) * m_baseInfo.dwVertexCount);
 
     try
     {
@@ -1625,7 +1625,7 @@ HRESULT CIsochartEngine::PrepareExportBuffers(
 }
 
 HRESULT CIsochartEngine::FillExportVertexBuffer(
-    std::vector<CIsochartMesh*> &finalChartList,
+    std::vector<CIsochartMesh*>& finalChartList,
     std::vector<uint32_t>& notUsedVertList,
     std::vector<UVAtlasVertex>* pvVertexBuffer,
     std::vector<uint32_t>* pvMapBuffer)
@@ -1643,15 +1643,15 @@ HRESULT CIsochartEngine::FillExportVertexBuffer(
 
     for (size_t i = 0; i < finalChartList.size(); i++)
     {
-        CIsochartMesh *pChart = finalChartList[i];
+        CIsochartMesh* pChart = finalChartList[i];
         const ISOCHARTVERTEX* pChartVertexBuffer = pChart->GetVertexBuffer();
 
         for (size_t j = 0; j < pChart->GetVertexNumber(); j++)
         {
             auto pVertexIn = reinterpret_cast<const XMFLOAT3*>(
-                static_cast<const void *>(
+                static_cast<const void*>(
                     pVertex +
-                    m_baseInfo.dwVertexStride*pChartVertexBuffer[j].dwIDInRootMesh));
+                    m_baseInfo.dwVertexStride * pChartVertexBuffer[j].dwIDInRootMesh));
 
             *pdwMap = pChartVertexBuffer[j].dwIDInRootMesh;
             pVertexOut->pos.x = pVertexIn->x;
@@ -1671,9 +1671,9 @@ HRESULT CIsochartEngine::FillExportVertexBuffer(
         uint32_t dwIDInOriginalMesh = notUsedVertList[ii];
 
         auto pVertexIn = static_cast<const XMFLOAT3*>(
-            static_cast<const void *>(
+            static_cast<const void*>(
                 pVertex +
-                m_baseInfo.dwVertexStride*dwIDInOriginalMesh));
+                m_baseInfo.dwVertexStride * dwIDInOriginalMesh));
 
         *pdwMap = dwIDInOriginalMesh;
         pVertexOut->pos.x = pVertexIn->x;
@@ -1691,7 +1691,7 @@ HRESULT CIsochartEngine::FillExportVertexBuffer(
 
 template <class INDEXTYPE>
 HRESULT CIsochartEngine::FillExportFaceIndexBuffer(
-    std::vector<CIsochartMesh*> &finalChartList,
+    std::vector<CIsochartMesh*>& finalChartList,
     std::vector<uint8_t>* pvFaceBuffer)
 {
     assert(pvFaceBuffer != nullptr);
@@ -1704,7 +1704,7 @@ HRESULT CIsochartEngine::FillExportFaceIndexBuffer(
     INDEXTYPE* pFaces;
     for (size_t i = 0; i < finalChartList.size(); i++)
     {
-        CIsochartMesh *pChart = finalChartList[i];
+        CIsochartMesh* pChart = finalChartList[i];
         const ISOCHARTFACE* pChartFaceBuffer = pChart->GetFaceBuffer();
         for (size_t j = 0; j < pChart->GetFaceNumber(); j++)
         {
@@ -1732,7 +1732,7 @@ HRESULT CIsochartEngine::FillExportFaceIndexBuffer(
 }
 
 HRESULT CIsochartEngine::FillExportFaceAttributeBuffer(
-    std::vector<CIsochartMesh*> &finalChartList,
+    std::vector<CIsochartMesh*>& finalChartList,
     std::vector<uint32_t>* pvAttributeBuffer)
 {
     assert(pvAttributeBuffer != nullptr);
@@ -1743,7 +1743,7 @@ HRESULT CIsochartEngine::FillExportFaceAttributeBuffer(
 
     for (uint32_t i = 0; i < finalChartList.size(); i++)
     {
-        CIsochartMesh *pChart = finalChartList[i];
+        CIsochartMesh* pChart = finalChartList[i];
         const ISOCHARTFACE* pChartFaceBuffer = pChart->GetFaceBuffer();
         for (uint32_t j = 0; j < pChart->GetFaceNumber(); j++)
         {
@@ -1756,7 +1756,7 @@ HRESULT CIsochartEngine::FillExportFaceAttributeBuffer(
 }
 
 HRESULT CIsochartEngine::FillExportFaceAdjacencyBuffer(
-    std::vector<CIsochartMesh*> &finalChartList,
+    std::vector<CIsochartMesh*>& finalChartList,
     std::vector<uint32_t>* pvAdjacencyBuffer)
 {
     assert(pvAdjacencyBuffer != nullptr);
@@ -1767,7 +1767,7 @@ HRESULT CIsochartEngine::FillExportFaceAdjacencyBuffer(
 
     for (size_t i = 0; i < finalChartList.size(); i++)
     {
-        CIsochartMesh *pChart = finalChartList[i];
+        CIsochartMesh* pChart = finalChartList[i];
         const ISOCHARTFACE* pChartFaces = pChart->GetFaceBuffer();
         auto& pChartEdges = pChart->GetEdgesList();
         for (size_t j = 0; j < pChart->GetFaceNumber(); j++)
@@ -1775,7 +1775,7 @@ HRESULT CIsochartEngine::FillExportFaceAdjacencyBuffer(
             dwFaceID = pChartFaces[j].dwIDInRootMesh;
             for (size_t k = 0; k < 3; k++)
             {
-                ISOCHARTEDGE &pEdge = pChartEdges[pChartFaces[j].dwEdgeID[k]];
+                ISOCHARTEDGE& pEdge = pChartEdges[pChartFaces[j].dwEdgeID[k]];
                 if (pEdge.bIsBoundary)
                 {
                     pdwAdj[dwFaceID * 3 + k] = uint32_t(-1);
