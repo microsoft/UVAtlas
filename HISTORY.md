@@ -6,6 +6,13 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### February 24, 2020
+* Added some simple OpenMP optimizations
+* Code and project cleaup
+* Retired VS 2015 projects
+* uvatlastool: Updated to use NuGet instead of needing DirectXTex/Mesh side-by-side
+* uvatlastool: now supports exporting to WaveFront Object (OBJ) files
+
 ### December 17, 2019
 * Added VS 2019 UWP project
 * Added ARM64 platform to VS 2019 Win32 desktop Win10 project
