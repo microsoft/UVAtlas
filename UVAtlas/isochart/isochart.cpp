@@ -36,7 +36,7 @@ namespace
         float* pMaxStretchOut,
         LPISOCHARTCALLBACK pCallback,
         float Frequency,
-        DWORD dwOptions)
+        unsigned int dwOptions)
     {
         if (!CheckInitializeParameters(
             pVertexArray,
@@ -175,7 +175,7 @@ HRESULT Isochart::isochart(
     float* pMaxStretchOut,
     LPISOCHARTCALLBACK pCallback,
     float Frequency,  
-    DWORD dwOptions)
+    unsigned int dwOptions)
 {
     // 1. Check input parameter
     if (!CheckIsochartInput(
@@ -311,7 +311,7 @@ HRESULT Isochart::isochartpartition(
     LPISOCHARTCALLBACK pCallback,
     float Frequency,
     const uint32_t* pSplitHint,
-    DWORD dwOptions)
+    unsigned int dwOptions)
 {
     unsigned int dwTotalStage = STAGE_TOTAL(Stage);
     unsigned int dwDoneStage = STAGE_DONE(Stage);

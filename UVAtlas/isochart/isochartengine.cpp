@@ -90,7 +90,7 @@ HRESULT CIsochartEngine::Initialize(
     const FLOAT3* pIMTArray,
     const uint32_t* pOriginalAjacency,
     const uint32_t* pSplitHint,
-    DWORD dwOptions) noexcept
+    unsigned int dwOptions) noexcept
 {
     DPF(1, "Initialize...");
 
@@ -1827,7 +1827,7 @@ bool Isochart::CheckInitializeParameters(
     const void* pFaceIndexArray,
     size_t FaceCount,
     const FLOAT3* pIMTArray,
-    DWORD dwOptions)
+    unsigned int dwOptions)
 {
     UNREFERENCED_PARAMETER(VertexCount);
     UNREFERENCED_PARAMETER(FaceCount);

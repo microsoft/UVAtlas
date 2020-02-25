@@ -47,7 +47,7 @@ enum ISOCHARTOPTION
     // all internal geodesic distance computation tries to use the new approach implemented in geodesicdist.lib (except IMT is specified), this is precise but slower
     _OPTION_ISOCHART_GEODESIC_QUALITY  = 0x02   
 };
-const DWORD _OPTIONMASK_ISOCHART_GEODESIC = _OPTION_ISOCHART_GEODESIC_FAST | _OPTION_ISOCHART_GEODESIC_QUALITY ;
+const unsigned int _OPTIONMASK_ISOCHART_GEODESIC = _OPTION_ISOCHART_GEODESIC_FAST | _OPTION_ISOCHART_GEODESIC_QUALITY ;
 
 HRESULT 
 isochart(
@@ -72,7 +72,7 @@ isochart(
     // Callback parameters
     LPISOCHARTCALLBACK pCallback = nullptr,
     float Frequency = 0.01f,	// Call callback function each time completed 1% work of all task
-    DWORD dwOptions = _OPTION_ISOCHART_DEFAULT );
+    unsigned int dwOptions = _OPTION_ISOCHART_DEFAULT );
 
 HRESULT 
 isochartpartition(
@@ -102,7 +102,7 @@ isochartpartition(
                                                                                       // CAN be splitted, set the that ajacency to -1.
                                                                                       // Usually, it's easier for user to specified the edge that CAN NOT be
                                                                                       // splitted, make sure to validate the input
-    _In_                                        DWORD dwOptions =_OPTION_ISOCHART_DEFAULT );
+    _In_                                        unsigned int dwOptions =_OPTION_ISOCHART_DEFAULT );
 
 
 // Class IIsochartEngine for the advanced usage
@@ -126,7 +126,7 @@ public:
         const FLOAT3* pIMTArray,
         const uint32_t* pOriginalAjacency,
         const uint32_t* pSplitHint,
-        DWORD dwOptions) noexcept = 0;
+        unsigned int dwOptions) noexcept = 0;
 
     virtual HRESULT Free() noexcept = 0;
 

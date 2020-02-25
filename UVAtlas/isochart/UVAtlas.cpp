@@ -253,7 +253,7 @@ namespace
         _In_reads_opt_(nFaces * 3)  const float *pIMTArray,
         _In_opt_                    LPISOCHARTCALLBACK statusCallBack,
         _In_                        float callbackFrequency,
-        _In_                        DWORD options,
+        _In_                        unsigned int options,
         _Inout_                     std::vector<UVAtlasVertex>& vMeshOutVertexBuffer,
         _Inout_                     std::vector<uint8_t>& vMeshOutIndexBuffer,
         _Inout_opt_                 std::vector<uint32_t> *pvFacePartitioning,
@@ -579,7 +579,7 @@ HRESULT __cdecl DirectX::UVAtlasPartition(
     const float *pIMTArray,
     std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
     float callbackFrequency,
-    DWORD options,
+    unsigned int options,
     std::vector<UVAtlasVertex>& vMeshOutVertexBuffer,
     std::vector<uint8_t>& vMeshOutIndexBuffer,
     std::vector<uint32_t>* pvFacePartitioning,
@@ -660,7 +660,7 @@ HRESULT __cdecl DirectX::UVAtlasCreate(
     const float *pIMTArray,
     std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
     float callbackFrequency,
-    DWORD options,
+    unsigned int options,
     std::vector<UVAtlasVertex>& vMeshOutVertexBuffer,
     std::vector<uint8_t>& vMeshOutIndexBuffer,
     std::vector<uint32_t>* pvFacePartitioning,
@@ -1239,7 +1239,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromTexture(
     const float* pTexture,
     size_t width,
     size_t height,
-    DWORD options,
+    unsigned int options,
     std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
     float* pIMTArray) noexcept
 {
@@ -1642,7 +1642,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerTexelSignal(
     size_t height,
     size_t signalDimension,
     size_t nComponents,
-    DWORD options,
+    unsigned int options,
     std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
     float* pIMTArray) noexcept
 {
@@ -1826,7 +1826,7 @@ HRESULT __cdecl DirectX::UVAtlasApplyRemap(
 //-------------------------------------------------------------------------------------
 #ifdef _DEBUG
 _Use_decl_annotations_
-void __cdecl UVAtlasDebugPrintf(unsigned int lvl, LPCSTR szFormat, ...)
+void __cdecl UVAtlasDebugPrintf(unsigned int lvl, const char* szFormat, ...)
 {
     if (lvl > 0)
     {

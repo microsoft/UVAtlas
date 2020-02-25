@@ -143,7 +143,7 @@ namespace DirectX
         _In_reads_opt_(nFaces*3)            const float *pIMTArray,
         _In_opt_                            std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
         _In_                                float callbackFrequency,
-        _In_                                DWORD options,
+        _In_                                unsigned int options,
         _Inout_ std::vector<UVAtlasVertex>& vMeshOutVertexBuffer,
         _Inout_ std::vector<uint8_t>&       vMeshOutIndexBuffer,
         _Inout_opt_ std::vector<uint32_t>*  pvFacePartitioning = nullptr,
@@ -189,7 +189,7 @@ namespace DirectX
         _In_reads_opt_(nFaces*3)    const float *pIMTArray,
         _In_opt_ std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
         _In_                        float callbackFrequency,
-        _In_                        DWORD options,
+        _In_                        unsigned int options,
         _Inout_                     std::vector<UVAtlasVertex>& vMeshOutVertexBuffer,
         _Inout_                     std::vector<uint8_t>& vMeshOutIndexBuffer,
         _Inout_opt_                 std::vector<uint32_t>* pvFacePartitioning,
@@ -307,7 +307,7 @@ namespace DirectX
         _In_reads_(width*height*4)          const float* pTexture,
         _In_                                size_t width,
         _In_                                size_t height,
-        _In_                                DWORD options,
+        _In_                                unsigned int options,
         _In_opt_                            std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
         _Out_writes_(nFaces * 3)            float* pIMTArray) noexcept;
 
@@ -334,7 +334,7 @@ namespace DirectX
         _In_                                    size_t height,
         _In_                                    size_t signalDimension,
         _In_                                    size_t nComponents,
-        _In_                                    DWORD options,
+        _In_                                    unsigned int options,
         _In_opt_                                std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
         _Out_writes_(nFaces * 3)                float* pIMTArray) noexcept;
 

@@ -36,7 +36,7 @@ public:
         const FLOAT3* pIMTArray,
         const uint32_t* pOriginalAjacency,
         const uint32_t* pSplitHint,
-        DWORD dwOptions) noexcept override;
+        unsigned int dwOptions) noexcept override;
 
     virtual HRESULT Free() noexcept override;
 
@@ -242,7 +242,7 @@ private:
     
     HANDLE m_hMutex;	// Mutex 
 
-    DWORD m_dwOptions ;
+    unsigned int m_dwOptions ;
 
     friend CIsochartMesh ;
  };
@@ -258,7 +258,7 @@ bool CheckInitializeParameters(
     const void* pFaceIndexArray,
     size_t FaceCount,
     const FLOAT3* pIMTArray,
-    DWORD dwOptions);
+    unsigned int dwOptions);
 
 // Check Partition parameters
 bool CheckPartitionParameters(
