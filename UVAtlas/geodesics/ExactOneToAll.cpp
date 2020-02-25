@@ -666,7 +666,7 @@ void CExactOneToAll::ProcessNewWindow( EdgeWindow *pNewEdgeWindow )
                     else
                     {
                         // we set a flag here, that this window on edge is to be removed
-                        pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem = (TypeEdgeWindowsHeap::item_type*)FLAG_INVALID_SIZE_T ;
+                        pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem = reinterpret_cast<TypeEdgeWindowsHeap::item_type*>(FLAG_INVALID_SIZE_T);
                     }
                 }
                 else
@@ -677,7 +677,7 @@ void CExactOneToAll::ProcessNewWindow( EdgeWindow *pNewEdgeWindow )
                         pNewEdgeWindow->pEdge->WindowsList[i].theWindow = pExistingWindowItem->m_data ;
                     }
                     else
-                        pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem = (TypeEdgeWindowsHeap::item_type*)FLAG_INVALID_SIZE_T ;
+                        pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem = reinterpret_cast<TypeEdgeWindowsHeap::item_type*>(FLAG_INVALID_SIZE_T);
                 }                        
             }        
 
@@ -693,9 +693,9 @@ void CExactOneToAll::ProcessNewWindow( EdgeWindow *pNewEdgeWindow )
         while ( i < pNewEdgeWindow->pEdge->WindowsList.size() )
         {
             // test the remove flag set above, and erase the invalidated window from this edge
-            if ( (size_t)(pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem) == FLAG_INVALID_SIZE_T )
+            if ( reinterpret_cast<size_t>(pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem) == FLAG_INVALID_SIZE_T )
             {
-                pNewEdgeWindow->pEdge->WindowsList.erase(pNewEdgeWindow->pEdge->WindowsList.begin() + i);
+                pNewEdgeWindow->pEdge->WindowsList.erase(pNewEdgeWindow->pEdge->WindowsList.begin() + ptrdiff_t(i));
             }
             else
             {
@@ -1087,7 +1087,7 @@ void CExactOneToAll::GenerateWindowsAroundSaddleOrBoundaryVertex( const EdgeWind
         EdgeWindow tmpWindow ;
 
         tmpWindow.SetEdgeIdx( m_EdgeList, m_VertexList[dwSaddleOrBoundaryVertexId].facesAdj[i]->GetOpposingEdgeIdx(dwSaddleOrBoundaryVertexId) ) ;
-        tmpWindow.SetFaceIdxPropagatedFrom(m_FaceList, (uint32_t) ((intptr_t) m_VertexList[dwSaddleOrBoundaryVertexId].facesAdj[i] - (intptr_t) &m_FaceList[0]) / sizeof(Face));
+        tmpWindow.SetFaceIdxPropagatedFrom(m_FaceList, static_cast<uint32_t>(reinterpret_cast<intptr_t>(m_VertexList[dwSaddleOrBoundaryVertexId].facesAdj[i]) - reinterpret_cast<intptr_t>(&m_FaceList[0])) / sizeof(Face));
         tmpWindow.SetMarkFromEdgeVertexIdx( m_VertexList, tmpWindow.pEdge->dwVertexIdx0 ) ;
         tmpWindow.SetPseuSrcVertexIdx( m_VertexList, dwSaddleOrBoundaryVertexId ) ;
         tmpWindow.b0 = 0 ;

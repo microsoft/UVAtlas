@@ -529,9 +529,9 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexNewGeoDist(
     double dGeoFarest = 0.0 ;
     for (uint32_t i = 0; i < m_dwVertNumber; ++i)
     {
-        m_pVerts[i].fGeodesicDistance = m_pVerts[i].fSignalDistance = 
+        m_pVerts[i].fGeodesicDistance = m_pVerts[i].fSignalDistance =
             std::min(m_pVerts[i].fGeodesicDistance,
-                 (float)ONE_TO_ALL_ENGINE.m_VertexList[i].dGeoDistanceToSrc ) ;
+                float(ONE_TO_ALL_ENGINE.m_VertexList[i].dGeoDistanceToSrc));
 
         if (double(m_pVerts[i].fGeodesicDistance) > dGeoFarest)
         {

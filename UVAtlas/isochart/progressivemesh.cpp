@@ -14,7 +14,7 @@
 #include "pch.h"
 #include "progressivemesh.h"
 
-#define DOUBLE_OP(x, y, op) (double)(x) op (double)(y)
+#define DOUBLE_OP(x, y, op) static_cast<double>(x) op static_cast<double>(y)
 
 using namespace Isochart;
 using namespace DirectX;
@@ -36,9 +36,9 @@ namespace
         const XMFLOAT3 *pV1,
         const XMFLOAT3 *pV2)
     {
-        pOut->x = (float) (DOUBLE_OP(pV1->x, pV2->x, -));
-        pOut->y = (float) (DOUBLE_OP(pV1->y, pV2->y, -));
-        pOut->z = (float) (DOUBLE_OP(pV1->z, pV2->z, -));
+        pOut->x = float(DOUBLE_OP(pV1->x, pV2->x, -));
+        pOut->y = float(DOUBLE_OP(pV1->y, pV2->y, -));
+        pOut->z = float(DOUBLE_OP(pV1->z, pV2->z, -));
     }
 
     void IsochartVec3Cross(
@@ -48,9 +48,9 @@ namespace
     {
         XMFLOAT3 v;
 
-        v.x = (float) (DOUBLE_OP(pV1->y, pV2->z, *) - DOUBLE_OP(pV1->z, pV2->y, *));
-        v.y = (float) (DOUBLE_OP(pV1->z, pV2->x, *) - DOUBLE_OP(pV1->x, pV2->z, *));
-        v.z = (float) (DOUBLE_OP(pV1->x, pV2->y, *) - DOUBLE_OP(pV1->y, pV2->x, *));
+        v.x = float(DOUBLE_OP(pV1->y, pV2->z, *) - DOUBLE_OP(pV1->z, pV2->y, *));
+        v.y = float(DOUBLE_OP(pV1->z, pV2->x, *) - DOUBLE_OP(pV1->x, pV2->z, *));
+        v.z = float(DOUBLE_OP(pV1->x, pV2->y, *) - DOUBLE_OP(pV1->y, pV2->x, *));
 
         *pOut = v;
     }
@@ -59,7 +59,7 @@ namespace
         const XMFLOAT3 *pV1,
         const XMFLOAT3 *pV2)
     {
-        return (float) (
+        return float(
             DOUBLE_OP(pV1->x, pV2->x, *) +
             DOUBLE_OP(pV1->y, pV2->y, *) +
             DOUBLE_OP(pV1->z, pV2->z, *));
@@ -1134,10 +1134,9 @@ HRESULT CProgressiveMesh::CalculateQuadricErrorMetric()
 
     for (size_t i=0; i<m_dwVertNumber; i++)
     {
-        const float* p = 
-            (const float* )(&m_baseInfo.pVertPosition[m_pVertArray[i].dwIDInRootMesh]);
-        float* p1 = (float* )(&leftTop);
-        float* p2 = (float* )(&rightBottom);
+        auto p = reinterpret_cast<const float*>(&m_baseInfo.pVertPosition[m_pVertArray[i].dwIDInRootMesh]);
+        auto p1 = reinterpret_cast<float*>(&leftTop);
+        auto p2 = reinterpret_cast<float*>(&rightBottom);
 
         for (size_t j=0; j<3; j++)
         {

@@ -305,7 +305,7 @@ void CApproximateOneToAll::CutHeapTopData( EdgeWindow &EdgeWindowOut )
                     // remove the found adjacent window from the heap and from the edge it is on
                     m_EdgeWindowsHeap.remove( pItem->m_data.pEdge->WindowsList[i].pHeapItem ) ;
                     delete pItem->m_data.pEdge->WindowsList[i].pHeapItem ;
-                    pItem->m_data.pEdge->WindowsList.erase(pItem->m_data.pEdge->WindowsList.begin() + i);
+                    pItem->m_data.pEdge->WindowsList.erase(pItem->m_data.pEdge->WindowsList.begin() + ptrdiff_t(i));
                     if ( dwIdxSelf > i )
                     {
                         --dwIdxSelf ;

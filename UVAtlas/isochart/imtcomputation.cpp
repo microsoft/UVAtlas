@@ -873,7 +873,7 @@ namespace
                 if (IsInZeroRangeDouble(keyPointList[jj].x - keyPointList[ii].x) &&
                     IsInZeroRangeDouble(keyPointList[jj].y - keyPointList[ii].y))
                 {
-                    keyPointList.erase(keyPointList.begin() + jj);
+                    keyPointList.erase(keyPointList.begin() + ptrdiff_t(jj));
                 }
                 else
                 {
@@ -1372,10 +1372,10 @@ namespace
         float* pfSignal = signalBase.get();
         for (size_t ii = 0; ii < 2; ii++)
         {
-            c.y = (float) (corner[ii].y);
+            c.y = float(corner[ii].y);
             for (size_t jj = 0; jj < 2; jj++)
             {
-                c.x = (float) (corner[jj].x);
+                c.x = float(corner[jj].x);
                 hr = pfnGetSignal(
                     &c,
                     uPrimitiveId,

@@ -72,9 +72,9 @@
 // axis = XAxis, return v.x
 // axis = YAxis, return v.y
 // axis = ZAxis, return v.z
-#define VECTOR_ITEM(v, axis) (((float*)(v))[axis])
+#define VECTOR_ITEM(v, axis) ((reinterpret_cast<float*>(v))[axis])
 #define VECTOR_CHANGE_ITEM(v1, v2, axis, op, value) \
-    {(((float*)(v1))[axis]) = (((float*)(v2))[axis]) op value;}
+    {((reinterpret_cast<float*>(v1))[axis]) = ((reinterpret_cast<const float*>(v2))[axis]) op value;}
 
 #define CONTROL_SEARCH_BY_STEP_COUNT 1
 
@@ -1141,7 +1141,7 @@ namespace
             {
                 if((r1 >= r2 && r2 >= r3) || (r1 <= r2 && r2 <= r3))
                 {
-                    border.erase(border.begin() + ii);
+                    border.erase(border.begin() + ptrdiff_t(ii));
                 }
                 else
                 {
@@ -2467,8 +2467,8 @@ namespace
 {
     int CompareChart(const void* chart1, const void* chart2)
     {
-        const CIsochartMesh* pChart1 = *(const CIsochartMesh**) chart1;
-        const CIsochartMesh* pChart2 = *(const CIsochartMesh**) chart2;
+        auto pChart1 = *reinterpret_cast<const CIsochartMesh* const *>(chart1);
+        auto pChart2 = *reinterpret_cast<const CIsochartMesh* const *>(chart2);
 
         auto pPackingInfo1 = pChart1->GetPackingInfoBuffer();
         auto pPackingInfo2 = pChart2->GetPackingInfoBuffer();

@@ -786,7 +786,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerVertexSignal(
     {
         if (statusCallBack && ((i % 64) == 0))
         {
-            float fPct = i / (float) nFaces;
+            float fPct = float(i) / float(nFaces);
             hr = statusCallBack(fPct);
             if (FAILED(hr))
                 return E_ABORT;
@@ -899,7 +899,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromSignal(
     {
         if (statusCallBack && ((i % 64) == 0))
         {
-            float fPct = i / (float) nFaces;
+            float fPct = float(i) / float(nFaces);
             hr = statusCallBack(fPct);
             if (FAILED(hr))
                 return E_ABORT;
@@ -936,7 +936,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromSignal(
                                signalDimension,
                                signalCallback,
                                userData,
-                               (FLOAT3*)(pfIMTData + 3*i));
+                               reinterpret_cast<FLOAT3*>(pfIMTData + 3*i));
         if ( FAILED(hr) )
         {
             DPF(0, "UVAtlasComputeIMT: IMT data calculation failed.");
@@ -991,8 +991,8 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
@@ -1013,10 +1013,10 @@ namespace
         //
 
         XMVECTOR C1, C2, C3, C4, res;
-        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i]);
-        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i2]);
-        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i]);
-        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i2]);
+        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
+        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
+        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
+        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
 
         res = (C1 * (1.f - du) + C2 * du) * (1.f - dv) +
             (C3 * (1.f - du) + C4 * du) * dv;
@@ -1051,16 +1051,16 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
         float du = u - i;
         float dv = v - j;
 
-        i = i % pTexDesc->uWidth;
-        i2 = i2 % pTexDesc->uWidth;
+        i = i % int(pTexDesc->uWidth);
+        i2 = i2 % int(pTexDesc->uWidth);
 
         if (i < 0)
             i += int(pTexDesc->uWidth);
@@ -1079,10 +1079,10 @@ namespace
         //
 
         XMVECTOR C1, C2, C3, C4, res;
-        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i]);
-        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i2]);
-        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i]);
-        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i2]);
+        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
+        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
+        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
+        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
 
         res = (C1 * (1.f - du) + C2 * du) * (1 - dv) +
             (C3 * (1.f - du) + C4 * du) * dv;
@@ -1117,8 +1117,8 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
@@ -1128,8 +1128,8 @@ namespace
         i = std::max(0, std::min<int>(i, int(pTexDesc->uWidth) - 1));
         i2 = std::max(0, std::min<int>(i2, int(pTexDesc->uWidth) - 1));
 
-        j = j % pTexDesc->uHeight;
-        j2 = j2 % pTexDesc->uHeight;
+        j = j % int(pTexDesc->uHeight);
+        j2 = j2 % int(pTexDesc->uHeight);
 
         if (j < 0)
             j += int(pTexDesc->uHeight);
@@ -1145,10 +1145,10 @@ namespace
         //
 
         XMVECTOR C1, C2, C3, C4, res;
-        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i]);
-        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i2]);
-        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i]);
-        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i2]);
+        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
+        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
+        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
+        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
 
         res = (C1 * (1.f - du) + C2 * du) * (1.f - dv) +
             (C3 * (1.f - du) + C4 * du) * dv;
@@ -1181,24 +1181,24 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
         float du = u - i;
         float dv = v - j;
 
-        i = i % pTexDesc->uWidth;
-        i2 = i2 % pTexDesc->uWidth;
+        i = i % int(pTexDesc->uWidth);
+        i2 = i2 % int(pTexDesc->uWidth);
 
         if (i < 0)
             i += int(pTexDesc->uWidth);
         if (i2 < 0)
             i2 += int(pTexDesc->uWidth);
 
-        j = j % pTexDesc->uHeight;
-        j2 = j2 % pTexDesc->uHeight;
+        j = j % int(pTexDesc->uHeight);
+        j2 = j2 % int(pTexDesc->uHeight);
 
         if (j < 0)
             j += int(pTexDesc->uHeight);
@@ -1214,10 +1214,10 @@ namespace
         //
 
         XMVECTOR C1, C2, C3, C4, res;
-        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i]);
-        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * pTexDesc->uWidth + i2]);
-        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i]);
-        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * pTexDesc->uWidth + i2]);
+        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
+        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
+        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
+        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
 
         res = (C1 * (1.f - du) + C2 * du) * (1.f - dv) +
             (C3 * (1.f - du) + C4 * du) * dv;
@@ -1305,7 +1305,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromTexture(
     {
         if (statusCallBack && ((i % 64) == 0))
         {
-            float fPct = i / (float) nFaces;
+            float fPct = float(i) / float(nFaces);
             hr = statusCallBack(fPct);
             if (FAILED(hr))
                 return E_ABORT;
@@ -1341,7 +1341,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromTexture(
                                  4, // dimension 4, rgba, can be zeroes if less than 4
                                  pSignalCallback,
                                  &TextureDesc,
-                                 (FLOAT3*)(pfIMTData + 3*i));
+                                 reinterpret_cast<FLOAT3*>(pfIMTData + 3*i));
         if (FAILED(hr))
         {
             DPF(0, "UVAtlasComputeIMT: IMT data calculation failed.");
@@ -1395,8 +1395,8 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
@@ -1416,10 +1416,10 @@ namespace
         // C3 ---- C4  v, u --->   v
         //
 
-        const float *C1 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C2 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i2) * pTexDesc->uStride];
-        const float *C3 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C4 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i2) * pTexDesc->uStride];
+        const float *C1 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C2 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
+        const float *C3 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C4 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
 
         for (size_t k = 0; k < uSignalDimension; k++)
         {
@@ -1454,16 +1454,16 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
         float du = u - i;
         float dv = v - j;
 
-        i = i % pTexDesc->uWidth;
-        i2 = i2 % pTexDesc->uWidth;
+        i = i % int(pTexDesc->uWidth);
+        i2 = i2 % int(pTexDesc->uWidth);
 
         if (i < 0)
             i += int(pTexDesc->uWidth);
@@ -1481,10 +1481,10 @@ namespace
         // C3 ---- C4  v, u --->   v
         //
 
-        const float *C1 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C2 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i2) * pTexDesc->uStride];
-        const float *C3 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C4 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i2) * pTexDesc->uStride];
+        const float *C1 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C2 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
+        const float *C3 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C4 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
 
         for (size_t k = 0; k < uSignalDimension; k++)
         {
@@ -1519,8 +1519,8 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
@@ -1530,8 +1530,8 @@ namespace
         i = std::max(0, std::min<int>(i, int(pTexDesc->uWidth) - 1));
         i2 = std::max(0, std::min<int>(i2, int(pTexDesc->uWidth) - 1));
 
-        j = j % pTexDesc->uHeight;
-        j2 = j2 % pTexDesc->uHeight;
+        j = j % int(pTexDesc->uHeight);
+        j2 = j2 % int(pTexDesc->uHeight);
 
         if (j < 0)
             j += int(pTexDesc->uHeight);
@@ -1546,10 +1546,10 @@ namespace
         // C3 ---- C4  v, u --->   v
         //
 
-        const float *C1 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C2 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i2) * pTexDesc->uStride];
-        const float *C3 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C4 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i2) * pTexDesc->uStride];
+        const float *C1 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C2 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
+        const float *C3 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C4 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
 
         for (size_t k = 0; k < uSignalDimension; k++)
         {
@@ -1582,24 +1582,24 @@ namespace
         u = u * pTexDesc->uWidth;
         v = v * pTexDesc->uHeight;
 
-        int i = (int) u;
-        int j = (int) v;
+        int i = int(u);
+        int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
         float du = u - i;
         float dv = v - j;
 
-        i = i % pTexDesc->uWidth;
-        i2 = i2 % pTexDesc->uWidth;
+        i = i % int(pTexDesc->uWidth);
+        i2 = i2 % int(pTexDesc->uWidth);
 
         if (i < 0)
             i += int(pTexDesc->uWidth);
         if (i2 < 0)
             i2 += int(pTexDesc->uWidth);
 
-        j = j % pTexDesc->uHeight;
-        j2 = j2 % pTexDesc->uHeight;
+        j = j % int(pTexDesc->uHeight);
+        j2 = j2 % int(pTexDesc->uHeight);
 
         if (j < 0)
             j += int(pTexDesc->uHeight);
@@ -1614,10 +1614,10 @@ namespace
         // C3 ---- C4  v, u --->   v
         //
 
-        const float *C1 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C2 = &pTexDesc->pTexture[(j * pTexDesc->uWidth + i2) * pTexDesc->uStride];
-        const float *C3 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i) * pTexDesc->uStride];
-        const float *C4 = &pTexDesc->pTexture[(j2 * pTexDesc->uWidth + i2) * pTexDesc->uStride];
+        const float *C1 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C2 = &pTexDesc->pTexture[size_t(j * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
+        const float *C3 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i) * pTexDesc->uStride];
+        const float *C4 = &pTexDesc->pTexture[size_t(j2 * int(pTexDesc->uWidth) + i2) * pTexDesc->uStride];
 
         for (size_t k = 0; k < uSignalDimension; k++)
         {
@@ -1717,7 +1717,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerTexelSignal(
     {
         if (statusCallBack && ((i % 64) == 0))
         {
-            float fPct = i / (float) nFaces;
+            float fPct = float(i) / float(nFaces);
             hr = statusCallBack(fPct);
             if (FAILED(hr))
                 return E_ABORT;
@@ -1753,7 +1753,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerTexelSignal(
                                  signalDimension,
                                  pSignalCallback,
                                  &FloatArrayDesc,
-                                 (FLOAT3*)(pfIMTData + 3*i));
+                                 reinterpret_cast<FLOAT3*>(pfIMTData + 3*i));
         if (FAILED(hr))
         {
             DPF(0, "UVAtlasComputeIMT: IMT data calculation failed.");

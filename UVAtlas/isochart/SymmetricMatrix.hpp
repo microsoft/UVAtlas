@@ -149,8 +149,7 @@ namespace Isochart
                     h = VectorDot(pU, pU, i);
         
                     //value_type shift = pEigenValue[i - 1];
-                    value_type g = (pU[i-1] < 0) ? 
-                        (value_type)(-IsochartSqrt(h)) : (value_type)(IsochartSqrt(h));
+                    auto g = (pU[i - 1] < 0) ? value_type(-IsochartSqrt(h)) : value_type(IsochartSqrt(h));
 
                     pSubDiagVec[i] = -(total * g); // i element of sub-diagonal vector
                     h += pU[i-1] * g; // h = |u|*|u|/2 
@@ -271,8 +270,7 @@ namespace Isochart
             for (size_t j = 0; j < dwDimension; j++)
             {
                 // 2.2.1 Find a small subdiagonal element to split the matrix			
-                value_type temp = 
-                    (value_type)(fabs(pEigenValue[j]) + fabs (pSubDiagVec[j]));
+                auto temp = value_type(fabs(pEigenValue[j]) + fabs(pSubDiagVec[j]));
                 if (maxv < temp)
                 {
                     maxv = temp;
@@ -311,7 +309,7 @@ namespace Isochart
                             pEigenValue[j]*pEigenValue[j+1]
                             - pSubDiagVec[j]*pSubDiagVec[j];
                         
-                        value_type bc = (value_type)(IsochartSqrt(b*b - 4*a*c));
+                        auto bc = value_type(IsochartSqrt(b * b - 4 * a * c));
                         value_type ks = (-b + bc)/2;
                         value_type ks1 = (-b - bc)/2;
 
@@ -340,9 +338,9 @@ namespace Isochart
                         // "Jacobi Rotation" at P(n-1, n)
                         // C = d(n) / (d(n)^2 + e(n-1)^2)
                         // S = e(n-1) / (d(n)^2 + e(n-1)^2)
-                        value_type tt = (value_type)IsochartSqrt(
-                            pEigenValue[n]*pEigenValue[n] + 
-                            pSubDiagVec[n-1]*pSubDiagVec[n-1]);
+                        auto tt = value_type(IsochartSqrt(
+                            pEigenValue[n] * pEigenValue[n] +
+                            pSubDiagVec[n - 1] * pSubDiagVec[n - 1]));
 
                         lastC = pEigenValue[n] / tt;
                         lastS = pSubDiagVec[n-1] / tt;
@@ -361,19 +359,19 @@ namespace Isochart
 
                         // Because d[n-1], e[n-1] will continue to be changed in next 
                         // step, only change d[n] here
-                        pEigenValue[n] = (value_type) lastqq;
+                        pEigenValue[n] = value_type(lastqq);
 
                         // Multiply current rotoation matrix to the finial orthogonal matrix,
                         //which stores the eigenvectors
                         for (size_t l = 0; l < dwDimension; l++)
                         {
                             value_type tempItem = pRowHeader[l][n];
-                            pRowHeader[l][n] = (value_type)(
-                                lastS*pRowHeader[l][n-1]
-                                + lastC*tempItem);
-                            pRowHeader[l][n-1] = (value_type)(
-                                lastC*pRowHeader[l][n-1]
-                                - lastS*tempItem);
+                            pRowHeader[l][n] = value_type(
+                                lastS * pRowHeader[l][n - 1]
+                                + lastC * tempItem);
+                            pRowHeader[l][n - 1] = value_type(
+                                lastC * pRowHeader[l][n - 1]
+                                - lastS * tempItem);
                         }
                         // If need restore tridiagonal form
                         if (n > j+1)
@@ -388,21 +386,17 @@ namespace Isochart
                             for (size_t k = n - 1; k > j; k--)
                             {
                                 next = k-1;
-                                pSubDiagVec[next] = 
-                                    (value_type)(lastC * pSubDiagVec[next]);
-                                tt = 
-                                    (value_type)IsochartSqrt(lastpq*lastpq+extra*extra);
+                                pSubDiagVec[next] = value_type(lastC * pSubDiagVec[next]);
+                                tt = value_type(IsochartSqrt(lastpq * lastpq + extra * extra));
                                 lastC = lastpq / tt;
                                 lastS = extra / tt;
 
-                                pSubDiagVec[next+1] = 
-                                    (value_type)(lastC*lastpq + lastS*extra);
+                                pSubDiagVec[next + 1] = value_type(lastC * lastpq + lastS * extra);
                                 
-                                
-                                pEigenValue[next+1] = (value_type)(
-                                    lastS*lastS*pEigenValue[next]
-                                    + lastC*lastC*lastpp
-                                    +2*lastS*lastC*pSubDiagVec[next]);
+                                pEigenValue[next + 1] = value_type(
+                                    lastS * lastS * pEigenValue[next]
+                                    + lastC * lastC * lastpp
+                                    + 2 * lastS * lastC * pSubDiagVec[next]);
 
                                 lastpq =
                                     (lastC*lastC - lastS*lastS)*pSubDiagVec[next]
@@ -419,19 +413,19 @@ namespace Isochart
                                 for (size_t l = 0; l < dwDimension; l++)
                                 {
                                     value_type tempItem = pRowHeader[l][next+1];
-                                    pRowHeader[l][next+1] = (value_type)(
-                                        lastS*pRowHeader[l][next]
-                                        + lastC*tempItem);
-                                    pRowHeader[l][next] = (value_type)(
-                                        lastC*pRowHeader[l][next]
-                                        - lastS*tempItem);
+                                    pRowHeader[l][next + 1] = value_type(
+                                        lastS * pRowHeader[l][next]
+                                        + lastC * tempItem);
+                                    pRowHeader[l][next] = value_type(
+                                        lastC * pRowHeader[l][next]
+                                        - lastS * tempItem);
                                 }
                             }
                         }
 
                         // Last step.
-                        pEigenValue[j] = (value_type)(lastpp);
-                        pSubDiagVec[j] = (value_type)(lastpq);
+                        pEigenValue[j] = value_type(lastpp);
+                        pSubDiagVec[j] = value_type(lastpq);
                         if( n < dwDimension )
                         {
                             pSubDiagVec[n] = 0.0;					
