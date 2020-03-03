@@ -23,10 +23,10 @@ namespace Isochart
     {
     public:
         CIsochartEngine();
-        virtual ~CIsochartEngine() override;
+        ~CIsochartEngine() override;
 
         // IIsochartEngine
-        virtual HRESULT Initialize(
+        HRESULT Initialize(
             const void* pVertexArray,
             size_t VertexCount,
             size_t VertexStride,
@@ -38,16 +38,16 @@ namespace Isochart
             const uint32_t* pSplitHint,
             unsigned int dwOptions) noexcept override;
 
-        virtual HRESULT Free() noexcept override;
+        HRESULT Free() noexcept override;
 
-        virtual HRESULT Partition(
+        HRESULT Partition(
             size_t MaxChartNumber,
             float Stretch,
             size_t& ChartNumberOut,
             float& MaxChartStretchOut,
             uint32_t* pFaceAttributeIDOut) noexcept override;
 
-        virtual HRESULT Pack(
+        HRESULT Pack(
             size_t Width,
             size_t Height,
             float Gutter,
@@ -57,22 +57,22 @@ namespace Isochart
             std::vector<uint32_t>* pvVertexRemapArrayOut,
             _In_opt_ std::vector<uint32_t>* pvAttributeID) noexcept override;
 
-        virtual HRESULT SetCallback(
+        HRESULT SetCallback(
             LPISOCHARTCALLBACK pCallback,
             float Frequency) noexcept override;
 
-        virtual HRESULT SetStage(
+        HRESULT SetStage(
             unsigned int TotalStageCount,
             unsigned int DoneStageCount) noexcept override;
 
-        virtual HRESULT ExportPartitionResult(
+        HRESULT ExportPartitionResult(
             std::vector<DirectX::UVAtlasVertex>* pvVertexArrayOut,
             std::vector<uint8_t>* pvFaceIndexArrayOut,
             std::vector<uint32_t>* pvVertexRemapArrayOut,
             std::vector<uint32_t>* pvAttributeIDOut,
             std::vector<uint32_t>* pvAdjacencyOut) noexcept override;
 
-        virtual HRESULT InitializePacking(
+        HRESULT InitializePacking(
             std::vector<DirectX::UVAtlasVertex>* pvVertexBuffer,
             size_t VertexCount,
             std::vector<uint8_t>* pvFaceIndexBuffer,
