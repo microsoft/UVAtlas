@@ -5,7 +5,7 @@
 #
 # http://go.microsoft.com/fwlink/?LinkID=512686
 
-cmake_minimum_required (VERSION 3.11)
+cmake_minimum_required (VERSION 3.16)
 
 project (UVAtlas LANGUAGES CXX)
 
@@ -81,6 +81,8 @@ add_library (${PROJECT_NAME} STATIC
     UVAtlas/isochart/Vis_Maxflow.cpp
     UVAtlas/isochart/Vis_Maxflow.h
 )
+
+target_precompile_headers(${PROJECT_NAME} PRIVATE UVAtlas/pch.h)
 
 source_group(inc REGULAR_EXPRESSION UVAtlas/inc/*.*)
 source_group(geodesics REGULAR_EXPRESSION UVAtlas/geodesics/*.*)
