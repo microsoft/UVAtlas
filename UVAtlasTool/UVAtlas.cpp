@@ -72,6 +72,7 @@ enum OPTIONS
     OPT_VBO,
     OPT_WAVEFRONT_OBJ,
     OPT_OUTPUTFILE,
+    OPT_TOLOWER,
     OPT_CLOCKWISE,
     OPT_FORCE_32BIT_IB,
     OPT_OVERWRITE,
@@ -143,6 +144,7 @@ const SValue g_pOptions [] =
     { L"it",        OPT_IMT_TEXFILE },
     { L"iv",        OPT_IMT_VERTEX },
     { L"o",         OPT_OUTPUTFILE },
+    { L"l",         OPT_TOLOWER },
     { L"sdkmesh",   OPT_SDKMESH },
     { L"sdkmesh2",  OPT_SDKMESH_V2 },
     { L"cmo",       OPT_CMO },
@@ -315,6 +317,7 @@ namespace
         wprintf(L"   -flipv              inverts the v texcoords\n");
         wprintf(L"   -flipz              flips the handedness of the positions/normals\n");
         wprintf(L"   -o <filename>       output filename\n");
+        wprintf(L"   -l                  force output filename to lower case\n");
         wprintf(L"   -y                  overwrite existing output file (if any)\n");
         wprintf(L"   -nologo             suppress copyright message\n");
         wprintf(L"   -flist <filename>   use text file with a list of input files (one per line)\n");
@@ -1216,6 +1219,11 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             _wmakepath_s(outputPath, nullptr, nullptr, outFilename, outputExt);
         }
 
+        if (dwOptions & (DWORD64(1) << OPT_TOLOWER))
+        {
+            (void)_wcslwr_s(outputPath);
+        }
+
         if (~dwOptions & (DWORD64(1) << OPT_OVERWRITE))
         {
             if (GetFileAttributesW(outputPath) != INVALID_FILE_ATTRIBUTES)
@@ -1303,6 +1311,20 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             wcscat_s(uvFilename, L"_texture");
 
             _wmakepath_s(outputPath, nullptr, nullptr, uvFilename, outputExt);
+
+            if (dwOptions & (DWORD64(1) << OPT_TOLOWER))
+            {
+                (void)_wcslwr_s(outputPath);
+            }
+
+            if (~dwOptions & (DWORD64(1) << OPT_OVERWRITE))
+            {
+                if (GetFileAttributesW(outputPath) != INVALID_FILE_ATTRIBUTES)
+                {
+                    wprintf(L"\nERROR: UV visualization mesh file already exists, use -y to overwrite:\n'%ls'\n", outputPath);
+                    return 1;
+                }
+            }
 
             hr = E_NOTIMPL;
             if (!_wcsicmp(outputExt, L".vbo"))
