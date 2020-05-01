@@ -1289,7 +1289,7 @@ float CIsochartMesh::CalculateAverageEdgeLength()
         fAverageEdgeLength += (x * x + y * y);
     }
     fAverageEdgeLength =
-        IsochartSqrtf(fAverageEdgeLength / m_edges.size());
+        IsochartSqrtf(fAverageEdgeLength / float(m_edges.size()));
 
     return fAverageEdgeLength;
 }
@@ -1700,8 +1700,8 @@ void CIsochartMesh::PrepareInternalVertOpt(
         vertInfo.end.x += pVertex1->uv.x;
         vertInfo.end.y += pVertex1->uv.y;
     }
-    vertInfo.center.x = vertInfo.end.x / dwAdjacentVertexCount;
-    vertInfo.center.y = vertInfo.end.y / dwAdjacentVertexCount;
+    vertInfo.center.x = vertInfo.end.x / float(dwAdjacentVertexCount);
+    vertInfo.center.y = vertInfo.end.y / float(dwAdjacentVertexCount);
     vertInfo.end = vertInfo.center;
 
     TryAdjustVertexParamStretch(
@@ -1791,7 +1791,7 @@ bool CIsochartMesh::OptimizeVertexStretchAroundCenter(
     while (iteration < optimizeInfo.dwRandOptOneVertTimes)
     {
         // 1. Get a new random position in the optimizing circle range
-        float fAngle = rand() * 2.f * XM_PI / RAND_MAX;
+        float fAngle = float(rand()) * 2.f * XM_PI / RAND_MAX;
         vertInfo.end.x =
             vertInfo.center.x + vertInfo.fRadius * cosf(fAngle);
         vertInfo.end.y =

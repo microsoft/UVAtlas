@@ -156,7 +156,7 @@ bool CIsochartMesh::CalculateEdgeAngleDistance(
         return false;
     }
 
-    fAverageAngleDistance /= dwEdgeAngleCount;
+    fAverageAngleDistance /= float(dwEdgeAngleCount);
     if (IsInZeroRange(fAverageAngleDistance))
     {
         return false;
@@ -213,7 +213,7 @@ HRESULT	CIsochartMesh::CalculateFuzzyRegion(
     assert(dwMaxLevel > 0);
     size_t dwMinLevel =
         std::min<size_t>(
-            size_t(dwMaxLevel * FUZYY_REGION_PERCENT + 0.5f),
+            size_t(float(dwMaxLevel) * FUZYY_REGION_PERCENT + 0.5f),
             dwMaxLevel - 1);
 
     for (size_t i = 0; i < m_dwFaceNumber; i++)
@@ -779,7 +779,7 @@ HRESULT CIsochartMesh::CalculateLandmarkAndFuzzyRegion(
         assert(dwMaxLevel > 0);
         size_t dwMinLevel =
             std::min<size_t>(
-                size_t(dwMaxLevel * FUZYY_REGION_PERCENT + 0.5f),
+                size_t(float(dwMaxLevel) * FUZYY_REGION_PERCENT + 0.5f),
                 dwMaxLevel - 1);
 
         bool bSucceed = false;
@@ -1310,7 +1310,7 @@ OptimizeOneBoundaryByAngle(
             fabsf(fStretch1 - fStretch2);
         fAverageStetchDiff += pfFacesStretchDiff[pFatherFace->dwID];
     }
-    fAverageStetchDiff = 2 * fAverageStetchDiff / dwNodeNumber;
+    fAverageStetchDiff = 2 * fAverageStetchDiff / float(dwNodeNumber);
 
     // Initialize graph
     std::unique_ptr<CGraphcut::NODEHANDLE[]> hNodes(new (std::nothrow) CGraphcut::NODEHANDLE[dwNodeNumber]);
@@ -1540,7 +1540,7 @@ float CIsochartMesh::CalculateFaceGeodesicDistortion(
         fError += temp * temp;
     }
 
-    fError /= dwLandmarkNumber;
+    fError /= float(dwLandmarkNumber);
 
     return fError;
 }

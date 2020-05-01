@@ -362,7 +362,7 @@ void CUVAtlasRepacker::AdjustEstimatedPercent()
         m_EstimatedSpacePercent = oldp * 0.9f;
 
     m_PixelWidth = sqrtf(m_fChartsTotalArea /
-        (m_EstimatedSpacePercent * m_dwAtlasWidth * m_dwAtlasHeight));
+        (m_EstimatedSpacePercent * float(m_dwAtlasWidth * m_dwAtlasHeight)));
 }
 
 /***************************************************************************\
@@ -403,7 +403,7 @@ void CUVAtlasRepacker::InitialSpacePercent()
     for (;;)
     {
         m_PixelWidth = sqrtf(m_fChartsTotalArea /
-            (m_EstimatedSpacePercent * m_dwAtlasWidth * m_dwAtlasHeight));
+            (m_EstimatedSpacePercent * float(m_dwAtlasWidth * m_dwAtlasHeight)));
         auto pCInfo = reinterpret_cast<ChartsInfo*>(&(m_ChartsInfo[m_SortedChartIndex[0]]));
         auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(pCInfo->PosInfo[0]));
 
@@ -443,16 +443,16 @@ void CUVAtlasRepacker::ComputeChartsLengthInPixel()
 
             // adjust the chart to be in the middle of the bounding box in pixel
             // to avoid one side is too close and the other side is too far from bounding box edges
-            float adjustX = (numX * m_PixelWidth - (pPosInfo->maxPoint.x - pPosInfo->minPoint.x)) / 2.0f;
-            float adjustY = (numY * m_PixelWidth - (pPosInfo->maxPoint.y - pPosInfo->minPoint.y)) / 2.0f;
+            float adjustX = (float(numX) * m_PixelWidth - (pPosInfo->maxPoint.x - pPosInfo->minPoint.x)) / 2.0f;
+            float adjustY = (float(numY) * m_PixelWidth - (pPosInfo->maxPoint.y - pPosInfo->minPoint.y)) / 2.0f;
 
             pPosInfo->adjustLen.x = adjustX;
             pPosInfo->adjustLen.y = adjustY;
 
             // the base point is used to compute the rotate matrix of the chart when the 
             // chart is rotated 90, 180 or 270 degrees
-            pPosInfo->basePoint = XMFLOAT2(pPosInfo->minPoint.x - m_iGutter * m_PixelWidth - adjustX,
-                pPosInfo->minPoint.y - m_iGutter * m_PixelWidth - adjustY);
+            pPosInfo->basePoint = XMFLOAT2(pPosInfo->minPoint.x - float(m_iGutter) * m_PixelWidth - adjustX,
+                pPosInfo->minPoint.y - float(m_iGutter) * m_PixelWidth - adjustY);
 
             // the length should be added by gutter space of two sides
             pPosInfo->numX = numX + 2 * m_iGutter;
@@ -539,8 +539,8 @@ HRESULT CUVAtlasRepacker::PrepareRepack()
 
     // save the first chart's transform matrix
     XMStoreFloat4x4(&m_ResultMatrix[index], XMMatrixTranslation(
-        m_PixelWidth * m_fromX - m_ChartsInfo[index].PosInfo[0].basePoint.x,
-        m_PixelWidth * m_fromY - m_ChartsInfo[index].PosInfo[0].basePoint.y,
+        m_PixelWidth * float(m_fromX) - m_ChartsInfo[index].PosInfo[0].basePoint.x,
+        m_PixelWidth * float(m_fromY) - m_ChartsInfo[index].PosInfo[0].basePoint.y,
         0.0f));
 
     // prepare the space information of UV atlas
@@ -1051,9 +1051,9 @@ HRESULT CUVAtlasRepacker::PrepareChartsInfo()
 
         float minArea = 1e10;
 
-        for (size_t j = 1; j <= (90 / RotateAngle); j++)
+        for (size_t j = 1; float(j) <= (float(90) / RotateAngle); j++)
         {
-            float angle = j * RotateAngle / 180.0f * XM_PI;
+            float angle = float(j) * RotateAngle / 180.0f * XM_PI;
             if (angle > XM_PI / 2.0f)
                 angle = XM_PI / 2.0f;
             XMMATRIX rotateMatrix = XMMatrixRotationZ(angle);
@@ -1105,7 +1105,7 @@ HRESULT CUVAtlasRepacker::PrepareChartsInfo()
         // edges and other useful information
         for (size_t j = 0; j < m_iRotateNum; j++)
         {
-            float angle = j * XM_PI / m_iRotateNum / 2.0f;
+            float angle = float(j) * XM_PI / float(m_iRotateNum) / 2.0f;
             XMMATRIX rotateMatrix = XMMatrixRotationZ(angle);
 
             XMVector2TransformCoordStream(
@@ -1318,7 +1318,7 @@ void CUVAtlasRepacker::PutChart(uint32_t index)
         else if (m_currAspectRatio < m_AspectRatio)
             PutSide = 1;
         else
-            PutSide = int(floorf(rand() + 0.5f));
+            PutSide = int(floorf(float(rand()) + 0.5f));
 
         if (PutSide == 0) // put on left or right side
         {
@@ -1467,7 +1467,7 @@ void CUVAtlasRepacker::TryPut(int chartPutSide, int PutSide,
             (ratio > m_triedAspectRatio && (PutSide == UV_LEFTSIDE || PutSide == UV_RIGHTSIDE)) ||
             ((fabsf(ratio - m_triedAspectRatio) < 1e-6f) &&
             (internalSpace < m_triedInternalSpace ||
-                (abs(internalSpace - m_triedInternalSpace) < m_triedInternalSpace * 0.05f &&
+                (fabsf(float(internalSpace - m_triedInternalSpace)) < float(m_triedInternalSpace) * 0.05f &&
                     m_triedOverlappedLen < minDistant))))
         {
             m_triedRotate = size_t(m_currRotate);
@@ -1507,9 +1507,9 @@ bool CUVAtlasRepacker::CheckAtlasRange()
         if (m_iNumCharts < CHART_THRESHOLD)
         {
             if (tmpX > int(m_dwAtlasWidth))
-                m_adjustFactor = float(m_dwAtlasWidth) / tmpX;
+                m_adjustFactor = float(m_dwAtlasWidth) / float(tmpX);
             if (tmpY > int(m_dwAtlasHeight))
-                m_adjustFactor = float(m_dwAtlasHeight) / tmpY;
+                m_adjustFactor = float(m_dwAtlasHeight) / float(tmpY);
             m_adjustFactor *= m_adjustFactor;
         }
 
@@ -1585,10 +1585,10 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
     auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(m_ChartsInfo[index].PosInfo[m_triedRotate]));
 
     XMMATRIX matrixRotate;
-    matrixRotate = XMMatrixRotationZ(m_triedPutRotation / 180.0f * XM_PI);
+    matrixRotate = XMMatrixRotationZ(float(m_triedPutRotation) / 180.0f * XM_PI);
     XMStoreFloat2(&(pPosInfo->basePoint), XMVector2TransformCoord(XMLoadFloat2(&(pPosInfo->basePoint)),
         matrixRotate));
-    matrixRotate = XMMatrixRotationZ(m_triedPutRotation / 180.0f * XM_PI +
+    matrixRotate = XMMatrixRotationZ(float(m_triedPutRotation) / 180.0f * XM_PI +
         pPosInfo->angle);
 
     m_currAspectRatio = m_triedAspectRatio;
@@ -1602,8 +1602,8 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
                     m_UVBoard[size_t(i)][size_t(j)] =
                     m_triedUVBoard[size_t(i - m_chartFromY)][size_t(j - m_chartFromX)];
         transMatrix = XMMatrixTranslation(
-            m_PixelWidth * m_chartFromX - pPosInfo->basePoint.x,
-            m_PixelWidth * m_chartFromY - pPosInfo->basePoint.y, 0.0f);
+            m_PixelWidth * float(m_chartFromX) - pPosInfo->basePoint.x,
+            m_PixelWidth * float(m_chartFromY) - pPosInfo->basePoint.y, 0.0f);
         break;
     case 90:
         for (int i = m_chartFromY; i < m_chartToY; i++)
@@ -1612,8 +1612,8 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
                     m_UVBoard[size_t(i)][size_t(j)] =
                     m_triedUVBoard[size_t(m_chartToX - j - 1)][size_t(i - m_chartFromY)];
         transMatrix = XMMatrixTranslation(
-            m_PixelWidth * m_chartToX - pPosInfo->basePoint.x,
-            m_PixelWidth * m_chartFromY - pPosInfo->basePoint.y, 0.0f);
+            m_PixelWidth * float(m_chartToX) - pPosInfo->basePoint.x,
+            m_PixelWidth * float(m_chartFromY) - pPosInfo->basePoint.y, 0.0f);
         break;
     case 180:
         for (int i = m_chartFromY; i < m_chartToY; i++)
@@ -1622,8 +1622,8 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
                     m_UVBoard[size_t(i)][size_t(j)] =
                     m_triedUVBoard[size_t(m_chartToY - i - 1)][size_t(m_chartToX - j - 1)];
         transMatrix = XMMatrixTranslation(
-            m_PixelWidth * m_chartToX - pPosInfo->basePoint.x,
-            m_PixelWidth * m_chartToY - pPosInfo->basePoint.y, 0.0f);
+            m_PixelWidth * float(m_chartToX) - pPosInfo->basePoint.x,
+            m_PixelWidth * float(m_chartToY) - pPosInfo->basePoint.y, 0.0f);
         break;
     case 270:
         for (int i = m_chartFromY; i < m_chartToY; i++)
@@ -1632,8 +1632,8 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
                     m_UVBoard[size_t(i)][size_t(j)] =
                     m_triedUVBoard[size_t(j - m_chartFromX)][size_t(m_chartToY - i - 1)];
         transMatrix = XMMatrixTranslation(
-            m_PixelWidth * m_chartFromX - pPosInfo->basePoint.x,
-            m_PixelWidth * m_chartToY - pPosInfo->basePoint.y, 0.0f);
+            m_PixelWidth * float(m_chartFromX) - pPosInfo->basePoint.x,
+            m_PixelWidth * float(m_chartToY) - pPosInfo->basePoint.y, 0.0f);
         break;
     }
 
@@ -1772,10 +1772,10 @@ void CUVAtlasRepacker::Normalize()
 {
     XMMATRIX transMatrix, scalMatrix, matrix;
 
-    transMatrix = XMMatrixTranslation(-m_PixelWidth * (m_fromX + m_iGutter),
-        -m_PixelWidth * (m_fromY + m_iGutter), 0.0f);
-    scalMatrix = XMMatrixScaling(1.0f / m_PixelWidth / m_NormalizeLen,
-        1.0f / m_PixelWidth / m_NormalizeLen, 0.0f);
+    transMatrix = XMMatrixTranslation(-m_PixelWidth * float(m_fromX + m_iGutter),
+        -m_PixelWidth * float(m_fromY + m_iGutter), 0.0f);
+    scalMatrix = XMMatrixScaling(1.0f / m_PixelWidth / float(m_NormalizeLen),
+        1.0f / m_PixelWidth / float(m_NormalizeLen), 0.0f);
 
     for (size_t i = 0; i < m_iNumCharts; i++)
     {
@@ -1977,7 +1977,7 @@ bool CUVAtlasRepacker::DoTessellation(uint32_t ChartIndex, size_t AngleIndex)
         {
             for (n = fromX + 1; n < toX; n++)
             {
-                x = minP.x + n * m_PixelWidth;
+                x = minP.x + float(n) * m_PixelWidth;
                 y = slope * x + b;
                 m = int(floorf((y - minP.y) / m_PixelWidth));
 
@@ -1990,7 +1990,7 @@ bool CUVAtlasRepacker::DoTessellation(uint32_t ChartIndex, size_t AngleIndex)
         {
             for (m = fromY + 1; m < toY; m++)
             {
-                y = minP.y + m * m_PixelWidth;
+                y = minP.y + float(m) * m_PixelWidth;
                 x = (y - b) / slope;
 
                 n = int(floorf((x - minP.x) / m_PixelWidth));

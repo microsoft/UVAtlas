@@ -160,12 +160,12 @@ namespace
             return false;
         }
 
-        if (IsInZeroRangeDouble(d3dArea / (uint64_t(1) << (uint64_t(pFace->dwDepth + 1) << 1))))
+        if (IsInZeroRangeDouble(d3dArea / double(uint64_t(1) << (uint64_t(pFace->dwDepth + 1) << 1))))
         {
             return false;
         }
 
-        if (IsInZeroRangeDouble(d2dArea / (uint64_t(1) << (uint64_t(pFace->dwDepth + 1) << 1))))
+        if (IsInZeroRangeDouble(d2dArea / double(uint64_t(1) << (uint64_t(pFace->dwDepth + 1) << 1))))
         {
             return false;
         }
@@ -535,7 +535,7 @@ Isochart::IMTFromTextureMap(
             pfSignal += dwSignalDimension;
         }
 
-        float fA = static_cast<float>(d2dArea / (uint64_t(1) << (uint64_t(pCurrFace->dwDepth) << 1)));
+        float fA = static_cast<float>(d2dArea / double(uint64_t(1) << (uint64_t(pCurrFace->dwDepth) << 1)));
         // Compute IMT using standard parameterization coordinates.
         CalTriangleIMTFromPerVertexSignal(
             &(vertList[pCurrFace->dwVertIdx[0]]),
@@ -548,7 +548,7 @@ Isochart::IMTFromTextureMap(
             dwSignalDimension,
             &tempIMT);
 
-        double dIntegratedArea = d3dArea / (uint64_t(1) << (uint64_t(pCurrFace->dwDepth) << 1));
+        double dIntegratedArea = d3dArea / double(uint64_t(1) << (uint64_t(pCurrFace->dwDepth) << 1));
         dTotalIMT[0] += double(tempIMT[0]) * dIntegratedArea;
         dTotalIMT[1] += double(tempIMT[1]) * dIntegratedArea;
         dTotalIMT[2] += double(tempIMT[2]) * dIntegratedArea;

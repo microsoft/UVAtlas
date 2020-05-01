@@ -1364,7 +1364,7 @@ namespace
         float fTangentSize =
             fNewAtlasTangentExtreme - fAtlasTangentMinExtreme;
 
-        fBetweenArea -= atlasBorder.size() * fMinDistance;
+        fBetweenArea -= float(atlasBorder.size()) * fMinDistance;
         float fAreaLost = 1 - atlasInfo.fPackedChartArea / (fRadialSize * fTangentSize);
 
         // Record the minimal area lost
@@ -1557,8 +1557,8 @@ namespace
             if (dwTangentLenInPixel > 1)
             {
                 fTangentDelta =
-                    fMinTangentPosition + ((i + dwTangentLenInPixel / 2) % dwTangentLenInPixel)
-                    * fTangentRange / (dwTangentLenInPixel - 1);
+                    fMinTangentPosition + float((i + dwTangentLenInPixel / 2) % dwTangentLenInPixel)
+                    * fTangentRange / float(dwTangentLenInPixel - 1);
             }
             else
             {
@@ -2242,12 +2242,12 @@ static float EstimatePixelLength(
     size_t dwHeight,
     float gutter)
 {
-    float fGutter = gutter * STANDARD_UV_SIZE / std::min(dwWidth, dwHeight);
+    float fGutter = gutter * STANDARD_UV_SIZE / float(std::min(dwWidth, dwHeight));
     float fBaseSpaceArea =
         fTotalArea * STANDARD_SPACE_RATE / (1 - STANDARD_SPACE_RATE);
 
     float fBasePixelLength =
-        IsochartSqrtf((fTotalArea + fBaseSpaceArea) / (dwHeight * dwWidth));
+        IsochartSqrtf((fTotalArea + fBaseSpaceArea) / float(dwHeight * dwWidth));
 
     float fBaseGutter = gutter * fBasePixelLength;
 
@@ -2270,7 +2270,7 @@ static float EstimatePixelLength(
 
     float fNewChartRate = fTotalArea / (fTotalArea + fBaseSpaceArea);
 
-    return IsochartSqrtf(fTotalArea / (dwHeight * dwWidth * fNewChartRate));
+    return IsochartSqrtf(fTotalArea / (float(dwHeight * dwWidth) * fNewChartRate));
 }
 
 float CIsochartMesh::GuranteeSmallestChartArea(
@@ -2311,7 +2311,7 @@ HRESULT CIsochartMesh::PreparePacking(
     // 2. Initialize global sin and cos table needed in packing process.
     for (size_t ii = 0; ii < CHART_ROTATION_NUMBER; ii++)
     {
-        float fAngle = ii * 2.f * XM_PI / CHART_ROTATION_NUMBER;
+        float fAngle = float(ii) * 2.f * XM_PI / float(CHART_ROTATION_NUMBER);
         g_PackingCosTable[ii] = cosf(fAngle);
         g_PackingSinTable[ii] = sinf(fAngle);
     }
@@ -2339,8 +2339,8 @@ HRESULT CIsochartMesh::PreparePacking(
 
     atlasInfo.fGutter = gutter * atlasInfo.fPixelLength;
     DPF(2, "Pixel Length is %f", double(atlasInfo.fPixelLength));
-    atlasInfo.fExpectedAtlasWidth = dwWidth * atlasInfo.fPixelLength;
-    atlasInfo.fWidthHeightRatio = (static_cast<float>(dwWidth)) / (dwHeight);
+    atlasInfo.fExpectedAtlasWidth = float(dwWidth) * atlasInfo.fPixelLength;
+    atlasInfo.fWidthHeightRatio = float(dwWidth) / float(dwHeight);
     atlasInfo.fBoxTop = 0;
     atlasInfo.fBoxBottom = 0;
     atlasInfo.fBoxLeft = 0;

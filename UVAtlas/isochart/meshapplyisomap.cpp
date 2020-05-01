@@ -384,8 +384,8 @@ void CIsochartMesh::CombineGeodesicAndSignalDistance(
 
     float fSignalWeight = SIGNAL_DISTANCE_WEIGHT;
 
-    fAverageSignalDifference /= dwDistanceCount;
-    fAverageGeodesicDifference /= dwDistanceCount;
+    fAverageSignalDifference /= float(dwDistanceCount);
+    fAverageGeodesicDifference /= float(dwDistanceCount);
 
     if (fAverageSignalDifference > ISOCHART_ZERO_EPS)
     {

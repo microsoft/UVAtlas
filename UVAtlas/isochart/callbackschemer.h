@@ -130,8 +130,8 @@ namespace Isochart
 
     inline float CCallbackSchemer::PercentInAllStage()
     {
-        float fPercent = m_fBase + m_dwWorkDone * m_fPercentScale;
-        return (m_dwDoneStage * 1.0f) / m_dwTotalStage + fPercent / m_dwTotalStage;
+        float fPercent = m_fBase + float(m_dwWorkDone) * m_fPercentScale;
+        return (float(m_dwDoneStage) * 1.0f) / float(m_dwTotalStage) + fPercent / float(m_dwTotalStage);
     }
 
     inline void CCallbackSchemer::InitCallBackAdapt(
@@ -154,7 +154,7 @@ namespace Isochart
         }
         // Call callback function per m_dwCallbackDelta steps
         m_dwCallbackDelta = static_cast<size_t>(
-            m_fCallbackFrequence * dwTaskWork / fPercentOfAllTasks);
+            m_fCallbackFrequence * float(dwTaskWork) / fPercentOfAllTasks);
 
         if (m_dwCallbackDelta == 0)
         {
@@ -164,7 +164,7 @@ namespace Isochart
         m_dwNextCallback = m_dwCallbackDelta;
 
         // One step in current sub-task finished how many percent time of main task
-        m_fPercentScale = 1.0f / dwTaskWork * fPercentOfAllTasks;
+        m_fPercentScale = 1.0f / float(dwTaskWork) * fPercentOfAllTasks;
 
         m_bIsWaitToFinish = false;
         m_dwWaitPoint = dwTaskWork - m_dwCallbackDelta;
@@ -184,7 +184,7 @@ namespace Isochart
         if (fPercent < 0.0f) fPercent = 0.0f;
 
         float fRealPercent = m_fBase + m_fPercentOfAllTasks * fPercent;
-        fRealPercent = (m_dwDoneStage * 1.0f) / m_dwTotalStage + fRealPercent / m_dwTotalStage;
+        fRealPercent = (float(m_dwDoneStage) * 1.0f) / float(m_dwTotalStage) + fRealPercent / float(m_dwTotalStage);
         return m_pCallback(fRealPercent);
     }
 

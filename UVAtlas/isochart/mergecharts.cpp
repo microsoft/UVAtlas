@@ -359,7 +359,7 @@ HRESULT CIsochartMesh::MergeAdjacentChart(
     CIsochartMesh* pMergedChart = nullptr;
     CIsochartMesh* pAddjacentChart = nullptr;
     size_t dwMaxFaceNumAfterMerging
-        = std::max<size_t>(size_t(dwTotalFaceNumber * MAX_MERGE_RATIO),
+        = std::max<size_t>(size_t(float(dwTotalFaceNumber) * MAX_MERGE_RATIO),
             size_t(MAX_MERGE_FACE_NUMBER));
 
     for (size_t i = 0; i < dwAdjacentChartNumber; i++)

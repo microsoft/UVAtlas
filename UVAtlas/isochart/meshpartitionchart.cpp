@@ -1871,7 +1871,7 @@ CaculateDistanceToExtremeVertex(
         pVertex++;
     }
 
-    fAverageDistance /= dwBoundaryVertexCount;
+    fAverageDistance /= float(dwBoundaryVertexCount);
 
     return hr;
 }
@@ -2334,7 +2334,7 @@ HRESULT CIsochartMesh::RemoveCloseRepresentiveVertices(
     size_t i;
 
     fAvgChartRadius
-        = IsochartSqrtf(m_fChart3DArea / (dwPrimaryEigenDimension + 1));
+        = IsochartSqrtf(m_fChart3DArea / float(dwPrimaryEigenDimension + 1));
 
     float fMaxDist;
     uint32_t dwMaxIndex;

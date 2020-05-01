@@ -988,16 +988,16 @@ namespace
         if (v > 1.f)
             v = 1.f;
 
-        u = u * pTexDesc->uWidth;
-        v = v * pTexDesc->uHeight;
+        u = u * float(pTexDesc->uWidth);
+        v = v * float(pTexDesc->uHeight);
 
         int i = int(u);
         int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
-        float du = u - i;
-        float dv = v - j;
+        float du = u - float(i);
+        float dv = v - float(j);
 
         i = std::max(0, std::min<int>(i, int(pTexDesc->uWidth) - 1));
         i2 = std::max(0, std::min<int>(i2, int(pTexDesc->uWidth) - 1));
@@ -1048,16 +1048,16 @@ namespace
         if (v > 1.f)
             v = 1.f;
 
-        u = u * pTexDesc->uWidth;
-        v = v * pTexDesc->uHeight;
+        u = u * float(pTexDesc->uWidth);
+        v = v * float(pTexDesc->uHeight);
 
         int i = int(u);
         int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
-        float du = u - i;
-        float dv = v - j;
+        float du = u - float(i);
+        float dv = v - float(j);
 
         i = i % int(pTexDesc->uWidth);
         i2 = i2 % int(pTexDesc->uWidth);
@@ -1114,16 +1114,16 @@ namespace
         if (v < 0.f)
             v += 1.f;
 
-        u = u * pTexDesc->uWidth;
-        v = v * pTexDesc->uHeight;
+        u = u * float(pTexDesc->uWidth);
+        v = v * float(pTexDesc->uHeight);
 
         int i = int(u);
         int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
-        float du = u - i;
-        float dv = v - j;
+        float du = u - float(i);
+        float dv = v - float(j);
 
         i = std::max(0, std::min<int>(i, int(pTexDesc->uWidth) - 1));
         i2 = std::max(0, std::min<int>(i2, int(pTexDesc->uWidth) - 1));
@@ -1178,16 +1178,16 @@ namespace
         if (v < 0.f)
             v += 1.f;
 
-        u = u * pTexDesc->uWidth;
-        v = v * pTexDesc->uHeight;
+        u = u * float(pTexDesc->uWidth);
+        v = v * float(pTexDesc->uHeight);
 
         int i = int(u);
         int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
-        float du = u - i;
-        float dv = v - j;
+        float du = u - float(i);
+        float dv = v - float(j);
 
         i = i % int(pTexDesc->uWidth);
         i2 = i2 % int(pTexDesc->uWidth);
@@ -1392,16 +1392,16 @@ namespace
         if (v > 1.f)
             v = 1.f;
 
-        u = u * pTexDesc->uWidth;
-        v = v * pTexDesc->uHeight;
+        u = u * float(pTexDesc->uWidth);
+        v = v * float(pTexDesc->uHeight);
 
         int i = int(u);
         int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
-        float du = u - i;
-        float dv = v - j;
+        float du = u - float(i);
+        float dv = v - float(j);
 
         i = std::max(0, std::min<int>(i, int(pTexDesc->uWidth) - 1));
         i2 = std::max(0, std::min<int>(i2, int(pTexDesc->uWidth) - 1));
@@ -1451,16 +1451,16 @@ namespace
         if (v > 1.f)
             v = 1.f;
 
-        u = u * pTexDesc->uWidth;
-        v = v * pTexDesc->uHeight;
+        u = u * float(pTexDesc->uWidth);
+        v = v * float(pTexDesc->uHeight);
 
         int i = int(u);
         int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
-        float du = u - i;
-        float dv = v - j;
+        float du = u - float(i);
+        float dv = v - float(j);
 
         i = i % int(pTexDesc->uWidth);
         i2 = i2 % int(pTexDesc->uWidth);
@@ -1516,16 +1516,16 @@ namespace
         if (v < 0.f)
             v += 1.f;
 
-        u = u * pTexDesc->uWidth;
-        v = v * pTexDesc->uHeight;
+        u = u * float(pTexDesc->uWidth);
+        v = v * float(pTexDesc->uHeight);
 
         int i = int(u);
         int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
-        float du = u - i;
-        float dv = v - j;
+        float du = u - float(i);
+        float dv = v - float(j);
 
         i = std::max(0, std::min<int>(i, int(pTexDesc->uWidth) - 1));
         i2 = std::max(0, std::min<int>(i2, int(pTexDesc->uWidth) - 1));
@@ -1579,16 +1579,16 @@ namespace
         if (v < 0.f)
             v += 1.f;
 
-        u = u * pTexDesc->uWidth;
-        v = v * pTexDesc->uHeight;
+        u = u * float(pTexDesc->uWidth);
+        v = v * float(pTexDesc->uHeight);
 
         int i = int(u);
         int j = int(v);
         int i2 = i + 1;
         int j2 = j + 1;
 
-        float du = u - i;
-        float dv = v - j;
+        float du = u - float(i);
+        float dv = v - float(j);
 
         i = i % int(pTexDesc->uWidth);
         i2 = i2 % int(pTexDesc->uWidth);

@@ -76,7 +76,7 @@ HRESULT CIsoMap::Init(size_t dwDimension, float* pGeodesicMatrix)
         {
             pfAverage[i] += m_pfMatrixB[j * m_dwMatrixDimension + i];
         }
-        pfAverage[i] /= m_dwMatrixDimension;
+        pfAverage[i] /= float(m_dwMatrixDimension);
     }
     memcpy(m_pfAvgSquaredDstColumn, pfAverage, m_dwMatrixDimension * sizeof(float));
 
@@ -99,7 +99,7 @@ HRESULT CIsoMap::Init(size_t dwDimension, float* pGeodesicMatrix)
             pfAverage[i] += pRow[j];
         }
 
-        pfAverage[i] /= m_dwMatrixDimension;
+        pfAverage[i] /= float(m_dwMatrixDimension);
         pRow += m_dwMatrixDimension;
     }
 

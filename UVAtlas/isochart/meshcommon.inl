@@ -411,7 +411,7 @@ namespace Isochart
         //To calculate bounding box, only need to rotate with in PI/2 around the chart's center
         for (size_t dwRotID = 1; dwRotID < dwRotationCount; dwRotID++)
         {
-            float fAngle = dwRotID * XM_PI / (dwRotationCount * 2);
+            float fAngle = float(dwRotID) * XM_PI / float(dwRotationCount * 2);
 
             GetRotatedChartBoundingBox(
                 center, fAngle, tempMinBound, tempMaxBound);
