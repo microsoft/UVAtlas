@@ -6,6 +6,11 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### May 10, 2020
+* Minor code review
+* uvatlastool: Updated with ``-l`` switch for case-sensitive file systems
+* CMake updated for PCH usage with 3.16 or later
+
 ### February 24, 2020
 * Added some simple OpenMP optimizations
 * Code and project cleaup

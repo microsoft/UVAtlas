@@ -332,25 +332,21 @@
     <ClInclude Include="SDKMesh.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="UVAtlas.rc" />
   </ItemGroup>
   <ItemGroup>
-  </ItemGroup>
-  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\directxmesh_desktop_2017.2020.2.15.2\build\native\directxmesh_desktop_2017.targets" Condition="Exists('..\packages\directxmesh_desktop_2017.2020.2.15.2\build\native\directxmesh_desktop_2017.targets')" />
-    <Import Project="..\packages\directxtex_desktop_2017.2020.2.15.1\build\native\directxtex_desktop_2017.targets" Condition="Exists('..\packages\directxtex_desktop_2017.2020.2.15.1\build\native\directxtex_desktop_2017.targets')" />
+    <Import Project="..\packages\directxmesh_desktop_2017.2020.5.10.1\build\native\directxmesh_desktop_2017.targets" Condition="Exists('..\packages\directxmesh_desktop_2017.2020.5.10.1\build\native\directxmesh_desktop_2017.targets')" />
+    <Import Project="..\packages\directxtex_desktop_2017.2020.5.11.1\build\native\directxtex_desktop_2017.targets" Condition="Exists('..\packages\directxtex_desktop_2017.2020.5.11.1\build\native\directxtex_desktop_2017.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\directxmesh_desktop_2017.2020.2.15.2\build\native\directxmesh_desktop_2017.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxmesh_desktop_2017.2020.2.15.2\build\native\directxmesh_desktop_2017.targets'))" />
-    <Error Condition="!Exists('..\packages\directxtex_desktop_2017.2020.2.15.1\build\native\directxtex_desktop_2017.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtex_desktop_2017.2020.2.15.1\build\native\directxtex_desktop_2017.targets'))" />
+    <Error Condition="!Exists('..\packages\directxmesh_desktop_2017.2020.5.10.1\build\native\directxmesh_desktop_2017.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxmesh_desktop_2017.2020.5.10.1\build\native\directxmesh_desktop_2017.targets'))" />
+    <Error Condition="!Exists('..\packages\directxtex_desktop_2017.2020.5.11.1\build\native\directxtex_desktop_2017.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\directxtex_desktop_2017.2020.5.11.1\build\native\directxtex_desktop_2017.targets'))" />
   </Target>
 </Project>
