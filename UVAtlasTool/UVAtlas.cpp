@@ -1098,8 +1098,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         hr = inMesh->Validate(VALIDATE_DEFAULT, &msgs);
         if (!msgs.empty())
         {
-            wprintf(L"\nWARNING: \n");
-            wprintf(msgs.c_str());
+            wprintf(L"\nWARNING: \n%ls\n", msgs.c_str());
         }
 #endif
 
@@ -1137,7 +1136,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 Mesh::Material mtl = {};
 
                 wchar_t matname[32] = {};
-                swprintf_s(matname, L"Chart%02Iu", j + 1);
+                swprintf_s(matname, L"Chart%02zu", j + 1);
                 mtl.name = matname;
                 mtl.specularPower = 1.f;
                 mtl.alpha = 1.f;
