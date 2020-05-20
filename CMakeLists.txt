@@ -133,13 +133,6 @@ if(MSVC)
         target_compile_options(uvatlastool PRIVATE /fp:fast)
     endif()
 
-    if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.26)
-        target_compile_options(${PROJECT_NAME} PRIVATE /Zc:preprocessor /wd5105)
-        if(BUILD_TOOLS MATCHES ON)
-            target_compile_options(uvatlastool PRIVATE /Zc:preprocessor /wd5105)
-        endif()
-    endif()
-
     if (${CMAKE_SIZEOF_VOID_P} EQUAL "4")
         target_compile_options(${PROJECT_NAME} PRIVATE /arch:SSE2)
         if(BUILD_TOOLS MATCHES ON)
@@ -160,11 +153,25 @@ endif()
 
 if ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     target_compile_options(${PROJECT_NAME} PRIVATE /permissive- /JMC- /Zc:__cplusplus)
-    target_compile_options(uvatlastool PRIVATE /permissive- /Zc:__cplusplus)
+
+    if(BUILD_TOOLS MATCHES ON)
+        target_compile_options(uvatlastool PRIVATE /permissive- /Zc:__cplusplus)
+    endif()
+
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.26)
+        target_compile_options(${PROJECT_NAME} PRIVATE /Zc:preprocessor /wd5105)
+
+        if(BUILD_TOOLS MATCHES ON)
+            target_compile_options(uvatlastool PRIVATE /Zc:preprocessor /wd5105)
+        endif()
+    endif()
 
     if(UVATLAS_USE_OPENMP MATCHES ON)
         target_compile_options(${PROJECT_NAME} PRIVATE /openmp /Zc:twoPhase-)
-        target_compile_options(uvatlastool PRIVATE /openmp /Zc:twoPhase-)
+
+        if(BUILD_TOOLS MATCHES ON)
+            target_compile_options(uvatlastool PRIVATE /openmp /Zc:twoPhase-)
+        endif()
     endif()
 
     if(BUILD_TOOLS MATCHES ON)
