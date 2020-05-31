@@ -586,7 +586,7 @@ HRESULT __cdecl DirectX::UVAtlasPartition(
     std::vector<uint32_t>* pvVertexRemapArray,
     std::vector<uint32_t>& vPartitionResultAdjacency,
     float* maxStretchOut,
-    size_t* numChartsOut) noexcept
+    size_t* numChartsOut)
 {
     return UVAtlasPartitionInt(positions,
         nVerts,
@@ -626,7 +626,7 @@ HRESULT __cdecl DirectX::UVAtlasPack(
     float gutter,
     const std::vector<uint32_t>& vPartitionResultAdjacency,
     std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-    float callbackFrequency) noexcept
+    float callbackFrequency)
 {
     return UVAtlasPackInt(vMeshVertexBuffer,
         vMeshIndexBuffer,
@@ -666,7 +666,7 @@ HRESULT __cdecl DirectX::UVAtlasCreate(
     std::vector<uint32_t>* pvFacePartitioning,
     std::vector<uint32_t>* pvVertexRemapArray,
     float* maxStretchOut,
-    size_t* numChartsOut) noexcept
+    size_t* numChartsOut)
 {
     std::vector<uint32_t> vFacePartitioning;
     std::vector<uint32_t> vAdjacencyOut;
@@ -733,7 +733,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerVertexSignal(
     size_t signalDimension,
     size_t signalStride,
     std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-    float* pIMTArray) noexcept
+    float* pIMTArray)
 {
     if (!positions || !nVerts || !indices || !nFaces || !pVertexSignal || !pIMTArray)
         return E_INVALIDARG;
@@ -855,7 +855,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromSignal(
     std::function<HRESULT __cdecl(const DirectX::XMFLOAT2 * uv, size_t primitiveID, size_t signalDimension, void* userData, float* signalOut)> signalCallback,
     void* userData,
     std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-    float* pIMTArray) noexcept
+    float* pIMTArray)
 {
     if (!positions || !texcoords || !nVerts || !indices || !nFaces || !pIMTArray)
         return E_INVALIDARG;
@@ -1241,7 +1241,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromTexture(
     size_t height,
     unsigned int options,
     std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-    float* pIMTArray) noexcept
+    float* pIMTArray)
 {
     if (!positions || !texcoords || !nVerts || !indices || !nFaces || !pTexture || !pIMTArray)
         return E_INVALIDARG;
@@ -1644,7 +1644,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerTexelSignal(
     size_t nComponents,
     unsigned int options,
     std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-    float* pIMTArray) noexcept
+    float* pIMTArray)
 {
     if (!positions || !texcoords || !nVerts || !indices || !nFaces || !pTexelSignal || !pIMTArray)
         return E_INVALIDARG;
