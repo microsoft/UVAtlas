@@ -48,13 +48,13 @@ public:
 
     HRESULT SetVertexData(_Inout_ DirectX::VBReader& reader, _In_ size_t nVerts);
 
-    HRESULT Validate(_In_ DWORD flags, _In_opt_ std::wstring* msgs) const;
+    HRESULT Validate(_In_ DirectX::VALIDATE_FLAGS flags, _In_opt_ std::wstring* msgs) const;
 
     HRESULT Clean(_In_ bool breakBowties = false);
 
     HRESULT GenerateAdjacency(_In_ float epsilon);
 
-    HRESULT ComputeNormals(_In_ DWORD flags);
+    HRESULT ComputeNormals(_In_ DirectX::CNORM_FLAGS flags);
 
     HRESULT ComputeTangentFrame(_In_ bool bitangents);
 

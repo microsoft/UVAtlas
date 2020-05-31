@@ -842,7 +842,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         if ((dwOptions & (DWORD64(1) << OPT_NORMALS))
             || ((dwOptions & ((DWORD64(1) << OPT_TANGENTS) | (DWORD64(1) << OPT_CTF))) && !inMesh->GetNormalBuffer()))
         {
-            DWORD flags = CNORM_DEFAULT;
+            CNORM_FLAGS flags = CNORM_DEFAULT;
 
             if (dwOptions & (DWORD64(1) << OPT_WEIGHT_BY_EQUAL))
             {
@@ -920,7 +920,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 #endif
                 else
                 {
-                    hr = LoadFromWICFile(szTexFile, TEX_FILTER_DEFAULT, nullptr, iimage);
+                    hr = LoadFromWICFile(szTexFile, WIC_FLAGS_NONE, nullptr, iimage);
                 }
                 if (FAILED(hr))
                 {
