@@ -6,6 +6,11 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### June 1, 2020
+* uvatlastool: Updated for June 2020 DirectXTex & DirectXMesh releases
+* CMake project updates
+* Minor code cleanup
+
 ### May 10, 2020
 * Minor code review
 * uvatlastool: Updated with ``-l`` switch for case-sensitive file systems
