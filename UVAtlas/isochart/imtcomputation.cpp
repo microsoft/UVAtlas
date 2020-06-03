@@ -1250,8 +1250,8 @@ namespace
         memset(tempIMT, 0, sizeof(double) * IMT_DIM);
 
         DOUBLEVECTOR2 corner[2];
-        corner[0].x = leftBottom.x + dwCol * fTexelLengthW;
-        corner[0].y = leftBottom.y + dwRow * fTexelLengthH;
+        corner[0].x = leftBottom.x + double(dwCol) * fTexelLengthW;
+        corner[0].y = leftBottom.y + double(dwRow) * fTexelLengthH;
 
         corner[1].x = corner[0].x + fTexelLengthW;
         corner[1].y = corner[0].y + fTexelLengthH;
@@ -1443,8 +1443,8 @@ Isochart::IMTFromTextureMapEx(
     auto pTexDesc = reinterpret_cast<IMTFloatArrayDescIn*>(lpTextureData);
     DOUBLEVECTOR2 leftBottom = { 0.0, 0.0 };
 
-    double fTexelLengthW = (1.0 / pTexDesc->uWidth);
-    double fTexelLengthH = (1.0 / pTexDesc->uHeight);
+    double fTexelLengthW = (1.0 / double(pTexDesc->uWidth));
+    double fTexelLengthH = (1.0 / double(pTexDesc->uHeight));
 
     DOUBLEVECTOR2 uv[3] = {};
     for (size_t ii = 0; ii < 3; ii++)

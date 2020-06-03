@@ -460,9 +460,9 @@ HRESULT CIsochartMesh::OptimizeWholeChart(
         pFace++;
     }
 
-    m[0] = static_cast<float>(dm[0] / m_dwFaceNumber);
-    m[1] = static_cast<float>(dm[1] / m_dwFaceNumber);
-    m[2] = static_cast<float>(dm[2] / m_dwFaceNumber);
+    m[0] = static_cast<float>(dm[0] / double(m_dwFaceNumber));
+    m[1] = static_cast<float>(dm[1] / double(m_dwFaceNumber));
+    m[2] = static_cast<float>(dm[2] / double(m_dwFaceNumber));
 
     // 3. Get Transform matrix.
 

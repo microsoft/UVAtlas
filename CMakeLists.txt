@@ -175,7 +175,7 @@ if ( CMAKE_CXX_COMPILER_ID MATCHES "MSVC" )
     endif()
 
     if(BUILD_TOOLS MATCHES ON)
-        set(WarningsEXE "/wd4365" "/wd4668" "/wd4710" "/wd4820" "/wd5039" "/wd5045" "/wd4061" "/wd4062")
+        set(WarningsEXE "/wd4365" "/wd4668" "/wd4710" "/wd4820" "/wd5039" "/wd5045" "/wd4061" "/wd4062" "/wd5219")
         target_compile_options(uvatlastool PRIVATE ${WarningsEXE})
     endif()
 endif()
