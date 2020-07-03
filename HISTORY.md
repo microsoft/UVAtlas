@@ -6,6 +6,9 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### July 2, 2020
+* Minor warning fixes for VS 2019 (16.7)
+
 ### June 1, 2020
 * uvatlastool: Updated for June 2020 DirectXTex & DirectXMesh releases
 * CMake project updates
