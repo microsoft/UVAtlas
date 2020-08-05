@@ -39,60 +39,60 @@ public:
     Mesh& operator= (Mesh const&) = delete;
 
     // Methods
-    void Clear();
+    void Clear() noexcept;
 
-    void SetMTLFileName(const std::wstring& name) { mtlFileName = name; }
+    void SetMTLFileName(const std::wstring& name) noexcept { mtlFileName = name; }
 
-    HRESULT SetIndexData(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint16_t* indices, _In_reads_opt_(nFaces) uint32_t* attributes = nullptr);
-    HRESULT SetIndexData(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t* indices, _In_reads_opt_(nFaces) uint32_t* attributes = nullptr);
+    HRESULT SetIndexData(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint16_t* indices, _In_reads_opt_(nFaces) uint32_t* attributes = nullptr) noexcept;
+    HRESULT SetIndexData(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t* indices, _In_reads_opt_(nFaces) uint32_t* attributes = nullptr) noexcept;
 
-    HRESULT SetVertexData(_Inout_ DirectX::VBReader& reader, _In_ size_t nVerts);
+    HRESULT SetVertexData(_Inout_ DirectX::VBReader& reader, _In_ size_t nVerts) noexcept;
 
-    HRESULT Validate(_In_ DirectX::VALIDATE_FLAGS flags, _In_opt_ std::wstring* msgs) const;
+    HRESULT Validate(_In_ DirectX::VALIDATE_FLAGS flags, _In_opt_ std::wstring* msgs) const noexcept;
 
-    HRESULT Clean(_In_ bool breakBowties = false);
+    HRESULT Clean(_In_ bool breakBowties = false) noexcept;
 
-    HRESULT GenerateAdjacency(_In_ float epsilon);
+    HRESULT GenerateAdjacency(_In_ float epsilon) noexcept;
 
-    HRESULT ComputeNormals(_In_ DirectX::CNORM_FLAGS flags);
+    HRESULT ComputeNormals(_In_ DirectX::CNORM_FLAGS flags) noexcept;
 
-    HRESULT ComputeTangentFrame(_In_ bool bitangents);
+    HRESULT ComputeTangentFrame(_In_ bool bitangents) noexcept;
 
-    HRESULT UpdateFaces(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t* indices);
+    HRESULT UpdateFaces(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t* indices) noexcept;
 
-    HRESULT UpdateAttributes(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t* attributes);
+    HRESULT UpdateAttributes(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t* attributes) noexcept;
 
-    HRESULT UpdateUVs(_In_ size_t nVerts, _In_reads_(nVerts) const DirectX::XMFLOAT2* uvs);
+    HRESULT UpdateUVs(_In_ size_t nVerts, _In_reads_(nVerts) const DirectX::XMFLOAT2* uvs) noexcept;
 
-    HRESULT VertexRemap(_In_reads_(nNewVerts) const uint32_t* remap, _In_ size_t nNewVerts);
+    HRESULT VertexRemap(_In_reads_(nNewVerts) const uint32_t* remap, _In_ size_t nNewVerts) noexcept;
 
-    HRESULT ReverseWinding();
+    HRESULT ReverseWinding() noexcept;
 
-    HRESULT InvertUTexCoord();
-    HRESULT InvertVTexCoord();
+    HRESULT InvertUTexCoord() noexcept;
+    HRESULT InvertVTexCoord() noexcept;
 
-    HRESULT ReverseHandedness();
+    HRESULT ReverseHandedness() noexcept;
 
-    HRESULT VisualizeUVs();
+    HRESULT VisualizeUVs() noexcept;
 
     // Accessors
-    const uint32_t* GetAttributeBuffer() const { return mAttributes.get(); }
-    const uint32_t* GetAdjacencyBuffer() const { return mAdjacency.get(); }
-    const DirectX::XMFLOAT3* GetPositionBuffer() const { return mPositions.get(); }
-    const DirectX::XMFLOAT3* GetNormalBuffer() const { return mNormals.get(); }
-    const DirectX::XMFLOAT2* GetTexCoordBuffer() const { return mTexCoords.get(); }
-    const DirectX::XMFLOAT4* GetTangentBuffer() const { return mTangents.get(); }
-    const DirectX::XMFLOAT4* GetColorBuffer() const { return mColors.get(); }
+    const uint32_t* GetAttributeBuffer() const noexcept { return mAttributes.get(); }
+    const uint32_t* GetAdjacencyBuffer() const noexcept { return mAdjacency.get(); }
+    const DirectX::XMFLOAT3* GetPositionBuffer() const noexcept { return mPositions.get(); }
+    const DirectX::XMFLOAT3* GetNormalBuffer() const noexcept { return mNormals.get(); }
+    const DirectX::XMFLOAT2* GetTexCoordBuffer() const noexcept { return mTexCoords.get(); }
+    const DirectX::XMFLOAT4* GetTangentBuffer() const noexcept { return mTangents.get(); }
+    const DirectX::XMFLOAT4* GetColorBuffer() const noexcept { return mColors.get(); }
 
-    size_t GetFaceCount() const { return mnFaces; }
-    size_t GetVertexCount() const { return mnVerts; }
+    size_t GetFaceCount() const noexcept { return mnFaces; }
+    size_t GetVertexCount() const noexcept { return mnVerts; }
 
-    bool Is16BitIndexBuffer() const;
+    bool Is16BitIndexBuffer() const noexcept;
 
-    const uint32_t* GetIndexBuffer() const { return mIndices.get(); }
-    std::unique_ptr<uint16_t[]> GetIndexBuffer16() const;
+    const uint32_t* GetIndexBuffer() const noexcept { return mIndices.get(); }
+    std::unique_ptr<uint16_t[]> GetIndexBuffer16() const noexcept;
 
-    HRESULT GetVertexBuffer(_Inout_ DirectX::VBWriter& writer) const;
+    HRESULT GetVertexBuffer(_Inout_ DirectX::VBWriter& writer) const noexcept;
 
     // Save mesh to file
     struct Material
@@ -146,12 +146,18 @@ public:
     };
 
     HRESULT ExportToOBJ(const wchar_t* szFileName, _In_ size_t nMaterials, _In_reads_opt_(nMaterials) const Material* materials) const;
-    HRESULT ExportToVBO(_In_z_ const wchar_t* szFileName) const;
-    HRESULT ExportToCMO(_In_z_ const wchar_t* szFileName, _In_ size_t nMaterials, _In_reads_opt_(nMaterials) const Material* materials) const;
-    HRESULT ExportToSDKMESH(_In_z_ const wchar_t* szFileName, _In_ size_t nMaterials, _In_reads_opt_(nMaterials) const Material* materials, bool force32bit = false, bool version2 = false) const;
+    HRESULT ExportToVBO(_In_z_ const wchar_t* szFileName) const noexcept;
+    HRESULT ExportToCMO(_In_z_ const wchar_t* szFileName, _In_ size_t nMaterials, _In_reads_opt_(nMaterials) const Material* materials) const noexcept;
+    HRESULT ExportToSDKMESH(_In_z_ const wchar_t* szFileName,
+        _In_ size_t nMaterials, _In_reads_opt_(nMaterials) const Material* materials,
+        bool force32bit = false,
+        bool version2 = false,
+        DXGI_FORMAT normalFormat = DXGI_FORMAT_R32G32B32_FLOAT,
+        DXGI_FORMAT uvFormat = DXGI_FORMAT_R32G32_FLOAT,
+        DXGI_FORMAT colorFormat = DXGI_FORMAT_B8G8R8A8_UNORM) const noexcept;
 
     // Create mesh from file
-    static HRESULT CreateFromVBO(_In_z_ const wchar_t* szFileName, _Inout_ std::unique_ptr<Mesh>& result);
+    static HRESULT CreateFromVBO(_In_z_ const wchar_t* szFileName, _Inout_ std::unique_ptr<Mesh>& result) noexcept;
 
 private:
     size_t                                      mnFaces;
