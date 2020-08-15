@@ -125,7 +125,7 @@ if(BUILD_TOOLS)
         UVAtlasTool/Mesh.h
         UVAtlasTool/MeshOBJ.cpp
         UVAtlasTool/SDKMesh.h)
-    target_link_libraries(uvatlastool ${PROJECT_NAME} DirectXMesh DirectXTex)
+    target_link_libraries(uvatlastool ${PROJECT_NAME} DirectXMesh DirectXTex version.lib)
     target_include_directories(uvatlastool PRIVATE ../DirectXMesh/DirectXMesh ../DirectXMesh/Utilities ../DirectXTex/DirectXTex)
 endif()
 
