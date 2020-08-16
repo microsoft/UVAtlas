@@ -6,6 +6,11 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### August 15, 2020
+* Project updates
+* uvatlastool: Updated for August 2020 DirectXTex & DirectXMesh releases
+* uvatlastool: Added ``-fn``, ``-fuc``, and ``-fc`` switches to control vertex format
+
 ### July 2, 2020
 * Minor warning fixes for VS 2019 (16.7)
 
