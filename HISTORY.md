@@ -6,6 +6,10 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### November 11, 2020
+* uvatlastool: Updated for November 2020 DirectXTex & DirectXMesh releases
+* Minor project cleanup
+
 ### August 15, 2020
 * Project updates
 * uvatlastool: Updated for August 2020 DirectXTex & DirectXMesh releases
