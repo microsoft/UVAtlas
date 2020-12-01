@@ -718,9 +718,14 @@ namespace
                         VECTOR_ITEM(&aBorder[i - 1]->uv, TangentAxis))
                     / VECTOR_ITEM(&biasVector, TangentAxis);
 
+                /*
+                // this calculation sometimes provides bad answers.  Instead, just add fGutter * sqrt(2)
                 fExtraDistance =
                     fGutter * fabsf(XMVectorGetX(XMVector2Length(vBiasVector)) /
-                        VECTOR_ITEM(&biasVector, TangentAxis));
+                    VECTOR_ITEM(&biasVector, TangentAxis));
+                */
+
+                fExtraDistance = fGutter * 1.4143f; // multiply by worst-case of sqrt(2)
             }
         }
 
