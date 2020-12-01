@@ -579,7 +579,7 @@ HRESULT __cdecl DirectX::UVAtlasPartition(
     const float* pIMTArray,
     std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
     float callbackFrequency,
-    unsigned int options,
+    UVATLAS options,
     std::vector<UVAtlasVertex>& vMeshOutVertexBuffer,
     std::vector<uint8_t>& vMeshOutIndexBuffer,
     std::vector<uint32_t>* pvFacePartitioning,
@@ -660,7 +660,7 @@ HRESULT __cdecl DirectX::UVAtlasCreate(
     const float* pIMTArray,
     std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
     float callbackFrequency,
-    unsigned int options,
+    UVATLAS options,
     std::vector<UVAtlasVertex>& vMeshOutVertexBuffer,
     std::vector<uint8_t>& vMeshOutIndexBuffer,
     std::vector<uint32_t>* pvFacePartitioning,
@@ -683,7 +683,7 @@ HRESULT __cdecl DirectX::UVAtlasCreate(
         pIMTArray,
         statusCallBack,
         callbackFrequency,
-        options & UVATLAS_PARTITIONVALIDBITS,
+        options,
         vMeshOutVertexBuffer,
         vMeshOutIndexBuffer,
         &vFacePartitioning,
@@ -1239,7 +1239,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromTexture(
     const float* pTexture,
     size_t width,
     size_t height,
-    unsigned int options,
+    UVATLAS_IMT options,
     std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
     float* pIMTArray)
 {
@@ -1642,7 +1642,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerTexelSignal(
     size_t height,
     size_t signalDimension,
     size_t nComponents,
-    unsigned int options,
+    UVATLAS_IMT options,
     std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
     float* pIMTArray)
 {

@@ -37,27 +37,25 @@ namespace DirectX
     // UVATLAS_IMT_WRAP_U means the texture wraps in the U direction
     // UVATLAS_IMT_WRAP_V means the texture wraps in the V direction
     // UVATLAS_IMT_WRAP_UV means the texture wraps in both directions
-    enum UVATLAS_IMT
+    enum UVATLAS_IMT : unsigned int
     {
         UVATLAS_IMT_DEFAULT = 0x00,
         UVATLAS_IMT_WRAP_U = 0x01,
         UVATLAS_IMT_WRAP_V = 0x02,
         UVATLAS_IMT_WRAP_UV = 0x03,
-        UVATLAS_IMT_VALIDBITS = 0x03,
     };
 
     // These options are only valid for UVAtlasCreate and UVAtlasPartition
     // UVATLAS_DEFAULT - Meshes with more than 25k faces go through fast, meshes with fewer than 25k faces go through quality
     // UVATLAS_GEODESIC_FAST - Uses approximations to improve charting speed at the cost of added stretch or more charts.
     // UVATLAS_GEODESIC_QUALITY - Provides better quality charts, but requires more time and memory than fast.
-    enum UVATLAS
+    enum UVATLAS : unsigned int
     {
         UVATLAS_DEFAULT = 0x00,
         UVATLAS_GEODESIC_FAST = 0x01,
         UVATLAS_GEODESIC_QUALITY = 0x02,
         UVATLAS_LIMIT_MERGE_STRETCH = 0x04,
         UVATLAS_LIMIT_FACE_STRETCH = 0x08,
-        UVATLAS_PARTITIONVALIDBITS = 0x0f
     };
 
     static const float UVATLAS_DEFAULT_CALLBACK_FREQUENCY = 0.0001f;
@@ -145,7 +143,7 @@ namespace DirectX
         _In_reads_opt_(nFaces * 3)            const float* pIMTArray,
         _In_opt_                            std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
         _In_                                float callbackFrequency,
-        _In_                                unsigned int options,
+        _In_                                UVATLAS options,
         _Inout_ std::vector<UVAtlasVertex>& vMeshOutVertexBuffer,
         _Inout_ std::vector<uint8_t>& vMeshOutIndexBuffer,
         _Inout_opt_ std::vector<uint32_t>* pvFacePartitioning = nullptr,
@@ -191,7 +189,7 @@ namespace DirectX
         _In_reads_opt_(nFaces * 3)    const float* pIMTArray,
         _In_opt_ std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
         _In_                        float callbackFrequency,
-        _In_                        unsigned int options,
+        _In_                        UVATLAS options,
         _Inout_                     std::vector<UVAtlasVertex>& vMeshOutVertexBuffer,
         _Inout_                     std::vector<uint8_t>& vMeshOutIndexBuffer,
         _Inout_opt_                 std::vector<uint32_t>* pvFacePartitioning,
@@ -283,7 +281,7 @@ namespace DirectX
         _In_                                size_t nFaces,
         _In_                                size_t signalDimension,
         _In_                                float maxUVDistance,
-        _In_ std::function<HRESULT __cdecl(const DirectX::XMFLOAT2 * uv, size_t primitiveID, size_t signalDimension, void* userData, float* signalOut)>
+        _In_ std::function<HRESULT __cdecl(const DirectX::XMFLOAT2* uv, size_t primitiveID, size_t signalDimension, void* userData, float* signalOut)>
         signalCallback,
         _In_opt_                            void* userData,
         _In_opt_                            std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
@@ -309,7 +307,7 @@ namespace DirectX
         _In_reads_(width* height * 4)          const float* pTexture,
         _In_                                size_t width,
         _In_                                size_t height,
-        _In_                                unsigned int options,
+        _In_                                UVATLAS_IMT options,
         _In_opt_                            std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
         _Out_writes_(nFaces * 3)            float* pIMTArray);
 
@@ -336,7 +334,7 @@ namespace DirectX
         _In_                                    size_t height,
         _In_                                    size_t signalDimension,
         _In_                                    size_t nComponents,
-        _In_                                    unsigned int options,
+        _In_                                    UVATLAS_IMT options,
         _In_opt_                                std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
         _Out_writes_(nFaces * 3)                float* pIMTArray);
 
@@ -352,4 +350,16 @@ namespace DirectX
         _In_                                    size_t nNewVerts,
         _In_reads_(nNewVerts)                   const uint32_t* vertexRemap,
         _Out_writes_bytes_(nNewVerts* stride)   void* vbout) noexcept;
+
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-dynamic-exception-spec"
+#endif
+
+    DEFINE_ENUM_FLAG_OPERATORS(UVATLAS_IMT);
+    DEFINE_ENUM_FLAG_OPERATORS(UVATLAS);
+
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 }

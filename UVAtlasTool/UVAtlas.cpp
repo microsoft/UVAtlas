@@ -474,8 +474,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
     size_t width = 512;
     size_t height = 512;
     CHANNELS perVertex = CHANNEL_NONE;
-    DWORD uvOptions = UVATLAS_DEFAULT;
-    DWORD uvOptionsEx = UVATLAS_DEFAULT;
+    UVATLAS uvOptions = UVATLAS_DEFAULT;
+    UVATLAS uvOptionsEx = UVATLAS_DEFAULT;
     DXGI_FORMAT normalFormat = DXGI_FORMAT_R32G32B32_FLOAT;
     DXGI_FORMAT uvFormat = DXGI_FORMAT_R32G32_FLOAT;
     DXGI_FORMAT colorFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
