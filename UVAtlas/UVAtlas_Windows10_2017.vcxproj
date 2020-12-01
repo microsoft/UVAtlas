@@ -92,6 +92,7 @@
     <ClInclude Include="isochart\vertiter.h" />
     <ClInclude Include="isochart\Vis_Maxflow.h" />
     <ClInclude Include="maxheap.hpp" />
+    <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="isochart\meshcommon.inl" />
