@@ -774,8 +774,19 @@ HRESULT CIsochartMesh::OptimizeGeoLnInfiniteStretch(
     {
         if (optimizeInfo.dwInfinitStretchVertexCount == 0)
         {
-            bSucceed = true;
-            return hr;
+            if ((m_IsochartEngine.m_dwOptions & UVATLAS_LIMIT_FACE_STRETCH)
+                && (optimizeInfo.fPreveMaxFaceStretch > m_baseInfo.fExpectAvgL2SquaredStretch))
+            {
+                // if the max stretch (max of all faces) is greater than our tolerance,
+                // then set bSucceed to false to indicate this is not a plane-like shape.
+                bSucceed = false;
+                return hr;
+            }
+            else
+            {
+                bSucceed = true;
+                return hr;
+            }
         }
 
         auto pHeapItems = optimizeInfo.pHeapItems;
@@ -791,6 +802,8 @@ HRESULT CIsochartMesh::OptimizeGeoLnInfiniteStretch(
 
         optimizeInfo.fInfinitFacesArea = 0;
         optimizeInfo.dwInfinitStretchVertexCount = 0;
+        bool exceededFaceStretch = false;
+
         for (size_t i = 0; i < m_dwFaceNumber; i++)
         {
             if (optimizeInfo.pfFaceStretch[i] >= optimizeInfo.fInfiniteStretch)
@@ -799,17 +812,32 @@ HRESULT CIsochartMesh::OptimizeGeoLnInfiniteStretch(
                 optimizeInfo.fInfinitFacesArea +=
                     m_baseInfo.pfFaceAreaArray[m_pFaces[i].dwIDInRootMesh];
 
-                bool bBondary =
+                bool bBoundary =
                     m_pVerts[m_pFaces[i].dwVertexID[0]].bIsBoundary
                     || m_pVerts[m_pFaces[i].dwVertexID[1]].bIsBoundary
                     || m_pVerts[m_pFaces[i].dwVertexID[2]].bIsBoundary;
-                dwBoundaryInfFaces += (bBondary ? 1 : 0);
+                dwBoundaryInfFaces += (bBoundary ? 1 : 0);
+            }
+            else if (optimizeInfo.pfFaceStretch[i] > m_baseInfo.fExpectAvgL2SquaredStretch)
+            {
+                exceededFaceStretch = true;
             }
         }
 
-        bSucceed =
-            ((optimizeInfo.fInfinitFacesArea / m_fChart3DArea) <=
-                m_baseInfo.fOverturnTolerance);
+        if ((m_IsochartEngine.m_dwOptions & UVATLAS_LIMIT_FACE_STRETCH)
+            && exceededFaceStretch)
+        {
+            // this can take the infinite stretch and reduce it, but leave us with a large stretch
+            // if(optimizeInfo.fPreveMaxFaceStretch > m_baseInfo.fExpectAvgL2SquaredStretch),
+            // which is why the exceededFaceStretch test was introduced.
+            bSucceed = false;
+        }
+        else
+        {
+            bSucceed =
+                ((optimizeInfo.fInfinitFacesArea / m_fChart3DArea) <=
+                    m_baseInfo.fOverturnTolerance);
+        }
     }
 
     if (!bSucceed)

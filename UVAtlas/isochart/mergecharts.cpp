@@ -525,6 +525,22 @@ HRESULT CIsochartMesh::CheckMergeResult(
             fMergedAvgStretch,
             tempChartList[0]->m_baseInfo.fExpectAvgL2SquaredStretch);
 
+    if (pOldChart1->m_IsochartEngine.m_dwOptions & UVATLAS_LIMIT_MERGE_STRETCH)
+    {
+        // Additional check: check each merged chart to verify
+        // that the stretch isn't breaking the threshold. If
+        // one does, this merge is rejected.
+
+        for (size_t ii = 0; ii < tempChartList.size() && bCanMerge; ++ii)
+        {
+            float stretch = tempChartList[ii]->m_fParamStretchL2 / tempChartList[ii]->m_fChart2DArea;
+            bCanMerge =
+                IsReachExpectedTotalAvgL2SqrStretch(
+                    stretch,
+                    tempChartList[0]->m_baseInfo.fExpectAvgL2SquaredStretch);
+        }
+    }
+
     return S_OK;
 }
 
