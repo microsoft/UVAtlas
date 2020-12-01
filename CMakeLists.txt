@@ -94,7 +94,7 @@ source_group(isochart REGULAR_EXPRESSION UVAtlas/isochart/*.*)
 source_group(isochart REGULAR_EXPRESSION UVAtlas/isochart/*.*)
 
 target_include_directories(${PROJECT_NAME} PUBLIC UVAtlas/inc)
-target_include_directories(${PROJECT_NAME} PRIVATE UVAtlas UVAtlas/UVAtlas/geodesics UVAtlas/isochart)
+target_include_directories(${PROJECT_NAME} PRIVATE UVAtlas UVAtlas/geodesics UVAtlas/isochart)
 
 if(MSVC)
     # Use higher Warning Level 

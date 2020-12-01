@@ -888,8 +888,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         else
         {
             hr = LoadFromOBJ(pConv->szSrc, inMesh, inMaterial,
-                (dwOptions & (1 << OPT_CLOCKWISE)) ? false : true,
-                (dwOptions & (1 << OPT_NODDS)) ? false : true);
+                (dwOptions & (DWORD64(1) << OPT_CLOCKWISE)) ? false : true,
+                (dwOptions & (DWORD64(1) << OPT_NODDS)) ? false : true);
         }
         if (FAILED(hr))
         {
