@@ -54,6 +54,8 @@ namespace
         OPT_QUALITY,
         OPT_MAXCHARTS,
         OPT_MAXSTRETCH,
+        OPT_LIMIT_MERGE_STRETCH,
+        OPT_LIMIT_FACE_STRETCH,
         OPT_GUTTER,
         OPT_WIDTH,
         OPT_HEIGHT,
@@ -135,6 +137,8 @@ namespace
         { L"q",         OPT_QUALITY },
         { L"n",         OPT_MAXCHARTS },
         { L"st",        OPT_MAXSTRETCH },
+        { L"lms",       OPT_LIMIT_MERGE_STRETCH },
+        { L"lfs",       OPT_LIMIT_FACE_STRETCH },
         { L"g",         OPT_GUTTER },
         { L"w",         OPT_WIDTH },
         { L"h",         OPT_HEIGHT },
@@ -385,6 +389,8 @@ namespace
         wprintf(L"   -q <level>          sets quality level to DEFAULT, FAST or QUALITY\n");
         wprintf(L"   -n <number>         maximum number of charts to generate (def: 0)\n");
         wprintf(L"   -st <float>         maximum amount of stretch 0.0 to 1.0 (def: 0.16667)\n");
+        wprintf(L"   -lms                enable limit merge stretch option\n");
+        wprintf(L"   -lfs                enable limit face stretch option\n");
         wprintf(L"   -g <float>          the gutter width betwen charts in texels (def: 2.0)\n");
         wprintf(L"   -w <number>         texture width (def: 512)\n");
         wprintf(L"   -h <number>         texture height (def: 512)\n");
@@ -469,6 +475,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
     size_t height = 512;
     CHANNELS perVertex = CHANNEL_NONE;
     DWORD uvOptions = UVATLAS_DEFAULT;
+    DWORD uvOptionsEx = UVATLAS_DEFAULT;
     DXGI_FORMAT normalFormat = DXGI_FORMAT_R32G32B32_FLOAT;
     DXGI_FORMAT uvFormat = DXGI_FORMAT_R32G32_FLOAT;
     DXGI_FORMAT colorFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
@@ -564,6 +571,14 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                     wprintf(L"Invalid value specified with -q (%ls)\n", pValue);
                     return 1;
                 }
+                break;
+
+            case OPT_LIMIT_MERGE_STRETCH:
+                uvOptionsEx |= UVATLAS_LIMIT_MERGE_STRETCH;
+                break;
+
+            case OPT_LIMIT_FACE_STRETCH:
+                uvOptionsEx |= UVATLAS_LIMIT_FACE_STRETCH;
                 break;
 
             case OPT_MAXCHARTS:
@@ -1190,7 +1205,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             inMesh->GetAdjacencyBuffer(), nullptr,
             IMTData.get(),
             UVAtlasCallback, UVATLAS_DEFAULT_CALLBACK_FREQUENCY,
-            uvOptions, vb, ib,
+            uvOptions | uvOptionsEx, vb, ib,
             &facePartitioning,
             &vertexRemapArray,
             &outStretch, &outCharts);
