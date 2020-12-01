@@ -17,8 +17,8 @@
 #include "isochartutil.h"
 #include "sparsematrix.hpp"
 
-#include "geodesics\ExactOneToAll.h"
-#include "geodesics\ApproximateOneToAll.h"
+#include "ExactOneToAll.h"
+#include "ApproximateOneToAll.h"
 
 namespace Isochart
 {
