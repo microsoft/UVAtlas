@@ -160,7 +160,7 @@ namespace Isochart
             const CBaseMeshInfo& baseInfo,
             CCallbackSchemer& callbackSchemer);
 
-        static HRESULT CheckMerageResult(
+        static HRESULT CheckMergeResult(
             ISOCHARTMESH_ARRAY& chartList,
             CIsochartMesh* pOldChart1,
             CIsochartMesh* pOldChart2,

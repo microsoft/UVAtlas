@@ -814,7 +814,7 @@ HRESULT CIsochartMesh::OptimizeGeoLnInfiniteStretch(
 
     if (!bSucceed)
     {
-        DPF(1, "Infinite Optimize faild, %zu Internal infinite vertices,%zu boundary vert",
+        DPF(1, "Infinite Optimize failed, %zu Internal infinite vertices,%zu boundary vert",
             optimizeInfo.dwInfinitStretchVertexCount - dwBoundaryInfFaces,
             dwBoundaryInfFaces);
     }

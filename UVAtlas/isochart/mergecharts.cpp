@@ -414,7 +414,7 @@ HRESULT CIsochartMesh::MergeAdjacentChart(
 
         // 2.5 Check if the meraged chart also satisfied the stretch
         bool bCanMerge = true;
-        if (FAILED(hr = CheckMerageResult(
+        if (FAILED(hr = CheckMergeResult(
             children,
             pMainChart,
             pAddjacentChart,
@@ -483,7 +483,7 @@ HRESULT CIsochartMesh::MergeAdjacentChart(
 
 
 //-------------------------------------------------------------------------------------
-HRESULT CIsochartMesh::CheckMerageResult(
+HRESULT CIsochartMesh::CheckMergeResult(
     ISOCHARTMESH_ARRAY& chartList,
     CIsochartMesh* pOldChart1,
     CIsochartMesh* pOldChart2,

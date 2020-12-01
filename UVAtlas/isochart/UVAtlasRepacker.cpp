@@ -1584,8 +1584,7 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
 
     auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(m_ChartsInfo[index].PosInfo[m_triedRotate]));
 
-    XMMATRIX matrixRotate;
-    matrixRotate = XMMatrixRotationZ(float(m_triedPutRotation) / 180.0f * XM_PI);
+    XMMATRIX matrixRotate = XMMatrixRotationZ(float(m_triedPutRotation) / 180.0f * XM_PI);
     XMStoreFloat2(&(pPosInfo->basePoint), XMVector2TransformCoord(XMLoadFloat2(&(pPosInfo->basePoint)),
         matrixRotate));
     matrixRotate = XMMatrixRotationZ(float(m_triedPutRotation) / 180.0f * XM_PI +
