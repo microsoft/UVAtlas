@@ -6,7 +6,7 @@ http://go.microsoft.com/fwlink/?LinkID=512686
 
 Copyright (c) Microsoft Corporation. All rights reserved.
 
-**November 11, 2020**
+**December 1, 2020**
 
 This package contains UVAtlas, a shared source library for creating and packing an isochart texture atlas.
 
@@ -57,6 +57,12 @@ http://research.microsoft.com/en-us/um/people/johnsny/papers/isochart.pdf)
 Sander et al. "Signal-Specialized Parametrization" Europgraphics 2002 [pdf](http://research.microsoft.com/en-us/um/people/johnsny/papers/ssp.pdf)
 
 ## Release Notes
+
+* Starting with the December 2020 release, this library makes use of typed enum bitmask flags per the recommendation of the _C++ Standard_ section *17.5.2.1.3 Bitmask types*. This is consistent with Direct3D 12's use of the ``DEFINE_ENUM_FLAG_OPERATORS`` macro. This may have *breaking change* impacts to client code:
+
+  * You cannot pass the ``0`` literal as your option flags value. Instead you must make use of the appropriate default enum value: ``UVATLAS_DEFAULT`` or ``UVATLAS_IMT_DEFAULT``.
+
+  * Use the enum type instead of ``DWORD`` if building up flags values locally with bitmask operations. For example, ``UVATLAS options = UVATLAS_DEFAULT; if (...) options |= UVATLAS_GEODESIC_FAST;``
 
 * The UWP projects and the VS 2019 Win10 classic desktop project include configurations for the ARM64 platform. These require VS 2017 (15.9 update) or VS 2019 to build, with the ARM64 toolset installed.
 

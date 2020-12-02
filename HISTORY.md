@@ -6,6 +6,13 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### December 1, 2020
+* Converted to typed enum bitmask flags (see release notes for details on this potential *breaking change*)
+* Added new partition options ``UVATLAS_LIMIT_MERGE_STRETCH`` and ``UVATLAS_LIMIT_FACE_STRETCH``
+* Applied patch to fix (occasionally) bad gutter buffer calculation
+* uvatlastool: Added ``-lms`` and ``-lfs`` switches
+* Minor project cleanup
+
 ### November 11, 2020
 * uvatlastool: Updated for November 2020 DirectXTex & DirectXMesh releases
 * Minor project cleanup
