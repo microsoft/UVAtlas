@@ -1,24 +1,27 @@
-﻿# UVAtlas Isochart Atlas Library
-#
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
-#
-# http://go.microsoft.com/fwlink/?LinkID=512686
 
 cmake_minimum_required (VERSION 3.11)
 
-project (UVAtlas LANGUAGES CXX)
+set(UVATLAS_VERSION 1.8.1)
+
+project (UVAtlas
+  VERSION ${UVATLAS_VERSION}
+  DESCRIPTION "UVAtlas Isochart Atlas Library"
+  HOMEPAGE_URL "https://go.microsoft.com/fwlink/?LinkID=512686"
+  LANGUAGES CXX)
 
 # To build this tool, you need the DirectXTex (http://go.microsoft.com/fwlink/?LinkId=248926) and
-# DirectXMesh (http://go.microsoft.com/fwlink/?LinkID=324981) libraries in the following directory structure:
+# DirectXMesh (http://go.microsoft.com/fwlink/?LinkID=324981) cmake packages available.
 #
-# .\DirectXTex\DirectXTex
-# .\DirectXMesh\DirectXMesh
-# .\DirectXMesh\Utilities
-# .\UVAtlas\UVAtlas
-# .\UVAtlas\UVAtlasTool
+# Use vcpkg and set the required CMAKE_TOOLCHAIN_FILE value for vcpkg.cmake
 #
-option(BUILD_TOOLS "Build UVAtlasTool" ON)
+# -or-
+#
+# cmake install the individual packages and add the per-configuration variables for directxmesh_DIR and directxtex_DIR
+#
+# Note to support Windows 7, turn off BUILD_DX12 build options for both libraries.
+option(BUILD_TOOLS "Build UVAtlasTool" OFF)
 
 # Enable the use of OpenMP
 option(UVATLAS_USE_OPENMP "Build with OpenMP support" ON)
@@ -33,10 +36,13 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/CMake")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/CMake")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/CMake")
 
-add_library (${PROJECT_NAME} STATIC
+#--- Library
+set(LIBRARY_HEADERS
+    UVAtlas/inc/UVAtlas.h)
+
+set(LIBRARY_SOURCES
     UVAtlas/maxheap.hpp
     UVAtlas/pch.h
-    UVAtlas/inc/UVAtlas.h
     UVAtlas/geodesics/ApproximateOneToAll.cpp
     UVAtlas/geodesics/ApproximateOneToAll.h
     UVAtlas/geodesics/datatypes.h
@@ -84,20 +90,25 @@ add_library (${PROJECT_NAME} STATIC
     UVAtlas/isochart/Vis_Maxflow.h
 )
 
-if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16")
-    target_precompile_headers(${PROJECT_NAME} PRIVATE UVAtlas/pch.h)
-endif()
+add_library (${PROJECT_NAME} STATIC ${LIBRARY_SOURCES} ${LIBRARY_HEADERS})
 
 source_group(inc REGULAR_EXPRESSION UVAtlas/inc/*.*)
 source_group(geodesics REGULAR_EXPRESSION UVAtlas/geodesics/*.*)
 source_group(isochart REGULAR_EXPRESSION UVAtlas/isochart/*.*)
 source_group(isochart REGULAR_EXPRESSION UVAtlas/isochart/*.*)
 
-target_include_directories(${PROJECT_NAME} PUBLIC UVAtlas/inc)
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/UVAtlas/inc>
+  $<INSTALL_INTERFACE:include>)
+
 target_include_directories(${PROJECT_NAME} PRIVATE UVAtlas UVAtlas/geodesics UVAtlas/isochart)
 
+if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16")
+    target_precompile_headers(${PROJECT_NAME} PRIVATE UVAtlas/pch.h)
+endif()
+
 if(MSVC)
-    # Use higher Warning Level 
+    # Use max Warning Level
     string(REPLACE "/W3 " "/Wall " CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
     string(REPLACE "/W3 " "/Wall " CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG})
     string(REPLACE "/W3 " "/Wall " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
@@ -108,16 +119,42 @@ if(MSVC)
     string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 endif()
 
-if(BUILD_TOOLS)
-    if(NOT EXISTS "${CMAKE_SOURCE_DIR}/../DirectXMesh/CMakeLists.txt")
-        message(FATAL_ERROR "uvatalastool requires DirectXMesh library from http://go.microsoft.com/fwlink/?LinkID=324981" )
-    endif()
-    if(NOT EXISTS "${CMAKE_SOURCE_DIR}/../DirectXTex/CMakeLists.txt")
-        message(FATAL_ERROR "uvatalastool requires DirectXTex library from http://go.microsoft.com/fwlink/?LinkId=248926" )
-    endif()
+#--- Package
+include(CMakePackageConfigHelpers)
 
-    add_subdirectory(${CMAKE_SOURCE_DIR}/../DirectXMesh ${CMAKE_BINARY_DIR}/bin/CMake/DirectXMesh)
-    add_subdirectory(${CMAKE_SOURCE_DIR}/../DirectXTex ${CMAKE_BINARY_DIR}/bin/CMake/DirectXTex)
+write_basic_package_version_file(
+  ${PROJECT_BINARY_DIR}/cmake/${PROJECT_NAME}-config-version.cmake
+  VERSION ${UVATLAS_VERSION}
+  COMPATIBILITY AnyNewerVersion)
+
+install(TARGETS ${PROJECT_NAME}
+  EXPORT ${PROJECT_NAME}-targets
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin)
+
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/.nuget/${PROJECT_NAME}-config.cmake.in
+  ${PROJECT_BINARY_DIR}/cmake/${PROJECT_NAME}-config.cmake
+  INSTALL_DESTINATION cmake/})
+
+install(EXPORT ${PROJECT_NAME}-targets
+  FILE ${PROJECT_NAME}-targets.cmake
+  NAMESPACE Microsoft::
+  DESTINATION cmake/)
+
+install(FILES ${LIBRARY_HEADERS}
+  DESTINATION include)
+
+install(
+  FILES
+    ${PROJECT_BINARY_DIR}/cmake/${PROJECT_NAME}-config.cmake
+    ${PROJECT_BINARY_DIR}/cmake/${PROJECT_NAME}-config-version.cmake
+  DESTINATION cmake/)
+
+#--- Command-line tool
+if(BUILD_TOOLS)
+    find_package(directxmesh CONFIG REQUIRED COMPONENTS library utils)
+    find_package(directxtex CONFIG REQUIRED)
 
     add_executable(uvatlastool
         UVAtlasTool/UVAtlas.cpp
@@ -125,8 +162,10 @@ if(BUILD_TOOLS)
         UVAtlasTool/Mesh.h
         UVAtlasTool/MeshOBJ.cpp
         UVAtlasTool/SDKMesh.h)
-    target_link_libraries(uvatlastool ${PROJECT_NAME} DirectXMesh DirectXTex version.lib)
-    target_include_directories(uvatlastool PRIVATE ../DirectXMesh/DirectXMesh ../DirectXMesh/Utilities ../DirectXTex/DirectXTex)
+
+    source_group(UVAtlasTool REGULAR_EXPRESSION UVAtlasTool/*.*)
+
+    target_link_libraries(uvatlastool ${PROJECT_NAME} Microsoft::DirectXMesh Microsoft::DirectXTex Microsoft::DirectXMesh::Utilities version.lib)
 endif()
 
 if(MSVC)
@@ -202,4 +241,3 @@ if(BUILD_TOOLS)
 else()
     set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 endif()
-
