@@ -72,11 +72,12 @@
 
 #include <float.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <time.h>
 #include <string.h>
 
 #include <algorithm>
+#include <cstdint>
+#include <cmath>
 #include <memory>
 #include <functional>
 #include <vector>
