@@ -14,7 +14,7 @@ project (UVAtlas
 # To build this tool, you need the DirectXTex (http://go.microsoft.com/fwlink/?LinkId=248926) and
 # DirectXMesh (http://go.microsoft.com/fwlink/?LinkID=324981) cmake packages available.
 #
-# Use vcpkg and set the required CMAKE_TOOLCHAIN_FILE value for vcpkg.cmake
+# Use vcpkg and set the required CMAKE_TOOLCHAIN_FILE path to vcpkg.cmake
 #
 # -or-
 #
