@@ -65,21 +65,19 @@
 #include <Windows.h>
 #include <objbase.h>
 
-#include <assert.h>
-
 #define _USE_MATH_DEFINES
-#include <math.h>
-
-#include <float.h>
-#include <stdlib.h>
-#include <time.h>
-#include <string.h>
+#include <cmath>
 
 #include <algorithm>
+#include <cassert>
+#include <cfloat>
 #include <cstdint>
-#include <cmath>
-#include <memory>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <cstring>
 #include <functional>
+#include <memory>
 #include <vector>
 #include <queue>
 
@@ -96,8 +94,8 @@ extern void __cdecl UVAtlasDebugPrintf(unsigned int lvl, _In_z_ _Printf_format_s
 
 #ifndef SAFE_DELETE_ARRAY
 #define SAFE_DELETE_ARRAY(p) { if(p) { delete[] (p);   (p)=nullptr; } }
-#endif    
+#endif
 
 #ifndef SAFE_RELEASE
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=nullptr; } }
-#endif   
+#endif
