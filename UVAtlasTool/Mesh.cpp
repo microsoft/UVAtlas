@@ -22,6 +22,10 @@
 #pragma warning(pop)
 
 #include "Mesh.h"
+
+#include <cstring>
+#include <utility>
+
 #include "SDKMesh.h"
 
 #include <DirectXPackedVector.h>
