@@ -20,14 +20,16 @@
 #define NOHELP
 #pragma warning(pop)
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <assert.h>
-#include <conio.h>
-
+#include <cassert>
+#include <cstddef>
+#include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <fstream>
 #include <memory>
 #include <list>
+
+#include <conio.h>
 
 #include <dxgiformat.h>
 

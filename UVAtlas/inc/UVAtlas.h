@@ -9,8 +9,6 @@
 
 #pragma once
 
-#include <cstdint>
-
 #if defined(_XBOX_ONE) && defined(_TITLE)
 #include <d3d11_x.h>
 #else
@@ -18,12 +16,15 @@
 #include <dxgiformat.h>
 #endif
 
-#include <DirectXMath.h>
-
+#include <cstddef>
+#include <cstdint>
 #include <functional>
 #include <vector>
 
+#include <DirectXMath.h>
+
 #define UVATLAS_VERSION 181
+
 
 namespace DirectX
 {
@@ -94,7 +95,7 @@ namespace DirectX
     //               integrated metric tensor for that face. This lets you control
     //               the way this triangle may be stretched in the atlas. The IMT
     //               passed in will be 3 floats (a,b,c) and specify a symmetric
-    //               matrix (a b) that, given a vector (s,t), specifies the 
+    //               matrix (a b) that, given a vector (s,t), specifies the
     //                      (b c)
     //               distance between a vector v1 and a vector v2 = v1 + (s,t) as
     //               sqrt((s, t) * M * (s, t)^T).
