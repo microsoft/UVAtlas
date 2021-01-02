@@ -26,6 +26,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
+#include <iterator>
 #include <memory>
 #include <list>
 
@@ -342,7 +343,7 @@ namespace
         wchar_t version[32] = {};
 
         wchar_t appName[_MAX_PATH] = {};
-        if (GetModuleFileNameW(nullptr, appName, _countof(appName)))
+        if (GetModuleFileNameW(nullptr, appName, static_cast<DWORD>(std::size(appName))))
         {
             DWORD size = GetFileVersionInfoSizeW(appName, nullptr);
             if (size > 0)
@@ -1283,9 +1284,9 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         if (dwOptions & (DWORD64(1) << OPT_COLOR_MESH))
         {
             inMaterial.clear();
-            inMaterial.reserve(_countof(g_ColorList));
+            inMaterial.reserve(std::size(g_ColorList));
 
-            for (size_t j = 0; j < _countof(g_ColorList) && (j < outCharts); ++j)
+            for (size_t j = 0; j < std::size(g_ColorList) && (j < outCharts); ++j)
             {
                 Mesh::Material mtl = {};
 
@@ -1314,7 +1315,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             size_t j = 0;
             for (auto it = facePartitioning.cbegin(); it != facePartitioning.cend(); ++it, ++j)
             {
-                attr[j] = *it % _countof(g_ColorList);
+                attr[j] = *it % std::size(g_ColorList);
             }
 
             hr = inMesh->UpdateAttributes(nFaces, attr.get());

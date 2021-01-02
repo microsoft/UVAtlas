@@ -24,6 +24,8 @@
 #include "Mesh.h"
 #include "WaveFrontReader.h"
 
+#include <iterator>
+
 using namespace DirectX;
 
 namespace
@@ -87,7 +89,7 @@ HRESULT LoadFromOBJ(
     };
 
     const D3D11_INPUT_ELEMENT_DESC* layout = s_vboLayout;
-    size_t nDecl = _countof(s_vboLayout);
+    size_t nDecl = std::size(s_vboLayout);
 
     if (!wfReader.hasNormals && !wfReader.hasTexcoords)
     {
@@ -100,7 +102,7 @@ HRESULT LoadFromOBJ(
     else if (!wfReader.hasNormals && wfReader.hasTexcoords)
     {
         layout = s_vboLayoutAlt;
-        nDecl = _countof(s_vboLayoutAlt);
+        nDecl = std::size(s_vboLayoutAlt);
     }
 
     VBReader vbr;

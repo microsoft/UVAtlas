@@ -24,6 +24,7 @@
 #include "Mesh.h"
 
 #include <cstring>
+#include <iterator>
 #include <utility>
 
 #include "SDKMesh.h"
@@ -1917,7 +1918,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
         { 0xFF, 0, D3DDECLTYPE_UNUSED, 0, 0, 0 },
     };
 
-    static_assert((_countof(s_elements) + 1) == _countof(s_decls), "InputLayouts and Vertex Decls disagree");
+    static_assert((std::size(s_elements) + 1) == std::size(s_decls), "InputLayouts and Vertex Decls disagree");
 
     uint8_t normalType;
     size_t normalStride;
@@ -2061,7 +2062,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
     }
 
     assert(nDecl < MAX_VERTEX_ELEMENTS);
-    vbHeader.Decl[nDecl] = s_decls[_countof(s_decls) - 1];
+    vbHeader.Decl[nDecl] = s_decls[std::size(s_decls) - 1];
 
     // Build vertex buffer
     std::unique_ptr<uint8_t> vb(new (std::nothrow) uint8_t[mnVerts * stride]);
