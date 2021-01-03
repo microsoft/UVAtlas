@@ -7,7 +7,7 @@
 // http://go.microsoft.com/fwlink/?LinkID=512686
 //-------------------------------------------------------------------------------------
 
-// This file implement the algorithm in "Numerical Recipes in Fortan 77, 
+// This file implement the algorithm in "Numerical Recipes in Fortan 77,
 // The Art of Scientific Computing Second Edition", Section 11.1 ~ 11.3
 // http://www.library.cornell.edu/nr/bookfpdf/f11-1.pdf
 // http://www.library.cornell.edu/nr/bookfpdf/f11-2.pdf
@@ -48,7 +48,7 @@ namespace Isochart
             value_type scale,
             size_t dwDimension)
         {
-            assert(_finite(double(scale)) != 0);
+            assert(std::isfinite(double(scale)));
             for (size_t ii = 0; ii < dwDimension; ii++)
             {
                 v[ii] *= scale;
@@ -152,7 +152,7 @@ namespace Isochart
                     auto g = (pU[i - 1] < 0) ? value_type(-IsochartSqrt(h)) : value_type(IsochartSqrt(h));
 
                     pSubDiagVec[i] = -(total * g); // i element of sub-diagonal vector
-                    h += pU[i - 1] * g; // h = |u|*|u|/2 
+                    h += pU[i - 1] * g; // h = |u|*|u|/2
                     pU[i - 1] += g; // u(i-1) = u(i-1) + |g|
 
                     VectorZero(pP, i);
@@ -209,12 +209,12 @@ namespace Isochart
 
             // Q = P(0) * P(1) * p(2) * * * p(n-1)
             // Q(n-1) = P(n-1)
-            // Q(n-2) = P(n-2) * Q(n-1) 
+            // Q(n-2) = P(n-2) * Q(n-1)
             //     ......
             // Q(0) = Q = P(0) * Q(1)
 
             // Here used :
-            //P*Q = ( 1 - u* u'/H)Q 
+            //P*Q = ( 1 - u* u'/H)Q
             //= Q - u * u' * Q / H   ( 2n*n multiplication )
             //= Q - (u/H) * (u' * Q); ( n*n +n multiplication )
             for (size_t i = 0; i < dwDimension - 1; i++)
@@ -269,7 +269,7 @@ namespace Isochart
             // 2.2 QL iteration Algorithm.
             for (size_t j = 0; j < dwDimension; j++)
             {
-                // 2.2.1 Find a small subdiagonal element to split the matrix			
+                // 2.2.1 Find a small subdiagonal element to split the matrix
                 auto temp = value_type(fabs(pEigenValue[j]) + fabs(pSubDiagVec[j]));
                 if (maxv < temp)
                 {
@@ -296,7 +296,7 @@ namespace Isochart
                         pSubDiagVec[j] = 0.0;
                         break;
                     }
-                    // A plane rotation as Original OL, followed by n-j-2 Given rotations to 
+                    // A plane rotation as Original OL, followed by n-j-2 Given rotations to
                     // restore tridiagonal form
                     else
                     {
@@ -357,7 +357,7 @@ namespace Isochart
                             (lastC * lastC - lastS * lastS) * pSubDiagVec[n - 1]
                             + lastS * lastC * (pEigenValue[n - 1] - pEigenValue[n]);
 
-                        // Because d[n-1], e[n-1] will continue to be changed in next 
+                        // Because d[n-1], e[n-1] will continue to be changed in next
                         // step, only change d[n] here
                         pEigenValue[n] = value_type(lastqq);
 
@@ -377,7 +377,7 @@ namespace Isochart
                         if (n > j + 1)
                         {
                             // Each step, generate a Given rotation matrix to decrease
-                            // the "extra" item. 
+                            // the "extra" item.
                             // Each step, e[next+1] and d[next+1] can be decided.
                             // Each step, compute a new "extra" value.
                             extra = lastS * pSubDiagVec[n - 2];

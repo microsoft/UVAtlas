@@ -37,44 +37,52 @@ void IIsochartEngine::ReleaseIsochartEngine(
 
 CIsochartEngine::CIsochartEngine() :
     m_state(ISOCHART_ST_UNINITILAIZED),
+#ifdef WIN32
     m_hMutex(nullptr),
+#endif
     m_dwOptions(_OPTION_ISOCHART_DEFAULT)
 {
 }
 
 CIsochartEngine::~CIsochartEngine()
 {
-    // if other thread is calling public method of CIsochartEngine this time, 
+    // if other thread is calling public method of CIsochartEngine this time,
     // Free will return with "busy". So loop until free successfully.
     while (FAILED(Free()))
     {
 #if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_APP)
         // Busy-wait
-#else
+#elif defined(WIN32)
         SwitchToThread();
+#else
+        pthread_yield();
 #endif
     }
 
+#ifdef WIN32
     if (m_hMutex)
     {
         CloseHandle(m_hMutex);
     }
+#endif
 }
 
 HRESULT CIsochartEngine::CreateEngineMutex()
 {
+#ifdef WIN32
     m_hMutex = CreateMutexEx(nullptr, nullptr, CREATE_MUTEX_INITIAL_OWNER, SYNCHRONIZE);
     if (!m_hMutex)
     {
         return HRESULT_FROM_WIN32(GetLastError());
     }
+#endif
     return S_OK;
 }
 // ------------------------------------------------------------------------
 // Initialize the isochart engine. Must be called before Partition, Optimize & Pack.
 //-pMinChartNumber
 //		size_t pointer. If specified, Initialize() pre-calculate the minimal
-//		number of charts.In Partition(), MaxChartNumber should be always 
+//		number of charts.In Partition(), MaxChartNumber should be always
 //		larger than MinChartNumber. Set to nullptr to skip pre-calculation. It
 //		is faster for Initialization, but only used in "control by stretch
 //		only" mode.
@@ -126,7 +134,7 @@ HRESULT CIsochartEngine::Initialize(
 
     // 3. If engine is already initialized, return error code
 
-    // 4. Prepare global basic information table. 
+    // 4. Prepare global basic information table.
     if (FAILED(hr = InitializeBaseInfo(
         pVertexArray,
         VertexCount,
@@ -195,7 +203,7 @@ HRESULT CIsochartEngine::Free() noexcept
 }
 
 
-//Partition by number or by stretch only. 
+//Partition by number or by stretch only.
 //Before calling this method, Initialize() should be called.
 HRESULT CIsochartEngine::Partition(
     size_t MaxChartNumber,
@@ -238,7 +246,7 @@ HRESULT CIsochartEngine::Partition(
     return hr;
 }
 
-// Check if MaxChartNumber is a valid value. 
+// Check if MaxChartNumber is a valid value.
 bool CIsochartEngine::IsMaxChartNumberValid(
     size_t MaxChartNumber)
 {
@@ -261,7 +269,7 @@ HRESULT CIsochartEngine::InitializeCurrentChartHeap()
         ReleaseFinalCharts();
     }
 
-    // Initialize current chart list. Charts in this list are candidates to be 
+    // Initialize current chart list. Charts in this list are candidates to be
     // partitioned.
     for (size_t i = 0; i < m_initChartList.size(); i++)
     {
@@ -284,7 +292,7 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeapParallelized(
     /// Parallelization:
     /// 1st Move heap to vector `parent`
     /// 2nd run through parent in parallel, add children to `children`
-    /// 3rd children = parent, goto 2nd 
+    /// 3rd children = parent, goto 2nd
     std::vector<CIsochartMesh*> parent;
     while (!m_currentChartHeap.empty())
         parent.emplace_back(m_currentChartHeap.cutTopData());
@@ -293,7 +301,7 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeapParallelized(
     while (!parent.empty() && !FAILED(hrOut))
     {
         std::vector<CIsochartMesh*> children;
-#pragma omp parallel 
+#pragma omp parallel
         {
 
             std::vector<CIsochartMesh*> children_thrd;
@@ -307,7 +315,7 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeapParallelized(
                 assert(pChart != nullptr);
                 _Analysis_assume_(pChart != nullptr);
 
-                // Process current chart, if it's needed to be partitioned again, 
+                // Process current chart, if it's needed to be partitioned again,
                 // Just partition it.
                 HRESULT hr = pChart->Partition(); /// Adds children to pChart->m_children						// hotspot
                 if (FAILED(hr))
@@ -398,7 +406,7 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeap(
         assert(pChart != nullptr);
         _Analysis_assume_(pChart != nullptr);
 
-        // Process current chart, if it's needed to be partitioned again, 
+        // Process current chart, if it's needed to be partitioned again,
         // Just partition it.
         HRESULT hr = pChart->Partition();
         if (FAILED(hr))
@@ -424,7 +432,7 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeap(
             }
         }
 
-        // If A right parameterization (with acceptable face overturn) 
+        // If A right parameterization (with acceptable face overturn)
         // has been gotten, add current chart to final Chart List.
         else
         {
@@ -676,9 +684,9 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
                 m_finalChartList,
                 false));
 
-        // 3.3 
+        // 3.3
         // For geometric case, get current optical average L^2 Squared Stretch
-        // For signal case, get max average L^2 Squared stretch around the 
+        // For signal case, get max average L^2 Squared stretch around the
         // Charts
         fCurrAvgL2SquaredStretch = GetCurrentStretchCriteria();
 
@@ -760,8 +768,8 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
     FAILURE_RETURN(
         OptimizeParameterizedCharts(Stretch, fCurrAvgL2SquaredStretch));
 
-    // 6. Export current partition result by set the attribute id of each face 
-    // in original mesh	
+    // 6. Export current partition result by set the attribute id of each face
+    // in original mesh
     if (pFaceAttributeIDOut)
     {
         hr = ExportCurrentCharts(
@@ -1193,10 +1201,10 @@ HRESULT CIsochartEngine::InitializeBaseInfo(
 
 
 // -----------------------------------------------------------------------------
-//  function   ApplyInitEngine 
+//  function   ApplyInitEngine
 //
-//   Description:  
-//    Internal function to initialize engine: 
+//   Description:
+//    Internal function to initialize engine:
 //    (1) Check and separate multiple objects in the input mesh.Results are initial charts
 //    (2) Check and cut multiple boundaries of initial charts.
 //    (3) Caculated vertex importance order for each initial charts
@@ -1241,7 +1249,7 @@ HRESULT CIsochartEngine::ApplyInitEngine(
         return hr;
     }
 
-    // 2. Separate unconnected charts from original mesh. For each chart, 
+    // 2. Separate unconnected charts from original mesh. For each chart,
     // Caculate Vertices importance
 
     m_callbackSchemer.InitCallBackAdapt(
@@ -1269,7 +1277,7 @@ HRESULT CIsochartEngine::ApplyInitEngine(
         }
 
         DPF(3, "Separate to %zu sub-charts", pChart->GetChildrenCount());
-        // if original mesh has multiple sub-charts or current chart 
+        // if original mesh has multiple sub-charts or current chart
         // has multiple boundaies it will generate children.
 
         if (pChart->HasChildren())
@@ -1320,10 +1328,10 @@ HRESULT CIsochartEngine::ApplyInitEngine(
 }
 
 // ----------------------------------------------------------------------------
-//  function    ReleaseCurrentCharts 
+//  function    ReleaseCurrentCharts
 //
-//   Description:  release charts in current chart list. 
-//   returns    
+//   Description:  release charts in current chart list.
+//   returns
 //
 void CIsochartEngine::ReleaseCurrentCharts()
 {
@@ -1341,9 +1349,9 @@ void CIsochartEngine::ReleaseCurrentCharts()
 }
 
 // ----------------------------------------------------------------------------
-//  function   ReleaseFinalCharts 
+//  function   ReleaseFinalCharts
 //
-//   Description:  release charts in final chart list. 
+//   Description:  release charts in final chart list.
 
 void CIsochartEngine::ReleaseFinalCharts()
 {
@@ -1361,10 +1369,10 @@ void CIsochartEngine::ReleaseFinalCharts()
 }
 
 // -----------------------------------------------------------------------------
-//  function    ReleaseInitialCharts 
+//  function    ReleaseInitialCharts
 //
-//   Description:  release charts in init chart list. 
-//   returns    
+//   Description:  release charts in init chart list.
+//   returns
 
 void CIsochartEngine::ReleaseInitialCharts()
 {
@@ -1382,12 +1390,12 @@ void CIsochartEngine::ReleaseInitialCharts()
 
 
 // -----------------------------------------------------------------------------
-//  function    ExportCurrentCharts 
+//  function    ExportCurrentCharts
 //
-//  Description:  
-//    Export current partition result by set face attribute for each face in 
+//  Description:
+//    Export current partition result by set face attribute for each face in
 //    original mesh.
-//  returns    S_OK if successful, else failure code 
+//  returns    S_OK if successful, else failure code
 //
 HRESULT CIsochartEngine::ExportCurrentCharts(
     std::vector<CIsochartMesh*>& finalChartList,
@@ -1414,10 +1422,10 @@ HRESULT CIsochartEngine::ExportCurrentCharts(
 
 
 // ----------------------------------------------------------------------------
-//  function    ExportIsochartResult 
+//  function    ExportIsochartResult
 //
 //   Description:  Export final result
-//   returns    S_OK if successful, else failure code 
+//   returns    S_OK if successful, else failure code
 //
 HRESULT CIsochartEngine::ExportIsochartResult(
     std::vector<CIsochartMesh*>& finalChartList,
@@ -1548,7 +1556,7 @@ HRESULT CIsochartEngine::PrepareExportBuffers(
     pvFaceIndexArrayOut->clear();
     pvVertexRemapArrayOut->clear();
 
-    // 1. Compute the output vertices number 
+    // 1. Compute the output vertices number
     std::unique_ptr<bool[]> rgbVertUsed(new (std::nothrow) bool[m_baseInfo.dwVertexCount]);
     if (!rgbVertUsed)
     {
@@ -1798,7 +1806,8 @@ HRESULT CIsochartEngine::FillExportFaceAdjacencyBuffer(
 
 HRESULT CIsochartEngine::TryEnterExclusiveSection()
 {
-    // Other thread is using this object. 
+#ifdef WIN32
+    // Other thread is using this object.
     if (WaitForSingleObjectEx(m_hMutex, 0, FALSE) == WAIT_OBJECT_0)
     {
         return S_OK;
@@ -1807,15 +1816,21 @@ HRESULT CIsochartEngine::TryEnterExclusiveSection()
     {
         return E_ABORT;
     }
+#else
+    return m_mutex.try_lock() ? S_OK : E_ABORT;
+#endif
 }
 
 void  CIsochartEngine::LeaveExclusiveSection()
 {
+#ifdef WIN32
     if (m_hMutex)
     {
         ReleaseMutex(m_hMutex);
     }
-
+#else
+    m_mutex.unlock();
+#endif
 }
 
 

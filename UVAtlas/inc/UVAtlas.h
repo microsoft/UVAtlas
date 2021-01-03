@@ -11,9 +11,12 @@
 
 #if defined(_XBOX_ONE) && defined(_TITLE)
 #include <d3d11_x.h>
-#else
+#elif defined(WIN32)
 #include <Windows.h>
 #include <dxgiformat.h>
+#else
+#include <directx/dxgiformat.h>
+#include <wsl/winadapter.h>
 #endif
 
 #include <cstddef>

@@ -252,7 +252,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistance(
             )
             ||
 
-            // or the user forces to use the new algorithm 
+            // or the user forces to use the new algorithm
             (
                 m_IsochartEngine.m_dwOptions & _OPTION_ISOCHART_GEODESIC_QUALITY
                 )
@@ -490,7 +490,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertex(
             )
             ||
 
-            // or the user forces to use the new algorithm 
+            // or the user forces to use the new algorithm
             (
                 m_IsochartEngine.m_dwOptions & _OPTION_ISOCHART_GEODESIC_QUALITY
                 )
@@ -814,7 +814,7 @@ HRESULT CIsochartMesh::CalculateVertMappingCoord(
 
     if (!m_isoMap.GetDestineVectors(dwPrimaryEigenDimension, pfLandmarkCoords))
     {
-        return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+        return HRESULT_E_INVALID_DATA;
     }
 
     float* pfCoord = pfLandmarkCoords;

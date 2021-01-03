@@ -50,9 +50,13 @@
 #pragma clang diagnostic ignored "-Wswitch-enum"
 #endif
 
+#ifdef WIN32
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #pragma warning(push)
 #pragma warning(disable : 4005)
-#define WIN32_LEAN_AND_MEAN
 #define NOMINMAX
 #define NODRAWTEXT
 #define NOGDI
@@ -64,6 +68,10 @@
 
 #include <Windows.h>
 #include <objbase.h>
+#else
+#include <wsl/winadapter.h>
+#include <directx/d3d12.h>
+#endif
 
 #define _USE_MATH_DEFINES
 #include <cmath>
@@ -81,6 +89,12 @@
 #include <utility>
 #include <vector>
 #include <queue>
+
+#ifndef WIN32
+#include <mutex>
+#endif
+
+#define _XM_NO_XMVECTOR_OVERLOADS_
 
 #include <DirectXMath.h>
 
@@ -100,3 +114,12 @@ extern void __cdecl UVAtlasDebugPrintf(unsigned int lvl, _In_z_ _Printf_format_s
 #ifndef SAFE_RELEASE
 #define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=nullptr; } }
 #endif
+
+// HRESULT_FROM_WIN32(ERROR_ARITHMETIC_OVERFLOW)
+#define HRESULT_E_ARITHMETIC_OVERFLOW static_cast<HRESULT>(0x80070216L)
+
+// HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED)
+#define HRESULT_E_NOT_SUPPORTED static_cast<HRESULT>(0x80070032L)
+
+// HRESULT_FROM_WIN32(ERROR_INVALID_DATA)
+#define HRESULT_E_INVALID_DATA static_cast<HRESULT>(0x8007000DL)

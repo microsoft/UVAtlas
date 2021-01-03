@@ -93,17 +93,17 @@ namespace
     // The algorithm moves charts along the tangent direction of atlas borders searching the
     // best position to add new chart. The searching step can be controled by 2 ways:
     //.SEARCH_STEP_LENGTH = 2 means moving 2 pixels each step.
-    //.SEARCH_STEP_COUNT = 120 means at most searching 120 steps. 
+    //.SEARCH_STEP_COUNT = 120 means at most searching 120 steps.
     // Using CONTROL_SEARCH_BY_STEP_COUNT to swich between these 2 ways.
     const size_t SEARCH_STEP_LENGTH = 2;
     const size_t SEARCH_STEP_COUNT = 120;
 
-    //Based on experiment, when gutter = 2, Width = 512, Height = 512, the space rate of 
+    //Based on experiment, when gutter = 2, Width = 512, Height = 512, the space rate of
     // finial UV-atlas.
     const float STANDARD_UV_SIZE = 512;
     const float STANDARD_GUTTER = 2;
 
-    // Tables for precomputed triangle values. 
+    // Tables for precomputed triangle values.
     float g_PackingCosTable[CHART_ROTATION_NUMBER];
     float g_PackingSinTable[CHART_ROTATION_NUMBER];
 }
@@ -474,7 +474,7 @@ namespace
         return dwBorderStart;
     }
 
-    // Searching along the border, finding a vertex whose coordinate in TangentAxis is the 
+    // Searching along the border, finding a vertex whose coordinate in TangentAxis is the
     // smallest in all vertices whose coordinate in TangentAxis is larger than target.
     inline size_t static FindVertexRangeEndOnBorder(
         VERTEX_ARRAY& aBorder,
@@ -500,7 +500,7 @@ namespace
         return dwBorderEnd;
     }
 
-    // 
+    //
     inline static bool FindCorrespondSegmentsOfBorders(
         VERTEX_ARRAY& aBorder1,
         VERTEX_ARRAY& aBorder2,
@@ -1414,7 +1414,7 @@ namespace
         float fAtlasAwayChartExtreme = 0;
         // The largest tangent coordinate of the border vertex in atlas.
         float fAtlasTangentMaxExtreme = 0;
-        // The smallest tangent coordinate of the border vertex in atlas.  
+        // The smallest tangent coordinate of the border vertex in atlas.
         float fAtlasTangentMinExtreme = 0;
 
         float fChartTangentSize = 0;
@@ -3255,7 +3255,7 @@ HRESULT CIsochartMesh::ScanAlongBoundayEdges(
                     if (pScanEdge)
                     {
                         DPF(0, "Vertex %d has more than 2 boundary edges leaving it", pVertex->dwIDInRootMesh);
-                        return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+                        return HRESULT_E_INVALID_DATA;
                     }
 
                     pScanEdge = pTempEdge;
@@ -3269,7 +3269,7 @@ HRESULT CIsochartMesh::ScanAlongBoundayEdges(
             if (pVertex == pStartVertex)
             {
                 DPF(0, "Chart has more than 2 boundaries");
-                return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+                return HRESULT_E_INVALID_DATA;
             }
 
             pBoundaryEdge = pScanEdge;
@@ -3401,8 +3401,8 @@ void CIsochartMesh::NormalizeAtlas(
             pVertex->uv.x = (pVertex->uv.x - atlasInfo.fBoxLeft) / fScaleW;
             pVertex->uv.y = (pVertex->uv.y - atlasInfo.fBoxBottom) / fScaleH;
 
-            assert(_finite(double(pVertex->uv.x)));
-            assert(_finite(double(pVertex->uv.y)));
+            assert(std::isfinite(double(pVertex->uv.x)));
+            assert(std::isfinite(double(pVertex->uv.y)));
 
             if (pVertex->uv.x < 0.0f)
             {
@@ -3461,7 +3461,7 @@ void CIsochartMesh::OptimizeAtlasSignalStretch(
         pChart->m_fChart2DArea = pChart->CalculateChart2DArea();
         fTotal2DArea += pChart->m_fChart2DArea;
 
-        assert(_finite(double(pChart->m_fParamStretchL2)) != 0);
+        assert(std::isfinite(double(pChart->m_fParamStretchL2)));
 
         fTotal += IsochartSqrtf(
             (pChart->m_fParamStretchL2 + ShiftError) * pChart->m_fChart2DArea);
@@ -3495,7 +3495,7 @@ void CIsochartMesh::OptimizeAtlasSignalStretch(
 
         pChart->ScaleChart(fScale);
 
-        assert(_finite(double(pChart->m_fParamStretchL2)) != 0);
+        assert(std::isfinite(double(pChart->m_fParamStretchL2)));
     }
 }
 
@@ -3524,4 +3524,3 @@ void CIsochartMesh::ScaleChart(float fScale)
         m_fParamStretchLn = m_fParamStretchL2;
     }
 }
-

@@ -115,7 +115,7 @@ namespace
         if ((sizeof(IndexType) == sizeof(uint16_t)) && (*nNewVerts > 0x0fffe))
         {
             DPF(0, "Resulting mesh is too large to fit in 16-bit mesh.");
-            return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+            return HRESULT_E_INVALID_DATA;
         }
 
         try
@@ -159,7 +159,7 @@ namespace
             return E_POINTER;
 
         if ((uint64_t(nFaces) * 3) >= UINT32_MAX)
-            return HRESULT_FROM_WIN32(ERROR_ARITHMETIC_OVERFLOW);
+            return HRESULT_E_ARITHMETIC_OVERFLOW;
 
         // put all vertices in their own equivalency class
         std::unique_ptr<uint32_t[]> equivs(new (std::nothrow) uint32_t[nFaces * 3]);
@@ -190,7 +190,7 @@ namespace
                 if (k >= 3)
                 {
                     DPF(0, "Adjacency data is invalid, %u is a neighbor of %zu, but not vice versa.", neighbor, i);
-                    return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+                    return HRESULT_E_INVALID_DATA;
                 }
 
                 uint32_t v1 = static_cast<uint32_t>(i * 3 + j);
@@ -229,7 +229,7 @@ namespace
                 if (FindEquivParent(pEquivs, v1) != FindEquivParent(pEquivs, v2))
                 {
                     DPF(0, "False edge data is invalid, %d and %d are only connected by false edges.", pIndexData[v1], pIndexData[v2]);
-                    return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+                    return HRESULT_E_INVALID_DATA;
                 }
             }
         }
@@ -289,7 +289,7 @@ namespace
         }
 
         if ((uint64_t(nFaces) * 3) >= UINT32_MAX)
-            return HRESULT_FROM_WIN32(ERROR_ARITHMETIC_OVERFLOW);
+            return HRESULT_E_ARITHMETIC_OVERFLOW;
 
         if (maxChartNumber > nFaces)
             maxChartNumber = nFaces;
@@ -304,7 +304,7 @@ namespace
                     (falseEdgeAdjacency[i] != uint32_t(-1)))
                 {
                     DPF(0, "False edge found on triangle with no adjacent triangle.");
-                    return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+                    return HRESULT_E_INVALID_DATA;
                 }
             }
 
@@ -500,7 +500,7 @@ namespace
         assert(nFaces > 0);
 
         if ((uint64_t(nFaces) * 3) >= UINT32_MAX)
-            return HRESULT_FROM_WIN32(ERROR_ARITHMETIC_OVERFLOW);
+            return HRESULT_E_ARITHMETIC_OVERFLOW;
 
         if (vPartitionResultAdjacency.size() != (nFaces * 3))
         {
@@ -767,7 +767,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerVertexSignal(
     }
 
     if ((uint64_t(signalDimension) * 3) >= UINT32_MAX)
-        return HRESULT_FROM_WIN32(ERROR_ARITHMETIC_OVERFLOW);
+        return HRESULT_E_ARITHMETIC_OVERFLOW;
 
     std::unique_ptr<float[]> signalData(new (std::nothrow) float[3 * signalDimension]);
     if (!signalData)
@@ -886,7 +886,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromSignal(
     }
 
     if ((uint64_t(nFaces) * 3) >= UINT32_MAX)
-        return HRESULT_FROM_WIN32(ERROR_ARITHMETIC_OVERFLOW);
+        return HRESULT_E_ARITHMETIC_OVERFLOW;
 
     auto pdwIndexData = reinterpret_cast<const uint32_t*>(indices);
     auto pwIndexData = reinterpret_cast<const uint16_t*>(indices);
@@ -1004,7 +1004,7 @@ namespace
         j = std::max(0, std::min<int>(j, int(pTexDesc->uHeight) - 1));
         j2 = std::max(0, std::min<int>(j2, int(pTexDesc->uHeight) - 1));
 
-        // 
+        //
         // C1 ---- C2  ^          dv
         //  | .    |   |           |
         //  |      |   |           |
@@ -1070,7 +1070,7 @@ namespace
         j = std::max(0, std::min<int>(j, int(pTexDesc->uHeight) - 1));
         j2 = std::max(0, std::min<int>(j2, int(pTexDesc->uHeight) - 1));
 
-        // 
+        //
         // C1 ---- C2  ^          dv
         //  | .    |   |           |
         //  |      |   |           |
@@ -1136,7 +1136,7 @@ namespace
         if (j2 < 0)
             j2 += int(pTexDesc->uHeight);
 
-        // 
+        //
         // C1 ---- C2  ^          dv
         //  | .    |   |           |
         //  |      |   |           |
@@ -1205,7 +1205,7 @@ namespace
         if (j2 < 0)
             j2 += int(pTexDesc->uHeight);
 
-        // 
+        //
         // C1 ---- C2  ^          dv
         //  | .    |   |           |
         //  |      |   |           |
@@ -1269,7 +1269,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromTexture(
     }
 
     if ((uint64_t(nFaces) * 3) >= UINT32_MAX)
-        return HRESULT_FROM_WIN32(ERROR_ARITHMETIC_OVERFLOW);
+        return HRESULT_E_ARITHMETIC_OVERFLOW;
 
     LPIMTSIGNALCALLBACK pSignalCallback = nullptr;
     if ((options & UVATLAS_IMT_WRAP_UV) == UVATLAS_IMT_WRAP_UV)
@@ -1408,7 +1408,7 @@ namespace
         j = std::max(0, std::min<int>(j, int(pTexDesc->uHeight) - 1));
         j2 = std::max(0, std::min<int>(j2, int(pTexDesc->uHeight) - 1));
 
-        // 
+        //
         // C1 ---- C2  ^          dv
         //  | .    |   |           |
         //  |      |   |           |
@@ -1473,7 +1473,7 @@ namespace
         j = std::max(0, std::min<int>(j, int(pTexDesc->uHeight) - 1));
         j2 = std::max(0, std::min<int>(j2, int(pTexDesc->uHeight) - 1));
 
-        // 
+        //
         // C1 ---- C2  ^          dv
         //  | .    |   |           |
         //  |      |   |           |
@@ -1538,7 +1538,7 @@ namespace
         if (j2 < 0)
             j2 += int(pTexDesc->uHeight);
 
-        // 
+        //
         // C1 ---- C2  ^          dv
         //  | .    |   |           |
         //  |      |   |           |
@@ -1606,7 +1606,7 @@ namespace
         if (j2 < 0)
             j2 += int(pTexDesc->uHeight);
 
-        // 
+        //
         // C1 ---- C2  ^          dv
         //  | .    |   |           |
         //  |      |   |           |
@@ -1672,7 +1672,7 @@ HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerTexelSignal(
     }
 
     if ((uint64_t(nFaces) * 3) >= UINT32_MAX)
-        return HRESULT_FROM_WIN32(ERROR_ARITHMETIC_OVERFLOW);
+        return HRESULT_E_ARITHMETIC_OVERFLOW;
 
     if (nComponents < signalDimension)
     {
@@ -1795,7 +1795,7 @@ HRESULT __cdecl DirectX::UVAtlasApplyRemap(
         return E_INVALIDARG;
 
     if (vbin == vbout)
-        return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
+        return HRESULT_E_NOT_SUPPORTED;
 
     auto sptr = reinterpret_cast<const uint8_t*>(vbin);
     auto dptr = reinterpret_cast<uint8_t*>(vbout);

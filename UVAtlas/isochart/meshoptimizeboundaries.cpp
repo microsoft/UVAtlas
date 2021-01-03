@@ -32,7 +32,7 @@ using namespace DirectX;
 
 namespace
 {
-    // Define the percent of faces in chart that are need to 
+    // Define the percent of faces in chart that are need to
     // re-decide chart ID by graph cut.
     const float FUZYY_REGION_PERCENT = 0.30f;
 
@@ -62,7 +62,7 @@ HRESULT CIsochartMesh::OptimizeBoundaryByAngle(
         return S_OK;
     }
 
-    // 1. Calculate dihedral angle for each edge using formula in 
+    // 1. Calculate dihedral angle for each edge using formula in
     // [Kun04], section 4
     std::unique_ptr<uint32_t[]> pdwFaceChartIDBackup(new (std::nothrow) uint32_t[m_dwFaceNumber]);
     std::unique_ptr<bool[]> pbIsFuzzyFatherFace(new (std::nothrow) bool[m_dwFaceNumber]);
@@ -277,7 +277,7 @@ HRESULT CIsochartMesh::SpreadFuzzyVert(
 }
 
 // Find such boundary vertex:
-// In sub-chart it belongs to a boundary edge but in father chart 
+// In sub-chart it belongs to a boundary edge but in father chart
 // it doesn't belongs to a boundary edge.
 // These vertices are "fuzzy vertices" needed to be optimized.
 HRESULT CIsochartMesh::FindNewBoundaryVert(
@@ -418,7 +418,7 @@ HRESULT CIsochartMesh::OptimizeOneBoundaryByAngle(
     float* pfEdgeAngleDistance,
     float fAverageAngleDistance)
 {
-    // 2.1 Find all fuzzy faces. 
+    // 2.1 Find all fuzzy faces.
     std::vector<uint32_t> candidateFuzzyFaceList;
     try
     {
@@ -446,7 +446,7 @@ HRESULT CIsochartMesh::OptimizeOneBoundaryByAngle(
         return S_OK;
     }
 
-    // 2.2 Perform graph cut 
+    // 2.2 Perform graph cut
     uint32_t dwNodeNumber = static_cast<uint32_t>(candidateFuzzyFaceList.size());
 
     graphCut.Clear();
@@ -588,7 +588,7 @@ HRESULT CIsochartMesh::OptimizeBoundaryByStretch(
         pdwFaceChartID,
         sizeof(uint32_t) * m_dwFaceNumber);
 
-    // 1. Calculate dihedral angle for each edge using formula 
+    // 1. Calculate dihedral angle for each edge using formula
     // in [Kun04], section 4
     // If failed to caculate dihedral, then just give up optimize
     float fAverageAngleDistance = 0;
@@ -1581,7 +1581,7 @@ HRESULT CIsochartMesh::ApplyBoundaryOptResult(
         pdwFaceChartID,
         bIsOptimized)))
     {
-        if (hr == HRESULT_FROM_WIN32(ERROR_INVALID_DATA))
+        if (hr == HRESULT_E_INVALID_DATA)
         {
             bIsOptimized = false;
             return hr = S_OK;
