@@ -48,11 +48,7 @@ CIsochartEngine::~CIsochartEngine()
     // Free will return with "busy". So loop until free successfully.
     while (FAILED(Free()))
     {
-#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_APP)
-        // Busy-wait
-#else
         SwitchToThread();
-#endif
     }
 
     if (m_hMutex)
