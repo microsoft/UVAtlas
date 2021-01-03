@@ -50,9 +50,7 @@ CIsochartEngine::~CIsochartEngine()
     // Free will return with "busy". So loop until free successfully.
     while (FAILED(Free()))
     {
-#if defined(WINAPI_FAMILY) && (WINAPI_FAMILY == WINAPI_FAMILY_APP)
-        // Busy-wait
-#elif defined(WIN32)
+#ifdef WIN32
         SwitchToThread();
 #else
         pthread_yield();
