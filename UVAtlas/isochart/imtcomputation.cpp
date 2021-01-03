@@ -179,7 +179,7 @@ namespace
 
         for (size_t ii = 0; ii < 3; ii++)
         {
-            XMVECTOR v = XMLoadFloat2(&texCoord[ii]) - XMLoadFloat2(&texCoord[(ii + 1) % 3]);
+            XMVECTOR v = XMVectorSubtract(XMLoadFloat2(&texCoord[ii]), XMLoadFloat2(&texCoord[(ii + 1) % 3]));
             float fDisc =
                 XMVectorGetX(XMVector2Length(v));
             if (fDisc > fMinVertexUvIDistance)
@@ -211,8 +211,9 @@ namespace
             for (size_t ii = 0; ii < 3; ii++)
             {
                 XMStoreFloat2(&vNew,
-                    (XMLoadFloat2(&vertList[pFace->dwVertIdx[ii]]) +
-                        XMLoadFloat2(&vertList[pFace->dwVertIdx[(ii + 1) % 3]])) / 2);
+                    XMVectorDivide(
+                        XMVectorAdd(XMLoadFloat2(&vertList[pFace->dwVertIdx[ii]]), XMLoadFloat2(&vertList[pFace->dwVertIdx[(ii + 1) % 3]])),
+                        g_XMTwo));
                 vertList.push_back(vNew);
             }
         }

@@ -154,7 +154,7 @@ namespace Isochart
 
         XMVECTOR pv0 = XMLoadFloat3(m_baseInfo.pVertPosition + v0.dwIDInRootMesh);
         XMVECTOR pv1 = XMLoadFloat3(m_baseInfo.pVertPosition + v1.dwIDInRootMesh);
-        XMVECTOR v2 = pv1 - pv0;
+        XMVECTOR v2 = XMVectorSubtract(pv1, pv0);
         return XMVectorGetX(XMVector3Length(v2));
     }
 
@@ -176,7 +176,7 @@ namespace Isochart
 
         XMFLOAT3* pAxisY = pAxisX + 1;
 
-        XMVECTOR tempVector = XMLoadFloat3(p3D) - XMLoadFloat3(pOrg);
+        XMVECTOR tempVector = XMVectorSubtract(XMLoadFloat3(p3D), XMLoadFloat3(pOrg));
         p2D->x = XMVectorGetX(XMVector3Dot(tempVector, XMLoadFloat3(pAxisX)));
         p2D->y = XMVectorGetX(XMVector3Dot(tempVector, XMLoadFloat3(pAxisY)));
     }
@@ -403,7 +403,7 @@ namespace Isochart
         }
 
         XMFLOAT2 center;
-        XMStoreFloat2(&center, (XMLoadFloat2(&minBound) + XMLoadFloat2(&maxBound)) / 2);
+        XMStoreFloat2(&center, XMVectorDivide(XMVectorAdd(XMLoadFloat2(&minBound), XMLoadFloat2(&maxBound)), g_XMTwo));
 
         fMinRectArea = IsochartBoxArea(minBound, maxBound);
         fMinAngle = 0;

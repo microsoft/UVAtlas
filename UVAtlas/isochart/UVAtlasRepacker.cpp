@@ -1914,7 +1914,7 @@ bool CUVAtlasRepacker::DoTessellation(uint32_t ChartIndex, size_t AngleIndex)
     int numY = pPosInfo->numY;
 
     XMFLOAT2 minP;
-    XMStoreFloat2(&minP, XMLoadFloat2(&pPosInfo->minPoint) - XMLoadFloat2(&pPosInfo->adjustLen));
+    XMStoreFloat2(&minP, XMVectorSubtract(XMLoadFloat2(&pPosInfo->minPoint), XMLoadFloat2(&pPosInfo->adjustLen)));
 
     // initialize the current chart atlas
     for (size_t i = 0; i < size_t(numY); i++)

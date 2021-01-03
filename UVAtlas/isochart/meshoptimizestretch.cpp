@@ -1749,8 +1749,9 @@ void CIsochartMesh::PrepareInternalVertOpt(
     {
         pVertex1 = m_pVerts + pOptimizeVertex->vertAdjacent[i];
         XMStoreFloat2(&middle,
-            XMLoadFloat2(&pVertex1->uv) * CONSERVATIVE_OPTIMIZE_FACTOR
-            + XMLoadFloat2(&vertInfo.center) * (1 - CONSERVATIVE_OPTIMIZE_FACTOR));
+            XMVectorAdd(
+                XMVectorScale(XMLoadFloat2(&pVertex1->uv), CONSERVATIVE_OPTIMIZE_FACTOR),
+                XMVectorScale(XMLoadFloat2(&vertInfo.center), 1.f - CONSERVATIVE_OPTIMIZE_FACTOR)));
 
         float fTempStretch = 0;
         TryAdjustVertexParamStretch(

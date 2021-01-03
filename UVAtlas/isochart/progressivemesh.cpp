@@ -1151,7 +1151,7 @@ HRESULT CProgressiveMesh::CalculateQuadricErrorMetric()
         }
     }
 
-    m_fBoxDiagLen = XMVectorGetX(XMVector3Length(XMLoadFloat3(&rightBottom) - XMLoadFloat3(&leftTop)));
+    m_fBoxDiagLen = XMVectorGetX(XMVector3Length(XMVectorSubtract(XMLoadFloat3(&rightBottom), XMLoadFloat3(&leftTop))));
 
     // 3. Calculate quadirc matrix for each vertex.
     FAILURE_RETURN(CalculateQuadricArray());

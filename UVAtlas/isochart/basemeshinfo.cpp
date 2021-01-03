@@ -233,8 +233,7 @@ HRESULT CBaseMeshInfo::CopyAndScaleInputVertices()
     {
         pVertexCoord = static_cast<float*>(static_cast<void*>(pVertexBuffer));
         XMVECTOR vVertPos = XMVectorSet(pVertexCoord[0], pVertexCoord[1], pVertexCoord[2], 0);
-        vVertPos -= vvCenter;
-        vVertPos *= scale;
+        vVertPos = XMVectorScale(XMVectorSubtract(vVertPos, vvCenter), scale);
         XMStoreFloat3(&pVertPosition[i], vVertPos);
 
         pVertexBuffer += dwVertexStride;
@@ -243,11 +242,9 @@ HRESULT CBaseMeshInfo::CopyAndScaleInputVertices()
     XMVECTOR vvMaxCoords = XMLoadFloat3(&vMaxCoords);
     XMVECTOR vvMinCoords = XMLoadFloat3(&vMinCoords);
 
-    vvMaxCoords -= vvCenter;
-    vvMaxCoords *= scale;
-    vvMinCoords -= vvCenter;
-    vvMinCoords *= scale;
-    fBoxDiagLen = XMVectorGetX(XMVector3Length(vvMaxCoords - vvMinCoords));
+    vvMaxCoords = XMVectorScale(XMVectorSubtract(vvMaxCoords, vvCenter), scale);
+    vvMinCoords = XMVectorScale(XMVectorSubtract(vvMinCoords, vvCenter), scale);
+    fBoxDiagLen = XMVectorGetX(XMVector3Length(XMVectorSubtract(vvMaxCoords, vvMinCoords)));
 
     return S_OK;
 }
@@ -308,10 +305,8 @@ HRESULT CBaseMeshInfo::ComputeInputFaceAttributes(
 
     for (size_t i = 0; i < dwFaceCount; i++)
     {
-        XMVECTOR v0 = XMLoadFloat3(&pVertPosition[pFace[1]])
-            - XMLoadFloat3(&pVertPosition[pFace[0]]);
-        XMVECTOR v1 = XMLoadFloat3(&pVertPosition[pFace[2]])
-            - XMLoadFloat3(&pVertPosition[pFace[0]]);
+        XMVECTOR v0 = XMVectorSubtract(XMLoadFloat3(&pVertPosition[pFace[1]]), XMLoadFloat3(&pVertPosition[pFace[0]]));
+        XMVECTOR v1 = XMVectorSubtract(XMLoadFloat3(&pVertPosition[pFace[2]]), XMLoadFloat3(&pVertPosition[pFace[0]]));
         XMFLOAT3* pFaceNormal = pFaceNormalArray + i;
 
         XMVECTOR vFaceNormal = XMVector3Cross(v0, v1);
@@ -321,7 +316,7 @@ HRESULT CBaseMeshInfo::ComputeInputFaceAttributes(
         pfFaceAreaArray[i] = area * 0.5f;
         fMeshArea += pfFaceAreaArray[i];
         if (area > 0.f)
-            vFaceNormal /= area;
+            vFaceNormal = XMVectorDivide(vFaceNormal, XMVectorReplicate(area));
         XMStoreFloat3(pFaceNormal, vFaceNormal);
 
         if (pFaceCanonicalUVCoordinate)

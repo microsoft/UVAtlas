@@ -1012,14 +1012,15 @@ namespace
         // C3 ---- C4  v, u --->   v
         //
 
-        XMVECTOR C1, C2, C3, C4, res;
-        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
-        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
-        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
-        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
+        XMVECTOR C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
+        XMVECTOR C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
+        XMVECTOR C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
+        XMVECTOR C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
 
-        res = (C1 * (1.f - du) + C2 * du) * (1.f - dv) +
-            (C3 * (1.f - du) + C4 * du) * dv;
+        // (C1 * (1 - du) + C2 * du) * (1 - dv) + (C3 * (1 - du) + C4 * du) * dv;
+        XMVECTOR res = XMVectorAdd(
+            XMVectorScale(XMVectorAdd(XMVectorScale(C1, 1.f - du), XMVectorScale(C2, du)), 1.f - dv),
+            XMVectorScale(XMVectorAdd(XMVectorScale(C3, 1.f - du), XMVectorScale(C4, du)), dv));
 
         XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(pfSignalOut), res);
 
@@ -1078,14 +1079,15 @@ namespace
         // C3 ---- C4  v, u --->   v
         //
 
-        XMVECTOR C1, C2, C3, C4, res;
-        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
-        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
-        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
-        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
+        XMVECTOR C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
+        XMVECTOR C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
+        XMVECTOR C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
+        XMVECTOR C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
 
-        res = (C1 * (1.f - du) + C2 * du) * (1 - dv) +
-            (C3 * (1.f - du) + C4 * du) * dv;
+        // (C1 * (1 - du) + C2 * du) * (1 - dv) + (C3 * (1 - du) + C4 * du) * dv;
+        XMVECTOR res = XMVectorAdd(
+            XMVectorScale(XMVectorAdd(XMVectorScale(C1, 1.f - du), XMVectorScale(C2, du)), 1.f - dv),
+            XMVectorScale(XMVectorAdd(XMVectorScale(C3, 1.f - du), XMVectorScale(C4, du)), dv));
 
         XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(pfSignalOut), res);
 
@@ -1144,14 +1146,16 @@ namespace
         // C3 ---- C4  v, u --->   v
         //
 
-        XMVECTOR C1, C2, C3, C4, res;
-        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
-        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
-        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
-        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
+        XMVECTOR C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
+        XMVECTOR C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
+        XMVECTOR C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
+        XMVECTOR C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
 
-        res = (C1 * (1.f - du) + C2 * du) * (1.f - dv) +
-            (C3 * (1.f - du) + C4 * du) * dv;
+        // (C1 * (1 - du) + C2 * du) * (1 - dv) + (C3 * (1 - du) + C4 * du) * dv;
+        XMVECTOR res = XMVectorAdd(
+            XMVectorScale(XMVectorAdd(XMVectorScale(C1, 1.f - du), XMVectorScale(C2, du)), 1.f - dv),
+            XMVectorScale(XMVectorAdd(XMVectorScale(C3, 1.f - du), XMVectorScale(C4, du)), dv));
+
 
         XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(pfSignalOut), res);
 
@@ -1213,14 +1217,15 @@ namespace
         // C3 ---- C4  v, u --->   v
         //
 
-        XMVECTOR C1, C2, C3, C4, res;
-        C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
-        C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
-        C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
-        C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
+        XMVECTOR C1 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i]);
+        XMVECTOR C2 = XMLoadFloat4(&pTexDesc->pTexture[j * int(pTexDesc->uWidth) + i2]);
+        XMVECTOR C3 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i]);
+        XMVECTOR C4 = XMLoadFloat4(&pTexDesc->pTexture[j2 * int(pTexDesc->uWidth) + i2]);
 
-        res = (C1 * (1.f - du) + C2 * du) * (1.f - dv) +
-            (C3 * (1.f - du) + C4 * du) * dv;
+        // (C1 * (1 - du) + C2 * du) * (1 - dv) + (C3 * (1 - du) + C4 * du) * dv;
+        XMVECTOR res = XMVectorAdd(
+            XMVectorScale(XMVectorAdd(XMVectorScale(C1, 1.f - du), XMVectorScale(C2, du)), 1.f - dv),
+            XMVectorScale(XMVectorAdd(XMVectorScale(C3, 1.f - du), XMVectorScale(C4, du)), dv));
 
         XMStoreFloat4(reinterpret_cast<XMFLOAT4*>(pfSignalOut), res);
 
