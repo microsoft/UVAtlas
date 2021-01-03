@@ -110,7 +110,7 @@ HRESULT CIsochartMesh::BuildSubChart(
     {
         return E_OUTOFMEMORY;
     }
-    // 3. Build full connection. 
+    // 3. Build full connection.
     bManifold = false;
     hr = pSubChart->BuildFullConnection(bManifold);
 
@@ -344,7 +344,7 @@ void CIsochartMesh::SmoothOneFace(
             // ---------         -----------
             // \1 / \1 /          \1 / \1 /
             //  \/ 2 \/            \/ 1 \/
-            //   ----      --->     ---- 
+            //   ----      --->     ----
             //   \ 2/               \ 2/
             //    \/                 \/
             if (dwAdjacentChart[k] != dwCurrentFaceChartID
@@ -361,7 +361,7 @@ void CIsochartMesh::SmoothOneFace(
             // ---------
             // \1 / \3 /
             //  \/ 2 \/
-            //   ---- 
+            //   ----
             //   \ 2/
             //    \/
             // Change current face chart ID according the adjacent face
@@ -391,7 +391,7 @@ void CIsochartMesh::SmoothOneFace(
             // ---------         -----------
             // \1 / \1 /          \1 / \1 /
             //  \/ 2 \/            \/ 1 \/
-            //   ----      --->     ---- 
+            //   ----      --->     ----
             //   \ 3/               \ 3/
             //    \/                 \/
             if (dwAdjacentChart[k] == dwAdjacentChart[(k + 1) % 3]
@@ -407,7 +407,7 @@ void CIsochartMesh::SmoothOneFace(
             // ---------
             // \1 / \3 /
             //  \/ 2 \/
-            //   ---- 
+            //   ----
             //   \ 4/
             //    \/
             // Change current face chart ID according the adjacent face
@@ -437,7 +437,7 @@ HRESULT CIsochartMesh::AdjustToSameChartID(
     std::vector<uint32_t> subChartIDCountList;
     bModified = false;
 
-    // 1. Find all different sub chart id		
+    // 1. Find all different sub chart id
     for (size_t ii = 0; ii < dwCongFaceCount; ii++)
     {
         if (!addNoduplicateItem(allDiffSubChartIDList,
@@ -755,7 +755,7 @@ HRESULT CIsochartMesh::SatifyManifoldRule(
 }
 
 
-// Partition optimization may generate non-manifold sub-charts, in this 
+// Partition optimization may generate non-manifold sub-charts, in this
 // condition, some  adjustment should apply to gurantee the sub-charts are manifold.
 HRESULT CIsochartMesh::MakePartitionValid(
     size_t dwMaxSubchartCount,
@@ -795,7 +795,7 @@ HRESULT CIsochartMesh::MakePartitionValid(
         }
 
         if (dwIterationCount + 1 >= dwMaxSubchartCount)
-        {	// If we can not satisfy the Non-manifold and False edge in the same time. 
+        {	// If we can not satisfy the Non-manifold and False edge in the same time.
             // just keep non-manifold here and clean it during build-full relationship.
             bIsPartitionValid = true;
             return hr;
@@ -884,7 +884,7 @@ CIsochartMesh::MakeValidationAroundVertex(
     FACE_ARRAY unconnectedFaceList;
     FACE_ARRAY connectedFaceList;
 
-    // 2. Detect and fix invalid toplogy 
+    // 2. Detect and fix invalid toplogy
     try
     {
         for (size_t i = 0; i < pVertex->faceAdjacent.size(); i++)
@@ -903,7 +903,7 @@ CIsochartMesh::MakeValidationAroundVertex(
 
             checkedChartIDList.push_back(dwCurrentFaceChartID);
 
-            // 2.2 Add current face into connectedFaceList, 
+            // 2.2 Add current face into connectedFaceList,
             // Add All faces having same chart ID as current face
             // into unconnectedFaceList
             connectedFaceList.clear();
@@ -924,13 +924,13 @@ CIsochartMesh::MakeValidationAroundVertex(
 
             if (!unconnectedFaceList.empty())
             {
-                // 2.3 if face in unconnectedFaceList sharing a edge with a face in 
-                // connectedFaceList, move it to connectedFaceList. 
+                // 2.3 if face in unconnectedFaceList sharing a edge with a face in
+                // connectedFaceList, move it to connectedFaceList.
                 FAILURE_RETURN(
                     TryConnectAllFacesInSameChart(
                         unconnectedFaceList, connectedFaceList));
 
-                // 2.4 if some faces in unconnectedFaceList can not be moved into 
+                // 2.4 if some faces in unconnectedFaceList can not be moved into
                 // connectedFaceList, non-manifold topology occurs. Amend some face's
                 // chart ID to fix the invalid topology.
                 if (!unconnectedFaceList.empty())
@@ -989,8 +989,8 @@ bool CIsochartMesh::IsAdjacentFacesInOneChart(
     return true;
 }
 
-//If face in unconnectedFaceList sharing a edge with a face in 
-//connectedFaceList, move it to unconnectedFaceList. 
+//If face in unconnectedFaceList sharing a edge with a face in
+//connectedFaceList, move it to unconnectedFaceList.
 HRESULT CIsochartMesh::TryConnectAllFacesInSameChart(
     FACE_ARRAY& unconnectedFaceList,
     FACE_ARRAY& connectedFaceList)
@@ -1504,11 +1504,11 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
                     m_pVerts[vId2].uv.x = fLen2 * x + m_pVerts[vId0].uv.x;
                     m_pVerts[vId2].uv.y = fLen2 * y + m_pVerts[vId0].uv.y;
 
-                    assert(_finite(double(m_pVerts[vId2].uv.x)) != 0 &&
-                        _finite(double(m_pVerts[vId2].uv.y)) != 0);
+                    assert(std::isfinite(double(m_pVerts[vId2].uv.x)) &&
+                        std::isfinite(double(m_pVerts[vId2].uv.y)));
 
-                    if (_finite(double(m_pVerts[vId2].uv.x)) == 0 ||
-                        _finite(double(m_pVerts[vId2].uv.y)) == 0)
+                    if (!std::isfinite(double(m_pVerts[vId2].uv.x)) ||
+                        !std::isfinite(double(m_pVerts[vId2].uv.y)))
                     {
                         DPF(0, "ProcessPlaneLikeShape failed due to INFs");
                         return E_FAIL;
@@ -1876,7 +1876,7 @@ CaculateDistanceToExtremeVertex(
     return hr;
 }
 
-// Parition Cylinder shape by cutting it profile into 2 parts 
+// Parition Cylinder shape by cutting it profile into 2 parts
 HRESULT CIsochartMesh::PartitionCylindricalShape(
     const float* pfVertGeodesicDistance,
     const float* pfVertMapCoord,
@@ -1902,7 +1902,7 @@ HRESULT CIsochartMesh::PartitionCylindricalShape(
         dwNegativeFaceCount,
         pdwFaceChartID.get());
 
-    // 2. if partiton is not balanced, partitionning according to the second 
+    // 2. if partiton is not balanced, partitionning according to the second
     // principal dimension which corresponds to the longer cyclic axis.
     if (dwPossitiveFaceCount == 0 || dwNegativeFaceCount == 0
         || dwPossitiveFaceCount / dwNegativeFaceCount > 2
@@ -1975,7 +1975,7 @@ HRESULT CIsochartMesh::PartitionCylindricalShape(
     return hr;
 }
 
-// Compute the sum of face vertices' dwComputeDimension 
+// Compute the sum of face vertices' dwComputeDimension
 // coordinates. classify the faces by sign of the sum.
 void CIsochartMesh::
 GroupByFaceSign(
@@ -2029,7 +2029,7 @@ HRESULT CIsochartMesh::PartitionLonghornShape(
         return E_OUTOFMEMORY;
     }
 
-    // 1. faces adjacent to extrem vertex will be partitioned as one 
+    // 1. faces adjacent to extrem vertex will be partitioned as one
     // sub-chart.other faces will be partitioned as another sub-chart.
     for (size_t i = 0; i < m_dwFaceNumber; i++)
     {
@@ -2464,7 +2464,7 @@ HRESULT CIsochartMesh::PartitionGeneralShape(
         return E_OUTOFMEMORY;
     }
 
-    // 1. Partition the chart into representativeVertsIdx.size() 
+    // 1. Partition the chart into representativeVertsIdx.size()
     // parts by growing charts simultaneously around the representatives
     ClusterFacesByParameterDistance(
         pdwFaceChartID.get(),
@@ -2716,7 +2716,7 @@ HRESULT CIsochartMesh::InsureBiPartition(
             internalEdgeList,
             marginalEdgeList));
 
-    // If NO cut path exists, for example each face belongs 
+    // If NO cut path exists, for example each face belongs
     // to the same sub-chart then, don't partition this chart
     if (marginalEdgeList.empty())
     {
