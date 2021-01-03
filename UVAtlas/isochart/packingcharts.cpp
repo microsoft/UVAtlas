@@ -673,7 +673,7 @@ namespace
         // 3. Has corresponding segment
         else
         {
-            XMVECTOR vBiasVector = XMLoadFloat2(&(aBorder[i]->uv)) - XMLoadFloat2(&(aBorder[i - 1]->uv));
+            XMVECTOR vBiasVector = XMVectorSubtract(XMLoadFloat2(&(aBorder[i]->uv)), XMLoadFloat2(&(aBorder[i - 1]->uv)));
             XMFLOAT2 biasVector;
             XMStoreFloat2(&biasVector, vBiasVector);
 
@@ -2054,16 +2054,16 @@ static void BruteForceFoldChecking(
                     XMVECTOR vv3 = XMLoadFloat2(&v3);
                     XMVECTOR vv4 = XMLoadFloat2(&v4);
 
-                    XMVECTOR vv5 = vv1 - vv3;
+                    XMVECTOR vv5 = XMVectorSubtract(vv1, vv3);
                     if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5)))) continue;
 
-                    vv5 = vv1 - vv4;
+                    vv5 = XMVectorSubtract(vv1, vv4);
                     if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5)))) continue;
 
-                    vv5 = vv2 - vv3;
+                    vv5 = XMVectorSubtract(vv2, vv3);
                     if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5)))) continue;
 
-                    vv5 = vv2 - vv4;
+                    vv5 = XMVectorSubtract(vv2, vv4);
                     if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5)))) continue;
 
                     size_t dwFaceRootID =

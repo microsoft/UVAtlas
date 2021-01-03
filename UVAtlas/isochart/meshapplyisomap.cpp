@@ -685,11 +685,11 @@ void CIsochartMesh::CalculateGeodesicDistanceABC(
 {
     XMVECTOR v[3];
     float u = pVertexB->fGeodesicDistance - pVertexA->fGeodesicDistance;
-    v[0] = XMLoadFloat3(m_baseInfo.pVertPosition + pVertexB->dwIDInRootMesh)
-        - XMLoadFloat3(m_baseInfo.pVertPosition + pVertexC->dwIDInRootMesh);
+    v[0] = XMVectorSubtract(XMLoadFloat3(m_baseInfo.pVertPosition + pVertexB->dwIDInRootMesh),
+        XMLoadFloat3(m_baseInfo.pVertPosition + pVertexC->dwIDInRootMesh));
 
-    v[1] = XMLoadFloat3(m_baseInfo.pVertPosition + pVertexA->dwIDInRootMesh)
-        - XMLoadFloat3(m_baseInfo.pVertPosition + pVertexC->dwIDInRootMesh);
+    v[1] = XMVectorSubtract(XMLoadFloat3(m_baseInfo.pVertPosition + pVertexA->dwIDInRootMesh),
+        XMLoadFloat3(m_baseInfo.pVertPosition + pVertexC->dwIDInRootMesh));
 
     float a = XMVectorGetX(XMVector3Length(v[0]));
     float b = XMVectorGetX(XMVector3Length(v[1]));

@@ -1106,8 +1106,9 @@ HRESULT CIsochartMesh::ProcessPlaneShape(
         }
 
         normalDelta =
-            XMLoadFloat3(&m_baseInfo.pFaceNormalArray[m_pFaces[i].dwIDInRootMesh]) -
-            XMLoadFloat3(&m_baseInfo.pFaceNormalArray[m_pFaces[dwStandardFaceID].dwIDInRootMesh]);
+            XMVectorSubtract(
+                XMLoadFloat3(&m_baseInfo.pFaceNormalArray[m_pFaces[i].dwIDInRootMesh]),
+                XMLoadFloat3(&m_baseInfo.pFaceNormalArray[m_pFaces[dwStandardFaceID].dwIDInRootMesh]));
 
         if (!IsInZeroRange(XMVectorGetX(XMVector3Dot(
             normalDelta,
@@ -1151,8 +1152,8 @@ HRESULT CIsochartMesh::ProcessPlaneShape(
     uint32_t dwOrgIndex = INVALID_INDEX;
     for (uint32_t i = 0; i < 3; i++)
     {
-        axisX = vV[(i + 1) % 3] - vV[i];
-        axisY = vV[(i + 2) % 3] - vV[i];
+        axisX = XMVectorSubtract(vV[(i + 1) % 3], vV[i]);
+        axisY = XMVectorSubtract(vV[(i + 2) % 3], vV[i]);
 
         float fDot = fabsf(XMVectorGetX(XMVector3Dot(axisX, axisY)));
         if (fMinDot > fDot)
@@ -1164,8 +1165,8 @@ HRESULT CIsochartMesh::ProcessPlaneShape(
 
     _Analysis_assume_(dwOrgIndex < 3);
 
-    axisX = vV[(dwOrgIndex + 1) % 3] - vV[dwOrgIndex];
-    axisY = vV[(dwOrgIndex + 2) % 3] - vV[dwOrgIndex];
+    axisX = XMVectorSubtract(vV[(dwOrgIndex + 1) % 3], vV[dwOrgIndex]);
+    axisY = XMVectorSubtract(vV[(dwOrgIndex + 2) % 3], vV[dwOrgIndex]);
     axisZ = XMVector3Cross(axisX, axisY);
     axisY = XMVector3Cross(axisZ, axisX);
 
@@ -1175,9 +1176,7 @@ HRESULT CIsochartMesh::ProcessPlaneShape(
 
     for (size_t i = 0; i < m_dwVertNumber; i++)
     {
-        normalDelta =
-            XMLoadFloat3(&m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh])
-            - vV[dwOrgIndex];
+        normalDelta = XMVectorSubtract(XMLoadFloat3(&m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh]), vV[dwOrgIndex]);
         m_pVerts[i].uv.x = XMVectorGetX(XMVector3Dot(normalDelta, axisX));
         m_pVerts[i].uv.y = XMVectorGetX(XMVector3Dot(normalDelta, axisY));
 
@@ -1269,16 +1268,16 @@ static bool IsSelfOverlapping(
                 XMVECTOR vv3 = XMLoadFloat2(&v3);
                 XMVECTOR vv4 = XMLoadFloat2(&v4);
 
-                XMVECTOR vv5 = vv1 - vv3;
+                XMVECTOR vv5 = XMVectorSubtract(vv1, vv3);
                 if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5)))) continue;
 
-                vv5 = vv1 - vv4;
+                vv5 = XMVectorSubtract(vv1, vv4);
                 if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5)))) continue;
 
-                vv5 = vv2 - vv3;
+                vv5 = XMVectorSubtract(vv2, vv3);
                 if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5)))) continue;
 
-                vv5 = vv2 - vv4;
+                vv5 = XMVectorSubtract(vv2, vv4);
                 if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5)))) continue;
 
                 DPF(1, "(%f, %f) (%f, %f) --> (%f, %f) (%f, %f)",
@@ -1370,8 +1369,8 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
     // Find a vertex whose adjacent 2 edges has angle closest to PI/4
     for (uint32_t i = 0; i < 3; i++)
     {
-        axisX = vV[(i + 1) % 3] - vV[i];
-        axisY = vV[(i + 2) % 3] - vV[i];
+        axisX = XMVectorSubtract(vV[(i + 1) % 3], vV[i]);
+        axisY = XMVectorSubtract(vV[(i + 2) % 3], vV[i]);
 
         axisX = XMVector3Normalize(axisX);
         axisY = XMVector3Normalize(axisY);
@@ -1386,8 +1385,8 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
 
     _Analysis_assume_(dwOrgIndex < 3);
 
-    axisX = vV[(dwOrgIndex + 1) % 3] - vV[dwOrgIndex];
-    axisY = vV[(dwOrgIndex + 2) % 3] - vV[dwOrgIndex];
+    axisX = XMVectorSubtract(vV[(dwOrgIndex + 1) % 3], vV[dwOrgIndex]);
+    axisY = XMVectorSubtract(vV[(dwOrgIndex + 2) % 3], vV[dwOrgIndex]);
 
 
     axisZ = XMVector3Cross(axisX, axisY);
@@ -1399,9 +1398,7 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
 
     for (size_t i = 0; i < 3; i++)
     {
-        normalDelta =
-            vV[(dwOrgIndex + i) % 3]
-            - vV[dwOrgIndex];
+        normalDelta = XMVectorSubtract(vV[(dwOrgIndex + i) % 3], vV[dwOrgIndex]);
 
         m_pVerts[face.dwVertexID[(dwOrgIndex + i) % 3]].uv.x =
             XMVectorGetX(XMVector3Dot(normalDelta, axisX));
@@ -1417,8 +1414,8 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
         rgbVertProcessed[face.dwVertexID[(dwOrgIndex + i) % 3]] = true;
     }
 
-    XMStoreFloat3(&v1, temp[1] - temp[0]);
-    XMStoreFloat3(&v2, temp[2] - temp[0]);
+    XMStoreFloat3(&v1, XMVectorSubtract(temp[1], temp[0]));
+    XMStoreFloat3(&v2, XMVectorSubtract(temp[2], temp[0]));
     bool bPositive = (CalculateZOfVec3Cross(&v1, &v2) >= 0);
 
     // From iteratively lay faces adjacent to the parameterized faces onto UV plane.
@@ -1447,8 +1444,8 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
                     vV[1] = XMLoadFloat3(m_baseInfo.pVertPosition + m_pVerts[vId1].dwIDInRootMesh);
                     vV[2] = XMLoadFloat3(m_baseInfo.pVertPosition + m_pVerts[vId2].dwIDInRootMesh);
 
-                    XMVECTOR vv1 = vV[1] - vV[0];
-                    XMVECTOR vv2 = vV[2] - vV[0];
+                    XMVECTOR vv1 = XMVectorSubtract(vV[1], vV[0]);
+                    XMVECTOR vv2 = XMVectorSubtract(vV[2], vV[0]);
 
                     float fLen1 = XMVectorGetX(XMVector3Length(vv1));
                     float fLen2 = XMVectorGetX(XMVector3Length(vv2));
@@ -1478,7 +1475,7 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
 
                     XMFLOAT2 v2D;
                     XMStoreFloat2(&v2D, XMVector2Normalize(
-                        XMLoadFloat2(&m_pVerts[vId1].uv) - XMLoadFloat2(&m_pVerts[vId0].uv)));
+                        XMVectorSubtract(XMLoadFloat2(&m_pVerts[vId1].uv), XMLoadFloat2(&m_pVerts[vId0].uv))));
 
                     float x = v2D.x * cosB - v2D.y * sinB;
                     float y = v2D.y * cosB + v2D.x * sinB;
@@ -1488,8 +1485,8 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
                     temp[(i + 2) % 3] = XMVectorSet(v2D.x, v2D.y, 0, 0);
 
 
-                    XMStoreFloat3(&v1, temp[1] - temp[0]);
-                    XMStoreFloat3(&v2, temp[2] - temp[0]);
+                    XMStoreFloat3(&v1, XMVectorSubtract(temp[1], temp[0]));
+                    XMStoreFloat3(&v2, XMVectorSubtract(temp[2], temp[0]));
 
                     bool bPositive1 = (CalculateZOfVec3Cross(&v1, &v2) >= 0);
 

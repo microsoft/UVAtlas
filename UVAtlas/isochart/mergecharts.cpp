@@ -1091,8 +1091,8 @@ void CIsochartMesh::CalculateAveragNormal(
 
     for (size_t i = 0; i < m_dwFaceNumber; i++)
     {
-        normal += XMLoadFloat3(m_baseInfo.pFaceNormalArray + pFace->dwIDInRootMesh)
-            * m_baseInfo.pfFaceAreaArray[pFace->dwIDInRootMesh];
+        normal = XMVectorAdd(normal,
+            XMVectorScale(XMLoadFloat3(m_baseInfo.pFaceNormalArray + pFace->dwIDInRootMesh), m_baseInfo.pfFaceAreaArray[pFace->dwIDInRootMesh]));
         pFace++;
     }
 

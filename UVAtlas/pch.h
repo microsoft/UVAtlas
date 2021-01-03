@@ -82,6 +82,8 @@
 #include <vector>
 #include <queue>
 
+#define _XM_NO_XMVECTOR_OVERLOADS_
+
 #include <DirectXMath.h>
 
 #include "UVAtlas.h"

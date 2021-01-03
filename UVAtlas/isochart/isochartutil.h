@@ -69,8 +69,8 @@ namespace Isochart
     {
         using namespace DirectX;
 
-        XMVECTOR v0 = XMLoadFloat3(pv1) - XMLoadFloat3(pv0);
-        XMVECTOR v1 = XMLoadFloat3(pv2) - XMLoadFloat3(pv0);
+        XMVECTOR v0 = XMVectorSubtract(XMLoadFloat3(pv1), XMLoadFloat3(pv0));
+        XMVECTOR v1 = XMVectorSubtract(XMLoadFloat3(pv2), XMLoadFloat3(pv0));
         XMVECTOR n = XMVector3Cross(v0, v1);
         float area = XMVectorGetX(XMVector3Dot(n, n));
         return IsochartSqrtf(area) * 0.5f;
@@ -109,8 +109,8 @@ namespace Isochart
 
         float fDot, fLength, fT;
 
-        vector[0] = vertex - edgeVertex0;
-        normal = edgeVertex1 - edgeVertex0;
+        vector[0] = XMVectorSubtract(vertex, edgeVertex0);
+        normal = XMVectorSubtract(edgeVertex1, edgeVertex0);
 
         fDot = XMVectorGetX(XMVector2Dot(normal, normal));
 
@@ -129,9 +129,9 @@ namespace Isochart
             {
                 fT = 1;
             }
-            normal *= fT;
-            vector[1] = edgeVertex0 + normal;
-            vector[0] = vector[1] - vertex;
+            normal = XMVectorScale(normal, fT);
+            vector[1] = XMVectorAdd(edgeVertex0, normal);
+            vector[0] = XMVectorSubtract(vector[1], vertex);
             fLength = XMVectorGetX(XMVector2Dot(vector[0], vector[0]));
         }
 
@@ -198,8 +198,8 @@ namespace Isochart
         XMVECTOR v2D1 = XMLoadFloat2(pv2D1);
         XMVECTOR v2D2 = XMLoadFloat2(pv2D2);
 
-        axisX = v3D1 - v3D0;
-        axisY = v3D2 - v3D0;
+        axisX = XMVectorSubtract(v3D1, v3D0);
+        axisY = XMVectorSubtract(v3D2, v3D0);
         axisZ = XMVector3Cross(axisX, axisY);
 
         axisZ = XMVector3Normalize(axisZ);
@@ -212,10 +212,10 @@ namespace Isochart
 
         v2D0 = XMVectorSet(0, 0, 0, 0);
 
-        XMVECTOR tempVector = v3D1 - v3D0;
+        XMVECTOR tempVector = XMVectorSubtract(v3D1, v3D0);
         v2D1 = XMVectorSet(XMVectorGetX(XMVector3Dot(tempVector, axisX)), 0, 0, 0);
 
-        tempVector = v3D2 - v3D0;
+        tempVector = XMVectorSubtract(v3D2, v3D0);
         v2D2 = XMVectorSet(XMVectorGetX(XMVector3Dot(tempVector, axisX)),
             XMVectorGetX(XMVector3Dot(tempVector, axisY)), 0, 0);
 
