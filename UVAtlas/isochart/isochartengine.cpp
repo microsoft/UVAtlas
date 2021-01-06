@@ -53,7 +53,7 @@ CIsochartEngine::~CIsochartEngine()
 #ifdef WIN32
         SwitchToThread();
 #else
-        pthread_yield();
+        std::this_thread::yield();
 #endif
     }
 

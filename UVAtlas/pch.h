@@ -92,6 +92,7 @@
 
 #ifndef WIN32
 #include <mutex>
+#include <thread>
 #endif
 
 #define _XM_NO_XMVECTOR_OVERLOADS_
