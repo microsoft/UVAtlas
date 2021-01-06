@@ -50,7 +50,7 @@
 #pragma clang diagnostic ignored "-Wswitch-enum"
 #endif
 
-#ifdef WIN32
+#if defined(WIN32) || defined(WINAPI_FAMILY)
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
