@@ -3255,7 +3255,7 @@ HRESULT CIsochartMesh::ScanAlongBoundayEdges(
                     if (pScanEdge)
                     {
                         DPF(0, "Vertex %d has more than 2 boundary edges leaving it", pVertex->dwIDInRootMesh);
-                        return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+                        return HRESULT_E_INVALID_DATA;
                     }
 
                     pScanEdge = pTempEdge;
@@ -3269,7 +3269,7 @@ HRESULT CIsochartMesh::ScanAlongBoundayEdges(
             if (pVertex == pStartVertex)
             {
                 DPF(0, "Chart has more than 2 boundaries");
-                return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+                return HRESULT_E_INVALID_DATA;
             }
 
             pBoundaryEdge = pScanEdge;

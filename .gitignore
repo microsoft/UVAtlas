@@ -18,7 +18,7 @@
 *.VC.db
 *.nupkg
 .vs
-Bin
+[Bb]in
 /ipch
 Debug
 Profile
@@ -28,3 +28,8 @@ packages
 /Tests
 /wiki
 /out
+/CMakeCache.txt
+/CMakeFiles
+/Makefile
+/cmake
+/cmake_install.cmake

@@ -200,10 +200,10 @@ namespace Isochart
 
         void ReleaseFinalCharts();
 
-        // Following methods guarantee Isochart instance is running an exclusive 
+        // Following methods guarantee Isochart instance is running an exclusive
         // task.
         // Before each public method begins to run, 1 step must be done:
-        // (1). Try to enter exclusive section, if another thread has entered, 
+        // (1). Try to enter exclusive section, if another thread has entered,
         //		return error code to indicate busy.
 
         // After each public method complete its work, 1 step must done:
@@ -240,7 +240,11 @@ namespace Isochart
 
         EngineState m_state;	// Indicate internal state.
 
-        HANDLE m_hMutex;	// Mutex 
+#ifdef WIN32
+        HANDLE m_hMutex;
+#else
+        std::mutex m_mutex;
+#endif
 
         unsigned int m_dwOptions;
 

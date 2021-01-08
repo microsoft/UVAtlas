@@ -9,11 +9,20 @@
 
 #pragma once
 
-#if defined(_XBOX_ONE) && defined(_TITLE)
+#if defined(WIN32) || defined(WINAPI_FAMILY)
+#ifdef _GAMING_XBOX_SCARLETT
+#include <d3d12_xs.h>
+#elif defined(_GAMING_XBOX)
+#include <d3d12_x.h>
+#elif defined(_XBOX_ONE) && defined(_TITLE)
 #include <d3d11_x.h>
 #else
 #include <Windows.h>
 #include <dxgiformat.h>
+#endif
+#else // !WIN32
+#include <directx/dxgiformat.h>
+#include <wsl/winadapter.h>
 #endif
 
 #include <cstddef>

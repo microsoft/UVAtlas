@@ -791,7 +791,7 @@ HRESULT CIsochartMesh::MakePartitionValid(
         if (!bIsSatifiedUserRule)
         {
             DPF(0, "Cannot partition the mesh without breaking false edges.");
-            return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+            return HRESULT_E_INVALID_DATA;
         }
 
         if (dwIterationCount + 1 >= dwMaxSubchartCount)

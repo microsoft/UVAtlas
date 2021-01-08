@@ -328,7 +328,7 @@ HRESULT CIsochartMesh::BuildRootChart(
     if (!bManifold)
     {
         pChart->Free();
-        return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+        return HRESULT_E_INVALID_DATA;
     }
 
     // 4. Get face adjacency for MergeSmallCharts().
@@ -572,7 +572,7 @@ namespace
 
                 if (!vertIter.Init(iFace, iVert, dwFaceCount))
                 {
-                    return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+                    return HRESULT_E_INVALID_DATA;
                 }
 
                 uint32_t dwCenterVertID = static_cast<uint32_t>(dwNewVertCount++);
@@ -687,7 +687,7 @@ HRESULT CIsochartMesh::PrepareProcessing(
     size_t dwBoundaryNumber = 0;
     bool bIsSimpleChart = false;
 
-    // 1. Check if current chart is a simple chart. 
+    // 1. Check if current chart is a simple chart.
     // Otherwise, try to make it simpler (Export individual charts and
     // merge multiple boundaries).
     hr = PrepareSimpleChart(
@@ -714,7 +714,7 @@ HRESULT CIsochartMesh::PrepareProcessing(
     return hr;
 }
 
-// Partition by stretch only. 
+// Partition by stretch only.
 // See more detail about algorithm of isochart in :  [Kun04]
 HRESULT CIsochartMesh::Partition()
 {
@@ -743,7 +743,7 @@ HRESULT CIsochartMesh::Partition()
     {
         // bIsSimpleChart == false is not an error and need no error code
         // under this condition, current chart has already been changed to
-        // simpler charts contained in current charts children list.	
+        // simpler charts contained in current charts children list.
         return hr;
     }
 
@@ -777,7 +777,7 @@ HRESULT CIsochartMesh::Partition()
     }
 
     // 3. Detect and process trivial shape.
-    // Trivial shape includes: 
+    // Trivial shape includes:
     //  a. chart with only one face
     //  b. chart been degenerated to a point
     if (FAILED(hr = ProcessTrivialShape(
@@ -979,7 +979,7 @@ HRESULT CIsochartMesh::Bipartition3D()
 
     representativeVertsIdx[0] = 0;
     representativeVertsIdx[1] = 1;
-    // 2. Partition 
+    // 2. Partition
     FAILURE_RETURN(
         PartitionGeneralShape(
             pfVertGeoDistance,
@@ -1118,7 +1118,7 @@ LEnd:
 
 // Simple chart
 // A chart with 1 boundary, and all vertices in the chart are connected.
-// Because isomap can only process simple charts, each chart must be 
+// Because isomap can only process simple charts, each chart must be
 // simplifed to simple chart before applying isomap on it
 HRESULT CIsochartMesh::PrepareSimpleChart(
     bool bIsForPartition,
@@ -1153,11 +1153,11 @@ HRESULT CIsochartMesh::PrepareSimpleChart(
     }
 
     // 2. Now the chart has only one object
-    // Check if it has multiple boundaries, if true, merge 2 boundaries 
-    // and return. 
+    // Check if it has multiple boundaries, if true, merge 2 boundaries
+    // and return.
 
-    // Note, if the original chart has N boundaries, it decreases only 1 
-    // boundary each time and builds a new chart with N-1 boundaries. 
+    // Note, if the original chart has N boundaries, it decreases only 1
+    // boundary each time and builds a new chart with N-1 boundaries.
     // The new chart will be processed in future.
     // Note that because cut boundaies caused complex change of mesh,
     // topology and sometime generated multiple objects, simple iteration
@@ -1299,8 +1299,8 @@ HRESULT CIsochartMesh::IsomapParameterlization(
         goto LEnd;
     }
 
-    // if CIsomap::GetPrimaryEnergyDimension discard too many vector 
-    // demensions which are needed by special-shape detecting, just 
+    // if CIsomap::GetPrimaryEnergyDimension discard too many vector
+    // demensions which are needed by special-shape detecting, just
     // set it back to DIMENSION_TO_CHECK_SPECIAL_SHAPE
     if (dwPrimaryEigenDimension < DIMENSION_TO_CHECK_SPECIAL_SHAPE
         && dwCalculatedDimension >= DIMENSION_TO_CHECK_SPECIAL_SHAPE)
@@ -1417,7 +1417,7 @@ HRESULT CIsochartMesh::BuildFullConnection(bool& bIsManifold)
         return hr;
     }
 
-    // 5. Build Adjacent vertices array of each vertex. 
+    // 5. Build Adjacent vertices array of each vertex.
     // sort them in the same order.
     hr = SortAdjacentVertices(bIsManifold);
     if (FAILED(hr) || !bIsManifold)
@@ -1669,7 +1669,7 @@ HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool& bCleaned)
 
                 ISOCHARTEDGE& edge = m_edges[dwMainEdge];
 
-                // Find One face culster			
+                // Find One face culster
                 vertexFaceList.clear();
                 for (size_t kk = 0; kk < 2; kk++)
                 {
@@ -1730,7 +1730,7 @@ HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool& bCleaned)
         return E_OUTOFMEMORY;
     }
 
-    // 2. Split vertices to fix bowtie.	
+    // 2. Split vertices to fix bowtie.
     assert(m_dwVertNumber + newVertMap.size() == dwNewVertID);
 
     if (dwNewVertID == m_dwVertNumber)
@@ -1779,7 +1779,7 @@ HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool& bCleaned)
 
 HRESULT CIsochartMesh::SetEdgeSplitAttribute()
 {
-    // The the bCanBeSplit item of each edge. If user don't specified the parameter, all edges can 
+    // The the bCanBeSplit item of each edge. If user don't specified the parameter, all edges can
     // be splitted
     HRESULT hr = S_OK;
     if (!m_baseInfo.pdwSplitHint)
@@ -1814,7 +1814,7 @@ HRESULT CIsochartMesh::SetEdgeSplitAttribute()
 bool CIsochartMesh::IsAllFaceVertexOrderValid()
 {
     //.Algorithm
-    // For each edges, if it isn't a boundary edge, make sure that  the two faces 
+    // For each edges, if it isn't a boundary edge, make sure that  the two faces
     // are sit in different side of it.
     for (size_t i = 0; i < m_dwEdgeNumber; i++)
     {
@@ -2215,7 +2215,7 @@ CIsochartMesh::SortAdjacentVerticesOfInternalVertex(
 
 // Compute adjacent faces for each face. This algorithm can only process manifold meshes.
 // Algorithm:
-// For each face in mesh, get adjacent faces using the edge adjacent faces information 
+// For each face in mesh, get adjacent faces using the edge adjacent faces information
 // gotten by BuildFullConnection.
 void CIsochartMesh::GetFaceAdjacentArray(
     uint32_t* pdwFaceAdjacentArray) const
@@ -2418,7 +2418,7 @@ HRESULT CIsochartMesh::ExtractIndependentObject(
     if (!bManifold)
     {
         delete pChart;
-        return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+        return HRESULT_E_INVALID_DATA;
     }
 
     if (m_baseInfo.pfFaceAreaArray)
@@ -2434,7 +2434,7 @@ HRESULT CIsochartMesh::ExtractIndependentObject(
 
 
 // If the chart  has 2 or more boundaries, cut the chart along edge paths
-// to connect these boundaies. Each call for this function can decrease one 
+// to connect these boundaies. Each call for this function can decrease one
 // boundary.
 HRESULT CIsochartMesh::CheckAndCutMultipleBoundaries(
     size_t& dwBoundaryNumber)
@@ -2499,7 +2499,7 @@ HRESULT CIsochartMesh::CheckAndCutMultipleBoundaries(
 // Clustering the boundaies edges in chart
 // Algorithm:
 // Scan each boundary vertex, if one has not been put into an existent boundary set,
-// create a new boundary set and put this vertex and all the bounday vertices which 
+// create a new boundary set and put this vertex and all the bounday vertices which
 // have connection path to this vertex into the new boundary set.
 HRESULT CIsochartMesh::FindAllBoundaries(
     size_t& dwBoundaryNumber,
@@ -2629,7 +2629,7 @@ HRESULT CIsochartMesh::CalMinPathToOtherBoundary(
         pCurrentVertex++;
     }
 
-    // 2. Init the source vertice	
+    // 2. Init the source vertice
     for (size_t i = dwStartIdx; i < dwEndIdx; i++)
     {
         pCurrentVertex = allBoundaryList[i];
@@ -2647,7 +2647,7 @@ HRESULT CIsochartMesh::CalMinPathToOtherBoundary(
         }
     }
 
-    // 3.  iteration of computing distance, from the one ring neighorhood to the outside 
+    // 3.  iteration of computing distance, from the one ring neighorhood to the outside
     uint32_t dwCurrentBoundaryID =
         pdwVertBoundaryID[allBoundaryList[dwStartIdx]->dwID];
 
@@ -2928,7 +2928,7 @@ HRESULT CIsochartMesh::CutChartAlongPath(std::vector<uint32_t>& dijkstraPath)
     {
         if (!bManifold)
         {
-            hr = HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
+            hr = HRESULT_E_INVALID_DATA;
             goto LEnd;
         }
 
@@ -2952,7 +2952,7 @@ LEnd:
 }
 
 
-// Scan the dijkstraPath to find the vertices that need to 
+// Scan the dijkstraPath to find the vertices that need to
 // split. (Remove all boundary edges from dijkstraPath, only
 // reserve internal edges.
 HRESULT CIsochartMesh::FindSplitPath(
@@ -3372,7 +3372,7 @@ HRESULT CIsochartMesh::CalculateDijkstraPathToVertex(
         return E_OUTOFMEMORY;
     }
 
-    // 3.  iteration of computing distance, from the one ring neighorhood to the outside 
+    // 3.  iteration of computing distance, from the one ring neighorhood to the outside
 
     for (size_t i = 0; i < m_dwVertNumber; i++)
     {
