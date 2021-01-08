@@ -24,6 +24,7 @@
 #include "Mesh.h"
 
 #include <cstring>
+#include <cwchar>
 #include <iterator>
 #include <utility>
 
