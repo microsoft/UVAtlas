@@ -10,7 +10,7 @@
         <description>This version is for Windows desktop applications using Visual Studio 2017 or Visual Studio 2019.
 
 UVAtlas, a shared source library for creating and packing an isochart texture atlas.</description>
-        <releaseNotes>Matches the December 1, 2020 release on GitHub.</releaseNotes>
+        <releaseNotes>Matches the January 9, 2021 release on GitHub.</releaseNotes>
         <projectUrl>http://go.microsoft.com/fwlink/?LinkID=512686</projectUrl>
         <icon>images\icon.jpg</icon>
         <license type="expression">MIT</license>
@@ -40,6 +40,6 @@ UVAtlas, a shared source library for creating and packing an isochart texture at
         <file src=".nuget/uvatlas_desktop_2017.targets" target="build\native" />
 
         <file src=".nuget/icon.jpg" target="images\" />
-      
+
     </files>
 </package>

@@ -6,6 +6,11 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### January 9, 2021
+* Windows Subsystem for Linux support
+* Code review for improved conformance
+* CMake updated to support package install
+
 ### December 1, 2020
 * Converted to typed enum bitmask flags (see release notes for details on this potential *breaking change*)
 * Added new partition options ``UVATLAS_LIMIT_MERGE_STRETCH`` and ``UVATLAS_LIMIT_FACE_STRETCH``
