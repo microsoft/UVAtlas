@@ -8,6 +8,13 @@
     <NuGetConfiguration>Release</NuGetConfiguration>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(PlatformTarget)' == 'x64'">
+    <_NuGetPlatform>x64</_NuGetPlatform>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(_NuGetPlatform)' == ''">
+    <_NuGetPlatform>$(Platform)</_NuGetPlatform>
+  </PropertyGroup>
+
   <PropertyGroup>
     <uvatlas-LibPath>$(MSBuildThisFileDirectory)..\..\native\lib\$(Platform)\$(NuGetConfiguration)</uvatlas-LibPath>
   </PropertyGroup>
