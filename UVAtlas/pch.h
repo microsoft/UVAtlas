@@ -86,6 +86,7 @@
 #include <cstring>
 #include <functional>
 #include <memory>
+#include <new>
 #include <utility>
 #include <vector>
 #include <queue>
