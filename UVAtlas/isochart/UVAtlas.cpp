@@ -12,6 +12,8 @@
 #include "isochart.h"
 #include "UVAtlasRepacker.h"
 
+#include <cstdarg>
+
 using namespace Isochart;
 using namespace DirectX;
 

@@ -26,6 +26,7 @@
 #include <cstring>
 #include <cwchar>
 #include <iterator>
+#include <new>
 #include <utility>
 
 #include "SDKMesh.h"
