@@ -119,7 +119,8 @@ if(MSVC)
     string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 endif()
 
-if (NOT WIN32)
+if ((NOT WIN32) OR VCPKG_TOOLCHAIN)
+    message("INFO: Using VCPKG for DirectX-Headers and DirectXMath.")
     find_package(directx-headers CONFIG REQUIRED)
     find_package(directxmath CONFIG REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE Microsoft::DirectX-Headers Microsoft::DirectXMath)
@@ -174,6 +175,10 @@ if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
     source_group(UVAtlasTool REGULAR_EXPRESSION UVAtlasTool/*.*)
 
     target_link_libraries(uvatlastool ${PROJECT_NAME} Microsoft::DirectXMesh Microsoft::DirectXTex Microsoft::DirectXMesh::Utilities ole32.lib version.lib)
+
+    if (VCPKG_TOOLCHAIN)
+      target_link_libraries(uvatlastool Microsoft::DirectXMath)
+    endif()
 endif()
 
 if(MSVC)
