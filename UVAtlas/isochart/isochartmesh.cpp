@@ -655,6 +655,8 @@ HRESULT CIsochartMesh::ReBuildRootChartByAdjacence()
         {
             uint32_t dwNewID = FACE_ARRAY_ITME(rgdwNewFaceIdx.get(), i, j);
             assert(dwNewID != INVALID_VERT_ID);
+            if (dwNewID >= m_dwVertNumber)
+                return E_UNEXPECTED;
 
             if (m_pVerts[dwNewID].dwIDInRootMesh == INVALID_VERT_ID)
             {

@@ -80,10 +80,10 @@ namespace Isochart
             _In_                                        size_t VertexCount,
             _In_                                        size_t VertexStride,
             _In_                                        DXGI_FORMAT IndexFormat,
-            _When_(IndexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(FaceCount * sizeof(uint16_t)))
-            _When_(IndexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(FaceCount * sizeof(uint32_t))) const void* pFaceIndexArray,
+            _When_(IndexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(FaceCount * 3 * sizeof(uint16_t)))
+            _When_(IndexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(FaceCount * 3 * sizeof(uint32_t))) const void* pFaceIndexArray,
             _In_                                        size_t FaceCount,
-            _In_reads_opt_(FaceCount * 3)                 const FLOAT3* pIMTArray,
+            _In_reads_opt_(FaceCount)                   const FLOAT3* pIMTArray,
             _In_                                        size_t MaxChartNumber,
             _In_                                        float Stretch,
             _In_reads_(FaceCount * 3)                     const uint32_t* pOriginalAjacency,

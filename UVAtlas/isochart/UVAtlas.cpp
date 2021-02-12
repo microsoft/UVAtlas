@@ -244,8 +244,8 @@ namespace
     HRESULT UVAtlasPartitionInt(
         _In_reads_(nVerts)          const XMFLOAT3* positions,
         _In_                        size_t nVerts,
-        _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * sizeof(uint16_t)))
-        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * sizeof(uint32_t))) const void* indices,
+        _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void* indices,
         _In_                        DXGI_FORMAT indexFormat,
         _In_                        size_t nFaces,
         _In_                        size_t maxChartNumber,
