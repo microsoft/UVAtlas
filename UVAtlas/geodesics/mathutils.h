@@ -1,7 +1,7 @@
 //-------------------------------------------------------------------------------------
 // UVAtlas - mathutils.h
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/?LinkID=512686

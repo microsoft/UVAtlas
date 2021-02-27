@@ -3,7 +3,7 @@
 //
 // UVAtlas command-line tool (sample for UVAtlas library)
 //
-// Copyright (c) Microsoft Corporation. All rights reserved.
+// Copyright (c) Microsoft Corporation.
 // Licensed under the MIT License.
 //
 // http://go.microsoft.com/fwlink/?LinkID=512686
@@ -369,7 +369,7 @@ namespace
         }
 
         wprintf(L"Microsoft (R) UVAtlas Command-line Tool Version %ls\n", version);
-        wprintf(L"Copyright (C) Microsoft Corp. All rights reserved.\n");
+        wprintf(L"Copyright (C) Microsoft Corp.\n");
 #ifdef _DEBUG
         wprintf(L"*** Debug build ***\n");
 #endif

@@ -15,7 +15,7 @@ UVAtlas, a shared source library for creating and packing an isochart texture at
         <icon>images\icon.jpg</icon>
         <license type="expression">MIT</license>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <copyright>© Microsoft Corporation. All rights reserved.</copyright>
+        <copyright>© Microsoft Corporation.</copyright>
         <tags>DirectX  UVAtlas  native nativepackage</tags>
     </metadata>
 
