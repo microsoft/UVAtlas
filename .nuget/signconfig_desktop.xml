@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<SignConfigXML>
-  <job dest="__OUTPATHROOT__" certSubject="NuGet" jobname="NugetSigningTest">
-    <file src="__INPATHROOT__\uvatlas_desktop_2017*.nupkg" signType="CP-401405" dest="__OUTPATHROOT__\uvatlas_desktop_2017*.nupkg" />
-  </job>
-  <job certSubject="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" dest="__OUTPATHROOT__" jobname="ISS EngFun" approvers="">
-    <file src="__INPATHROOT__\uvatlastool.exe" signType="135020002" dest="__OUTPATHROOT__\uvatlastool.exe" />
-  </job>
-</SignConfigXML>
