@@ -44,8 +44,8 @@ public:
 
     void SetMTLFileName(const std::wstring& name) noexcept { mtlFileName = name; }
 
-    HRESULT SetIndexData(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint16_t* indices, _In_reads_opt_(nFaces) uint32_t* attributes = nullptr) noexcept;
-    HRESULT SetIndexData(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t* indices, _In_reads_opt_(nFaces) uint32_t* attributes = nullptr) noexcept;
+    HRESULT SetIndexData(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint16_t* indices, _In_reads_opt_(nFaces) const uint32_t* attributes = nullptr) noexcept;
+    HRESULT SetIndexData(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t* indices, _In_reads_opt_(nFaces) const uint32_t* attributes = nullptr) noexcept;
 
     HRESULT SetVertexData(_Inout_ DirectX::VBReader& reader, _In_ size_t nVerts) noexcept;
 

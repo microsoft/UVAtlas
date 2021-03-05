@@ -152,7 +152,7 @@ void Mesh::Clear() noexcept
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-HRESULT Mesh::SetIndexData(size_t nFaces, const uint16_t* indices, uint32_t* attributes) noexcept
+HRESULT Mesh::SetIndexData(size_t nFaces, const uint16_t* indices, const uint32_t* attributes) noexcept
 {
     if (!nFaces || !indices)
         return E_INVALIDARG;
@@ -199,7 +199,7 @@ HRESULT Mesh::SetIndexData(size_t nFaces, const uint16_t* indices, uint32_t* att
 }
 
 _Use_decl_annotations_
-HRESULT Mesh::SetIndexData(size_t nFaces, const uint32_t* indices, uint32_t* attributes) noexcept
+HRESULT Mesh::SetIndexData(size_t nFaces, const uint32_t* indices, const uint32_t* attributes) noexcept
 {
     if (!nFaces || !indices)
         return E_INVALIDARG;
