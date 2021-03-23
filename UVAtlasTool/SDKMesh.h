@@ -15,6 +15,7 @@
 
 #pragma once
 
+#include <cstdint>
 
 namespace DXUT
 {
@@ -105,24 +106,22 @@ namespace DXUT
     //--------------------------------------------------------------------------------------
     // Hard Defines for the various structures
     //--------------------------------------------------------------------------------------
-    const uint32_t SDKMESH_FILE_VERSION = 101;
-    const uint32_t SDKMESH_FILE_VERSION_V2 = 200;
+    constexpr uint32_t SDKMESH_FILE_VERSION = 101;
+    constexpr uint32_t SDKMESH_FILE_VERSION_V2 = 200;
 
-    const uint32_t MAX_VERTEX_ELEMENTS = 32;
-    const uint32_t MAX_VERTEX_STREAMS = 16;
-    const uint32_t MAX_FRAME_NAME = 100;
-    const uint32_t MAX_MESH_NAME = 100;
-    const uint32_t MAX_SUBSET_NAME = 100;
-    const uint32_t MAX_MATERIAL_NAME = 100;
-    const uint32_t MAX_TEXTURE_NAME = MAX_PATH;
-    const uint32_t MAX_MATERIAL_PATH = MAX_PATH;
-    const uint32_t INVALID_FRAME = uint32_t(-1);
-    const uint32_t INVALID_MESH =  uint32_t(-1);
-    const uint32_t INVALID_MATERIAL = uint32_t(-1);
-    const uint32_t INVALID_SUBSET = uint32_t(-1);
-    const uint32_t INVALID_ANIMATION_DATA = uint32_t(-1);
-    const uint32_t INVALID_SAMPLER_SLOT = uint32_t(-1);
-    const uint32_t ERROR_RESOURCE_VALUE = 1;
+    constexpr uint32_t MAX_VERTEX_ELEMENTS = 32;
+    constexpr uint32_t MAX_VERTEX_STREAMS = 16;
+    constexpr uint32_t MAX_FRAME_NAME = 100;
+    constexpr uint32_t MAX_MESH_NAME = 100;
+    constexpr uint32_t MAX_SUBSET_NAME = 100;
+    constexpr uint32_t MAX_MATERIAL_NAME = 100;
+    constexpr uint32_t MAX_TEXTURE_NAME = MAX_PATH;
+    constexpr uint32_t MAX_MATERIAL_PATH = MAX_PATH;
+    constexpr uint32_t INVALID_FRAME = uint32_t(-1);
+    constexpr uint32_t INVALID_MESH =  uint32_t(-1);
+    constexpr uint32_t INVALID_MATERIAL = uint32_t(-1);
+    constexpr uint32_t INVALID_SUBSET = uint32_t(-1);
+    constexpr uint32_t INVALID_ANIMATION_DATA = uint32_t(-1);
 
     //--------------------------------------------------------------------------------------
     // Enumerated Types.
@@ -151,7 +150,7 @@ namespace DXUT
     enum FRAME_TRANSFORM_TYPE
     {
         FTT_RELATIVE = 0,
-        FTT_ABSOLUTE,		//This is not currently used but is here to support absolute transformations in the future
+        FTT_ABSOLUTE, // This is not currently used but is here to support absolute transformations in the future
     };
 
     //--------------------------------------------------------------------------------------
@@ -245,7 +244,7 @@ namespace DXUT
         uint32_t ChildFrame;
         uint32_t SiblingFrame;
         DirectX::XMFLOAT4X4 Matrix;
-        uint32_t AnimationDataIndex;		//Used to index which set of keyframes transforms this frame
+        uint32_t AnimationDataIndex; //Used to index which set of keyframes transforms this frame
     };
 
     struct SDKMESH_MATERIAL
