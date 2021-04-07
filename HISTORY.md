@@ -6,6 +6,11 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### April 6, 2021
+* Minor code and project cleanup
+* uvatlastool: Updated with descriptions for HRESULT failure codes
+* uvatlastool: Updated for April 2021 DirectXTex & DirectXMesh releases
+
 ### January 9, 2021
 * Windows Subsystem for Linux support
 * Code review for improved conformance
