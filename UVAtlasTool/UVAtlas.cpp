@@ -29,6 +29,7 @@
 #include <fstream>
 #include <iterator>
 #include <list>
+#include <locale>
 #include <memory>
 #include <new>
 
@@ -516,6 +517,9 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
     wchar_t szTexFile[MAX_PATH] = {};
     wchar_t szOutputFile[MAX_PATH] = {};
+
+    // Set locale for output since GetErrorDesc can get localized strings.
+    std::locale::global(std::locale(""));
 
     // Initialize COM (needed for WIC)
     HRESULT hr = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
