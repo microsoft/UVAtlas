@@ -10,6 +10,9 @@
     <Filter Include="isochart">
       <UniqueIdentifier>{e8d73a00-10f7-4eaa-9018-3a2fd86be6f3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ExportLayer">
+      <UniqueIdentifier>{21d3e62d-81c0-44ad-b09e-446ce873ce7b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="geodesics\ApproximateOneToAll.cpp">
@@ -83,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="isochart\Vis_Maxflow.cpp">
       <Filter>isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportLayer\Export.cpp">
+      <Filter>ExportLayer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

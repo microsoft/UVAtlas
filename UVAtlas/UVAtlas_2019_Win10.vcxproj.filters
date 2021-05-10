@@ -12,6 +12,9 @@
     <Filter Include="Isochart">
       <UniqueIdentifier>{3b2d5702-57fc-4310-a36b-3d3130661b87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ExportLayer">
+      <UniqueIdentifier>{d88160f8-5ca6-4a3d-8e01-0231589fd563}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="maxheap.hpp">
@@ -156,6 +159,9 @@
     </ClCompile>
     <ClCompile Include="isochart\Vis_Maxflow.cpp">
       <Filter>Isochart</Filter>
+    </ClCompile>
+    <ClCompile Include="ExportLayer\Export.cpp">
+      <Filter>ExportLayer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

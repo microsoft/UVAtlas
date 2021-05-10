@@ -52,6 +52,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ExportLayer\Export.cpp" />
     <ClCompile Include="geodesics\ApproximateOneToAll.cpp" />
     <ClCompile Include="geodesics\ExactOneToAll.cpp" />
     <ClCompile Include="geodesics\mathutils.cpp" />
