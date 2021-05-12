@@ -68,7 +68,11 @@
 
 #include <Windows.h>
 #include <objbase.h>
-#else
+
+#ifdef USING_DIRECTX_HEADERS
+#include <directx/dxgiformat.h>
+#endif
+#else // !WIN32
 #include <wsl/winadapter.h>
 #include <directx/d3d12.h>
 #endif
