@@ -42,6 +42,8 @@ CIsochartEngine::CIsochartEngine() :
 #endif
     m_dwOptions(_OPTION_ISOCHART_DEFAULT)
 {
+    std::random_device randomDevice;
+    m_randomEngine.seed(randomDevice());
 }
 
 CIsochartEngine::~CIsochartEngine()

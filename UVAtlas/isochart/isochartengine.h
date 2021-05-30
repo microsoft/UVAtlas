@@ -80,6 +80,13 @@ namespace Isochart
             const uint32_t* pdwFaceAdjacentArrayIn) noexcept override;
 
         HRESULT CreateEngineMutex();
+
+        float UniformRand(float maxValue) const
+        {
+            std::uniform_real_distribution<float> dis(0.f, maxValue);
+            return dis(m_randomEngine);
+        }
+
     private:
         enum EngineState
         {
@@ -247,6 +254,8 @@ namespace Isochart
 #endif
 
         unsigned int m_dwOptions;
+
+        mutable std::mt19937_64 m_randomEngine;
 
         friend CIsochartMesh;
     };

@@ -1820,7 +1820,7 @@ bool CIsochartMesh::OptimizeVertexStretchAroundCenter(
     while (iteration < optimizeInfo.dwRandOptOneVertTimes)
     {
         // 1. Get a new random position in the optimizing circle range
-        float fAngle = float(rand()) * 2.f * XM_PI / RAND_MAX;
+        float fAngle = m_IsochartEngine.UniformRand(2.f * XM_PI);
         vertInfo.end.x =
             vertInfo.center.x + vertInfo.fRadius * cosf(fAngle);
         vertInfo.end.y =

@@ -311,6 +311,8 @@ namespace IsochartRepacker
         size_t* m_pOurIterationTimes;
 
         Isochart::CCallbackSchemer m_callbackSchemer;
+
+        std::mt19937_64 m_randomEngine;
     };
 
 }

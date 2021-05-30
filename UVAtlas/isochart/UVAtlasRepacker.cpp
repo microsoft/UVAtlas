@@ -125,6 +125,8 @@ CUVAtlasRepacker::CUVAtlasRepacker(std::vector<UVAtlasVertex>* pvVertexArray,
     m_pOurChartNumber(pChartNumber),
     m_pOurIterationTimes(pIterationTimes)
 {
+    std::random_device randomDevice;
+    m_randomEngine.seed(randomDevice());
 }
 
 /***************************************************************************\
@@ -1301,6 +1303,8 @@ void CUVAtlasRepacker::PutChart(uint32_t index)
 
     m_triedInternalSpace = int(1e8f);
 
+    std::uniform_int_distribution<> dis(0, 1);
+
     for (uint32_t i = 0; i < m_iRotateNum; i++)
     {
         // for every position of chart, first do tessellation on it
@@ -1318,7 +1322,7 @@ void CUVAtlasRepacker::PutChart(uint32_t index)
         else if (m_currAspectRatio < m_AspectRatio)
             PutSide = 1;
         else
-            PutSide = int(floorf(float(rand()) + 0.5f));
+            PutSide = dis(m_randomEngine);
 
         if (PutSide == 0) // put on left or right side
         {
