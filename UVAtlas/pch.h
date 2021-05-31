@@ -96,6 +96,11 @@
 #include <vector>
 #include <queue>
 
+#ifdef UVATLAS_USE_EIGEN
+#include <Eigen/Dense>
+#include <Eigen/Eigenvalues>
+#endif
+
 #pragma warning(push)
 #pragma warning(disable : 4774)
 #include <random>

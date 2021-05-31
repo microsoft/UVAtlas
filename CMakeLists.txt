@@ -26,6 +26,9 @@ option(BUILD_TOOLS "Build UVAtlasTool" OFF)
 # Enable the use of OpenMP
 option(UVATLAS_USE_OPENMP "Build with OpenMP support" ON)
 
+# Enable use of the Eigen and BLAS libraries (https://eigen.tuxfamily.org/)
+option(ENABLE_USE_EIGEN "Use the Eigen & BLAS libraries" OFF)
+
 option(ENABLE_CODE_ANALYSIS "Use Static Code Analysis on build" OFF)
 
 set(CMAKE_CXX_STANDARD 14)
@@ -125,6 +128,14 @@ if ((NOT WIN32) OR VCPKG_TOOLCHAIN)
     find_package(directxmath CONFIG REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE Microsoft::DirectX-Headers Microsoft::DirectXMath)
     target_compile_definitions(${PROJECT_NAME} PRIVATE USING_DIRECTX_HEADERS)
+endif()
+
+if (ENABLE_USE_EIGEN)
+    message("INFO: Using Eigen3 & BLAS for CSymmetricMatrix::GetEigen.")
+    find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+    find_package(BLAS REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen ${BLAS_LIBRARIES})
+    target_compile_definitions(${PROJECT_NAME} PRIVATE EIGEN_USE_LAPACKE UVATLAS_USE_EIGEN)
 endif()
 
 #--- Package

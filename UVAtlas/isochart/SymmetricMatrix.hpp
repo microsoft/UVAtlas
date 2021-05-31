@@ -7,21 +7,66 @@
 // http://go.microsoft.com/fwlink/?LinkID=512686
 //-------------------------------------------------------------------------------------
 
-// This file implement the algorithm in "Numerical Recipes in Fortan 77,
-// The Art of Scientific Computing Second Edition", Section 11.1 ~ 11.3
-// http://www.library.cornell.edu/nr/bookfpdf/f11-1.pdf
-// http://www.library.cornell.edu/nr/bookfpdf/f11-2.pdf
-// http://www.library.cornell.edu/nr/bookfpdf/f11-3.pdf
-
 #pragma once
+
+namespace Isochart
+{
+#ifdef UVATLAS_USE_EIGEN
+
+    template<class TYPE>
+    class CSymmetricMatrix
+    {
+    public:
+        typedef TYPE value_type;
+
+        _Success_(return)
+            static bool
+            GetEigen(
+                size_t dwDimension,
+                _In_reads_(dwDimension * dwDimension) const value_type* pMatrix,
+                _Out_writes_(dwMaxRange) value_type* pEigenValue,
+                _Out_writes_(dwDimension * dwMaxRange) value_type* pEigenVector,
+                size_t dwMaxRange)
+        {
+            // Check arguments.
+            if (!pMatrix || !pEigenValue || !pEigenVector)
+                return false;
+
+            if (dwDimension < dwMaxRange
+                || dwMaxRange == 0
+                || dwDimension == 0)
+            {
+                return false;
+            }
+
+            using EigenMatrix = Eigen::Matrix<value_type, Eigen::Dynamic, Eigen::Dynamic>;
+
+            Eigen::Map<const EigenMatrix> matrix(pMatrix, static_cast<long>(dwDimension), static_cast<long>(dwDimension));
+            Eigen::Map<EigenMatrix> eigenvalues(pEigenValue, static_cast<long>(dwMaxRange), 1);
+            Eigen::Map<EigenMatrix> eigenvectors(pEigenVector, static_cast<long>(dwDimension), static_cast<long>(dwMaxRange));
+
+            Eigen::SelfAdjointEigenSolver<EigenMatrix> eigenSolver(matrix);
+            // Select the dwMaxRange largest eigenvalues and corresponding eigenvectors. Eigen sorts in increasing order.
+            eigenvalues = eigenSolver.eigenvalues().reverse().head(static_cast<long>(dwMaxRange));
+            eigenvectors = eigenSolver.eigenvectors().rowwise().reverse().leftCols(static_cast<long>(dwMaxRange));
+
+            return true;
+        }
+    };
+
+#else // !UVATLAS_USE_EIGEN
+
+    // This file implement the algorithm in "Numerical Recipes in Fortan 77,
+    // The Art of Scientific Computing Second Edition", Section 11.1 ~ 11.3
+    // http://www.library.cornell.edu/nr/bookfpdf/f11-1.pdf
+    // http://www.library.cornell.edu/nr/bookfpdf/f11-2.pdf
+    // http://www.library.cornell.edu/nr/bookfpdf/f11-3.pdf
 
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdouble-promotion"
 #endif
 
-namespace Isochart
-{
     template<class TYPE>
     class CSymmetricMatrix
     {
@@ -466,8 +511,9 @@ namespace Isochart
             return true;
         }
     };
-}
 
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif
+#endif
+}
