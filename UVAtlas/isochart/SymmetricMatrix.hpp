@@ -75,9 +75,9 @@ namespace Isochart
             static bool
             GetEigen(
                 size_t dwDimension,
-                _In_reads_(dwDimension* dwDimension) const value_type* pMatrix,
+                _In_reads_(dwDimension * dwDimension) const value_type* pMatrix,
                 _Out_writes_(dwMaxRange) value_type* pEigenValue,
-                _Out_writes_(dwDimension* dwMaxRange) value_type* pEigenVector,
+                _Out_writes_(dwDimension * dwMaxRange) value_type* pEigenVector,
                 size_t dwMaxRange,
                 value_type epsilon = 1.0e-6f)
         {
@@ -93,7 +93,7 @@ namespace Isochart
             }
 
             // 2. allocate memory resouce
-            std::unique_ptr<value_type[]> tmp(new (std::nothrow) value_type[(dwDimension * dwDimension) + (3 * dwDimension)]);
+            std::unique_ptr<value_type[]> tmp(new (std::nothrow) value_type[(dwDimension * dwDimension) + (4 * dwDimension)]);
             if (!tmp)
                 return false;
 
@@ -101,6 +101,7 @@ namespace Isochart
             value_type* pSubDiagVec = pInitialMatrix + (dwDimension * dwDimension); // dwDimension
             value_type* pU = pSubDiagVec + dwDimension;                             // dwDimension
             value_type* pP = pU + dwDimension;                                      // dwDimension
+            value_type* pValues = pP + dwDimension;                                 // dwDimension
 
             std::unique_ptr<value_type * []> rowHeader(new (std::nothrow) value_type * [dwDimension]);
             if (!rowHeader)
@@ -148,7 +149,7 @@ namespace Isochart
                     VectorScale(pU, scale, i);
                     h = VectorDot(pU, pU, i);
 
-                    //value_type shift = pEigenValue[i - 1];
+                    //value_type shift = pValues[i - 1];
                     auto g = (pU[i - 1] < 0) ? value_type(-IsochartSqrt(h)) : value_type(IsochartSqrt(h));
 
                     pSubDiagVec[i] = -(total * g); // i element of sub-diagonal vector
@@ -219,7 +220,7 @@ namespace Isochart
             //= Q - (u/H) * (u' * Q); ( n*n +n multiplication )
             for (size_t i = 0; i < dwDimension - 1; i++)
             {
-                pEigenValue[i] = pRowHeader[i][i];
+                pValues[i] = pRowHeader[i][i];
                 pRowHeader[i][i] = 1.0;
 
                 size_t currentDim = i + 1;
@@ -250,7 +251,7 @@ namespace Isochart
                     pRowHeader[k][currentDim] = 0;
                 }
             }
-            pEigenValue[dwDimension - 1] = pRowHeader[dwDimension - 1][dwDimension - 1];
+            pValues[dwDimension - 1] = pRowHeader[dwDimension - 1][dwDimension - 1];
 
             pRowHeader[dwDimension - 1][dwDimension - 1] = 1;
             VectorZero(pRowHeader[dwDimension - 1], dwDimension - 1);
@@ -270,7 +271,7 @@ namespace Isochart
             for (size_t j = 0; j < dwDimension; j++)
             {
                 // 2.2.1 Find a small subdiagonal element to split the matrix
-                auto temp = value_type(fabs(pEigenValue[j]) + fabs(pSubDiagVec[j]));
+                auto temp = value_type(fabs(pValues[j]) + fabs(pSubDiagVec[j]));
                 if (maxv < temp)
                 {
                     maxv = temp;
@@ -292,7 +293,7 @@ namespace Isochart
                     // shift value.
                     if (n == j)
                     {
-                        pEigenValue[j] = pEigenValue[j] + shift;
+                        pValues[j] = pValues[j] + shift;
                         pSubDiagVec[j] = 0.0;
                         break;
                     }
@@ -302,19 +303,19 @@ namespace Isochart
                     {
                         // Estimate the shift value by comptuing the eigenvalues of leading
                         // 2-dimension matrix. Usually, we get 2 eigenvalues, use the one
-                        // close to pEigenValue[j]
+                        // close to pValues[j]
                         value_type a = 1;
-                        value_type b = -(pEigenValue[j] + pEigenValue[j + 1]);
+                        value_type b = -(pValues[j] + pValues[j + 1]);
                         value_type c =
-                            pEigenValue[j] * pEigenValue[j + 1]
+                            pValues[j] * pValues[j + 1]
                             - pSubDiagVec[j] * pSubDiagVec[j];
 
                         auto bc = value_type(IsochartSqrt(b * b - 4 * a * c));
                         value_type ks = (-b + bc) / 2;
                         value_type ks1 = (-b - bc) / 2;
 
-                        if (fabs(pEigenValue[j] - ks) >
-                            fabs(pEigenValue[j] - ks1))
+                        if (fabs(pValues[j] - ks) >
+                            fabs(pValues[j] - ks1))
                         {
                             ks = ks1;
                         }
@@ -322,7 +323,7 @@ namespace Isochart
                         // Shift original matrix.
                         for (size_t k = j; k < dwDimension; k++)
                         {
-                            pEigenValue[k] -= ks;
+                            pValues[k] -= ks;
                         }
 
                         // Record the totoal shift value.
@@ -339,27 +340,27 @@ namespace Isochart
                         // C = d(n) / (d(n)^2 + e(n-1)^2)
                         // S = e(n-1) / (d(n)^2 + e(n-1)^2)
                         auto tt = value_type(IsochartSqrt(
-                            pEigenValue[n] * pEigenValue[n] +
+                            pValues[n] * pValues[n] +
                             pSubDiagVec[n - 1] * pSubDiagVec[n - 1]));
 
-                        lastC = pEigenValue[n] / tt;
+                        lastC = pValues[n] / tt;
                         lastS = pSubDiagVec[n - 1] / tt;
 
                         lastqq =
-                            lastS * lastS * pEigenValue[n - 1]
-                            + lastC * lastC * pEigenValue[n]
+                            lastS * lastS * pValues[n - 1]
+                            + lastC * lastC * pValues[n]
                             + 2 * lastS * lastC * pSubDiagVec[n - 1];
                         lastpp =
-                            lastS * lastS * pEigenValue[n]
-                            + lastC * lastC * pEigenValue[n - 1]
+                            lastS * lastS * pValues[n]
+                            + lastC * lastC * pValues[n - 1]
                             - 2 * lastS * lastC * pSubDiagVec[n - 1];
                         lastpq =
                             (lastC * lastC - lastS * lastS) * pSubDiagVec[n - 1]
-                            + lastS * lastC * (pEigenValue[n - 1] - pEigenValue[n]);
+                            + lastS * lastC * (pValues[n - 1] - pValues[n]);
 
                         // Because d[n-1], e[n-1] will continue to be changed in next
                         // step, only change d[n] here
-                        pEigenValue[n] = value_type(lastqq);
+                        pValues[n] = value_type(lastqq);
 
                         // Multiply current rotoation matrix to the finial orthogonal matrix,
                         //which stores the eigenvectors
@@ -393,18 +394,18 @@ namespace Isochart
 
                                 pSubDiagVec[next + 1] = value_type(lastC * lastpq + lastS * extra);
 
-                                pEigenValue[next + 1] = value_type(
-                                    lastS * lastS * pEigenValue[next]
+                                pValues[next + 1] = value_type(
+                                    lastS * lastS * pValues[next]
                                     + lastC * lastC * lastpp
                                     + 2 * lastS * lastC * pSubDiagVec[next]);
 
                                 lastpq =
                                     (lastC * lastC - lastS * lastS) * pSubDiagVec[next]
-                                    + lastS * lastC * (pEigenValue[next] - lastpp);
+                                    + lastS * lastC * (pValues[next] - lastpp);
 
                                 lastpp =
                                     lastS * lastS * lastpp
-                                    + lastC * lastC * pEigenValue[next]
+                                    + lastC * lastC * pValues[next]
                                     - 2 * lastS * lastC * pSubDiagVec[next];
 
                                 if (next > 0)
@@ -424,7 +425,7 @@ namespace Isochart
                         }
 
                         // Last step.
-                        pEigenValue[j] = value_type(lastpp);
+                        pValues[j] = value_type(lastpp);
                         pSubDiagVec[j] = value_type(lastpq);
                         if (n < dwDimension)
                         {
@@ -433,14 +434,15 @@ namespace Isochart
                     }
                 }
             }
+
             // Sort eigenvalues and corresponding vectors.
             for (size_t i = 0; i < dwDimension - 1; i++)
             {
                 for (size_t j = i + 1; j < dwDimension; j++)
                 {
-                    if (pEigenValue[j] > pEigenValue[i])
+                    if (pValues[j] > pValues[i])
                     {
-                        std::swap(pEigenValue[i], pEigenValue[j]);
+                        std::swap(pValues[i], pValues[j]);
 
                         for (size_t k = 0; k < dwDimension; k++)
                         {
@@ -450,9 +452,11 @@ namespace Isochart
                 }
             }
 
-            // Export the selected eigenvectors
+            // Export the selected eigen values and vectors
             for (size_t i = 0; i < dwMaxRange; i++)
             {
+                pEigenValue[i] = pValues[i];
+
                 for (size_t j = 0; j < dwDimension; j++)
                 {
                     pEigenVector[i * dwDimension + j] = pRowHeader[j][i];
