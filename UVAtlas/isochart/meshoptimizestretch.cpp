@@ -98,6 +98,8 @@ namespace Isochart
             pHeapItems(nullptr),
             pfVertStretch(nullptr),
             pfFaceStretch(nullptr),
+            minBound{},
+            maxBound{},
             fPreveMaxFaceStretch(0),
             fInfiniteStretch(0),
             dwInfinitStretchVertexCount(0),

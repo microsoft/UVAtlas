@@ -10,7 +10,7 @@
 #pragma once
 
 // Off by default warnings
-#pragma warning(disable : 4619 4616 4061 4365 4571 4623 4625 4626 4628 4668 4710 4711 4746 4820 4987 5026 5027 5031 5032 5039 5045 26812)
+#pragma warning(disable : 4619 4616 4061 4365 4571 4623 4625 4626 4628 4668 4710 4711 4746 4820 4987 5026 5027 5031 5032 5039 5045 26451 26812)
 // C4619/4616 #pragma warning warnings
 // C4061 enumerator 'X' in switch of enum 'X' is not explicitly handled by a case label
 // C4365 signed/unsigned mismatch
@@ -30,6 +30,7 @@
 // C5031/5032 push/pop mismatches in windows headers
 // C5039 pointer or reference to potentially throwing function passed to extern C function under - EHc
 // C5045 Spectre mitigation warning
+// 26451: Arithmetic overflow: Using operator '*' on a 4 byte value and then casting the result to a 8 byte value.
 // 26812: The enum type 'x' is unscoped. Prefer 'enum class' over 'enum' (Enum.3).
 
 // Windows 8.1 SDK related Off by default warnings
@@ -91,10 +92,14 @@
 #include <functional>
 #include <memory>
 #include <new>
-#include <random>
 #include <utility>
 #include <vector>
 #include <queue>
+
+#pragma warning(push)
+#pragma warning(disable : 4774)
+#include <random>
+#pragma warning(pop)
 
 #ifndef WIN32
 #include <mutex>

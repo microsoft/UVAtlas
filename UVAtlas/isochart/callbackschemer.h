@@ -56,8 +56,19 @@ namespace Isochart
     public:
         CCallbackSchemer() :
             m_pCallback(nullptr),
+            m_fCallbackFrequency(0.f),
+            m_dwTotalWork(0),
+            m_dwWorkDone(0),
+            m_dwNextCallback(0),
+            m_dwCallbackDelta(0),
+            m_dwWaitPoint(0),
+            m_dwWaitCount(0),
+            m_bIsWaitToFinish(false),
+            m_fPercentScale(0.f),
+            m_fBase(0.f),
             m_dwTotalStage(0),
-            m_dwDoneStage(0)
+            m_dwDoneStage(0),
+            m_fPercentOfAllTasks(0.f)
         {}
 
         void SetCallback(
@@ -87,7 +98,7 @@ namespace Isochart
     private:
 
         LPISOCHARTCALLBACK m_pCallback; // Callback function
-        float m_fCallbackFrequence;// The frequency to call callback function.
+        float m_fCallbackFrequency;// The frequency to call callback function.
 
         size_t m_dwTotalWork;	// Steps of current sub-task.
         size_t m_dwWorkDone;		// Steps have been completed in the sub-task.
@@ -117,7 +128,7 @@ namespace Isochart
         float Frequency)
     {
         m_pCallback = pCallback;
-        m_fCallbackFrequence = Frequency;
+        m_fCallbackFrequency = Frequency;
     }
 
     inline void CCallbackSchemer::SetStage(
@@ -154,7 +165,7 @@ namespace Isochart
         }
         // Call callback function per m_dwCallbackDelta steps
         m_dwCallbackDelta = static_cast<size_t>(
-            m_fCallbackFrequence * float(dwTaskWork) / fPercentOfAllTasks);
+            m_fCallbackFrequency * float(dwTaskWork) / fPercentOfAllTasks);
 
         if (m_dwCallbackDelta == 0)
         {

@@ -122,6 +122,11 @@ namespace GeodesicDist
 
         double ksi;                                        // the accumulated error used in approximate algorithm
 
+#ifdef _PREFAST_
+#pragma warning(push)
+#pragma warning(disable : 26495)
+#endif
+
         EdgeWindow()
         {
             memset(this, 0, sizeof(EdgeWindow));
@@ -136,6 +141,10 @@ namespace GeodesicDist
             if (R == 0)
                 memset(this, 0, sizeof(EdgeWindow));
         }
+
+#ifdef _PREFAST_
+#pragma warning(pop)
+#endif
 
         // setting an index also assigns appropriate pointer to the corresponding pointer field 
         void SetEdgeIdx(TypeEdgeList& EdgeList, const uint32_t index)
@@ -176,7 +185,9 @@ namespace GeodesicDist
 
         double dEdgeLength;                                // the length of this edge
 
-        Vertex* GetVertexByIdx(const uint32_t dwIdx)
+        Edge() : pVertex0(nullptr), pVertex1(nullptr), pAdjFace0(nullptr), pAdjFace1(nullptr) {}
+
+        Vertex* GetVertexByIdx(const uint32_t dwIdx) const
         {
             if (dwIdx == dwVertexIdx0)
                 return pVertex0;
@@ -186,21 +197,21 @@ namespace GeodesicDist
                 return reinterpret_cast<Vertex*>(FLAG_INVALID_SIZE_T);
         }
 
-        uint32_t GetAnotherVertexIdx(const uint32_t dwThisVertexIdx)
+        uint32_t GetAnotherVertexIdx(const uint32_t dwThisVertexIdx) const
         {
             if (dwThisVertexIdx != dwVertexIdx0 && dwThisVertexIdx != dwVertexIdx1)
                 return FLAG_INVALIDDWORD;
 
             return (dwVertexIdx0 ^ dwVertexIdx1 ^ dwThisVertexIdx);
         }
-        Vertex* GetAnotherVertex(const Vertex* pThisVertex)
+        Vertex* GetAnotherVertex(const Vertex* pThisVertex) const
         {
             if (pThisVertex != pVertex0 && pThisVertex != pVertex1)
                 return reinterpret_cast<Vertex*>(FLAG_INVALID_SIZE_T);
 
             return reinterpret_cast<Vertex*>(intptr_t(pVertex0) ^ intptr_t(pVertex1) ^ intptr_t(pThisVertex));
         }
-        Vertex* GetAnotherVertex(const uint32_t dwThisVertexIdx)
+        Vertex* GetAnotherVertex(const uint32_t dwThisVertexIdx) const
         {
             if (dwThisVertexIdx != dwVertexIdx0 && dwThisVertexIdx != dwVertexIdx1)
                 return reinterpret_cast<Vertex*>(FLAG_INVALID_SIZE_T);
@@ -216,7 +227,7 @@ namespace GeodesicDist
             return (idx == 0 ? pAdjFace0 : pAdjFace1);
         }
 
-        uint32_t GetFaceIdx(const uint32_t idx)
+        uint32_t GetFaceIdx(const uint32_t idx) const
         {
             if (idx != 0 && idx != 1)
                 return FLAG_INVALIDDWORD;
@@ -224,28 +235,28 @@ namespace GeodesicDist
             return (idx == 0 ? dwAdjFaceIdx0 : dwAdjFaceIdx1);
         }
 
-        uint32_t GetAnotherFaceIdx(const uint32_t dwThisFaceIdx)
+        uint32_t GetAnotherFaceIdx(const uint32_t dwThisFaceIdx) const
         {
             if (dwThisFaceIdx != dwAdjFaceIdx0 && dwThisFaceIdx != dwAdjFaceIdx1)
                 return FLAG_INVALIDDWORD;
 
             return (dwAdjFaceIdx0 ^ dwAdjFaceIdx1 ^ dwThisFaceIdx);
         }
-        Face* GetAnotherFace(const Face* pThisFace)
+        Face* GetAnotherFace(const Face* pThisFace) const
         {
             if (pThisFace != pAdjFace0 && pThisFace != pAdjFace1)
                 return reinterpret_cast<Face*>(FLAG_INVALID_SIZE_T);
 
             return reinterpret_cast<Face*>(intptr_t(pAdjFace0) ^ intptr_t(pAdjFace1) ^ intptr_t(pThisFace));
         }
-        Face* GetAnotherFace(const uint32_t dwThisFaceIdx)
+        Face* GetAnotherFace(const uint32_t dwThisFaceIdx) const
         {
             if (dwThisFaceIdx != dwAdjFaceIdx0 && dwThisFaceIdx != dwAdjFaceIdx1)
                 return reinterpret_cast<Face*>(FLAG_INVALID_SIZE_T);
             return (dwThisFaceIdx == dwAdjFaceIdx0 ? pAdjFace1 : pAdjFace0);
         }
 
-        bool HasVertexIdx(const uint32_t idx)
+        bool HasVertexIdx(const uint32_t idx) const
         {
             return (dwVertexIdx0 == idx || dwVertexIdx1 == idx);
         }
@@ -378,14 +389,20 @@ namespace GeodesicDist
                     }
         }
 
-        Face()
+        Face() :
+            dwEdgeIdx0(FLAG_INVALIDDWORD),
+            pEdge0(nullptr),
+            dwEdgeIdx1(FLAG_INVALIDDWORD),
+            pEdge1(nullptr),
+            dwEdgeIdx2(FLAG_INVALIDDWORD),
+            pEdge2(nullptr),
+            dwVertexIdx0(FLAG_INVALIDDWORD),
+            pVertex0(nullptr),
+            dwVertexIdx1(FLAG_INVALIDDWORD),
+            pVertex1(nullptr),
+            dwVertexIdx2(FLAG_INVALIDDWORD),
+            pVertex2(nullptr)
         {
-            dwEdgeIdx0 = FLAG_INVALIDDWORD;
-            pEdge0 = nullptr;
-            dwEdgeIdx1 = FLAG_INVALIDDWORD;
-            pEdge1 = nullptr;
-            dwEdgeIdx2 = FLAG_INVALIDDWORD;
-            pEdge2 = nullptr;
         }
 
         Edge* GetEdge(const uint32_t idx) const

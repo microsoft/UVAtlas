@@ -36,6 +36,8 @@ void IIsochartEngine::ReleaseIsochartEngine(
 
 
 CIsochartEngine::CIsochartEngine() :
+    fExpectAvgL2SquaredStretch(0.f),
+    dwExpectChartCount(0),
     m_state(ISOCHART_ST_UNINITILAIZED),
 #ifdef WIN32
     m_hMutex(nullptr),

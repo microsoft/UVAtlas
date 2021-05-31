@@ -14,7 +14,14 @@
 
 using namespace GeodesicDist;
 
-CExactOneToAll::CExactOneToAll()
+CExactOneToAll::CExactOneToAll() :
+    m_pVertices(nullptr),
+    m_pIndices(nullptr),
+    m_pAdj(nullptr),
+    m_dwNumBytesPerVertex(0),
+    m_dwNumFaces(0),
+    m_dwNumVertices(0),
+    m_dwSrcVertexIdx(0)
 {
     m_EdgeWindowsHeap.SetManageMode(Isochart::AUTOMATIC);
 }

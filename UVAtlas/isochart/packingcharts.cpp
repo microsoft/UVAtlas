@@ -137,7 +137,9 @@ namespace Isochart
         PACKINGINFO() :
             pVertUV(nullptr),
             pStandardUV(nullptr),
-            pStandardVirtualCorner(nullptr)
+            pStandardVirtualCorner(nullptr),
+            fUVWidth{},
+            fUVHeight{}
         {
         }
         ~PACKINGINFO()
@@ -2750,8 +2752,8 @@ HRESULT CIsochartMesh::PackingOneChart(
         {
             DPF(0, "2d area %f", double(pChart->m_fChart2DArea));
             DPF(0, "3d area %f", double(pChart->m_fChart3DArea));
-            DPF(0, "Face number %zu", double(pChart->m_dwFaceNumber));
-            DPF(0, "Vert number %zu", double(pChart->m_dwVertNumber));
+            DPF(0, "Face number %zu", pChart->m_dwFaceNumber);
+            DPF(0, "Vert number %zu", pChart->m_dwVertNumber);
 
             for (size_t ii = 0; ii < pChart->m_dwVertNumber; ii++)
             {

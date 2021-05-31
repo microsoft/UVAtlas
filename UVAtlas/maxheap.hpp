@@ -40,31 +40,32 @@ namespace Isochart
 
     public:
         CMaxHeapItem()
-            :m_weight(0)
+            : m_weight(0)
+            , m_data{}
             , m_position(NOT_IN_HEAP)
         {
         }
 
         CMaxHeapItem(weight_type weight, data_type data)
-            :m_weight(weight)
+            : m_weight(weight)
             , m_data(data)
             , m_position(NOT_IN_HEAP)
         {
         }
 
         CMaxHeapItem(const CMaxHeapItem& item)
+            : m_weight(item.m_weight)
+            , m_data(item.m_data) //Shallow copy here!
+            , m_position(item.m_position)
         {
-            m_weight = item.m_weight;
-            m_position = item.m_position;
-            m_data = item.m_data; //Shallow copy here! 
         }
 
-        pos_type getPos()
+        pos_type getPos() const
         {
             return m_position;
         }
 
-        bool isItemInHeap()
+        bool isItemInHeap() const
         {
             return m_position != NOT_IN_HEAP;
         }
