@@ -98,6 +98,7 @@ namespace
         OPT_VERT_NORMAL_FORMAT,
         OPT_VERT_UV_FORMAT,
         OPT_VERT_COLOR_FORMAT,
+        OPT_SECOND_UV,
         OPT_NOLOGO,
         OPT_FILELIST,
         OPT_MAX
@@ -182,6 +183,7 @@ namespace
         { L"fn",        OPT_VERT_NORMAL_FORMAT },
         { L"fuv",       OPT_VERT_UV_FORMAT },
         { L"fc",        OPT_VERT_COLOR_FORMAT },
+        { L"uv2",       OPT_SECOND_UV },
         { L"nologo",    OPT_NOLOGO },
         { L"flist",     OPT_FILELIST },
         { nullptr,      0 }
@@ -514,6 +516,7 @@ namespace
         wprintf(L"   -fn <normal-format> format to use for writing normals/tangents/normals\n");
         wprintf(L"   -fuv <uv-format>    format to use for texture coordinates\n");
         wprintf(L"   -fc <color-format>  format to use for writing colors\n");
+        wprintf(L"   -uv2                place uvatlas uvs into a second texture coordinate channel\n");
 
         wprintf(L"\n   <normal-format>: ");
         PrintList(13, g_vertexNormalFormats);
@@ -838,6 +841,11 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
 
             case OPT_CMO:
+                if (dwOptions & (uint64_t(1) << OPT_SECOND_UV))
+                {
+                    wprintf(L"-uv2 is not supported by CMO\n");
+                    return 1;
+                }
                 if (dwOptions & ((uint64_t(1) << OPT_VBO) | (uint64_t(1) << OPT_SDKMESH) | (uint64_t(1) << OPT_WAVEFRONT_OBJ)))
                 {
                     wprintf(L"Can only use one of sdkmesh, cmo, vbo, or wf\n");
@@ -846,6 +854,11 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
 
             case OPT_VBO:
+                if (dwOptions & (uint64_t(1) << OPT_SECOND_UV))
+                {
+                    wprintf(L"-uv2 is not supported by VBO\n");
+                    return 1;
+                }
                 if (dwOptions & ((uint64_t(1) << OPT_SDKMESH) | (uint64_t(1) << OPT_CMO) | (uint64_t(1) << OPT_WAVEFRONT_OBJ)))
                 {
                     wprintf(L"Can only use one of sdkmesh, cmo, vbo, or wf\n");
@@ -854,9 +867,22 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
 
             case OPT_WAVEFRONT_OBJ:
+                if (dwOptions & (uint64_t(1) << OPT_SECOND_UV))
+                {
+                    wprintf(L"-uv2 is not supported by Wavefront OBJ\n");
+                    return 1;
+                }
                 if (dwOptions & ((uint64_t(1) << OPT_VBO) | (uint64_t(1) << OPT_SDKMESH) | (uint64_t(1) << OPT_CMO)))
                 {
                     wprintf(L"Can only use one of sdkmesh, cmo, vbo, or wf\n");
+                    return 1;
+                }
+                break;
+
+            case OPT_SECOND_UV:
+                if (dwOptions & ((uint64_t(1) << OPT_VBO) | (uint64_t(1) << OPT_CMO) | (uint64_t(1) << OPT_WAVEFRONT_OBJ)))
+                {
+                    wprintf(L"-uv2 is only supported by sdkmesh\n");
                     return 1;
                 }
                 break;
@@ -1379,7 +1405,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 *txptr = it->uv;
             }
 
-            hr = inMesh->UpdateUVs(nVerts, texcoord.get());
+            hr = inMesh->UpdateUVs(nVerts, texcoord.get(), (dwOptions & (uint64_t(1) << OPT_SECOND_UV)));
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed to update with isochart UVs\n");
@@ -1564,7 +1590,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         // Write out UV mesh visualization
         if (dwOptions & (uint64_t(1) << OPT_UV_MESH))
         {
-            hr = inMesh->VisualizeUVs();
+            hr = inMesh->VisualizeUVs(dwOptions & (uint64_t(1) << OPT_SECOND_UV));
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed to create UV visualization mesh\n");

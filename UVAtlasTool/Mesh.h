@@ -63,7 +63,7 @@ public:
 
     HRESULT UpdateAttributes(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t* attributes) noexcept;
 
-    HRESULT UpdateUVs(_In_ size_t nVerts, _In_reads_(nVerts) const DirectX::XMFLOAT2* uvs) noexcept;
+    HRESULT UpdateUVs(_In_ size_t nVerts, _In_reads_(nVerts) const DirectX::XMFLOAT2* uvs, bool keepOriginal) noexcept;
 
     HRESULT VertexRemap(_In_reads_(nNewVerts) const uint32_t* remap, _In_ size_t nNewVerts) noexcept;
 
@@ -74,7 +74,7 @@ public:
 
     HRESULT ReverseHandedness() noexcept;
 
-    HRESULT VisualizeUVs() noexcept;
+    HRESULT VisualizeUVs(bool useSecondUVs) noexcept;
 
     // Accessors
     const uint32_t* GetAttributeBuffer() const noexcept { return mAttributes.get(); }
@@ -171,6 +171,7 @@ private:
     std::unique_ptr<DirectX::XMFLOAT4[]>        mTangents;
     std::unique_ptr<DirectX::XMFLOAT3[]>        mBiTangents;
     std::unique_ptr<DirectX::XMFLOAT2[]>        mTexCoords;
+    std::unique_ptr<DirectX::XMFLOAT2[]>        mTexCoords2;
     std::unique_ptr<DirectX::XMFLOAT4[]>        mColors;
     std::unique_ptr<DirectX::XMFLOAT4[]>        mBlendIndices;
     std::unique_ptr<DirectX::XMFLOAT4[]>        mBlendWeights;
