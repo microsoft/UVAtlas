@@ -120,6 +120,7 @@ Mesh& Mesh::operator= (Mesh&& moveFrom) noexcept
         mTangents.swap(moveFrom.mTangents);
         mBiTangents.swap(moveFrom.mBiTangents);
         mTexCoords.swap(moveFrom.mTexCoords);
+        mTexCoords2.swap(moveFrom.mTexCoords2);
         mColors.swap(moveFrom.mColors);
         mBlendIndices.swap(moveFrom.mBlendIndices);
         mBlendWeights.swap(moveFrom.mBlendWeights);
@@ -144,6 +145,7 @@ void Mesh::Clear() noexcept
     mTangents.reset();
     mBiTangents.reset();
     mTexCoords.reset();
+    mTexCoords2.reset();
     mColors.reset();
     mBlendIndices.reset();
     mBlendWeights.reset();
@@ -248,6 +250,7 @@ HRESULT Mesh::SetVertexData(_Inout_ DirectX::VBReader& reader, _In_ size_t nVert
     mTangents.reset();
     mBiTangents.reset();
     mTexCoords.reset();
+    mTexCoords2.reset();
     mColors.reset();
     mBlendIndices.reset();
     mBlendWeights.reset();
@@ -317,6 +320,19 @@ HRESULT Mesh::SetVertexData(_Inout_ DirectX::VBReader& reader, _In_ size_t nVert
             return hr;
     }
 
+    std::unique_ptr<XMFLOAT2[]> texcoord2;
+    e = reader.GetElement11("TEXCOORD", 1);
+    if (e)
+    {
+        texcoord2.reset(new (std::nothrow) XMFLOAT2[nVerts]);
+        if (!texcoord2)
+            return E_OUTOFMEMORY;
+
+        hr = reader.Read(texcoord2.get(), "TEXCOORD", 1, nVerts);
+        if (FAILED(hr))
+            return hr;
+    }
+
     // Load vertex colors
     std::unique_ptr<XMFLOAT4[]> colors;
     e = reader.GetElement11("COLOR", 0);
@@ -365,6 +381,7 @@ HRESULT Mesh::SetVertexData(_Inout_ DirectX::VBReader& reader, _In_ size_t nVert
     mTangents.swap(tans1);
     mBiTangents.swap(tans2);
     mTexCoords.swap(texcoord);
+    mTexCoords2.swap(texcoord2);
     mColors.swap(colors);
     mBlendIndices.swap(blendIndices);
     mBlendWeights.swap(blendWeights);
@@ -450,6 +467,16 @@ HRESULT Mesh::Clean(_In_ bool breakBowties) noexcept
         memcpy(texcoord.get(), mTexCoords.get(), sizeof(XMFLOAT2) * mnVerts);
     }
 
+    std::unique_ptr<XMFLOAT2[]> texcoord2;
+    if (mTexCoords2)
+    {
+        texcoord2.reset(new (std::nothrow) XMFLOAT2[nNewVerts]);
+        if (!texcoord2)
+            return E_OUTOFMEMORY;
+
+        memcpy(texcoord2.get(), mTexCoords2.get(), sizeof(XMFLOAT2) * mnVerts);
+    }
+
     std::unique_ptr<XMFLOAT4[]> colors;
     if (mColors)
     {
@@ -504,7 +531,12 @@ HRESULT Mesh::Clean(_In_ bool breakBowties) noexcept
 
         if (texcoord)
         {
-            texcoord.get()[j] = mTexCoords[*it];
+            texcoord[j] = mTexCoords[*it];
+        }
+
+        if (texcoord2)
+        {
+            texcoord2[j] = mTexCoords2[*it];
         }
 
         if (colors)
@@ -528,6 +560,7 @@ HRESULT Mesh::Clean(_In_ bool breakBowties) noexcept
     mTangents.swap(tans1);
     mBiTangents.swap(tans2);
     mTexCoords.swap(texcoord);
+    mTexCoords.swap(texcoord2);
     mColors.swap(colors);
     mBlendIndices.swap(blendIndices);
     mBlendWeights.swap(blendWeights);
@@ -685,7 +718,7 @@ HRESULT Mesh::UpdateAttributes(size_t nFaces, const uint32_t* attributes) noexce
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-HRESULT Mesh::UpdateUVs(size_t nVerts, const XMFLOAT2* uvs) noexcept
+HRESULT Mesh::UpdateUVs(size_t nVerts, const XMFLOAT2* uvs, bool keepOriginal) noexcept
 {
     if (!nVerts || !uvs)
         return E_INVALIDARG;
@@ -696,7 +729,18 @@ HRESULT Mesh::UpdateUVs(size_t nVerts, const XMFLOAT2* uvs) noexcept
     if (nVerts != mnVerts)
         return E_FAIL;
 
-    if (!mTexCoords)
+    if (keepOriginal && mTexCoords)
+    {
+        std::unique_ptr<XMFLOAT2[]> texcoord2;
+        texcoord2.reset(new (std::nothrow) XMFLOAT2[mnVerts]);
+        if (!texcoord2)
+            return E_OUTOFMEMORY;
+
+        memcpy(texcoord2.get(), uvs, sizeof(XMFLOAT2) * mnVerts);
+
+        mTexCoords2.swap(texcoord2);
+    }
+    else if (!mTexCoords)
     {
         std::unique_ptr<XMFLOAT2[]> texcoord;
         texcoord.reset(new (std::nothrow) XMFLOAT2[mnVerts]);
@@ -785,6 +829,18 @@ HRESULT Mesh::VertexRemap(const uint32_t* remap, size_t nNewVerts) noexcept
             return hr;
     }
 
+    std::unique_ptr<XMFLOAT2[]> texcoord2;
+    if (mTexCoords2)
+    {
+        texcoord2.reset(new (std::nothrow) XMFLOAT2[nNewVerts]);
+        if (!texcoord2)
+            return E_OUTOFMEMORY;
+
+        hr = UVAtlasApplyRemap(mTexCoords2.get(), sizeof(XMFLOAT2), mnVerts, nNewVerts, remap, texcoord2.get());
+        if (FAILED(hr))
+            return hr;
+    }
+
     std::unique_ptr<XMFLOAT4[]> colors;
     if (mColors)
     {
@@ -826,6 +882,7 @@ HRESULT Mesh::VertexRemap(const uint32_t* remap, size_t nNewVerts) noexcept
     mTangents.swap(tans1);
     mBiTangents.swap(tans2);
     mTexCoords.swap(texcoord);
+    mTexCoords2.swap(texcoord2);
     mColors.swap(colors);
     mBlendIndices.swap(blendIndices);
     mBlendWeights.swap(blendWeights);
@@ -864,6 +921,15 @@ HRESULT Mesh::InvertUTexCoord() noexcept
         tptr->x = 1.f - tptr->x;
     }
 
+    if (mTexCoords2)
+    {
+        tptr = mTexCoords2.get();
+        for (size_t j = 0; j < mnVerts; ++j, ++tptr)
+        {
+            tptr->x = 1.f - tptr->x;
+        }
+    }
+
     return S_OK;
 }
 
@@ -878,6 +944,15 @@ HRESULT Mesh::InvertVTexCoord() noexcept
     for (size_t j = 0; j < mnVerts; ++j, ++tptr)
     {
         tptr->y = 1.f - tptr->y;
+    }
+
+    if (mTexCoords2)
+    {
+        tptr = mTexCoords2.get();
+        for (size_t j = 0; j < mnVerts; ++j, ++tptr)
+        {
+            tptr->y = 1.f - tptr->y;
+        }
     }
 
     return S_OK;
@@ -910,12 +985,24 @@ HRESULT Mesh::ReverseHandedness() noexcept
 
 
 //--------------------------------------------------------------------------------------
-HRESULT Mesh::VisualizeUVs() noexcept
+HRESULT Mesh::VisualizeUVs(bool useSecondUVs) noexcept
 {
-    if (!mnVerts || !mPositions || !mTexCoords)
+    if (!mnVerts || !mPositions)
         return E_UNEXPECTED;
 
-    const XMFLOAT2* sptr = mTexCoords.get();
+    const XMFLOAT2* sptr = nullptr;
+    if (useSecondUVs && mTexCoords2)
+    {
+        sptr = mTexCoords2.get();
+    }
+    else
+    {
+        sptr = mTexCoords.get();
+    }
+
+    if (!sptr)
+        return E_UNEXPECTED;
+
     XMFLOAT3* dptr = mPositions.get();
     for (size_t j = 0; j < mnVerts; ++j)
     {
@@ -1056,6 +1143,17 @@ HRESULT Mesh::GetVertexBuffer(_Inout_ DirectX::VBWriter& writer) const noexcept
         if (e)
         {
             hr = writer.Write(mTexCoords.get(), "TEXCOORD", 0, mnVerts);
+            if (FAILED(hr))
+                return hr;
+        }
+    }
+
+    if (mTexCoords2)
+    {
+        auto e = writer.GetElement11("TEXCOORD", 1);
+        if (e)
+        {
+            hr = writer.Write(mTexCoords2.get(), "TEXCOORD", 1, mnVerts);
             if (FAILED(hr))
                 return hr;
         }
@@ -2041,6 +2139,19 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
         vbHeader.Decl[nDecl].Offset = static_cast<WORD>(stride);
         inputLayout[nDecl] = s_elements[5];
         inputLayout[nDecl].Format = uvFormat;
+        ++nDecl;
+        stride += uvStride;
+    }
+
+    if (mTexCoords2)
+    {
+        vbHeader.Decl[nDecl] = s_decls[5];
+        vbHeader.Decl[nDecl].Type = uvType;
+        vbHeader.Decl[nDecl].Offset = static_cast<WORD>(stride);
+        vbHeader.Decl[nDecl].UsageIndex = 1;
+        inputLayout[nDecl] = s_elements[5];
+        inputLayout[nDecl].Format = uvFormat;
+        inputLayout[nDecl].SemanticIndex = 1;
         ++nDecl;
         stride += uvStride;
     }
