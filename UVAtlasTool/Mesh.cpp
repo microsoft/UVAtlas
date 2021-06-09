@@ -560,7 +560,7 @@ HRESULT Mesh::Clean(_In_ bool breakBowties) noexcept
     mTangents.swap(tans1);
     mBiTangents.swap(tans2);
     mTexCoords.swap(texcoord);
-    mTexCoords.swap(texcoord2);
+    mTexCoords2.swap(texcoord2);
     mColors.swap(colors);
     mBlendIndices.swap(blendIndices);
     mBlendWeights.swap(blendWeights);
