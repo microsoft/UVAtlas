@@ -6,6 +6,13 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### June 9, 2021
+* CMake build option to use Eigen3 library
+* Code cleanup
+* uvatlastool: Added ``-uv2`` switch to store second UV set in SDKMESH with isochart
+* utatlastool: improved ``-flist`` switch to support wildcards and file exclusions
+* uvatlastool: Updated for June 2021 DirectXTex & DirectXMesh releases
+
 ### April 6, 2021
 * Minor code and project cleanup
 * uvatlastool: Updated with descriptions for HRESULT failure codes
