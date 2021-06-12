@@ -97,8 +97,11 @@
 #include <queue>
 
 #ifdef UVATLAS_USE_EIGEN
+#pragma warning(push)
+#pragma warning(disable : 4127 4244 4456 4464 5220)
 #include <Eigen/Dense>
-#include <Eigen/Eigenvalues>
+#include <Spectra/SymEigsSolver.h>
+#pragma warning(pop)
 #endif
 
 #pragma warning(push)

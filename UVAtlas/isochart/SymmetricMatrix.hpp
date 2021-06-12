@@ -17,16 +17,17 @@ namespace Isochart
     class CSymmetricMatrix
     {
     public:
-        typedef TYPE value_type;
+        using value_type = TYPE;
 
         _Success_(return)
             static bool
             GetEigen(
                 size_t dwDimension,
-                _In_reads_(dwDimension * dwDimension) const value_type* pMatrix,
+                _In_reads_(dwDimension* dwDimension) const value_type* pMatrix,
                 _Out_writes_(dwMaxRange) value_type* pEigenValue,
-                _Out_writes_(dwDimension * dwMaxRange) value_type* pEigenVector,
-                size_t dwMaxRange)
+                _Out_writes_(dwDimension* dwMaxRange) value_type* pEigenVector,
+                size_t dwMaxRange,
+                float epsilon = 1e-10f)
         {
             // Check arguments.
             if (!pMatrix || !pEigenValue || !pEigenVector)
@@ -45,12 +46,62 @@ namespace Isochart
             Eigen::Map<EigenMatrix> eigenvalues(pEigenValue, static_cast<long>(dwMaxRange), 1);
             Eigen::Map<EigenMatrix> eigenvectors(pEigenVector, static_cast<long>(dwDimension), static_cast<long>(dwMaxRange));
 
-            Eigen::SelfAdjointEigenSolver<EigenMatrix> eigenSolver(matrix);
-            // Select the dwMaxRange largest eigenvalues and corresponding eigenvectors. Eigen sorts in increasing order.
-            eigenvalues = eigenSolver.eigenvalues().reverse().head(static_cast<long>(dwMaxRange));
-            eigenvectors = eigenSolver.eigenvectors().rowwise().reverse().leftCols(static_cast<long>(dwMaxRange));
+            // If we don't want every eigenvalue, try solving with Spectra first.
+            if (dwMaxRange < dwDimension)
+            {
+                try
+                {
+                    constexpr int maxIterations = 1000; // Spectra's default
 
-            return true;
+                    // Construct matrix operation object using the wrapper class DenseSymMatProd.
+                    Spectra::DenseSymMatProd<value_type> op(matrix);
+                    // Construct eigen solver object, requesting the largest dwMaxRange eigenvalues
+                    Spectra::SymEigsSolver<value_type, Spectra::LARGEST_ALGE, Spectra::DenseSymMatProd<value_type> > eigs(
+                        &op,
+                        static_cast<int>(dwMaxRange),
+                        // Convergence speed, higher is faster with more memory usage, recommended to be at least 2x nev, must be <= dimension.
+                        static_cast<int>(std::min(dwMaxRange * 2, dwDimension))
+                    );
+                    eigs.init();
+                    auto const numConverged = eigs.compute(
+                        maxIterations,
+                        epsilon,
+                        Spectra::LARGEST_ALGE // Sort by descending eigenvalues.
+                    );
+
+                    if (numConverged >= static_cast<int>(dwMaxRange) && eigs.info() == Spectra::SUCCESSFUL)
+                    {
+                        eigenvalues = eigs.eigenvalues();
+                        eigenvectors = eigs.eigenvectors();
+                        return true;
+                    }
+                    else
+                    {
+                        DPF(0, "Spectra::SymEigsSolver failed with info() == %d, numConverged == %d, dwDimension == %d, dwMaxRange == %d", eigs.info(), numConverged, dwDimension, dwMaxRange);
+                    }
+                }
+                catch (const std::exception& ex)
+                {
+                    DPF(0, "Spectra::SymEigsSolver threw an exception with what() == \"%s\", dwDimension == %d, dwMaxRange == %d", ex.what(), dwDimension, dwMaxRange);
+                }
+            }
+
+            // Otherwise, fallback to Eigen built-in solver.
+            const Eigen::SelfAdjointEigenSolver<EigenMatrix> eigenSolver(matrix);
+
+            if (eigenSolver.info() == Eigen::ComputationInfo::Success)
+            {
+                // We want the eigenvalues in descending order, Eigen produces them in increasing order.
+                eigenvalues = eigenSolver.eigenvalues().reverse().head(static_cast<long>(dwMaxRange));
+                eigenvectors = eigenSolver.eigenvectors().rowwise().reverse().leftCols(static_cast<long>(dwMaxRange));
+                return true;
+            }
+            else
+            {
+                DPF(0, "Eigen::SelfAdjointEigenSolver failed with info() == %d", eigenSolver.info());
+            }
+
+            return false;
         }
     };
 
@@ -71,7 +122,7 @@ namespace Isochart
     class CSymmetricMatrix
     {
     public:
-        typedef TYPE value_type;
+        using value_type = TYPE;
 
     private:
         static inline value_type VectorDot(

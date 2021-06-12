@@ -131,11 +131,11 @@ if ((NOT WIN32) OR VCPKG_TOOLCHAIN)
 endif()
 
 if (ENABLE_USE_EIGEN)
-    message("INFO: Using Eigen3 & BLAS for CSymmetricMatrix::GetEigen.")
-    find_package(Eigen3 3.3 REQUIRED NO_MODULE)
-    find_package(BLAS REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen ${BLAS_LIBRARIES})
-    target_compile_definitions(${PROJECT_NAME} PRIVATE EIGEN_USE_LAPACKE UVATLAS_USE_EIGEN)
+    message("INFO: Using Eigen3 & Spectra for CSymmetricMatrix::GetEigen.")
+    find_package(Eigen3 REQUIRED)
+    find_package(spectra REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen Spectra::Spectra)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE UVATLAS_USE_EIGEN)
 endif()
 
 #--- Package
