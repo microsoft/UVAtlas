@@ -1828,22 +1828,22 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
             return hr;
 
         size_t startIndex = 0;
-        for (auto it = subsets.cbegin(); it != subsets.end(); ++it)
+        for (const auto& it : subsets)
         {
             SubMesh smesh;
-            smesh.MaterialIndex = mAttributes[it->first];
+            smesh.MaterialIndex = mAttributes[it.first];
             if (smesh.MaterialIndex >= nMaterials)
                 smesh.MaterialIndex = 0;
 
             smesh.IndexBufferIndex = 0;
             smesh.VertexBufferIndex = 0;
             smesh.StartIndex = static_cast<UINT>(startIndex);
-            smesh.PrimCount = static_cast<UINT>(it->second);
+            smesh.PrimCount = static_cast<UINT>(it.second);
             hr = write_file(hFile.get(), smesh);
             if (FAILED(hr))
                 return hr;
 
-            if ((startIndex + (it->second * 3)) > mnFaces * 3)
+            if ((startIndex + (it.second * 3)) > mnFaces * 3)
                 return E_FAIL;
 
             startIndex += static_cast<size_t>(uint64_t(smesh.PrimCount) * 3);
@@ -2456,18 +2456,18 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
         auto subsets = ComputeSubsets(mAttributes.get(), mnFaces);
 
         UINT64 startIndex = 0;
-        for (auto it = subsets.cbegin(); it != subsets.cend(); ++it)
+        for (const auto& it : subsets)
         {
             subsetArray.push_back(static_cast<UINT>(submeshes.size()));
 
             SDKMESH_SUBSET s = {};
-            s.MaterialID = mAttributes[it->first];
+            s.MaterialID = mAttributes[it.first];
             if (s.MaterialID >= nMaterials)
                 s.MaterialID = 0;
 
             s.PrimitiveType = PT_TRIANGLE_LIST;
             s.IndexStart = startIndex;
-            s.IndexCount = uint64_t(it->second) * 3;
+            s.IndexCount = uint64_t(it.second) * 3;
             s.VertexCount = mnVerts;
             submeshes.push_back(s);
 

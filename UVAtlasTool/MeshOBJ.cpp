@@ -125,26 +125,26 @@ HRESULT LoadFromOBJ(
         inMaterial.clear();
         inMaterial.reserve(wfReader.materials.size());
 
-        for (auto it = wfReader.materials.cbegin(); it != wfReader.materials.cend(); ++it)
+        for (const auto& it : wfReader.materials)
         {
             Mesh::Material mtl = {};
 
-            mtl.name = it->strName;
-            mtl.specularPower = (it->bSpecular) ? float(it->nShininess) : 1.f;
-            mtl.alpha = it->fAlpha;
-            mtl.ambientColor = it->vAmbient;
-            mtl.diffuseColor = it->vDiffuse;
-            mtl.specularColor = (it->bSpecular) ? it->vSpecular : XMFLOAT3(0.f, 0.f, 0.f);
-            mtl.emissiveColor = (it->bEmissive) ? it->vEmissive : XMFLOAT3(0.f, 0.f, 0.f);
+            mtl.name = it.strName;
+            mtl.specularPower = (it.bSpecular) ? float(it.nShininess) : 1.f;
+            mtl.alpha = it.fAlpha;
+            mtl.ambientColor = it.vAmbient;
+            mtl.diffuseColor = it.vDiffuse;
+            mtl.specularColor = (it.bSpecular) ? it.vSpecular : XMFLOAT3(0.f, 0.f, 0.f);
+            mtl.emissiveColor = (it.bEmissive) ? it.vEmissive : XMFLOAT3(0.f, 0.f, 0.f);
 
-            mtl.texture = ProcessTextureFileName(it->strTexture, dds);
-            mtl.normalTexture = ProcessTextureFileName(it->strNormalTexture, dds);
-            mtl.specularTexture = ProcessTextureFileName(it->strSpecularTexture, dds);
-            if (it->bEmissive)
+            mtl.texture = ProcessTextureFileName(it.strTexture, dds);
+            mtl.normalTexture = ProcessTextureFileName(it.strNormalTexture, dds);
+            mtl.specularTexture = ProcessTextureFileName(it.strSpecularTexture, dds);
+            if (it.bEmissive)
             {
-                mtl.emissiveTexture = ProcessTextureFileName(it->strEmissiveTexture, dds);
+                mtl.emissiveTexture = ProcessTextureFileName(it.strEmissiveTexture, dds);
             }
-            mtl.rmaTexture = ProcessTextureFileName(it->strRMATexture, dds);
+            mtl.rmaTexture = ProcessTextureFileName(it.strRMATexture, dds);
 
             inMaterial.push_back(mtl);
         }
