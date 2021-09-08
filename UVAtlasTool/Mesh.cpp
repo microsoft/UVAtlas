@@ -2271,10 +2271,10 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
                 {
                     int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
                         m0->texture.c_str(), -1,
-                        m2->AlbetoTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                        m2->AlbedoTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                     if (!result)
                     {
-                        *m2->AlbetoTexture = 0;
+                        *m2->AlbedoTexture = 0;
                     }
                 }
 
@@ -2284,7 +2284,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
                     char dir[MAX_PATH] = {};
                     char fname[_MAX_FNAME] = {};
                     char ext[_MAX_EXT] = {};
-                    _splitpath_s(m2->AlbetoTexture, drive, dir, fname, ext);
+                    _splitpath_s(m2->AlbedoTexture, drive, dir, fname, ext);
 
                     std::string basename = fname;
                     size_t pos = basename.find_last_of('_');
