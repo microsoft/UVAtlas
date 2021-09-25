@@ -332,6 +332,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MeshOBJ.cpp" />
+    <ClCompile Include="tinyply.cpp" />
     <ClCompile Include="UVAtlas.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <CLInclude Include="Mesh.h" />

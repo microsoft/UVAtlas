@@ -147,6 +147,7 @@ public:
     };
 
     HRESULT ExportToOBJ(const wchar_t* szFileName, _In_ size_t nMaterials, _In_reads_opt_(nMaterials) const Material* materials) const;
+    HRESULT ExportToPLY(const wchar_t* szFileName/*, _In_ size_t nMaterials, _In_reads_opt_(nMaterials) const Material* materials*/) const;
     HRESULT ExportToVBO(_In_z_ const wchar_t* szFileName) const noexcept;
     HRESULT ExportToCMO(_In_z_ const wchar_t* szFileName, _In_ size_t nMaterials, _In_reads_opt_(nMaterials) const Material* materials) const noexcept;
     HRESULT ExportToSDKMESH(_In_z_ const wchar_t* szFileName,
@@ -179,4 +180,5 @@ private:
     std::wstring                                mtlFileName;
 
     void ExportToOBJ(std::wostream& os, _In_ size_t nMaterials, _In_reads_opt_(nMaterials) const Material* materials) const;
+   
 };
