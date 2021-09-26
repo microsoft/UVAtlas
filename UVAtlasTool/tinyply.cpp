@@ -165,9 +165,7 @@ namespace
 _Use_decl_annotations_
 HRESULT Mesh::CreateFromPLY(const wchar_t* szFileName, std::unique_ptr<Mesh>& result, bool preload_into_memory) noexcept
 {
-
-
-
+ 
     const std::wstring& filepath = szFileName;
 
     std::cout << "........................................................................\n";
@@ -279,56 +277,43 @@ HRESULT Mesh::CreateFromPLY(const wchar_t* szFileName, std::unique_ptr<Mesh>& re
         const size_t numVerticesBytesVert = vertices->buffer.size_bytes();
         std::vector<float3> verts(vertices->count);
         std::memcpy(verts.data(), vertices->buffer.get(), numVerticesBytesVert);
-
-        const size_t numVerticesBytesNorm = normals->buffer.size_bytes();
-        std::vector<float3> norms(normals->count);
-        std::memcpy(norms.data(), normals->buffer.get(), numVerticesBytesNorm);
-
-
-        std::vector<float3> texs;
+ 
+        std::vector<float3> norms;
+        if (normals) {
+            const size_t numVerticesBytesNorms = normals->buffer.size_bytes();
+            norms.resize(normals->count);
+            std::memcpy(norms.data(), normals->buffer.get(), numVerticesBytesNorms);
+        }
+ 
+        std::vector<float2> texs;
         if (texcoords) {
             const size_t numVerticesBytesTex = texcoords->buffer.size_bytes();
             texs.resize(texcoords->count);
             std::memcpy(texs.data(), texcoords->buffer.get(), numVerticesBytesTex);
         }
 
-
-
+ 
         for (size_t j = 0; j < vertices->count; ++j) {
             pos[j] = XMFLOAT3(verts[j].x, verts[j].y, verts[j].z);
-            norm[j] = XMFLOAT3(norms[j].x, norms[j].y, norms[j].z);
+            if (normals)
+                norm[j] = XMFLOAT3(norms[j].x, norms[j].y, norms[j].z);
             if (texcoords)
                 texcoord[j] = XMFLOAT2(texs[j].x, texs[j].y);
 
             int dede = 0;
         }
-
-
-
-
-        /// //// FACES /////
-
+ 
         unsigned long numIndices = faces->count;
         // Copy IB to result
         std::unique_ptr<uint32_t[]> indices(new (std::nothrow) uint32_t[numIndices * 3]);// header.numIndices]);
         if (!indices)
             return E_OUTOFMEMORY;
 
-
-        // long numIndicestest = numVerticesBytesFaces / 4 / 3;// int on 4 bytes
         uint32_t* ptr = (uint32_t*)faces->buffer.get();
-
-        size_t bitssize = faces->buffer.size_bytes();
-
-
-        long b = bitssize / numIndices;
-        long bytesperelement = b / 3;
-
         for (int i = 0; i < faces->count * 3; i++) {
             uint32_t d = ptr[i];
             indices[i] = d;
         }
-
 
         result->mPositions.swap(pos);
         result->mNormals.swap(norm);
@@ -336,15 +321,6 @@ HRESULT Mesh::CreateFromPLY(const wchar_t* szFileName, std::unique_ptr<Mesh>& re
         result->mIndices.swap(indices);
         result->mnVerts = vertices->count;
         result->mnFaces = numIndices;
-
-        int dede = 0;
-
-
-
-
-
-
-
 
 
     }
@@ -355,139 +331,19 @@ HRESULT Mesh::CreateFromPLY(const wchar_t* szFileName, std::unique_ptr<Mesh>& re
 
 
     return S_OK;
-    /*
-    using namespace VBO;
-
-    if (!szFileName)
-        return E_INVALIDARG;
-
-    result.reset();
-
-#if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
-    ScopedHandle hFile(safe_handle(CreateFile2(szFileName, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING, nullptr)));
-#else
-    ScopedHandle hFile(safe_handle(CreateFileW(szFileName, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)));
-#endif
-    if (!hFile)
-    {
-        return HRESULT_FROM_WIN32(GetLastError());
-    }
-
-    // Get the file size
-    FILE_STANDARD_INFO fileInfo;
-    if (!GetFileInformationByHandleEx(hFile.get(), FileStandardInfo, &fileInfo, sizeof(fileInfo)))
-    {
-        return HRESULT_FROM_WIN32(GetLastError());
-    }
-
-    // File is too big for 32-bit allocation, so reject read
-    if (fileInfo.EndOfFile.HighPart > 0)
-        return E_FAIL;
-
-    // Need at least enough data to read the header
-    if (fileInfo.EndOfFile.LowPart < sizeof(header_t))
-        return E_FAIL;
-
-    // Read VBO header
-    DWORD bytesRead = 0;
-
-    header_t header;
-    if (!ReadFile(hFile.get(), &header, sizeof(header_t), &bytesRead, nullptr))
-    {
-        return HRESULT_FROM_WIN32(GetLastError());
-    }
-
-    if (bytesRead != sizeof(header))
-        return E_FAIL;
-
-    if (!header.numVertices || !header.numIndices)
-        return E_FAIL;
-
-    result.reset(new (std::nothrow) Mesh);
-    if (!result)
-        return E_OUTOFMEMORY;
-
-    // Read vertices/indices from VBO
-    std::unique_ptr<vertex_t[]> vb(new (std::nothrow) vertex_t[header.numVertices]);
-    std::unique_ptr<uint16_t[]> ib(new (std::nothrow) uint16_t[header.numIndices]);
-    if (!vb || !ib)
-        return E_OUTOFMEMORY;
-
-    auto vertSize = static_cast<DWORD>(sizeof(vertex_t) * header.numVertices);
-
-    if (!ReadFile(hFile.get(), vb.get(), vertSize, &bytesRead, nullptr))
-    {
-        return HRESULT_FROM_WIN32(GetLastError());
-    }
-
-    if (bytesRead != vertSize)
-        return E_FAIL;
-
-    auto indexSize = static_cast<DWORD>(sizeof(uint16_t) * header.numIndices);
-
-    if (!ReadFile(hFile.get(), ib.get(), indexSize, &bytesRead, nullptr))
-    {
-        return HRESULT_FROM_WIN32(GetLastError());
-    }
-
-    if (bytesRead != indexSize)
-        return E_FAIL;
-
-    // Copy VB to result
-    std::unique_ptr<XMFLOAT3[]> pos(new (std::nothrow) XMFLOAT3[header.numVertices]);
-    std::unique_ptr<XMFLOAT3[]> norm(new (std::nothrow) XMFLOAT3[header.numVertices]);
-    std::unique_ptr<XMFLOAT2[]> texcoord(new (std::nothrow) XMFLOAT2[header.numVertices]);
-    if (!pos || !norm || !texcoord)
-        return E_OUTOFMEMORY;
-
-    auto vptr = vb.get();
-    for (size_t j = 0; j < header.numVertices; ++j, ++vptr)
-    {
-        pos[j] = vptr->position;
-        norm[j] = vptr->normal;
-        texcoord[j] = vptr->textureCoordinate;
-    }
-
-    // Copy IB to result
-    std::unique_ptr<uint32_t[]> indices(new (std::nothrow) uint32_t[header.numIndices]);
-    if (!indices)
-        return E_OUTOFMEMORY;
-
-    auto iptr = ib.get();
-    for (size_t j = 0; j < header.numIndices; ++j, ++iptr)
-    {
-        uint16_t index = *iptr;
-        if (index == uint16_t(-1))
-            indices[j] = uint32_t(-1);
-        else
-            indices[j] = index;
-    }
-
-    result->mPositions.swap(pos);
-    result->mNormals.swap(norm);
-    result->mTexCoords.swap(texcoord);
-    result->mIndices.swap(indices);
-    result->mnVerts = header.numVertices;
-    result->mnFaces = header.numIndices / 3;
-
-    return S_OK;
-    */
+    
 }
 
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-HRESULT Mesh::ExportToPLY(const wchar_t* szFileNameIn/*, size_t nMaterials, const Material* materials*/) const
+HRESULT Mesh::ExportToPLY(const wchar_t* szFileNameIn ) const
 {
     std::wstring szFileName(szFileNameIn);
 
     using namespace VBO;
 
-
-    geometry cube;// = make_cube_geometry();
-
-    //if (!szFileName)
-      //  return E_INVALIDARG;
+    geometry geo; 
 
     if (!mnFaces || !mIndices || !mnVerts || !mPositions || !mNormals || !mTexCoords)
         return E_UNEXPECTED;
@@ -510,17 +366,13 @@ HRESULT Mesh::ExportToPLY(const wchar_t* szFileNameIn/*, size_t nMaterials, cons
     if (!vb || !ib)
         return E_OUTOFMEMORY;
 
-
     // Copy to VB
-
     for (size_t j = 0; j < mnVerts; ++j)
     {
-
         float3 vert;
         vert.x = mPositions[j].x;
         vert.y = mPositions[j].y;
         vert.z = mPositions[j].z;
-
 
         float3 norm;
         norm.x = mNormals[j].x;
@@ -531,161 +383,28 @@ HRESULT Mesh::ExportToPLY(const wchar_t* szFileNameIn/*, size_t nMaterials, cons
         tex.x = mTexCoords[j].x;
         tex.y = mTexCoords[j].y;
 
-
-        cube.vertices.push_back(vert);
-        cube.normals.push_back(norm);
-        cube.texcoords.push_back(tex);
+        geo.vertices.push_back(vert);
+        geo.normals.push_back(norm);
+        geo.texcoords.push_back(tex);
 
     }
 
-
-
+ 
     std::unique_ptr<uint32_t[]> ib2(new (std::nothrow) uint32_t[header.numIndices]);
     if (!vb || !ib)
         return E_OUTOFMEMORY;
 
-
-    /*
-    // Copy to VB
-    auto vptr = vb.get();
-    for (size_t j = 0; j < mnVerts; ++j, ++vptr)
-    {
-        vptr->position = mPositions[j];
-        vptr->normal = mNormals[j];
-        vptr->textureCoordinate = mTexCoords[j];
-    }*/
-
-
-
     // Copy to IB
     auto iptr = ib2.get();
-
-    /*
-    for (size_t j = 0; j < header.numIndices; ++j, ++iptr)
-    {
-        uint32_t index = mIndices[j];
-
-
-        if (index == uint32_t(-1))
-        {
-            *iptr = uint16_t(-1);
-        }
-        else if (index >= UINT16_MAX)
-        {
-            return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
-        }
-        else
-        {
-            *iptr = static_cast<uint16_t>(index);
-        }
-    }*/
-
-
-
-
-    /*
-    for (size_t face = 0; face < mnFaces; ++face)
-    {
-        std::vector<uint32_t> mList;
-        for (size_t point = 0; point < 3; ++point)
-        {
-            uint32_t i = mIndices[face * 3 + point] + 1;
-            mList.push_back(i);
-        }
-
-        cube.triangles.push_back({ mList[0],mList[0 + 1],mList[0 + 2] });
-
-    }*/
-
-
-
-
-
-
-    // auto iptr = mIndices.get();
     for (size_t j = 0; j < header.numIndices; j += 3)
     {
-
-
         uint32_t indice1 = iptr[j];
         uint32_t indice2 = iptr[j + 1];
         uint32_t indice3 = iptr[j + 2];
-
-        //cube.triangles.push_back({ indice1,indice2,indice3 });
-
-        cube.triangles.push_back({ mIndices[j],mIndices[j + 1],mIndices[j + 2] });
-
-
+        geo.triangles.push_back({ mIndices[j],mIndices[j + 1],mIndices[j + 2] });
     }
 
-
-
-
-    /*
-    for (size_t j = 0; j < header.numIndices; j += 4)
-    {
-
-         cube.triangles.push_back({ mIndices[j],mIndices[j + 1],mIndices[j + 2] });
-         cube.triangles.push_back({ mIndices[j],mIndices[j + 2],mIndices[j + 3] });
-
-
-    }*/
-
-
-
-
-
-
-    /*
-    // Copy to IB
-    auto iptr = ib.get();
-    for (size_t j = 0; j < header.numIndices; ++j, ++iptr)
-    {
-        uint32_t index = mIndices[j];
-        if (index == uint32_t(-1))
-        {
-            *iptr = uint16_t(-1);
-        }
-        else if (index >= UINT16_MAX)
-        {
-            return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
-        }
-        else
-        {
-            *iptr = static_cast<uint16_t>(index);
-
-        }
-    }*/
-
-
-    /*
-
-    const struct CubeVertex { float3 position, normal; float2 texCoord; } verts[] = {
-    { { -1, -1, -1 },{ -1, 0, 0 },{ 0, 0 } },{ { -1, -1, +1 },{ -1, 0, 0 },{ 1, 0 } },{ { -1, +1, +1 },{ -1, 0, 0 },{ 1, 1 } },{ { -1, +1, -1 },{ -1, 0, 0 },{ 0, 1 } },
-    { { +1, -1, +1 },{ +1, 0, 0 },{ 0, 0 } },{ { +1, -1, -1 },{ +1, 0, 0 },{ 1, 0 } },{ { +1, +1, -1 },{ +1, 0, 0 },{ 1, 1 } },{ { +1, +1, +1 },{ +1, 0, 0 },{ 0, 1 } },
-    { { -1, -1, -1 },{ 0, -1, 0 },{ 0, 0 } },{ { +1, -1, -1 },{ 0, -1, 0 },{ 1, 0 } },{ { +1, -1, +1 },{ 0, -1, 0 },{ 1, 1 } },{ { -1, -1, +1 },{ 0, -1, 0 },{ 0, 1 } },
-    { { +1, +1, -1 },{ 0, +1, 0 },{ 0, 0 } },{ { -1, +1, -1 },{ 0, +1, 0 },{ 1, 0 } },{ { -1, +1, +1 },{ 0, +1, 0 },{ 1, 1 } },{ { +1, +1, +1 },{ 0, +1, 0 },{ 0, 1 } },
-    { { -1, -1, -1 },{ 0, 0, -1 },{ 0, 0 } },{ { -1, +1, -1 },{ 0, 0, -1 },{ 1, 0 } },{ { +1, +1, -1 },{ 0, 0, -1 },{ 1, 1 } },{ { +1, -1, -1 },{ 0, 0, -1 },{ 0, 1 } },
-    { { -1, +1, +1 },{ 0, 0, +1 },{ 0, 0 } },{ { -1, -1, +1 },{ 0, 0, +1 },{ 1, 0 } },{ { +1, -1, +1 },{ 0, 0, +1 },{ 1, 1 } },{ { +1, +1, +1 },{ 0, 0, +1 },{ 0, 1 } } };
-
-    std::vector<uint4> quads = { { 0, 1, 2, 3 },{ 4, 5, 6, 7 },{ 8, 9, 10, 11 },{ 12, 13, 14, 15 },{ 16, 17, 18, 19 },{ 20, 21, 22, 23 } };
-
-    for (auto& q : quads)
-    {
-        cube.triangles.push_back({ q.x,q.y,q.z });
-        cube.triangles.push_back({ q.x,q.z,q.w });
-    }
-
-    for (int i = 0; i < 24; ++i)
-    {
-        cube.vertices.push_back(verts[i].position);
-        cube.normals.push_back(verts[i].normal);
-        cube.texcoords.push_back(verts[i].texCoord);
-    }*/
-
-
-    //here get geometry
-
+ 
     std::filebuf fb_binary;
     fb_binary.open(szFileName + L"-binary.ply", std::ios::out | std::ios::binary);
     std::ostream outstream_binary(&fb_binary);
@@ -699,16 +418,16 @@ HRESULT Mesh::ExportToPLY(const wchar_t* szFileNameIn/*, size_t nMaterials, cons
     PlyFile cube_file;
 
     cube_file.add_properties_to_element("vertex", { "x", "y", "z" },
-        Type::FLOAT32, cube.vertices.size(), reinterpret_cast<uint8_t*>(cube.vertices.data()), Type::INVALID, 0);
+        Type::FLOAT32, geo.vertices.size(), reinterpret_cast<uint8_t*>(geo.vertices.data()), Type::INVALID, 0);
 
     cube_file.add_properties_to_element("vertex", { "nx", "ny", "nz" },
-        Type::FLOAT32, cube.normals.size(), reinterpret_cast<uint8_t*>(cube.normals.data()), Type::INVALID, 0);
+        Type::FLOAT32, geo.normals.size(), reinterpret_cast<uint8_t*>(geo.normals.data()), Type::INVALID, 0);
 
     cube_file.add_properties_to_element("vertex", { "u", "v" },
-        Type::FLOAT32, cube.texcoords.size(), reinterpret_cast<uint8_t*>(cube.texcoords.data()), Type::INVALID, 0);
+        Type::FLOAT32, geo.texcoords.size(), reinterpret_cast<uint8_t*>(geo.texcoords.data()), Type::INVALID, 0);
 
     cube_file.add_properties_to_element("face", { "vertex_indices" },
-        Type::UINT32, cube.triangles.size(), reinterpret_cast<uint8_t*>(cube.triangles.data()), Type::UINT8, 3);
+        Type::UINT32, geo.triangles.size(), reinterpret_cast<uint8_t*>(geo.triangles.data()), Type::UINT8, 3);
 
     cube_file.get_comments().push_back("generated by tinyply 2.3");
 
@@ -717,12 +436,7 @@ HRESULT Mesh::ExportToPLY(const wchar_t* szFileNameIn/*, size_t nMaterials, cons
 
     // Write a binary file
     cube_file.write(outstream_binary, true);
-
-
-
-
-
-     
+   
 }
 
  
