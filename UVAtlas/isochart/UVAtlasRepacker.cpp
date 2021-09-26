@@ -437,9 +437,22 @@ void CUVAtlasRepacker::ComputeChartsLengthInPixel()
         {
             auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(pCInfo->PosInfo[j]));
 
+            // verify ceilf doesnt give 'inf' values
+            int numX = int(0);
+            float diff1 = ceilf((pPosInfo->maxPoint.x - pPosInfo->minPoint.x) / m_PixelWidth);
+            if (diff1 != INFINITY) {
+                numX = int(diff1);
+            }
+
+            int numY = int(0);
+            float diff2 = ceilf((pPosInfo->maxPoint.y - pPosInfo->minPoint.y) / m_PixelWidth);
+            if (diff2 != INFINITY) {
+                numY = int(diff2);
+            }
+
             // compute the width and height of current chart
-            int numX = int(ceilf((pPosInfo->maxPoint.x - pPosInfo->minPoint.x) / m_PixelWidth));
-            int numY = int(ceilf((pPosInfo->maxPoint.y - pPosInfo->minPoint.y) / m_PixelWidth));
+            //int numX = int(ceilf((pPosInfo->maxPoint.x - pPosInfo->minPoint.x) / m_PixelWidth));
+            //int numY = int(ceilf((pPosInfo->maxPoint.y - pPosInfo->minPoint.y) / m_PixelWidth));
             if (!numX) numX++;
             if (!numY) numY++;
 
@@ -476,6 +489,7 @@ void CUVAtlasRepacker::ComputeChartsLengthInPixel()
 \***************************************************************************/
 HRESULT CUVAtlasRepacker::PrepareRepack()
 {
+     
     // debug use
     CleanUp();
 

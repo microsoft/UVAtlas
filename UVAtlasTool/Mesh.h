@@ -161,6 +161,9 @@ public:
     // Create mesh from file
     static HRESULT CreateFromVBO(_In_z_ const wchar_t* szFileName, _Inout_ std::unique_ptr<Mesh>& result) noexcept;
 
+    // Create mesh from file
+    static HRESULT CreateFromPLY(_In_z_ const wchar_t* szFileName, _Inout_ std::unique_ptr<Mesh>& result, bool preload_in_memory) noexcept;
+
 private:
     size_t                                      mnFaces;
     size_t                                      mnVerts;

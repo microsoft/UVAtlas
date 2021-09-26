@@ -225,10 +225,7 @@ namespace
 HRESULT LoadFromOBJ(const wchar_t* szFilename,
     std::unique_ptr<Mesh>& inMesh, std::vector<Mesh::Material>& inMaterial,
     bool ccw, bool dds);
-
-
-HRESULT LoadFromPLY(const wchar_t* szFilename,
-    std::unique_ptr<Mesh>& inMesh, const bool preload_into_memory = false);
+ 
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
@@ -1024,8 +1021,9 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         }
         else if (_wcsicmp(ext, L".ply") == 0)
         {
-            LoadFromPLY(pConv->szSrc, inMesh);
-            hr = S_OK;
+            hr = Mesh::CreateFromPLY(pConv->szSrc, inMesh, false);
+            /*LoadFromPLY(pConv->szSrc, inMesh);
+            hr = S_OK;*/
         }
         else
         {

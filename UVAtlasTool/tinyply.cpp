@@ -161,12 +161,13 @@ namespace
     }
 }
 
-//--------------------------------------------------------------------------------------
-HRESULT LoadFromPLY(
-    const wchar_t* szFileName,
-    std::unique_ptr<Mesh>& inMesh, const bool preload_into_memory = false )
+
+_Use_decl_annotations_
+HRESULT Mesh::CreateFromPLY(const wchar_t* szFileName, std::unique_ptr<Mesh>& result, bool preload_into_memory) noexcept
 {
- 
+
+
+
     const std::wstring& filepath = szFileName;
 
     std::cout << "........................................................................\n";
@@ -177,8 +178,8 @@ HRESULT LoadFromPLY(
 
     try
     {
-        // For most files < 1gb, pre-loading the entire file upfront and wrapping it into a 
-        // stream is a net win for parsing speed, about 40% faster. 
+        // For most files < 1gb, pre-loading the entire file upfront and wrapping it into a
+        // stream is a net win for parsing speed, about 40% faster.
         if (preload_into_memory)
         {
             byte_buffer = read_file_binary(filepath);
@@ -213,13 +214,13 @@ HRESULT LoadFromPLY(
             }
         }
 
-        // Because most people have their own mesh types, tinyply treats parsed data as structured/typed byte buffers. 
-        // See examples below on how to marry your own application-specific data structures with this one. 
+        // Because most people have their own mesh types, tinyply treats parsed data as structured/typed byte buffers.
+        // See examples below on how to marry your own application-specific data structures with this one.
         std::shared_ptr<PlyData> vertices, normals, colors, texcoords, faces, tripstrip;
 
         // The header information can be used to programmatically extract properties on elements
-        // known to exist in the header prior to reading the data. For brevity of this sample, properties 
-        // like vertex position are hard-coded: 
+        // known to exist in the header prior to reading the data. For brevity of this sample, properties
+        // like vertex position are hard-coded:
         try { vertices = file.request_properties_from_element("vertex", { "x", "y", "z" }); }
         catch (const std::exception& e) { std::cerr << "tinyply exception: " << e.what() << std::endl; }
 
@@ -235,13 +236,13 @@ HRESULT LoadFromPLY(
         try { texcoords = file.request_properties_from_element("vertex", { "u", "v" }); }
         catch (const std::exception& e) { std::cerr << "tinyply exception: " << e.what() << std::endl; }
 
-        // Providing a list size hint (the last argument) is a 2x performance improvement. If you have 
-        // arbitrary ply files, it is best to leave this 0. 
+        // Providing a list size hint (the last argument) is a 2x performance improvement. If you have
+        // arbitrary ply files, it is best to leave this 0.
         try { faces = file.request_properties_from_element("face", { "vertex_indices" }, 3); }
         catch (const std::exception& e) { std::cerr << "tinyply exception: " << e.what() << std::endl; }
 
         // Tristrips must always be read with a 0 list size hint (unless you know exactly how many elements
-        // are specifically in the file, which is unlikely); 
+        // are specifically in the file, which is unlikely);
         try { tripstrip = file.request_properties_from_element("tristrips", { "vertex_indices" }, 0); }
         catch (const std::exception& e) { std::cerr << "tinyply exception: " << e.what() << std::endl; }
 
@@ -261,9 +262,11 @@ HRESULT LoadFromPLY(
         if (faces)      std::cout << "\tRead " << faces->count << " total faces (triangles) " << std::endl;
         if (tripstrip)  std::cout << "\tRead " << (tripstrip->buffer.size_bytes() / tinyply::PropertyTable[tripstrip->t].stride) << " total indicies (tristrip) " << std::endl;
 
- 
-        inMesh.reset(new (std::nothrow) Mesh);
-        if (!inMesh)
+        //////////////
+
+
+        result.reset(new (std::nothrow) Mesh);
+        if (!result)
             return E_OUTOFMEMORY;
 
         std::unique_ptr<XMFLOAT3[]> pos(new (std::nothrow) XMFLOAT3[vertices->count]);
@@ -271,272 +274,212 @@ HRESULT LoadFromPLY(
         std::unique_ptr<XMFLOAT2[]> texcoord(new (std::nothrow) XMFLOAT2[vertices->count]);
         if (!pos || !norm || !texcoord)
             return E_OUTOFMEMORY;
-         
-        std::vector< Vertex > verticeData;
+
 
         const size_t numVerticesBytesVert = vertices->buffer.size_bytes();
         std::vector<float3> verts(vertices->count);
         std::memcpy(verts.data(), vertices->buffer.get(), numVerticesBytesVert);
 
-        std::vector<float3> norms;
-        if (normals) {
-            const size_t numVerticesBytesNorm = normals->buffer.size_bytes();
+        const size_t numVerticesBytesNorm = normals->buffer.size_bytes();
+        std::vector<float3> norms(normals->count);
+        std::memcpy(norms.data(), normals->buffer.get(), numVerticesBytesNorm);
 
-           // norms.resize()
-            norms.resize(normals->count);
-            std::memcpy(norms.data(), normals->buffer.get(), numVerticesBytesNorm);
-        }
 
-        std::vector<float2> texco;
+        std::vector<float3> texs;
         if (texcoords) {
-            const size_t numVerticesBytesTexCords = texcoords->buffer.size_bytes();
-             texco.resize(texcoords->count);
-            std::memcpy(texco.data(), texcoords->buffer.get(), numVerticesBytesTexCords);
+            const size_t numVerticesBytesTex = texcoords->buffer.size_bytes();
+            texs.resize(texcoords->count);
+            std::memcpy(texs.data(), texcoords->buffer.get(), numVerticesBytesTex);
         }
+
+
 
         for (size_t j = 0; j < vertices->count; ++j) {
+            pos[j] = XMFLOAT3(verts[j].x, verts[j].y, verts[j].z);
+            norm[j] = XMFLOAT3(norms[j].x, norms[j].y, norms[j].z);
+            if (texcoords)
+                texcoord[j] = XMFLOAT2(texs[j].x, texs[j].y);
 
-            Vertex v;
-            v.position = XMFLOAT3(verts[j].x, verts[j].y, verts[j].z);
-            if(normals)
-            v.normal = XMFLOAT3(norms[j].x, norms[j].y, norms[j].z);
-            if(texcoords)
-            v.textureCoordinate = XMFLOAT2(texco[j].x, texco[j].y );
-
-            verticeData.push_back(v);
-
+            int dede = 0;
         }
 
-        const size_t numVerticesBytesFaces = faces->buffer.size_bytes();
-        long numIndicestest = numVerticesBytesFaces / 4 / 3;// int on 4 bytes
-        std::vector<uint32_t[3]> facer(faces->count);
-        std::memcpy(facer.data(), faces->buffer.get(), numVerticesBytesFaces);
+
+
+
+        /// //// FACES /////
 
         unsigned long numIndices = faces->count;
         // Copy IB to result
-        std::unique_ptr<uint32_t[]> indices(new (std::nothrow) uint32_t[numIndices * 3]);
+        std::unique_ptr<uint32_t[]> indices(new (std::nothrow) uint32_t[numIndices * 3]);// header.numIndices]);
         if (!indices)
             return E_OUTOFMEMORY;
 
-        int index = 0;
-        for (size_t j = 0; j < (numIndices * 3); j += 3) {
 
-            uint32_t pt0 = facer.at(index)[0];
-            uint32_t pt1 = facer.at(index)[1];
-            uint32_t pt2 = facer.at(index)[2];
+        // long numIndicestest = numVerticesBytesFaces / 4 / 3;// int on 4 bytes
+        uint32_t* ptr = (uint32_t*)faces->buffer.get();
 
-            indices[j] = pt0;
-            indices[j + 1] = pt1;
-            indices[j + 2] = pt2;
-            index++;
+        size_t bitssize = faces->buffer.size_bytes();
+
+
+        long b = bitssize / numIndices;
+        long bytesperelement = b / 3;
+
+        for (int i = 0; i < faces->count * 3; i++) {
+            uint32_t d = ptr[i];
+            indices[i] = d;
         }
 
 
-        static const D3D11_INPUT_ELEMENT_DESC s_vboLayout[] =
-        {
-            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        };
-
-        static const D3D11_INPUT_ELEMENT_DESC s_vboLayoutAlt[] =
-        {
-            { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-            { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        };
-
-        const D3D11_INPUT_ELEMENT_DESC* layout = s_vboLayout;
-        size_t nDecl = std::size(s_vboLayout);
-
-        if (!normals && !texcoords)
-        {
-            nDecl = 1;
-        }
-        else if (normals && !texcoords)
-        {
-            nDecl = 2;
-        }
-        else if (!normals && texcoords)
-        {
-            layout = s_vboLayoutAlt;
-            nDecl = std::size(s_vboLayoutAlt);
-        }
- 
-        HRESULT hr;
-        VBReader vbr;
-        hr = vbr.Initialize(layout, nDecl);
-        if (FAILED(hr))
-            return hr;
-
-        hr = vbr.AddStream(verts.data(), verts.size(), 0, sizeof(Vertex)); // WaveFrontReader<uint32_t>::Vertex
-        if (FAILED(hr))
-            return hr;
-
-        hr = inMesh->SetVertexData(vbr, verts.size());
-        if (FAILED(hr))
-            return hr;
- 
-        hr = inMesh->SetIndexData(numIndices  , (const uint32_t*)facer.data(), NULL);
-        if (FAILED(hr))
-            return hr;
-
-
-        // attention !!!!!
-        // il y a aussi : uint32_t hr = inMesh->SetIndexData(numIndices  , (const uint32_t*)facer.data(), NULL);
-
-        /* 
-        hr = inMesh->UpdateFaces(numIndices , (const uint32_t *) facer.data() );
-        if (FAILED(hr))
-            return hr; */
+        result->mPositions.swap(pos);
+        result->mNormals.swap(norm);
+        result->mTexCoords.swap(texcoord);
+        result->mIndices.swap(indices);
+        result->mnVerts = vertices->count;
+        result->mnFaces = numIndices;
 
         int dede = 0;
 
 
 
 
-        /* 
-        inMesh->mPositions.swap(pos);
-        inMesh->mNormals.swap(norm);
-        inMesh->mTexCoords.swap(texcoord);
-        inMesh->mIndices.swap(indices);
-        inMesh->mnVerts = vertices->count;
-        inMesh->mnFaces = numIndices;// / 3;
-
-        int dede = 0;*/
 
 
 
-        //result.
-        /*
-        // Example One: converting to your own application types
-        {
-            const size_t numVerticesBytes = vertices->buffer.size_bytes();
-            std::vector<float3> verts(vertices->count);
-            std::memcpy(verts.data(), vertices->buffer.get(), numVerticesBytes);
-        }
 
-        // Example Two: converting to your own application type
-        {
-            std::vector<float3> verts_floats;
-            std::vector<double3> verts_doubles;
-            if (vertices->t == tinyply::Type::FLOAT32) {   }
-            if (vertices->t == tinyply::Type::FLOAT64) {   }
-        }*/
+
     }
     catch (const std::exception& e)
     {
         std::cerr << "Caught tinyply exception: " << e.what() << std::endl;
     }
- 
 
-
-
-
-    /*
-    WaveFrontReader<uint32_t> wfReader;
-    HRESULT hr = wfReader.Load(szFilename, ccw);
-    if (FAILED(hr))
-        return hr;
-
-    inMesh.reset(new (std::nothrow) Mesh);
-    if (!inMesh)
-        return E_OUTOFMEMORY;
-
-    if (wfReader.indices.empty() || wfReader.vertices.empty())
-        return E_FAIL;
-
-    hr = inMesh->SetIndexData(wfReader.indices.size() / 3, wfReader.indices.data(),
-        wfReader.attributes.empty() ? nullptr : wfReader.attributes.data());
-    if (FAILED(hr))
-        return hr;
-
-    static const D3D11_INPUT_ELEMENT_DESC s_vboLayout[] =
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    };
-
-    static const D3D11_INPUT_ELEMENT_DESC s_vboLayoutAlt[] =
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    };
-
-    const D3D11_INPUT_ELEMENT_DESC* layout = s_vboLayout;
-    size_t nDecl = std::size(s_vboLayout);
-
-    if (!wfReader.hasNormals && !wfReader.hasTexcoords)
-    {
-        nDecl = 1;
-    }
-    else if (wfReader.hasNormals && !wfReader.hasTexcoords)
-    {
-        nDecl = 2;
-    }
-    else if (!wfReader.hasNormals && wfReader.hasTexcoords)
-    {
-        layout = s_vboLayoutAlt;
-        nDecl = std::size(s_vboLayoutAlt);
-    }
-
-    VBReader vbr;
-    hr = vbr.Initialize(layout, nDecl);
-    if (FAILED(hr))
-        return hr;
-
-    hr = vbr.AddStream(wfReader.vertices.data(), wfReader.vertices.size(), 0, sizeof(WaveFrontReader<uint32_t>::Vertex));
-    if (FAILED(hr))
-        return hr;
-
-    hr = inMesh->SetVertexData(vbr, wfReader.vertices.size());
-    if (FAILED(hr))
-        return hr;
-
-    if (!wfReader.materials.empty())
-    {
-        inMaterial.clear();
-        inMaterial.reserve(wfReader.materials.size());
-
-        for (const auto& it : wfReader.materials)
-        {
-            Mesh::Material mtl = {};
-
-            mtl.name = it.strName;
-            mtl.specularPower = (it.bSpecular) ? float(it.nShininess) : 1.f;
-            mtl.alpha = it.fAlpha;
-            mtl.ambientColor = it.vAmbient;
-            mtl.diffuseColor = it.vDiffuse;
-            mtl.specularColor = (it.bSpecular) ? it.vSpecular : XMFLOAT3(0.f, 0.f, 0.f);
-            mtl.emissiveColor = (it.bEmissive) ? it.vEmissive : XMFLOAT3(0.f, 0.f, 0.f);
-
-            mtl.texture = ProcessTextureFileName(it.strTexture, dds);
-            mtl.normalTexture = ProcessTextureFileName(it.strNormalTexture, dds);
-            mtl.specularTexture = ProcessTextureFileName(it.strSpecularTexture, dds);
-            if (it.bEmissive)
-            {
-                mtl.emissiveTexture = ProcessTextureFileName(it.strEmissiveTexture, dds);
-            }
-            mtl.rmaTexture = ProcessTextureFileName(it.strRMATexture, dds);
-
-            inMaterial.push_back(mtl);
-        }
-    }
-
-    if (wfReader.materials.size() > 1)
-    {
-        inMesh->SetMTLFileName(wfReader.name);
-    }*/
 
     return S_OK;
+    /*
+    using namespace VBO;
+
+    if (!szFileName)
+        return E_INVALIDARG;
+
+    result.reset();
+
+#if (_WIN32_WINNT >= _WIN32_WINNT_WIN8)
+    ScopedHandle hFile(safe_handle(CreateFile2(szFileName, GENERIC_READ, FILE_SHARE_READ, OPEN_EXISTING, nullptr)));
+#else
+    ScopedHandle hFile(safe_handle(CreateFileW(szFileName, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)));
+#endif
+    if (!hFile)
+    {
+        return HRESULT_FROM_WIN32(GetLastError());
+    }
+
+    // Get the file size
+    FILE_STANDARD_INFO fileInfo;
+    if (!GetFileInformationByHandleEx(hFile.get(), FileStandardInfo, &fileInfo, sizeof(fileInfo)))
+    {
+        return HRESULT_FROM_WIN32(GetLastError());
+    }
+
+    // File is too big for 32-bit allocation, so reject read
+    if (fileInfo.EndOfFile.HighPart > 0)
+        return E_FAIL;
+
+    // Need at least enough data to read the header
+    if (fileInfo.EndOfFile.LowPart < sizeof(header_t))
+        return E_FAIL;
+
+    // Read VBO header
+    DWORD bytesRead = 0;
+
+    header_t header;
+    if (!ReadFile(hFile.get(), &header, sizeof(header_t), &bytesRead, nullptr))
+    {
+        return HRESULT_FROM_WIN32(GetLastError());
+    }
+
+    if (bytesRead != sizeof(header))
+        return E_FAIL;
+
+    if (!header.numVertices || !header.numIndices)
+        return E_FAIL;
+
+    result.reset(new (std::nothrow) Mesh);
+    if (!result)
+        return E_OUTOFMEMORY;
+
+    // Read vertices/indices from VBO
+    std::unique_ptr<vertex_t[]> vb(new (std::nothrow) vertex_t[header.numVertices]);
+    std::unique_ptr<uint16_t[]> ib(new (std::nothrow) uint16_t[header.numIndices]);
+    if (!vb || !ib)
+        return E_OUTOFMEMORY;
+
+    auto vertSize = static_cast<DWORD>(sizeof(vertex_t) * header.numVertices);
+
+    if (!ReadFile(hFile.get(), vb.get(), vertSize, &bytesRead, nullptr))
+    {
+        return HRESULT_FROM_WIN32(GetLastError());
+    }
+
+    if (bytesRead != vertSize)
+        return E_FAIL;
+
+    auto indexSize = static_cast<DWORD>(sizeof(uint16_t) * header.numIndices);
+
+    if (!ReadFile(hFile.get(), ib.get(), indexSize, &bytesRead, nullptr))
+    {
+        return HRESULT_FROM_WIN32(GetLastError());
+    }
+
+    if (bytesRead != indexSize)
+        return E_FAIL;
+
+    // Copy VB to result
+    std::unique_ptr<XMFLOAT3[]> pos(new (std::nothrow) XMFLOAT3[header.numVertices]);
+    std::unique_ptr<XMFLOAT3[]> norm(new (std::nothrow) XMFLOAT3[header.numVertices]);
+    std::unique_ptr<XMFLOAT2[]> texcoord(new (std::nothrow) XMFLOAT2[header.numVertices]);
+    if (!pos || !norm || !texcoord)
+        return E_OUTOFMEMORY;
+
+    auto vptr = vb.get();
+    for (size_t j = 0; j < header.numVertices; ++j, ++vptr)
+    {
+        pos[j] = vptr->position;
+        norm[j] = vptr->normal;
+        texcoord[j] = vptr->textureCoordinate;
+    }
+
+    // Copy IB to result
+    std::unique_ptr<uint32_t[]> indices(new (std::nothrow) uint32_t[header.numIndices]);
+    if (!indices)
+        return E_OUTOFMEMORY;
+
+    auto iptr = ib.get();
+    for (size_t j = 0; j < header.numIndices; ++j, ++iptr)
+    {
+        uint16_t index = *iptr;
+        if (index == uint16_t(-1))
+            indices[j] = uint32_t(-1);
+        else
+            indices[j] = index;
+    }
+
+    result->mPositions.swap(pos);
+    result->mNormals.swap(norm);
+    result->mTexCoords.swap(texcoord);
+    result->mIndices.swap(indices);
+    result->mnVerts = header.numVertices;
+    result->mnFaces = header.numIndices / 3;
+
+    return S_OK;
+    */
 }
+
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
 HRESULT Mesh::ExportToPLY(const wchar_t* szFileNameIn/*, size_t nMaterials, const Material* materials*/) const
 {
-
-    std::wstring szFileName( szFileNameIn );
+    std::wstring szFileName(szFileNameIn);
 
     using namespace VBO;
 
@@ -552,7 +495,7 @@ HRESULT Mesh::ExportToPLY(const wchar_t* szFileNameIn/*, size_t nMaterials, cons
     if ((uint64_t(mnFaces) * 3) >= UINT32_MAX)
         return HRESULT_FROM_WIN32(ERROR_ARITHMETIC_OVERFLOW);
 
-    if (mnVerts >= UINT16_MAX)
+    if (mnVerts >= UINT32_MAX)
         return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
 
     // Setup VBO header
@@ -597,7 +540,7 @@ HRESULT Mesh::ExportToPLY(const wchar_t* szFileNameIn/*, size_t nMaterials, cons
 
 
 
-    std::unique_ptr<uint16_t[]> ib2(new (std::nothrow) uint16_t[header.numIndices]);
+    std::unique_ptr<uint32_t[]> ib2(new (std::nothrow) uint32_t[header.numIndices]);
     if (!vb || !ib)
         return E_OUTOFMEMORY;
 
@@ -612,12 +555,17 @@ HRESULT Mesh::ExportToPLY(const wchar_t* szFileNameIn/*, size_t nMaterials, cons
         vptr->textureCoordinate = mTexCoords[j];
     }*/
 
+
+
     // Copy to IB
-    /* 
     auto iptr = ib2.get();
+
+    /*
     for (size_t j = 0; j < header.numIndices; ++j, ++iptr)
     {
         uint32_t index = mIndices[j];
+
+
         if (index == uint32_t(-1))
         {
             *iptr = uint16_t(-1);
@@ -633,16 +581,35 @@ HRESULT Mesh::ExportToPLY(const wchar_t* szFileNameIn/*, size_t nMaterials, cons
     }*/
 
 
-     
 
-     auto iptr = mIndices.get();
-    for (size_t j = 0; j < mnFaces * 3; j += 3)
+
+    /*
+    for (size_t face = 0; face < mnFaces; ++face)
+    {
+        std::vector<uint32_t> mList;
+        for (size_t point = 0; point < 3; ++point)
+        {
+            uint32_t i = mIndices[face * 3 + point] + 1;
+            mList.push_back(i);
+        }
+
+        cube.triangles.push_back({ mList[0],mList[0 + 1],mList[0 + 2] });
+
+    }*/
+
+
+
+
+
+
+    // auto iptr = mIndices.get();
+    for (size_t j = 0; j < header.numIndices; j += 3)
     {
 
 
-        uint16_t indice1 = *iptr++;
-        uint16_t indice2 = *iptr++;
-        uint16_t indice3 = *iptr++;
+        uint32_t indice1 = iptr[j];
+        uint32_t indice2 = iptr[j + 1];
+        uint32_t indice3 = iptr[j + 2];
 
         //cube.triangles.push_back({ indice1,indice2,indice3 });
 
@@ -654,9 +621,73 @@ HRESULT Mesh::ExportToPLY(const wchar_t* szFileNameIn/*, size_t nMaterials, cons
 
 
 
+    /*
+    for (size_t j = 0; j < header.numIndices; j += 4)
+    {
+
+         cube.triangles.push_back({ mIndices[j],mIndices[j + 1],mIndices[j + 2] });
+         cube.triangles.push_back({ mIndices[j],mIndices[j + 2],mIndices[j + 3] });
+
+
+    }*/
+
+
+
+
+
+
+    /*
+    // Copy to IB
+    auto iptr = ib.get();
+    for (size_t j = 0; j < header.numIndices; ++j, ++iptr)
+    {
+        uint32_t index = mIndices[j];
+        if (index == uint32_t(-1))
+        {
+            *iptr = uint16_t(-1);
+        }
+        else if (index >= UINT16_MAX)
+        {
+            return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
+        }
+        else
+        {
+            *iptr = static_cast<uint16_t>(index);
+
+        }
+    }*/
+
+
+    /*
+
+    const struct CubeVertex { float3 position, normal; float2 texCoord; } verts[] = {
+    { { -1, -1, -1 },{ -1, 0, 0 },{ 0, 0 } },{ { -1, -1, +1 },{ -1, 0, 0 },{ 1, 0 } },{ { -1, +1, +1 },{ -1, 0, 0 },{ 1, 1 } },{ { -1, +1, -1 },{ -1, 0, 0 },{ 0, 1 } },
+    { { +1, -1, +1 },{ +1, 0, 0 },{ 0, 0 } },{ { +1, -1, -1 },{ +1, 0, 0 },{ 1, 0 } },{ { +1, +1, -1 },{ +1, 0, 0 },{ 1, 1 } },{ { +1, +1, +1 },{ +1, 0, 0 },{ 0, 1 } },
+    { { -1, -1, -1 },{ 0, -1, 0 },{ 0, 0 } },{ { +1, -1, -1 },{ 0, -1, 0 },{ 1, 0 } },{ { +1, -1, +1 },{ 0, -1, 0 },{ 1, 1 } },{ { -1, -1, +1 },{ 0, -1, 0 },{ 0, 1 } },
+    { { +1, +1, -1 },{ 0, +1, 0 },{ 0, 0 } },{ { -1, +1, -1 },{ 0, +1, 0 },{ 1, 0 } },{ { -1, +1, +1 },{ 0, +1, 0 },{ 1, 1 } },{ { +1, +1, +1 },{ 0, +1, 0 },{ 0, 1 } },
+    { { -1, -1, -1 },{ 0, 0, -1 },{ 0, 0 } },{ { -1, +1, -1 },{ 0, 0, -1 },{ 1, 0 } },{ { +1, +1, -1 },{ 0, 0, -1 },{ 1, 1 } },{ { +1, -1, -1 },{ 0, 0, -1 },{ 0, 1 } },
+    { { -1, +1, +1 },{ 0, 0, +1 },{ 0, 0 } },{ { -1, -1, +1 },{ 0, 0, +1 },{ 1, 0 } },{ { +1, -1, +1 },{ 0, 0, +1 },{ 1, 1 } },{ { +1, +1, +1 },{ 0, 0, +1 },{ 0, 1 } } };
+
+    std::vector<uint4> quads = { { 0, 1, 2, 3 },{ 4, 5, 6, 7 },{ 8, 9, 10, 11 },{ 12, 13, 14, 15 },{ 16, 17, 18, 19 },{ 20, 21, 22, 23 } };
+
+    for (auto& q : quads)
+    {
+        cube.triangles.push_back({ q.x,q.y,q.z });
+        cube.triangles.push_back({ q.x,q.z,q.w });
+    }
+
+    for (int i = 0; i < 24; ++i)
+    {
+        cube.vertices.push_back(verts[i].position);
+        cube.normals.push_back(verts[i].normal);
+        cube.texcoords.push_back(verts[i].texCoord);
+    }*/
+
+
+    //here get geometry
 
     std::filebuf fb_binary;
-    fb_binary.open(szFileName +  L"-binary.ply", std::ios::out | std::ios::binary);
+    fb_binary.open(szFileName + L"-binary.ply", std::ios::out | std::ios::binary);
     std::ostream outstream_binary(&fb_binary);
     if (outstream_binary.fail()) throw std::runtime_error("failed to open ");
 
