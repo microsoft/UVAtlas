@@ -7,7 +7,7 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 ## Release History
 
 ### September 28, 2021
-# Minor code and project cleanup
+* Minor code and project cleanup
 
 ### June 9, 2021
 * CMake build option to use Eigen3 library
