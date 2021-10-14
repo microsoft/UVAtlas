@@ -1,4 +1,4 @@
-![DirectX Logo](https://github.com/Microsoft/UVAtlas/wiki/Dx_logo.GIF)
+![DirectX Logo](https://raw.githubusercontent.com/wiki/Microsoft/UVAtlas/Dx_logo.GIF)
 
 # UVAtlas - isochart texture atlasing
 
