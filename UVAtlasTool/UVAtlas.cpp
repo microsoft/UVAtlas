@@ -36,6 +36,7 @@
 #include <new>
 #include <set>
 #include <string>
+#include <tuple>
 
 #include <conio.h>
 
@@ -1508,7 +1509,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
         if (dwOptions & (uint64_t(1) << OPT_TOLOWER))
         {
-            (void)_wcslwr_s(outputPath);
+            std::ignore = _wcslwr_s(outputPath);
         }
 
         if (~dwOptions & (uint64_t(1) << OPT_OVERWRITE))
@@ -1605,7 +1606,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
             if (dwOptions & (uint64_t(1) << OPT_TOLOWER))
             {
-                (void)_wcslwr_s(outputPath);
+                std::ignore = _wcslwr_s(outputPath);
             }
 
             if (~dwOptions & (uint64_t(1) << OPT_OVERWRITE))
