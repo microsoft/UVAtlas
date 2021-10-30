@@ -1,5 +1,23 @@
 @PACKAGE_INIT@
 
 include(${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@-targets.cmake)
+include(CMakeFindDependencyMacro)
+
+set(BUILD_TOOLS @BUILD_TOOLS@)
+if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
+    find_dependency(directxmesh)
+    find_dependency(directxtex)
+endif()
+
+set(ENABLE_USE_EIGEN @ENABLE_USE_EIGEN@)
+if (ENABLE_USE_EIGEN)
+    find_dependency(Eigen3)
+    find_dependency(spectra)
+endif()
+
+if((NOT WIN32) OR VCPKG_TOOLCHAIN)
+    find_dependency(directx-headers CONFIG)
+    find_dependency(directxmath CONFIG)
+endif()
 
 check_required_components("@PROJECT_NAME@")
