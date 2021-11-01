@@ -3,11 +3,11 @@
     <metadata minClientVersion="2.8.6">
         <id>uvatlas_desktop_2017</id>
         <version>0.0.0-SpecifyVersionOnCommandline</version>
-        <title>UVAtlas Library (VS 2017/2019 Win32)</title>
+        <title>UVAtlas Library (VS 2017/2019/2022 Win32)</title>
         <authors>Microsoft</authors>
         <owners>microsoft,directxtk</owners>
         <summary>UVAtlas Isochart library</summary>
-        <description>This version is for Windows desktop applications using Visual Studio 2017 or Visual Studio 2019.
+        <description>This version is for Windows desktop applications using Visual Studio 2017, Visual Studio 2019, or Visual Studio 2022.
 
 UVAtlas, a shared source library for creating and packing an isochart texture atlas.</description>
         <releaseNotes>Matches the September 28, 2021 release on GitHub.</releaseNotes>

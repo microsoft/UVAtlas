@@ -10,7 +10,7 @@ Copyright (c) Microsoft Corporation.
 
 This package contains UVAtlas, a shared source library for creating and packing an isochart texture atlas.
 
-This code is designed to build with Visual Studio 2017 ([15.9](https://walbourn.github.io/vs-2017-15-9-update/)), Visual Studio 2019, or clang for Windows v9 or later. It is recommended that you make use of the Windows 10 May 2020 Update SDK ([19041](https://walbourn.github.io/windows-10-may-2020-update-sdk/)) or later.
+This code is designed to build with Visual Studio 2017 ([15.9](https://walbourn.github.io/vs-2017-15-9-update/)), Visual Studio 2019, Visual Studio 2022, or clang for Windows v11 or later. Use of the Windows 10 May 2020 Update SDK ([19041](https://walbourn.github.io/windows-10-may-2020-update-sdk/)) or later is required.
 
 These components are designed to work without requiring any content from the legacy DirectX SDK. For details, see [Where is the DirectX SDK?](https://aka.ms/dxsdk).
 
@@ -64,7 +64,7 @@ Sander et al. "Signal-Specialized Parametrization" Europgraphics 2002 [pdf](http
 
   * Use the enum type instead of ``DWORD`` if building up flags values locally with bitmask operations. For example, ``UVATLAS options = UVATLAS_DEFAULT; if (...) options |= UVATLAS_GEODESIC_FAST;``
 
-* The UWP projects and the VS 2019 Win10 classic desktop project include configurations for the ARM64 platform. These require VS 2017 (15.9 update) or VS 2019 to build, with the ARM64 toolset installed.
+* The UWP projects and the Win10 classic desktop project include configurations for the ARM64 platform. These require VS 2017 (15.9 update) or later to build, with the ARM64 toolset installed.
 
 ## Contributing
 
