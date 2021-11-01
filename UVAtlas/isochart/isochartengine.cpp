@@ -12,6 +12,9 @@
 #include "isochart.h"
 #include "isochartmesh.h"
 
+#include <omp.h>
+ 
+
 using namespace DirectX;
 using namespace Isochart;
 
@@ -104,6 +107,9 @@ HRESULT CIsochartEngine::Initialize(
 {
     DPF(1, "Initialize...");
 
+
+    wprintf(L"CheckInitializeParameters...\n");
+
     // 1. Check arguments and current state
     if (!CheckInitializeParameters(
         pVertexArray,
@@ -128,13 +134,17 @@ HRESULT CIsochartEngine::Initialize(
         return E_UNEXPECTED;
     }
 
+     
     // 2. Try to enter exclusive section
     if (FAILED(hr = TryEnterExclusiveSection()))
     {
         return hr;
-    }
+    } 
 
     // 3. If engine is already initialized, return error code
+
+
+    wprintf(L"InitializeBaseInfo...\n");
 
     // 4. Prepare global basic information table.
     if (FAILED(hr = InitializeBaseInfo(
@@ -150,6 +160,9 @@ HRESULT CIsochartEngine::Initialize(
     {
         goto LEnd;
     }
+
+
+    wprintf(L"ApplyInitEngine...\n");
 
     // 5. Internal initialization. Prepare the initial charts to be partitioned.
     if (FAILED(hr = ApplyInitEngine(
@@ -172,7 +185,7 @@ LEnd:
         m_state = ISOCHART_ST_UNINITILAIZED;
     }
 
-    LeaveExclusiveSection();
+     LeaveExclusiveSection();
 
     return hr;
 }
@@ -1212,6 +1225,8 @@ HRESULT CIsochartEngine::InitializeBaseInfo(
 //    (3) Caculated vertex importance order for each initial charts
 //   returns   S_OK if successful, else failure code
 
+omp_lock_t my_lock;
+
 HRESULT CIsochartEngine::ApplyInitEngine(
     CBaseMeshInfo& baseInfo,
     DXGI_FORMAT IndexFormat,
@@ -1239,6 +1254,8 @@ HRESULT CIsochartEngine::ApplyInitEngine(
     {
         if (hr != E_OUTOFMEMORY)
         {
+
+            wprintf(L"Build Full Connection Faild, Non-manifold...\n");
             DPF(3, "Build Full Connection Faild, Non-manifold...");
         }
         delete pRootChart;
@@ -1263,8 +1280,75 @@ HRESULT CIsochartEngine::ApplyInitEngine(
         delete pRootChart;
         return E_OUTOFMEMORY;
     }
+
+
+    wprintf(L"while (!m_currentChartHeap.empty()) ...\n");
+
     size_t dwTestVertexCount = 0;
     size_t dwTestFaceCount = 0;
+
+
+
+    /* ori
+       while (!m_currentChartHeap.empty())
+        {
+            CIsochartMesh* pChart = m_currentChartHeap.cutTopData();
+            assert(pChart != nullptr);
+            _Analysis_assume_(pChart != nullptr);
+            assert(!pChart->IsImportanceCaculationDone());
+
+            if (FAILED(hr = pChart->PrepareProcessing(bIsForPartition)))
+            {
+                delete pChart;
+                return hr;
+            }
+
+            DPF(3, "Separate to %zu sub-charts", pChart->GetChildrenCount());
+            // if original mesh has multiple sub-charts or current chart
+            // has multiple boundaies it will generate children.
+
+            if (pChart->HasChildren())
+            {
+
+ 
+                for (uint32_t i = 0; i < pChart->GetChildrenCount(); i++)
+  
+                {
+                    CIsochartMesh* pChild = pChart->GetChild(i);
+                    assert(pChild != nullptr);
+                    assert(!pChild->IsImportanceCaculationDone());
+
+                    if (!m_currentChartHeap.insertData(pChild, 0))
+                    {
+                        delete pChart;
+                        return E_OUTOFMEMORY;
+                    }
+                    pChart->UnlinkChild(i);
+                }
+                delete pChart;
+            }
+            else
+            {
+                assert(pChart->IsImportanceCaculationDone()
+                    || !bIsForPartition);
+                try
+                {
+                    m_initChartList.push_back(pChart);
+                }
+                catch (std::bad_alloc&)
+                {
+                    delete pChart;
+                    return E_OUTOFMEMORY;
+                }
+                dwTestVertexCount += pChart->GetVertexNumber();
+                dwTestFaceCount += pChart->GetFaceNumber();
+            }
+        }
+
+    */
+
+   // faire marcher paralell
+  
     while (!m_currentChartHeap.empty())
     {
         CIsochartMesh* pChart = m_currentChartHeap.cutTopData();
@@ -1284,7 +1368,10 @@ HRESULT CIsochartEngine::ApplyInitEngine(
 
         if (pChart->HasChildren())
         {
+
+
             for (uint32_t i = 0; i < pChart->GetChildrenCount(); i++)
+
             {
                 CIsochartMesh* pChild = pChart->GetChild(i);
                 assert(pChild != nullptr);
@@ -1316,13 +1403,14 @@ HRESULT CIsochartEngine::ApplyInitEngine(
             dwTestFaceCount += pChart->GetFaceNumber();
         }
     }
+    
+    ///////////
+ 
 
-    DPF(3, "Old Vert Number is %zu, New Vert Number is %zu",
-        baseInfo.dwVertexCount,
-        dwTestVertexCount);
-    DPF(3, "Old Face Number is %zu, New Face Number is %zu",
-        baseInfo.dwFaceCount,
-        dwTestFaceCount);
+    wprintf(L"while (!m_currentChartHeap.empty()) DONE \n");
+
+    DPF(3, "Old Vert Number is %zu, New Vert Number is %zu", baseInfo.dwVertexCount, dwTestVertexCount);
+    DPF(3, "Old Face Number is %zu, New Face Number is %zu", baseInfo.dwFaceCount, dwTestFaceCount);
 
     hr = m_callbackSchemer.FinishWorkAdapt();
 

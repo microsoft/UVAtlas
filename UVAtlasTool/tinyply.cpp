@@ -224,7 +224,7 @@ HRESULT Mesh::CreateFromPLY(const wchar_t* szFileName, std::unique_ptr<Mesh>& re
 
         try { normals = file.request_properties_from_element("vertex", { "nx", "ny", "nz" }); }
         catch (const std::exception& e) { std::cerr << "tinyply exception: " << e.what() << std::endl; }
-
+ 
         try { colors = file.request_properties_from_element("vertex", { "red", "green", "blue", "alpha" }); }
         catch (const std::exception& e) { std::cerr << "tinyply exception: " << e.what() << std::endl; }
 
@@ -232,7 +232,7 @@ HRESULT Mesh::CreateFromPLY(const wchar_t* szFileName, std::unique_ptr<Mesh>& re
         catch (const std::exception& e) { std::cerr << "tinyply exception: " << e.what() << std::endl; }
 
         try { texcoords = file.request_properties_from_element("vertex", { "u", "v" }); }
-        catch (const std::exception& e) { std::cerr << "tinyply exception: " << e.what() << std::endl; }
+        catch (const std::exception& e) { std::cerr << "tinyply exception: " << e.what() << std::endl; } 
 
         // Providing a list size hint (the last argument) is a 2x performance improvement. If you have
         // arbitrary ply files, it is best to leave this 0.
@@ -321,6 +321,8 @@ HRESULT Mesh::CreateFromPLY(const wchar_t* szFileName, std::unique_ptr<Mesh>& re
         result->mIndices.swap(indices);
         result->mnVerts = vertices->count;
         result->mnFaces = numIndices;
+
+        int dede = 0;
 
 
     }
@@ -423,7 +425,7 @@ HRESULT Mesh::ExportToPLY(const wchar_t* szFileNameIn ) const
     cube_file.add_properties_to_element("vertex", { "nx", "ny", "nz" },
         Type::FLOAT32, geo.normals.size(), reinterpret_cast<uint8_t*>(geo.normals.data()), Type::INVALID, 0);
 
-    cube_file.add_properties_to_element("vertex", { "u", "v" },
+    cube_file.add_properties_to_element("vertex", { "s", "t" },
         Type::FLOAT32, geo.texcoords.size(), reinterpret_cast<uint8_t*>(geo.texcoords.data()), Type::INVALID, 0);
 
     cube_file.add_properties_to_element("face", { "vertex_indices" },

@@ -865,7 +865,7 @@ void PlyFile::PlyFileImpl::parse_data(std::istream & is, bool firstPass)
             return bytes_to_skip;
         };
     }
-    else
+    else // ascii
     {
         read = [this, &listSize, &dummyCount](PropertyLookup & f, const PlyProperty & p, uint8_t * dest, size_t & destOffset, std::istream & _is) noexcept
         { 

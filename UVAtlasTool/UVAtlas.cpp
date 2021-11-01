@@ -596,6 +596,8 @@ namespace
 
 int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 {
+     
+
     // Parameters and defaults
     size_t maxCharts = 0;
     float maxStretch = 0.16667f;
@@ -1363,6 +1365,12 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             &facePartitioning,
             &vertexRemapArray,
             &outStretch, &outCharts);
+
+
+
+        wprintf(L"Computing isochart atlas on mesh Done \n");
+
+
         if (FAILED(hr))
         {
             if (hr == HRESULT_FROM_WIN32(ERROR_INVALID_DATA))
@@ -1648,6 +1656,10 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             if (!_wcsicmp(outputExt, L".vbo"))
             {
                 hr = inMesh->ExportToVBO(outputPath);
+            }
+            else if (!_wcsicmp(outputExt, L".ply"))
+            {
+                hr = inMesh->ExportToPLY(outputExt);
             }
             else if (!_wcsicmp(outputExt, L".sdkmesh"))
             {
