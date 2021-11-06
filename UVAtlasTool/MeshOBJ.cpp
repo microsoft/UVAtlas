@@ -26,6 +26,7 @@
 
 #include <cwchar>
 #include <iterator>
+#include <locale>
 #include <new>
 
 using namespace DirectX;
@@ -185,6 +186,8 @@ HRESULT Mesh::ExportToOBJ(const wchar_t* szFileName, size_t nMaterials, const Ma
 _Use_decl_annotations_
 void Mesh::ExportToOBJ(std::wostream& os, size_t nMaterials, const Material* materials) const
 {
+    os.imbue(std::locale::classic());
+
     if (!mtlFileName.empty())
         os << L"mtllib ./" << mtlFileName << L".mtl" << std::endl;
 
