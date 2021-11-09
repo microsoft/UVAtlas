@@ -32,7 +32,7 @@
 
 #include <DirectXMath.h>
 
-#define UVATLAS_VERSION 182
+#define UVATLAS_VERSION 183
 
 
 namespace DirectX

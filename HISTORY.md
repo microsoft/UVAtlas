@@ -6,6 +6,13 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### November 8, 2021
+* VS 2022 support
+* Fixed locale issue with WaveFront OBJ reading/writing
+* Minor code and project review
+* VS 2017 projects updated to require the Windows 10 SDK (19401)
+* uvatlastool: Updated for November 2021 DirectXTex & DirectXMesh releases
+
 ### September 28, 2021
 * Minor code and project cleanup
 
