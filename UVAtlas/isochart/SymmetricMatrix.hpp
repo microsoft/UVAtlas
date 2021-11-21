@@ -56,20 +56,20 @@ namespace Isochart
                     // Construct matrix operation object using the wrapper class DenseSymMatProd.
                     Spectra::DenseSymMatProd<value_type> op(matrix);
                     // Construct eigen solver object, requesting the largest dwMaxRange eigenvalues
-                    Spectra::SymEigsSolver<value_type, Spectra::LARGEST_ALGE, Spectra::DenseSymMatProd<value_type> > eigs(
-                        &op,
+                    Spectra::SymEigsSolver< Spectra::DenseSymMatProd<value_type> > eigs(
+                        op,
                         static_cast<int>(dwMaxRange),
                         // Convergence speed, higher is faster with more memory usage, recommended to be at least 2x nev, must be <= dimension.
                         static_cast<int>(std::min(dwMaxRange * 2, dwDimension))
                     );
                     eigs.init();
                     auto const numConverged = eigs.compute(
+                        Spectra::SortRule::LargestAlge,  // Sort by descending eigenvalues.
                         maxIterations,
-                        epsilon,
-                        Spectra::LARGEST_ALGE // Sort by descending eigenvalues.
+                        epsilon
                     );
 
-                    if (numConverged >= static_cast<int>(dwMaxRange) && eigs.info() == Spectra::SUCCESSFUL)
+                    if (numConverged >= static_cast<int>(dwMaxRange) && eigs.info() == Spectra::CompInfo::Successful)
                     {
                         eigenvalues = eigs.eigenvalues();
                         eigenvectors = eigs.eigenvectors();
