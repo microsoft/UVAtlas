@@ -88,6 +88,7 @@ namespace
         OPT_CMO,
         OPT_VBO,
         OPT_WAVEFRONT_OBJ,
+        OPT_PLY,
         OPT_CLOCKWISE,
         OPT_FORCE_32BIT_IB,
         OPT_OVERWRITE,
@@ -173,6 +174,7 @@ namespace
         { L"cmo",       OPT_CMO },
         { L"vbo",       OPT_VBO },
         { L"wf",        OPT_WAVEFRONT_OBJ },
+        { L"ply",       OPT_PLY},
         { L"cw",        OPT_CLOCKWISE },
         { L"ib32",      OPT_FORCE_32BIT_IB },
         { L"y",         OPT_OVERWRITE },
@@ -224,6 +226,7 @@ namespace
 HRESULT LoadFromOBJ(const wchar_t* szFilename,
     std::unique_ptr<Mesh>& inMesh, std::vector<Mesh::Material>& inMaterial,
     bool ccw, bool dds);
+ 
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
@@ -594,6 +597,8 @@ namespace
 
 int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 {
+     
+
     // Parameters and defaults
     size_t maxCharts = 0;
     float maxStretch = 0.16667f;
@@ -880,6 +885,14 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 }
                 break;
 
+            case OPT_PLY:
+                if (dwOptions & (uint64_t(1) << OPT_SECOND_UV))
+                {
+                    wprintf(L"-uv2 is not supported by PLY\n");
+                    return 1;
+                }
+                break;
+
             case OPT_SECOND_UV:
                 if (dwOptions & ((uint64_t(1) << OPT_VBO) | (uint64_t(1) << OPT_CMO) | (uint64_t(1) << OPT_WAVEFRONT_OBJ)))
                 {
@@ -1011,6 +1024,12 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             wprintf(L"\nERROR: Autodesk FBX files not supported\n");
             return 1;
         }
+        else if (_wcsicmp(ext, L".ply") == 0)
+        {
+            hr = Mesh::CreateFromPLY(pConv->szSrc, inMesh, false);
+            /*LoadFromPLY(pConv->szSrc, inMesh);
+            hr = S_OK;*/
+        }
         else
         {
             hr = LoadFromOBJ(pConv->szSrc, inMesh, inMaterial,
@@ -1075,7 +1094,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             // Adjacency
             float epsilon = (dwOptions & (uint64_t(1) << OPT_GEOMETRIC_ADJ)) ? 1e-5f : 0.f;
 
-            hr = inMesh->GenerateAdjacency(epsilon);
+            hr = inMesh->GenerateAdjacency(epsilon); // here binary ply doesnt work ..?
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed generating adjacency (%08X%ls)\n",
@@ -1102,6 +1121,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
             else
             {
+ 
+
                 size_t nNewVerts = inMesh->GetVertexCount();
                 if (nVerts != nNewVerts)
                 {
@@ -1347,6 +1368,12 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             &facePartitioning,
             &vertexRemapArray,
             &outStretch, &outCharts);
+
+
+
+        wprintf(L"Computing isochart atlas on mesh Done \n");
+
+
         if (FAILED(hr))
         {
             if (hr == HRESULT_FROM_WIN32(ERROR_INVALID_DATA))
@@ -1498,6 +1525,10 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             {
                 wcscpy_s(outputExt, L".obj");
             }
+            else if (dwOptions & (uint64_t(1) << OPT_PLY))
+            {
+                wcscpy_s(outputExt, L".ply");
+            }
             else
             {
                 wcscpy_s(outputExt, L".sdkmesh");
@@ -1570,6 +1601,10 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         {
             hr = inMesh->ExportToOBJ(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
         }
+        else if (!_wcsicmp(outputExt, L".ply"))
+        {
+            hr = inMesh->ExportToPLY(outputPath);
+        }
         else if (!_wcsicmp(outputExt, L".x"))
         {
             wprintf(L"\nERROR: Legacy Microsoft X files not supported\n");
@@ -1624,6 +1659,10 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             if (!_wcsicmp(outputExt, L".vbo"))
             {
                 hr = inMesh->ExportToVBO(outputPath);
+            }
+            else if (!_wcsicmp(outputExt, L".ply"))
+            {
+                hr = inMesh->ExportToPLY(outputExt);
             }
             else if (!_wcsicmp(outputExt, L".sdkmesh"))
             {

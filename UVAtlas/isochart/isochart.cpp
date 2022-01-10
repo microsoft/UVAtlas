@@ -319,6 +319,9 @@ HRESULT Isochart::isochartpartition(
     DPF(0, "Vertex Number:%zu\n", VertexCount);
     DPF(0, "Face Number:%zu\n", FaceCount);
 
+
+    wprintf(L"CreateIsochartEngine...\n");
+
     // 2. Create isochart engine
     auto pEngine = IIsochartEngine::CreateIsochartEngine();
     if (!pEngine)
@@ -344,6 +347,9 @@ HRESULT Isochart::isochartpartition(
     }
     pEngine->SetStage(dwTotalStage, dwDoneStage);
 
+
+    wprintf(L"pEngine->Initialize...\n");
+
     // 4. Initialize isochart engine
     if (FAILED(hr = pEngine->Initialize(
         pVertexArray,
@@ -361,6 +367,11 @@ HRESULT Isochart::isochartpartition(
     }
     pEngine->SetStage(dwTotalStage, dwDoneStage + 1);
 
+
+
+    wprintf(L"pEngine->Partition ...\n");
+
+
     // 5. Partition
     if (FAILED(hr = pEngine->Partition(
         MaxChartNumber,
@@ -371,6 +382,9 @@ HRESULT Isochart::isochartpartition(
     {
         goto LEnd;
     }
+
+
+    wprintf(L"ExportPartitionResult ...\n");
 
     // 6. Export Partition Result
     hr = pEngine->ExportPartitionResult(

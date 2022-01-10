@@ -8,6 +8,9 @@
     <Filter Include="Wavefront OBJ">
       <UniqueIdentifier>{c8076e0b-beef-46c6-8c4b-128ccc82a987}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Ply">
+      <UniqueIdentifier>{337c9091-8663-40bd-8058-df2e01b62f79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="UVAtlas.cpp" />
@@ -15,6 +18,9 @@
     <CLInclude Include="Mesh.h" />
     <ClCompile Include="MeshOBJ.cpp">
       <Filter>Wavefront OBJ</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyply.cpp">
+      <Filter>Ply</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

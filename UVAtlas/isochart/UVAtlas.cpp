@@ -270,6 +270,7 @@ namespace
 
         if (!adjacency)
         {
+            wprintf(L"Input adjacency pointer cannot be nullptr. Use DirectXMesh to compute it\n");
             DPF(0, "Input adjacency pointer cannot be nullptr. Use DirectXMesh to compute it");
             return E_INVALIDARG;
         }
@@ -305,6 +306,8 @@ namespace
                 if ((adjacency[i] == uint32_t(-1)) &&
                     (falseEdgeAdjacency[i] != uint32_t(-1)))
                 {
+
+                    wprintf(L"False edge found on triangle with no adjacent triangle.\n");
                     DPF(0, "False edge found on triangle with no adjacent triangle.");
                     return HRESULT_E_INVALID_DATA;
                 }
@@ -333,6 +336,9 @@ namespace
         size_t numCharts = 0;
         float maxChartingStretch = 0.f;
 
+
+        wprintf(L"isochartpartition...\n");
+
         hr = isochartpartition(positions,
             nVerts,
             sizeof(XMFLOAT3),
@@ -357,6 +363,9 @@ namespace
             options);
         if (FAILED(hr))
             return hr;
+
+
+        wprintf(L"isochartpartition: Done\n");
 
         if (DXGI_FORMAT_R16_UINT == indexFormat)
             assert(nFaces * 3 * sizeof(uint16_t) == vOutIndexBuffer.size());
@@ -673,6 +682,9 @@ HRESULT __cdecl DirectX::UVAtlasCreate(
     std::vector<uint32_t> vFacePartitioning;
     std::vector<uint32_t> vAdjacencyOut;
 
+
+    wprintf(L"UVAtlasPartitionInt .. \n");
+
     HRESULT hr = UVAtlasPartitionInt(positions,
         nVerts,
         indices,
@@ -699,6 +711,9 @@ HRESULT __cdecl DirectX::UVAtlasCreate(
     if (FAILED(hr))
         return hr;
 
+
+    wprintf(L"UVAtlasPackInt .. \n");
+
     hr = UVAtlasPackInt(vMeshOutVertexBuffer,
         vMeshOutIndexBuffer,
         indexFormat,
@@ -713,6 +728,9 @@ HRESULT __cdecl DirectX::UVAtlasCreate(
         MAKE_STAGE(4U, 3U, 1U));
     if (FAILED(hr))
         return hr;
+
+
+    wprintf(L"pvFacePartitioning .. \n");
 
     if (pvFacePartitioning)
     {
