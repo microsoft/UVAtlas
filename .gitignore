@@ -28,8 +28,4 @@ packages
 /Tests
 /wiki
 /out
-/CMakeCache.txt
-/CMakeFiles
-/Makefile
-/cmake
-/cmake_install.cmake
+/CMakeUserPresets.json
