@@ -2809,18 +2809,15 @@ HRESULT CIsochartMesh::GetMaxLengthCutPathsInWatershed(
             goto LEnd;
         }
 
-        uint32_t dwStartVertexID = INVALID_VERT_ID;
         uint32_t dwNextVertexID = INVALID_VERT_ID;
         uint32_t dwEndVertexID = INVALID_VERT_ID;
 
         if (m_pVerts[pStartEdge->dwVertexID[0]].bIsBoundary)
         {
-            dwStartVertexID = pStartEdge->dwVertexID[0];
             dwNextVertexID = pStartEdge->dwVertexID[1];
         }
         else
         {
-            dwStartVertexID = pStartEdge->dwVertexID[1];
             dwNextVertexID = pStartEdge->dwVertexID[0];
         }
 

@@ -20,18 +20,18 @@ namespace Isochart
     const size_t NOT_IN_HEAP = 0xffffffff;
     typedef size_t pos_type;
 
-    template <class _Ty1, class _Ty2>
+    template <class Ty1, class Ty2>
     class CMaxHeap;
 
-    template <class _Ty1, class _Ty2>
+    template <class Ty1, class Ty2>
     class CMaxHeapItem
     {
-        friend class CMaxHeap<_Ty1, _Ty2>;
+        friend class CMaxHeap<Ty1, Ty2>;
 
     public:
-        // _Ty1 should be a simple type so that could be compare use < > ==...
-        typedef _Ty1 weight_type;
-        typedef _Ty2 data_type;
+        // Ty1 should be a simple type so that could be compare use < > ==...
+        typedef Ty1 weight_type;
+        typedef Ty2 data_type;
 
         weight_type m_weight;
         data_type m_data;
@@ -71,12 +71,12 @@ namespace Isochart
         }
     };
 
-    template <class _Ty1, class _Ty2>
+    template <class Ty1, class Ty2>
     class CMaxHeap
     {
     public:
-        typedef _Ty1 weight_type;
-        typedef _Ty2 data_type;
+        typedef Ty1 weight_type;
+        typedef Ty2 data_type;
         typedef CMaxHeapItem<weight_type, data_type> item_type;
 
         CMaxHeap() : m_bAutoMangeMemory(false), m_size(0)

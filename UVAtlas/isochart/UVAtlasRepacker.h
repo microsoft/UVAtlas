@@ -34,18 +34,18 @@ namespace IsochartRepacker
     // convert the index buffer into this structure for convenience
     // use template to handle 16-bit index and 32-bit index
     template <class T>
-    struct _Triangle {
+    struct Triangle {
         T vertex[3];
     };
 
     // describe the chart edges
-    struct _EDGE {
+    struct EDGE {
         DirectX::XMFLOAT2 p1;
         DirectX::XMFLOAT2 p2;
         DirectX::XMFLOAT2 minP;
         DirectX::XMFLOAT2 maxP;
-        _EDGE() = default;
-        _EDGE(const DirectX::XMFLOAT2& _p1, const DirectX::XMFLOAT2& _p2) : p1(_p1), p2(_p2) {
+        EDGE() = default;
+        EDGE(const DirectX::XMFLOAT2& _p1, const DirectX::XMFLOAT2& _p2) : p1(_p1), p2(_p2) {
             minP.x = std::min(p1.x, p2.x);
             maxP.x = std::max(p1.x, p2.x);
             minP.y = std::min(p1.y, p2.y);
@@ -54,7 +54,7 @@ namespace IsochartRepacker
     };
 
     // save the information about the chart in a specific position and rotate angle
-    struct _PositionInfo {
+    struct PositionInfo {
         DirectX::XMFLOAT2 basePoint;    // record one specific point in a corner point of tessellation grids
                                         // we can get the transformation matrix through this point
         DirectX::XMFLOAT2 minPoint;     // top left corner of bounding box
@@ -63,7 +63,7 @@ namespace IsochartRepacker
         int numY;                       // number of grids in Y direction
         DirectX::XMFLOAT2 adjustLen;    // make the chart in a best place
         float angle;                    // chart rotate angle from the original position
-        std::vector<_EDGE> edges;       // describe the edges of each chart
+        std::vector<EDGE> edges;        // describe the edges of each chart
     };
 
     // save chart information
@@ -71,7 +71,7 @@ namespace IsochartRepacker
         float maxLength;                    // the max length of a chart in x direction or y direction
         bool valid;                         // if the chart information is valid
         float area;
-        std::vector<_PositionInfo> PosInfo; // Position information of different angle
+        std::vector<PositionInfo> PosInfo;  // Position information of different angle
         ChartsInfo() : maxLength(0.0), valid(false), area(0.0) {}
     };
 

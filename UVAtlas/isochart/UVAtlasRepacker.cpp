@@ -407,7 +407,7 @@ void CUVAtlasRepacker::InitialSpacePercent()
         m_PixelWidth = sqrtf(m_fChartsTotalArea /
             (m_EstimatedSpacePercent * float(m_dwAtlasWidth * m_dwAtlasHeight)));
         auto pCInfo = reinterpret_cast<ChartsInfo*>(&(m_ChartsInfo[m_SortedChartIndex[0]]));
-        auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(pCInfo->PosInfo[0]));
+        auto pPosInfo = reinterpret_cast<PositionInfo*>(&(pCInfo->PosInfo[0]));
 
         int numX = int(ceilf((pPosInfo->maxPoint.x - pPosInfo->minPoint.x) / m_PixelWidth));
         int numY = int(ceilf((pPosInfo->maxPoint.y - pPosInfo->minPoint.y) / m_PixelWidth));
@@ -435,7 +435,7 @@ void CUVAtlasRepacker::ComputeChartsLengthInPixel()
         if (!pCInfo->valid) continue;
         for (size_t j = 0; j < m_iRotateNum; j++)
         {
-            auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(pCInfo->PosInfo[j]));
+            auto pPosInfo = reinterpret_cast<PositionInfo*>(&(pCInfo->PosInfo[j]));
 
             // compute the width and height of current chart
             int numX = int(ceilf((pPosInfo->maxPoint.x - pPosInfo->minPoint.x) / m_PixelWidth));
@@ -743,7 +743,7 @@ void CUVAtlasRepacker::CleanUp()
 template <class T>
 HRESULT CUVAtlasRepacker::GenerateAdjacentInfo()
 {
-    auto ib = reinterpret_cast<const _Triangle<T>*>(m_pvIndexBuffer->data());
+    auto ib = reinterpret_cast<const Triangle<T>*>(m_pvIndexBuffer->data());
 
     try
     {
@@ -1166,9 +1166,9 @@ HRESULT CUVAtlasRepacker::PrepareChartsInfo()
                             XMFLOAT2& vert1 = *reinterpret_cast<XMFLOAT2*>(&OutVec[a0 - indexbase0]);
                             XMFLOAT2& vert2 = *reinterpret_cast<XMFLOAT2*>(&OutVec[b0 - indexbase0]);
                             XMFLOAT2& vert3 = *reinterpret_cast<XMFLOAT2*>(&OutVec[c0 - indexbase0]);
-                            m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(vert1, vert2));
-                            m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(vert2, vert3));
-                            m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(vert3, vert1));
+                            m_ChartsInfo[i].PosInfo[j].edges.push_back(EDGE(vert1, vert2));
+                            m_ChartsInfo[i].PosInfo[j].edges.push_back(EDGE(vert2, vert3));
+                            m_ChartsInfo[i].PosInfo[j].edges.push_back(EDGE(vert3, vert1));
                         }
                         else
                             return E_FAIL;
@@ -1179,11 +1179,11 @@ HRESULT CUVAtlasRepacker::PrepareChartsInfo()
                 // if the triangle has a edge without adjacent triangle
                 // the edge is one outer edge
                 if (m_NewAdjacentInfo[Base] == uint32_t(-1))
-                    m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(Vertex1, Vertex2));
+                    m_ChartsInfo[i].PosInfo[j].edges.push_back(EDGE(Vertex1, Vertex2));
                 if (m_NewAdjacentInfo[Base + 1] == uint32_t(-1))
-                    m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(Vertex2, Vertex3));
+                    m_ChartsInfo[i].PosInfo[j].edges.push_back(EDGE(Vertex2, Vertex3));
                 if (m_NewAdjacentInfo[Base + 2] == uint32_t(-1))
-                    m_ChartsInfo[i].PosInfo[j].edges.push_back(_EDGE(Vertex3, Vertex1));
+                    m_ChartsInfo[i].PosInfo[j].edges.push_back(EDGE(Vertex3, Vertex1));
             }
         }
     NEXT:;
@@ -1309,7 +1309,7 @@ void CUVAtlasRepacker::PutChart(uint32_t index)
     {
         // for every position of chart, first do tessellation on it
         // then try to put it into the atlas after rotate 0, 90, 180, 270 degrees
-        auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(pCInfo->PosInfo[i]));
+        auto pPosInfo = reinterpret_cast<PositionInfo*>(&(pCInfo->PosInfo[i]));
         DoTessellation(index, i);
         PrepareSpaceInfo(m_currSpaceInfo, m_currChartUVBoard,
             0, pPosInfo->numX, 0, pPosInfo->numY, true);
@@ -1534,7 +1534,7 @@ bool CUVAtlasRepacker::CheckAtlasRange()
 \***************************************************************************/
 void CUVAtlasRepacker::GetChartPutPosition(uint32_t index)
 {
-    auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(m_ChartsInfo[index].PosInfo[m_triedRotate]));
+    auto pPosInfo = reinterpret_cast<PositionInfo*>(&(m_ChartsInfo[index].PosInfo[m_triedRotate]));
 
     switch (m_triedPutSide)
     {
@@ -1586,7 +1586,7 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
     GetChartPutPosition(index);
     if (!CheckAtlasRange()) return;
 
-    auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(m_ChartsInfo[index].PosInfo[m_triedRotate]));
+    auto pPosInfo = reinterpret_cast<PositionInfo*>(&(m_ChartsInfo[index].PosInfo[m_triedRotate]));
 
     XMMATRIX matrixRotate = XMMatrixRotationZ(float(m_triedPutRotation) / 180.0f * XM_PI);
     XMStoreFloat2(&(pPosInfo->basePoint), XMVector2TransformCoord(XMLoadFloat2(&(pPosInfo->basePoint)),
@@ -1912,7 +1912,7 @@ float CUVAtlasRepacker::GetTotalArea() const
 bool CUVAtlasRepacker::DoTessellation(uint32_t ChartIndex, size_t AngleIndex)
 {
     auto pCInfo = reinterpret_cast<ChartsInfo*>(&(m_ChartsInfo[ChartIndex]));
-    auto pPosInfo = reinterpret_cast<_PositionInfo*>(&(pCInfo->PosInfo[AngleIndex]));
+    auto pPosInfo = reinterpret_cast<PositionInfo*>(&(pCInfo->PosInfo[AngleIndex]));
 
     int numX = pPosInfo->numX;
     int numY = pPosInfo->numY;
