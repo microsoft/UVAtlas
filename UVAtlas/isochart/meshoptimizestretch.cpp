@@ -308,7 +308,6 @@ HRESULT CIsochartMesh::OptimalScaleChart(
     float fSmallest3DChartArea =
         baseInfo.fMeshArea * SMALLEST_CHART_PIXEL_AREA;
 
-    float fTotalOpticalDomainArea = 0;
     for (size_t ii = 0; ii < chartList.size(); ii++)
     {
         float fEii = chartList[ii]->m_fParamStretchL2;
@@ -375,7 +374,6 @@ HRESULT CIsochartMesh::OptimalScaleChart(
         }
         */
         chartList[ii]->ScaleChart(IsochartSqrtf(fAlpha));
-        fTotalOpticalDomainArea += chartList[ii]->m_fChart2DArea;
 
         if (bOptimizeSignal && !IsInZeroRange2(fAlpha))
         {

@@ -243,9 +243,9 @@ HRESULT CIsochartMesh::CalculateGeodesicDistance(
             // if the geodesic algorithm selection field of the isochart option is DEFAULT, check whether suitable to apply the new algorithm
         (
             (
-            (m_IsochartEngine.m_dwOptions & _OPTIONMASK_ISOCHART_GEODESIC)
+            (m_IsochartEngine.m_dwOptions & OPTIONMASK_ISOCHART_GEODESIC)
                 ==
-                (_OPTION_ISOCHART_DEFAULT & _OPTIONMASK_ISOCHART_GEODESIC)
+                (ISOCHARTOPTION::DEFAULT & OPTIONMASK_ISOCHART_GEODESIC)
                 )
             &&
             (m_baseInfo.dwFaceCount < LIMIT_FACENUM_USENEWGEODIST)
@@ -254,7 +254,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistance(
 
             // or the user forces to use the new algorithm
             (
-                m_IsochartEngine.m_dwOptions & _OPTION_ISOCHART_GEODESIC_QUALITY
+                m_IsochartEngine.m_dwOptions & ISOCHARTOPTION::GEODESIC_QUALITY
                 )
             )
         &&
@@ -481,9 +481,9 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertex(
             // if the geodesic algorithm selection field of the isochart option is DEFAULT, check whether suitable to apply the new algorithm
         (
             (
-            (m_IsochartEngine.m_dwOptions & _OPTIONMASK_ISOCHART_GEODESIC)
+            (m_IsochartEngine.m_dwOptions & OPTIONMASK_ISOCHART_GEODESIC)
                 ==
-                (_OPTION_ISOCHART_DEFAULT & _OPTIONMASK_ISOCHART_GEODESIC)
+                (ISOCHARTOPTION::DEFAULT & OPTIONMASK_ISOCHART_GEODESIC)
                 )
             &&
             (m_baseInfo.dwFaceCount < LIMIT_FACENUM_USENEWGEODIST)
@@ -492,7 +492,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertex(
 
             // or the user forces to use the new algorithm
             (
-                m_IsochartEngine.m_dwOptions & _OPTION_ISOCHART_GEODESIC_QUALITY
+                m_IsochartEngine.m_dwOptions & ISOCHARTOPTION::GEODESIC_QUALITY
                 )
             )
         &&

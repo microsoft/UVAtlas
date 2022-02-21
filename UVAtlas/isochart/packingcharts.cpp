@@ -3474,8 +3474,6 @@ void CIsochartMesh::OptimizeAtlasSignalStretch(
         return;
     }
 
-    float fScale2 = 0;
-
     for (size_t i = 0; i < chartList.size(); i++)
     {
         CIsochartMesh* pChart = chartList[i];
@@ -3491,7 +3489,6 @@ void CIsochartMesh::OptimizeAtlasSignalStretch(
                 (pChart->m_fParamStretchL2 + ShiftError) / pChart->m_fChart2DArea)
                 / fTotal;
             fScale *= fTotal2DArea;
-            fScale2 = fScale;
             fScale = IsochartSqrtf(fScale);
         }
 

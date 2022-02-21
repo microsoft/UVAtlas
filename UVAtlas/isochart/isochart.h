@@ -33,21 +33,21 @@ namespace Isochart
     typedef std::function<HRESULT __cdecl(const DirectX::XMFLOAT2 * uv, size_t primitiveID, size_t signalDimension, void* userData, float* signalOut)> LPIMTSIGNALCALLBACK;
 
     // isochart options
-    enum ISOCHARTOPTION
+    namespace ISOCHARTOPTION
     {
         // the default option, currently it only affects how isochart selects its geodesic distance computation algorithm.
         // when the face num of the mesh to be processed is below _LIMIT_FACENUM_USENEWGEODIST,
         // isochart use the new geodesic distance algorithm, 
         // otherwise the old [KS98] approach is applied
-        _OPTION_ISOCHART_DEFAULT = 0x00,
+        constexpr unsigned int DEFAULT = 0x00;
 
         // all internal geodesic distance computation will use the [KS98] approach, this is fast but imprecise
-        _OPTION_ISOCHART_GEODESIC_FAST = 0x01,
+        constexpr unsigned int GEODESIC_FAST = 0x01;
 
         // all internal geodesic distance computation tries to use the new approach implemented in geodesicdist.lib (except IMT is specified), this is precise but slower
-        _OPTION_ISOCHART_GEODESIC_QUALITY = 0x02
+        constexpr unsigned int GEODESIC_QUALITY = 0x02;
     };
-    const unsigned int _OPTIONMASK_ISOCHART_GEODESIC = _OPTION_ISOCHART_GEODESIC_FAST | _OPTION_ISOCHART_GEODESIC_QUALITY;
+    constexpr unsigned int OPTIONMASK_ISOCHART_GEODESIC = ISOCHARTOPTION::GEODESIC_FAST | ISOCHARTOPTION::GEODESIC_QUALITY;
 
     HRESULT
         isochart(
@@ -72,7 +72,7 @@ namespace Isochart
             // Callback parameters
             LPISOCHARTCALLBACK pCallback = nullptr,
             float Frequency = 0.01f,	// Call callback function each time completed 1% work of all task
-            unsigned int dwOptions = _OPTION_ISOCHART_DEFAULT);
+            unsigned int dwOptions = ISOCHARTOPTION::DEFAULT);
 
     HRESULT
         isochartpartition(
@@ -102,7 +102,7 @@ namespace Isochart
                                                                                               // CAN be splitted, set the that ajacency to -1.
                                                                                               // Usually, it's easier for user to specified the edge that CAN NOT be
                                                                                               // splitted, make sure to validate the input
-            _In_                                        unsigned int dwOptions = _OPTION_ISOCHART_DEFAULT);
+            _In_                                        unsigned int dwOptions = ISOCHARTOPTION::DEFAULT);
 
 
     // Class IIsochartEngine for the advanced usage

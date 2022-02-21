@@ -42,7 +42,7 @@ CIsochartEngine::CIsochartEngine() :
 #ifdef WIN32
     m_hMutex(nullptr),
 #endif
-    m_dwOptions(_OPTION_ISOCHART_DEFAULT)
+    m_dwOptions(ISOCHARTOPTION::DEFAULT)
 {
     std::random_device randomDevice;
     m_randomEngine.seed(randomDevice());
@@ -1647,9 +1647,7 @@ HRESULT CIsochartEngine::FillExportVertexBuffer(
 
     auto pVertexOut = pvVertexBuffer->data();
 
-    uint32_t* pdwBaseMap = nullptr;
-    uint32_t* pdwMap = nullptr;
-    pdwBaseMap = pdwMap = pvMapBuffer->data();
+    uint32_t* pdwMap = pvMapBuffer->data();
 
     for (size_t i = 0; i < finalChartList.size(); i++)
     {
@@ -1850,7 +1848,7 @@ bool Isochart::CheckInitializeParameters(
     UNREFERENCED_PARAMETER(FaceCount);
     UNREFERENCED_PARAMETER(pIMTArray);
 
-    if ((dwOptions & _OPTION_ISOCHART_GEODESIC_FAST) && (dwOptions & _OPTION_ISOCHART_GEODESIC_QUALITY))
+    if ((dwOptions & ISOCHARTOPTION::GEODESIC_FAST) && (dwOptions & ISOCHARTOPTION::GEODESIC_QUALITY))
         return false;
 
     // 1. Vertex buffer
@@ -1863,16 +1861,7 @@ bool Isochart::CheckInitializeParameters(
         return false;
     }
     // 2. Face buffer
-    size_t dwFaceIndexSize = 0;
-    if (IndexFormat == DXGI_FORMAT_R16_UINT)
-    {
-        dwFaceIndexSize = sizeof(uint16_t) * 3;
-    }
-    else if (IndexFormat == DXGI_FORMAT_R32_UINT)
-    {
-        dwFaceIndexSize = sizeof(uint32_t) * 3;
-    }
-    else
+    if (IndexFormat != DXGI_FORMAT_R16_UINT && IndexFormat != DXGI_FORMAT_R32_UINT)
     {
         return false;
     }
