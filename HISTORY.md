@@ -6,6 +6,11 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### February 28, 2022
+* Code and project review including fixing clang v13 warnings
+* Added CMakePresets.json
+* uvatlastool: Updated for February 2022 DirectXTex & DirectXMesh releases
+
 ### November 8, 2021
 * VS 2022 support
 * Fixed locale issue with WaveFront OBJ reading/writing

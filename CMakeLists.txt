@@ -3,7 +3,7 @@
 
 cmake_minimum_required (VERSION 3.11)
 
-set(UVATLAS_VERSION 1.8.3)
+set(UVATLAS_VERSION 1.8.4)
 
 project (UVAtlas
   VERSION ${UVATLAS_VERSION}
