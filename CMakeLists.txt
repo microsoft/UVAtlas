@@ -257,7 +257,7 @@ if(MSVC)
     target_compile_definitions(${PROJECT_NAME} PRIVATE _UNICODE UNICODE)
 
     if(WINDOWS_STORE)
-        target_compile_definitions(${PROJECT_NAME} PRIVATE _WIN32_WINNT=0x0A00)
+        target_compile_definitions(${PROJECT_NAME} PRIVATE _WIN32_WINNT=0x0A00 WINAPI_FAMILY=WINAPI_FAMILY_APP)
     else()
         target_compile_definitions(${PROJECT_NAME} PRIVATE _WIN32_WINNT=0x0601)
     endif()
