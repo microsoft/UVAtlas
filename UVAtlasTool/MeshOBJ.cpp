@@ -237,7 +237,7 @@ void Mesh::ExportToOBJ(std::wostream& os, size_t nMaterials, const Material* mat
         os << L"f ";
         for (size_t point = 0; point < 3; ++point)
         {
-            uint32_t i = mIndices[face * 3 + point] + 1;
+            const uint32_t i = mIndices[face * 3 + point] + 1;
 
             os << i << L"/";
             if (mTexCoords)

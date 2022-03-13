@@ -47,7 +47,7 @@ public:
     HRESULT SetIndexData(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint16_t* indices, _In_reads_opt_(nFaces) const uint32_t* attributes = nullptr) noexcept;
     HRESULT SetIndexData(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t* indices, _In_reads_opt_(nFaces) const uint32_t* attributes = nullptr) noexcept;
 
-    HRESULT SetVertexData(_Inout_ DirectX::VBReader& reader, _In_ size_t nVerts) noexcept;
+    HRESULT SetVertexData(const DirectX::VBReader& reader, _In_ size_t nVerts) noexcept;
 
     HRESULT Validate(_In_ DirectX::VALIDATE_FLAGS flags, _In_opt_ std::wstring* msgs) const noexcept;
 
@@ -93,7 +93,7 @@ public:
     const uint32_t* GetIndexBuffer() const noexcept { return mIndices.get(); }
     std::unique_ptr<uint16_t[]> GetIndexBuffer16() const noexcept;
 
-    HRESULT GetVertexBuffer(_Inout_ DirectX::VBWriter& writer) const noexcept;
+    HRESULT GetVertexBuffer(const DirectX::VBWriter& writer) const noexcept;
 
     // Save mesh to file
     struct Material
