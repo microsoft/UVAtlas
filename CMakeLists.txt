@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 
-cmake_minimum_required (VERSION 3.11)
+cmake_minimum_required (VERSION 3.13)
 
 set(UVATLAS_VERSION 1.8.4)
 
@@ -38,6 +38,10 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/CMake")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/CMake")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/CMake")
+
+if (DEFINED VCPKG_TARGET_ARCHITECTURE)
+    set(DIRECTX_ARCH ${VCPKG_TARGET_ARCHITECTURE})
+endif()
 
 #--- Library
 set(LIBRARY_HEADERS
@@ -199,7 +203,7 @@ if(MSVC)
         target_compile_options(uvatlastool PRIVATE /fp:fast)
     endif()
 
-    if (${CMAKE_SIZEOF_VOID_P} EQUAL "4" AND (NOT ${CMAKE_VS_PLATFORM_NAME} MATCHES "arm"))
+    if((${CMAKE_SIZEOF_VOID_P} EQUAL 4) AND (NOT ${DIRECTX_ARCH} MATCHES "arm"))
         target_compile_options(${PROJECT_NAME} PRIVATE /arch:SSE2)
         if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
             target_compile_options(uvatlastool PRIVATE /arch:SSE2)
@@ -216,7 +220,6 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
         target_compile_options(uvatlastool PRIVATE ${WarningsEXE})
     endif()
 endif()
-
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     target_compile_options(${PROJECT_NAME} PRIVATE /permissive- /JMC- /Zc:__cplusplus)
 
@@ -224,18 +227,30 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         target_compile_options(uvatlastool PRIVATE /permissive- /Zc:__cplusplus)
     endif()
 
-   if(ENABLE_CODE_ANALYSIS)
+    if(ENABLE_CODE_ANALYSIS)
       target_compile_options(${PROJECT_NAME} PRIVATE /analyze)
       if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
          target_compile_options(uvatlastool PRIVATE /analyze)
       endif()
-   endif()
+    endif()
+
+    if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.24)
+        target_compile_options(${PROJECT_NAME} PRIVATE /ZH:SHA_256)
+        if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
+          target_compile_options(uvatlastool PRIVATE /ZH:SHA_256)
+        endif()
+    endif()
 
     if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.26)
         target_compile_options(${PROJECT_NAME} PRIVATE /Zc:preprocessor /wd5105)
-
         if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
             target_compile_options(uvatlastool PRIVATE /Zc:preprocessor /wd5105)
+        endif()
+    endif()
+
+    if ((CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.27) AND (NOT (${DIRECTX_ARCH} MATCHES "arm(64)?")))
+        if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
+          target_link_options(vatlastool PRIVATE /CETCOMPAT)
         endif()
     endif()
 
@@ -269,6 +284,4 @@ endif()
 
 if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
     set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT uvatlastool)
-else()
-    set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
 endif()
