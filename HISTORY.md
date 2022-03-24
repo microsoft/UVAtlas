@@ -6,6 +6,12 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### March 24, 2022
+* Update build switches for SDL recommendations
+* CMake project updates and UWP platform CMakePresets
+* Code cleaup for uvatlastool
+* uvatlastool: Updated for March 2022 DirectXTex & DirectXMesh releases
+
 ### February 28, 2022
 * Code and project review including fixing clang v13 warnings
 * Added CMakePresets.json
