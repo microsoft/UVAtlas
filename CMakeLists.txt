@@ -262,7 +262,7 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 
     if ((CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.27) AND (NOT (${DIRECTX_ARCH} MATCHES "arm(64)?")))
         if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
-          target_link_options(vatlastool PRIVATE /CETCOMPAT)
+          target_link_options(uvatlastool PRIVATE /CETCOMPAT)
         endif()
     endif()
 
