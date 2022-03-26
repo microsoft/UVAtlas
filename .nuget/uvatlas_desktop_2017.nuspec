@@ -12,7 +12,7 @@
 UVAtlas, a shared source library for creating and packing an isochart texture atlas.</description>
         <releaseNotes>Matches the March 22, 2022 release on GitHub.</releaseNotes>
         <projectUrl>http://go.microsoft.com/fwlink/?LinkID=512686</projectUrl>
-        <repository type="git" url="https://github.com/microsoft/UVAtlas" />
+        <repository type="git" url="https://github.com/microsoft/UVAtlas.git" />
         <icon>images\icon.jpg</icon>
         <readme>docs\README.md</readme>
         <license type="expression">MIT</license>
