@@ -23,6 +23,7 @@
 
 #include "Mesh.h"
 
+#include <cstdlib>
 #include <cstring>
 #include <cwchar>
 #include <iterator>
