@@ -247,7 +247,7 @@ namespace Isochart
 
         EngineState m_state;	// Indicate internal state.
 
-#ifdef WIN32
+#ifdef _WIN32
         HANDLE m_hMutex;
 #else
         std::mutex m_mutex;

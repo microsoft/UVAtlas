@@ -9,7 +9,7 @@
 
 #pragma once
 
-#if defined(WIN32) || defined(_WIN32)
+#ifdef _WIN32
 #ifdef _GAMING_XBOX_SCARLETT
 #include <d3d12_xs.h>
 #elif defined(_GAMING_XBOX)
