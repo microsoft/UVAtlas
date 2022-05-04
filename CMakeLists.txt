@@ -187,6 +187,10 @@ install(FILES
 
 #--- Command-line tool
 if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
+    set(TOOL_EXES uvatlastool)
+
+    message("INFO: Using VCPKG for DirectXMesh and DirectXTex (required for uvatlastool).")
+
     find_package(directxmesh CONFIG REQUIRED COMPONENTS library utils)
     find_package(directxtex CONFIG REQUIRED)
 
@@ -197,9 +201,14 @@ if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
         UVAtlasTool/MeshOBJ.cpp
         UVAtlasTool/SDKMesh.h)
 
-    source_group(UVAtlasTool REGULAR_EXPRESSION UVAtlasTool/*.*)
+    target_link_libraries(uvatlastool
+        ${PROJECT_NAME}
+        ole32.lib version.lib
+        Microsoft::DirectXMesh
+        Microsoft::DirectXTex
+        Microsoft::DirectXMesh::Utilities)
 
-    target_link_libraries(uvatlastool ${PROJECT_NAME} Microsoft::DirectXMesh Microsoft::DirectXTex Microsoft::DirectXMesh::Utilities ole32.lib version.lib)
+    source_group(UVAtlasTool REGULAR_EXPRESSION UVAtlasTool/*.*)
 
     if (VCPKG_TOOLCHAIN)
       target_link_libraries(uvatlastool Microsoft::DirectXMath)
@@ -207,20 +216,16 @@ if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
 endif()
 
 if(MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /fp:fast "$<$<NOT:$<CONFIG:DEBUG>>:/guard:cf>")
+    foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+      target_compile_options(${t} PRIVATE /fp:fast "$<$<NOT:$<CONFIG:DEBUG>>:/guard:cf>")
+      target_link_options(${t} PRIVATE /DYNAMICBASE /NXCOMPAT)
+    endforeach()
 
-    if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
-        target_compile_options(uvatlastool PRIVATE /fp:fast "$<$<NOT:$<CONFIG:DEBUG>>:/guard:cf>")
-        target_link_options(uvatlastool PRIVATE /DYNAMICBASE /NXCOMPAT)
-    endif()
-
-    if((${CMAKE_SIZEOF_VOID_P} EQUAL 4) AND (NOT ${DIRECTX_ARCH} MATCHES "arm"))
-        target_compile_options(${PROJECT_NAME} PRIVATE /arch:SSE2)
-
-        if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
-            target_compile_options(uvatlastool PRIVATE /arch:SSE2)
-            target_link_options(uvatlastool PRIVATE /SAFESEH)
-        endif()
+    if((${CMAKE_SIZEOF_VOID_P} EQUAL 4) AND (NOT ${DIRECTX_ARCH} MATCHES "^arm"))
+        foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+          target_compile_options(${t} PRIVATE /arch:SSE2)
+          target_link_options(${t} PRIVATE /SAFESEH)
+        endforeach()
     endif()
 endif()
 
@@ -228,71 +233,65 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(WarningsLib "-Wpedantic" "-Wextra")
     target_compile_options(${PROJECT_NAME} PRIVATE ${WarningsLib})
 
-    if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
-        set(WarningsEXE ${WarningsLib} "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic" "-Wno-switch" "-Wno-switch-enum" "-Wno-exit-time-destructors" "-Wno-switch" "-Wno-switch-enum" "-Wno-language-extension-token" "-Wno-missing-prototypes")
-        target_compile_options(uvatlastool PRIVATE ${WarningsEXE})
-    endif()
+    set(WarningsEXE ${WarningsLib} "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic" "-Wno-switch" "-Wno-switch-enum" "-Wno-exit-time-destructors" "-Wno-switch" "-Wno-switch-enum" "-Wno-language-extension-token" "-Wno-missing-prototypes")
+    foreach(t IN LISTS TOOL_EXES)
+      target_compile_options(${t} PRIVATE ${WarningsEXE})
+    endforeach()
 endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
-    target_compile_options(${PROJECT_NAME} PRIVATE /sdl /permissive- /JMC- /Zc:__cplusplus)
-
-    if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
-        target_compile_options(uvatlastool PRIVATE /sdl /permissive- /Zc:__cplusplus)
-    endif()
+    foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+      target_compile_options(${t} PRIVATE /sdl /permissive- /JMC- /Zc:__cplusplus)
+    endforeach()
 
     if(ENABLE_CODE_ANALYSIS)
-      target_compile_options(${PROJECT_NAME} PRIVATE /analyze)
-      if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
-         target_compile_options(uvatlastool PRIVATE /analyze)
-      endif()
+      foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+        target_compile_options(${t} PRIVATE /analyze)
+      endforeach()
     endif()
 
     if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.24)
-        target_compile_options(${PROJECT_NAME} PRIVATE /ZH:SHA_256)
-        if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
-          target_compile_options(uvatlastool PRIVATE /ZH:SHA_256)
-        endif()
+        foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+          target_compile_options(${t} PRIVATE /ZH:SHA_256)
+        endforeach()
     endif()
 
     if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.26)
-        target_compile_options(${PROJECT_NAME} PRIVATE /Zc:preprocessor /wd5105)
-        if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
-            target_compile_options(uvatlastool PRIVATE /Zc:preprocessor /wd5105)
-        endif()
+        foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+          target_compile_options(${t} PRIVATE /Zc:preprocessor /wd5105)
+        endforeach()
     endif()
 
-    if ((CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.27) AND (NOT (${DIRECTX_ARCH} MATCHES "arm(64)?")))
-        if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
-          target_link_options(uvatlastool PRIVATE /CETCOMPAT)
-        endif()
+    if ((CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.27) AND (NOT (${DIRECTX_ARCH} MATCHES "^arm")))
+        foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+          target_link_options(${t} PRIVATE /CETCOMPAT)
+        endforeach()
     endif()
 
     if(UVATLAS_USE_OPENMP)
-        target_compile_options(${PROJECT_NAME} PRIVATE /openmp /Zc:twoPhase-)
-
-        if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
-            target_compile_options(uvatlastool PRIVATE /openmp /Zc:twoPhase-)
-        endif()
+        foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+          target_compile_options(${t} PRIVATE /openmp /Zc:twoPhase-)
+        endforeach()
     endif()
 
-    if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
-        set(WarningsEXE "/wd4365" "/wd4514" "/wd4625" "/wd4626" "/wd4627" "/wd4668" "/wd4710" "/wd4751" "/wd4820" "/wd5026" "/wd5027" "/wd5039" "/wd5045" "/wd4061" "/wd4062" "/wd5219")
-        target_compile_options(uvatlastool PRIVATE ${WarningsEXE})
-    endif()
+    set(WarningsEXE "/wd4365" "/wd4514" "/wd4625" "/wd4626" "/wd4627" "/wd4668" "/wd4710" "/wd4751" "/wd4820" "/wd5026" "/wd5027" "/wd5039" "/wd5045" "/wd4061" "/wd4062" "/wd5219")
+    foreach(t IN LISTS TOOL_EXES)
+      target_compile_options(${t} PRIVATE ${WarningsEXE})
+    endforeach()
 endif()
 
-if(MSVC)
-    target_compile_definitions(${PROJECT_NAME} PRIVATE _UNICODE UNICODE)
+if(WIN32)
+    foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+      target_compile_definitions(${t} PRIVATE _UNICODE UNICODE)
+    endforeach()
 
     if(WINDOWS_STORE)
         target_compile_definitions(${PROJECT_NAME} PRIVATE _WIN32_WINNT=0x0A00 WINAPI_FAMILY=WINAPI_FAMILY_APP)
     else()
         target_compile_definitions(${PROJECT_NAME} PRIVATE _WIN32_WINNT=0x0601)
     endif()
-
-    if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
-        target_compile_definitions(uvatlastool PRIVATE _UNICODE UNICODE _WIN32_WINNT=0x0601)
-    endif()
+    foreach(t IN LISTS TOOL_EXES)
+      target_compile_definitions(${t} PRIVATE _WIN32_WINNT=0x0601)
+    endforeach()
 endif()
 
 if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
