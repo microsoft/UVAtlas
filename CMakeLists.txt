@@ -31,7 +31,7 @@ option(ENABLE_USE_EIGEN "Use the Eigen & BLAS libraries" OFF)
 
 option(ENABLE_CODE_ANALYSIS "Use Static Code Analysis on build" OFF)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -120,7 +120,7 @@ target_include_directories(${PROJECT_NAME} PUBLIC
 
 target_include_directories(${PROJECT_NAME} PRIVATE UVAtlas UVAtlas/geodesics UVAtlas/isochart)
 
-if (${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16")
+if ((${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16") AND (NOT MINGW))
     target_precompile_headers(${PROJECT_NAME} PRIVATE UVAtlas/pch.h)
 endif()
 
@@ -136,7 +136,7 @@ if(MSVC)
     string(REPLACE "/GR " "/GR- " CMAKE_CXX_FLAGS_RELEASE ${CMAKE_CXX_FLAGS_RELEASE})
 endif()
 
-if ((NOT WIN32) OR VCPKG_TOOLCHAIN)
+if (MINGW OR (NOT WIN32) OR VCPKG_TOOLCHAIN)
     message("INFO: Using VCPKG for DirectX-Headers and DirectXMath.")
     find_package(directx-headers CONFIG REQUIRED)
     find_package(directxmath CONFIG REQUIRED)
@@ -200,17 +200,15 @@ if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
         UVAtlasTool/Mesh.h
         UVAtlasTool/MeshOBJ.cpp
         UVAtlasTool/SDKMesh.h)
-
     target_link_libraries(uvatlastool
         ${PROJECT_NAME}
         ole32.lib version.lib
         Microsoft::DirectXMesh
         Microsoft::DirectXTex
         Microsoft::DirectXMesh::Utilities)
-
     source_group(UVAtlasTool REGULAR_EXPRESSION UVAtlasTool/*.*)
 
-    if (VCPKG_TOOLCHAIN)
+    if (MINGW OR VCPKG_TOOLCHAIN)
       target_link_libraries(uvatlastool Microsoft::DirectXMath)
     endif()
 endif()
@@ -223,10 +221,21 @@ if(MSVC)
 
     if((${CMAKE_SIZEOF_VOID_P} EQUAL 4) AND (NOT ${DIRECTX_ARCH} MATCHES "^arm"))
         foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
-          target_compile_options(${t} PRIVATE /arch:SSE2)
           target_link_options(${t} PRIVATE /SAFESEH)
         endforeach()
     endif()
+endif()
+
+if(NOT ${DIRECTX_ARCH} MATCHES "^arm")
+    if (${CMAKE_SIZEOF_VOID_P} EQUAL "4")
+        set(ARCH_SSE2 $<$<CXX_COMPILER_ID:MSVC>:/arch:SSE2> $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-msse2>)
+    else()
+        set(ARCH_SSE2 $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-msse2>)
+    endif()
+
+    foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+      target_compile_options(${t} PRIVATE ${ARCH_SSE2})
+    endforeach()
 endif()
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
@@ -236,6 +245,12 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(WarningsEXE ${WarningsLib} "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic" "-Wno-switch" "-Wno-switch-enum" "-Wno-exit-time-destructors" "-Wno-switch" "-Wno-switch-enum" "-Wno-language-extension-token" "-Wno-missing-prototypes")
     foreach(t IN LISTS TOOL_EXES)
       target_compile_options(${t} PRIVATE ${WarningsEXE})
+    endforeach()
+endif()
+if(MINGW)
+    foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+      target_compile_options(${t} PRIVATE "-Wno-ignored-attributes")
+      target_link_options(${t} PRIVATE -municode)
     endforeach()
 endif()
 if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
@@ -285,10 +300,11 @@ if(WIN32)
     endforeach()
 
     if(WINDOWS_STORE)
-        target_compile_definitions(${PROJECT_NAME} PRIVATE _WIN32_WINNT=0x0A00 WINAPI_FAMILY=WINAPI_FAMILY_APP)
+      target_compile_definitions(${PROJECT_NAME} PRIVATE _WIN32_WINNT=0x0A00 WINAPI_FAMILY=WINAPI_FAMILY_APP)
     else()
-        target_compile_definitions(${PROJECT_NAME} PRIVATE _WIN32_WINNT=0x0601)
+      target_compile_definitions(${PROJECT_NAME} PRIVATE _WIN32_WINNT=0x0601)
     endif()
+
     foreach(t IN LISTS TOOL_EXES)
       target_compile_definitions(${t} PRIVATE _WIN32_WINNT=0x0601)
     endforeach()

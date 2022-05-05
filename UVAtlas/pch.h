@@ -51,14 +51,14 @@
 #pragma clang diagnostic ignored "-Wswitch-enum"
 #endif
 
-#if defined(WIN32) || defined(_WIN32)
+#ifdef _WIN32
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
 
 #pragma warning(push)
 #pragma warning(disable : 4005)
-#define NOMINMAX
+#define NOMINMAX 1
 #define NODRAWTEXT
 #define NOGDI
 #define NOBITMAP
@@ -69,6 +69,10 @@
 
 #include <Windows.h>
 #include <objbase.h>
+
+#ifdef __MINGW32__
+#include <unknwn.h>
+#endif
 
 #ifdef USING_DIRECTX_HEADERS
 #include <directx/dxgiformat.h>
@@ -109,7 +113,7 @@
 #include <random>
 #pragma warning(pop)
 
-#ifndef WIN32
+#ifndef _WIN32
 #include <mutex>
 #include <thread>
 #endif

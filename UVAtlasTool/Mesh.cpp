@@ -2298,17 +2298,17 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
                     {
                         strcpy_s(fname, basename.c_str());
                         strcat_s(fname, "_normal");
-                        _makepath_s(m2->NormalTexture, drive, dir, fname, ext);
+                        _makepath_s(m2->NormalTexture, MAX_TEXTURE_NAME, drive, dir, fname, ext);
 
                         strcpy_s(fname, basename.c_str());
                         strcat_s(fname, "_occlusionRoughnessMetallic");
-                        _makepath_s(m2->RMATexture, drive, dir, fname, ext);
+                        _makepath_s(m2->RMATexture, MAX_TEXTURE_NAME, drive, dir, fname, ext);
 
                         if (m0->emissiveColor.x > 0 || m0->emissiveColor.y > 0 || m0->emissiveColor.z > 0)
                         {
                             strcpy_s(fname, basename.c_str());
                             strcat_s(fname, "_emissive");
-                            _makepath_s(m2->EmissiveTexture, drive, dir, fname, ext);
+                            _makepath_s(m2->EmissiveTexture, MAX_TEXTURE_NAME, drive, dir, fname, ext);
                         }
                     }
                 }

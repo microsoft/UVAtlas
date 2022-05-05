@@ -39,7 +39,7 @@ CIsochartEngine::CIsochartEngine() :
     fExpectAvgL2SquaredStretch(0.f),
     dwExpectChartCount(0),
     m_state(ISOCHART_ST_UNINITILAIZED),
-#ifdef WIN32
+#ifdef _WIN32
     m_hMutex(nullptr),
 #endif
     m_dwOptions(ISOCHARTOPTION::DEFAULT)
@@ -54,14 +54,14 @@ CIsochartEngine::~CIsochartEngine()
     // Free will return with "busy". So loop until free successfully.
     while (FAILED(Free()))
     {
-#ifdef WIN32
+#ifdef _WIN32
         SwitchToThread();
 #else
         std::this_thread::yield();
 #endif
     }
 
-#ifdef WIN32
+#ifdef _WIN32
     if (m_hMutex)
     {
         CloseHandle(m_hMutex);
@@ -71,7 +71,7 @@ CIsochartEngine::~CIsochartEngine()
 
 HRESULT CIsochartEngine::CreateEngineMutex()
 {
-#ifdef WIN32
+#ifdef _WIN32
     m_hMutex = CreateMutexEx(nullptr, nullptr, CREATE_MUTEX_INITIAL_OWNER, SYNCHRONIZE);
     if (!m_hMutex)
     {
@@ -1806,7 +1806,7 @@ HRESULT CIsochartEngine::FillExportFaceAdjacencyBuffer(
 
 HRESULT CIsochartEngine::TryEnterExclusiveSection()
 {
-#ifdef WIN32
+#ifdef _WIN32
     // Other thread is using this object.
     if (WaitForSingleObjectEx(m_hMutex, 0, FALSE) == WAIT_OBJECT_0)
     {
@@ -1823,7 +1823,7 @@ HRESULT CIsochartEngine::TryEnterExclusiveSection()
 
 void  CIsochartEngine::LeaveExclusiveSection()
 {
-#ifdef WIN32
+#ifdef _WIN32
     if (m_hMutex)
     {
         ReleaseMutex(m_hMutex);
