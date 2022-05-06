@@ -206,7 +206,7 @@ if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
         Microsoft::DirectXMesh
         Microsoft::DirectXTex
         Microsoft::DirectXMesh::Utilities)
-    source_group(UVAtlasTool REGULAR_EXPRESSION UVAtlasTool/*.*)
+    source_group(uvatlastool REGULAR_EXPRESSION UVAtlasTool/*.*)
 
     if (MINGW OR VCPKG_TOOLCHAIN)
       target_link_libraries(uvatlastool Microsoft::DirectXMath)
