@@ -6,6 +6,10 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### May 9, 2022
+* CMake project updates (now supports MSVC, clang/LLVM, and MinGW)
+* Retired VS 2017 projects
+
 ### March 24, 2022
 * Update build switches for SDL recommendations
 * CMake project updates and UWP platform CMakePresets
