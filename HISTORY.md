@@ -9,6 +9,7 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 ### May 9, 2022
 * CMake project updates (now supports MSVC, clang/LLVM, and MinGW)
 * Retired VS 2017 projects
+* uvatlastool: Updated for May 2022 DirectXTex & DirectXMesh releases
 
 ### March 24, 2022
 * Update build switches for SDL recommendations
