@@ -6,7 +6,7 @@ http://go.microsoft.com/fwlink/?LinkID=512686
 
 Copyright (c) Microsoft Corporation.
 
-**May 9, 2022**
+**July 30, 2022**
 
 This package contains UVAtlas, a shared source library for creating and packing an isochart texture atlas.
 
