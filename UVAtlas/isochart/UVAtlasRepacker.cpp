@@ -1777,8 +1777,8 @@ void CUVAtlasRepacker::Normalize()
 
     transMatrix = XMMatrixTranslation(-m_PixelWidth * float(m_fromX + m_iGutter),
         -m_PixelWidth * float(m_fromY + m_iGutter), 0.0f);
-    scalMatrix = XMMatrixScaling(1.0f / m_PixelWidth / float(m_NormalizeLen),
-        1.0f / m_PixelWidth / float(m_NormalizeLen), 0.0f);
+    scalMatrix = XMMatrixScaling(1.0f / m_PixelWidth / float(m_RealWidth),
+        1.0f / m_PixelWidth / float(m_RealHeight), 0.0f);
 
     for (size_t i = 0; i < m_iNumCharts; i++)
     {
