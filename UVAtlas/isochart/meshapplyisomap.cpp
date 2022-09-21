@@ -31,7 +31,7 @@ namespace
     const size_t LIMIT_FACENUM_USENEWGEODIST = _LIMIT_FACENUM_USENEWGEODIST;
 
     // Used to combine geodesic and signal distance. See [Kun04], 6 section.
-    const float SIGNAL_DISTANCE_WEIGHT = 0.30f;
+    const float SIGNAL_DISTANCE_WEIGHT = 1.0f;
 }
 
 /////////////////////////////////////////////////////////////
