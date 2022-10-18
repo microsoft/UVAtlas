@@ -10,7 +10,7 @@
         <description>This version is for Windows desktop applications using Visual Studio 2019 or Visual Studio 2022.
 
 UVAtlas, a shared source library for creating and packing an isochart texture atlas.</description>
-        <releaseNotes>Matches the July 30, 2022 release on GitHub.</releaseNotes>
+        <releaseNotes>Matches the October 17, 2022 release on GitHub.</releaseNotes>
         <projectUrl>http://go.microsoft.com/fwlink/?LinkID=512686</projectUrl>
         <repository type="git" url="https://github.com/microsoft/UVAtlas.git" />
         <icon>images\icon.jpg</icon>
@@ -27,11 +27,11 @@ UVAtlas, a shared source library for creating and packing an isochart texture at
 
         <file target="include" src="UVAtlas\inc\UVAtlas.h" />
 
-        <file target="native\lib\Win32\Debug" src="UVAtlas\Bin\Desktop_2019_Win10\Win32\Debug\*.lib" />
-        <file target="native\lib\Win32\Debug" src="UVAtlas\Bin\Desktop_2019_Win10\Win32\Debug\*.pdb" />
+        <file target="native\lib\x86\Debug" src="UVAtlas\Bin\Desktop_2019_Win10\Win32\Debug\*.lib" />
+        <file target="native\lib\x86\Debug" src="UVAtlas\Bin\Desktop_2019_Win10\Win32\Debug\*.pdb" />
 
-        <file target="native\lib\Win32\Release" src="UVAtlas\Bin\Desktop_2019_Win10\Win32\Release\*.lib" />
-        <file target="native\lib\Win32\Release" src="UVAtlas\Bin\Desktop_2019_Win10\Win32\Release\*.pdb" />
+        <file target="native\lib\x86\Release" src="UVAtlas\Bin\Desktop_2019_Win10\Win32\Release\*.lib" />
+        <file target="native\lib\x86\Release" src="UVAtlas\Bin\Desktop_2019_Win10\Win32\Release\*.pdb" />
 
         <file target="native\lib\x64\Debug" src="UVAtlas\Bin\Desktop_2019_Win10\x64\Debug\*.lib" />
         <file target="native\lib\x64\Debug" src="UVAtlas\Bin\Desktop_2019_Win10\x64\Debug\*.pdb" />

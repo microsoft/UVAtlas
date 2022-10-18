@@ -4,19 +4,18 @@
   <PropertyGroup Label="Debug" Condition="'$(Configuration.ToLower())' == 'debug'">
     <NuGetConfiguration>Debug</NuGetConfiguration>
   </PropertyGroup>
-  <PropertyGroup Label="Non_Debug" Condition="'$(Configuration.ToLower())' != 'debug'">
+  <PropertyGroup Label="Non_Debug" Condition="'$(Configuration.ToLower())' == 'profile'">
+    <NuGetConfiguration>Release</NuGetConfiguration>
+  </PropertyGroup>
+  <PropertyGroup Label="Non_Debug" Condition="'$(Configuration.ToLower())' == 'release'">
+    <NuGetConfiguration>Release</NuGetConfiguration>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(NuGetConfiguration)' == ''">
     <NuGetConfiguration>Release</NuGetConfiguration>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(PlatformTarget)' == 'x64'">
-    <_NuGetPlatform>x64</_NuGetPlatform>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(_NuGetPlatform)' == ''">
-    <_NuGetPlatform>$(Platform)</_NuGetPlatform>
-  </PropertyGroup>
-
   <PropertyGroup>
-    <uvatlas-LibPath>$(MSBuildThisFileDirectory)..\..\native\lib\$(Platform)\$(NuGetConfiguration)</uvatlas-LibPath>
+    <uvatlas-LibPath>$(MSBuildThisFileDirectory)..\..\native\lib\$(PlatformTarget)\$(NuGetConfiguration)</uvatlas-LibPath>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
