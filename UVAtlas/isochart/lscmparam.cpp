@@ -19,7 +19,7 @@ using namespace DirectX;
 
 namespace
 {
-    const size_t LSCM_MAX_ITERATION = 10000;
+    constexpr size_t LSCM_MAX_ITERATION = 10000;
     enum EQUATION_POSITION
     {
         IN_COEFFICIENT,

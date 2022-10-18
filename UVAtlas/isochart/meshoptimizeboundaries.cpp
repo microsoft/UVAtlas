@@ -34,12 +34,12 @@ namespace
 {
     // Define the percent of faces in chart that are need to
     // re-decide chart ID by graph cut.
-    const float FUZYY_REGION_PERCENT = 0.30f;
+    constexpr float FUZYY_REGION_PERCENT = 0.30f;
 
     // Graph cut optimize consider two factors: stretch and angle
     // OPTIMAL_CUT_STRETCH_WEIGHT indicates stretch factor, then
     // angle factor will be 1-OPTIMAL_CUT_STRETCH_WEIGHT
-    const float OPTIMAL_CUT_STRETCH_WEIGHT = 0.35f;
+    constexpr float OPTIMAL_CUT_STRETCH_WEIGHT = 0.35f;
 }
 
 /////////////////////////////////////////////////////////////////////

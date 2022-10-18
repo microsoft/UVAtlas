@@ -16,20 +16,20 @@ namespace IsochartRepacker
 {
 
     // Represent the four sides of chart or UV atlas
-    const int UV_UPSIDE = 0;
-    const int UV_RIGHTSIDE = 1;
-    const int UV_DOWNSIDE = 2;
-    const int UV_LEFTSIDE = 3;
+    constexpr int UV_UPSIDE = 0;
+    constexpr int UV_RIGHTSIDE = 1;
+    constexpr int UV_DOWNSIDE = 2;
+    constexpr int UV_LEFTSIDE = 3;
 
-    const size_t CHART_THRESHOLD = 30;
-    const size_t MAX_ITERATION = 200;
+    constexpr size_t CHART_THRESHOLD = 30;
+    constexpr size_t MAX_ITERATION = 200;
 
     // the size of input vertex buffer unit
-    const size_t VertexSize = 20;
+    constexpr size_t VertexSize = 20;
 
     // specify the initial size of the atlas is 3*3 times larger 
     // than the user defined atlas
-    const int INITIAL_SIZE_FACTOR = 2;
+    constexpr int INITIAL_SIZE_FACTOR = 2;
 
     // convert the index buffer into this structure for convenience
     // use template to handle 16-bit index and 32-bit index

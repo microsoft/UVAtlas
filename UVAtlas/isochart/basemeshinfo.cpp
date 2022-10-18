@@ -16,7 +16,7 @@ using namespace Isochart;
 namespace
 {
     // Scale original model into the cubic with ISOCHART_MODELSCALE edge length. 500 is a experiential value
-    const float ISOCHART_MODELSCALE = 500.0f;
+    constexpr float ISOCHART_MODELSCALE = 500.0f;
 }
 
 CBaseMeshInfo::CBaseMeshInfo() :

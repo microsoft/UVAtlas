@@ -16,7 +16,7 @@ using namespace DirectX;
 
 namespace
 {
-    const size_t BC_MAX_ITERATION = 10000;
+    constexpr size_t BC_MAX_ITERATION = 10000;
 
     class CBoundaryIter
     {

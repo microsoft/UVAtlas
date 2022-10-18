@@ -138,20 +138,20 @@ namespace
 
     // When vertex being optimized, if the distance between new and old 
     // positions less than OPTIMIZE_TOLERANCE, stop optimize
-    const float OPTIMIZE_TOLERANCE = 1e-4f;
+    constexpr float OPTIMIZE_TOLERANCE = 1e-4f;
 
     // If the max stretch changes less than MINIMAL_OPTIMIZE_CHANGE, stop optimize.
     // Because more optimization won't improve result.
-    const float MINIMAL_OPTIMIZE_CHANGE = 0.01f;
+    constexpr float MINIMAL_OPTIMIZE_CHANGE = 0.01f;
 
     // When moving vertex within its 1-ring neighbor range. A max moving distance
     // should be computed to avoid overlapping. After computing the max distance,
     // scale it with CONSERVATIVE_OPTIMIZE_FACTOR to make sure the vertex is not too
     // close to other edges.
-    const float CONSERVATIVE_OPTIMIZE_FACTOR = 0.80f;
+    constexpr float CONSERVATIVE_OPTIMIZE_FACTOR = 0.80f;
 
     // Direction: left, right, top, bottom
-    const size_t BOUND_DIRECTION_NUMBER = 4;
+    constexpr size_t BOUND_DIRECTION_NUMBER = 4;
 }
 
 

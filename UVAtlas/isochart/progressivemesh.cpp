@@ -29,7 +29,7 @@ namespace
     // MAX_PM_ERROR, just stop simplify mesh. Otherwise, some important
     // geodesic information may be lost. 0.9 is based on examination of
     // Kun
-    const float MAX_PM_ERROR = 0.90f;
+    constexpr float MAX_PM_ERROR = 0.90f;
 
     void IsochartVec3Substract(
         XMFLOAT3* pOut,

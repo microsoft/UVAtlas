@@ -23,17 +23,17 @@
 namespace Isochart
 {
 
-    const uint32_t INVALID_FACE_ID = 0xffffffff; // INVALID FACE ID
-    const uint32_t INVALID_VERT_ID = 0xffffffff; // INVALID VERTEX ID
-    const uint32_t INVALID_INDEX = 0xffffffff;   // INVALID_INDEX
+    constexpr uint32_t INVALID_FACE_ID = 0xffffffff; // INVALID FACE ID
+    constexpr uint32_t INVALID_VERT_ID = 0xffffffff; // INVALID VERTEX ID
+    constexpr uint32_t INVALID_INDEX = 0xffffffff;   // INVALID_INDEX
 
     // Vertex with MUST_RESERVE importance order must be reserved.
-    const int MUST_RESERVE = -1;
+    constexpr int MUST_RESERVE = -1;
 
     // The eigen values and vectors need to compute when
     // processing the original charts which haven't been partitioned
     // before.
-    const size_t ORIGINAL_CHART_EIGEN_DIMENSION = 10;
+    constexpr size_t ORIGINAL_CHART_EIGEN_DIMENSION = 10;
 
     inline bool isInArray(const std::vector<uint32_t>& v, uint32_t item)
     {

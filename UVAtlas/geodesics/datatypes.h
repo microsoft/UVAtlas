@@ -13,8 +13,8 @@
 
 namespace GeodesicDist
 {
-    const size_t FLAG_INVALID_SIZE_T = size_t(-1);     // denote invalid pointer
-    const uint32_t FLAG_INVALIDDWORD = uint32_t(-1);   // denote invalid face index, vertex index, edge index
+    constexpr size_t FLAG_INVALID_SIZE_T = size_t(-1);     // denote invalid pointer
+    constexpr uint32_t FLAG_INVALIDDWORD = uint32_t(-1);   // denote invalid face index, vertex index, edge index
 
     // used to access the position of each vertex in a mesh
     struct _vertex

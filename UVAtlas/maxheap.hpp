@@ -17,7 +17,7 @@ namespace Isochart
         MANUAL,
     };
 
-    const size_t NOT_IN_HEAP = 0xffffffff;
+    constexpr size_t NOT_IN_HEAP = 0xffffffff;
     typedef size_t pos_type;
 
     template <class Ty1, class Ty2>

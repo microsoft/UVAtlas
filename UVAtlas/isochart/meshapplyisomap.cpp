@@ -28,10 +28,10 @@ using namespace DirectX;
 namespace
 {
     // face number limit, below this limit, new geodesic algorithm is used, otherwise the old KS98 is used
-    const size_t LIMIT_FACENUM_USENEWGEODIST = _LIMIT_FACENUM_USENEWGEODIST;
+    constexpr size_t LIMIT_FACENUM_USENEWGEODIST = _LIMIT_FACENUM_USENEWGEODIST;
 
     // Used to combine geodesic and signal distance. See [Kun04], 6 section.
-    const float SIGNAL_DISTANCE_WEIGHT = 0.30f;
+    constexpr float SIGNAL_DISTANCE_WEIGHT = 0.30f;
 }
 
 /////////////////////////////////////////////////////////////

@@ -400,7 +400,7 @@ void CUVAtlasRepacker::ComputeFinalAtlasRect()
 \***************************************************************************/
 void CUVAtlasRepacker::InitialSpacePercent()
 {
-    const float AdjustFactor = 1.01f;
+    constexpr float AdjustFactor = 1.01f;
 
     for (;;)
     {

@@ -16,7 +16,7 @@ using namespace DirectX;
 
 namespace
 {
-    const size_t MAX_FACE_NUMBER = 0xfffffffe;
+    constexpr size_t MAX_FACE_NUMBER = 0xfffffffe;
 };
 
 

@@ -18,8 +18,8 @@ namespace Isochart
 {
     // values between ISOCHART_ZERO_EPS and -ISOCHART_ZERO_EPS
     // will be regarded as zero
-    const float ISOCHART_ZERO_EPS = 1e-6f;
-    const float ISOCHART_ZERO_EPS2 = 1e-12f;
+    constexpr float ISOCHART_ZERO_EPS = 1e-6f;
+    constexpr float ISOCHART_ZERO_EPS2 = 1e-12f;
 
     // Check if to segments intersect together.
     bool IsochartIsSegmentsIntersect(

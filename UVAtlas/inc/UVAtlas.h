@@ -68,7 +68,7 @@ namespace DirectX
         UVATLAS_LIMIT_FACE_STRETCH = 0x08,
     };
 
-    static const float UVATLAS_DEFAULT_CALLBACK_FREQUENCY = 0.0001f;
+    constexpr float UVATLAS_DEFAULT_CALLBACK_FREQUENCY = 0.0001f;
 
     //============================================================================
     //

@@ -62,7 +62,7 @@ namespace
     /////////// Configuration of internal stretch /////////////
     ///////////////////////////////////////////////////////////
 
-    const float ISOCHART_MAX_STRETCH_RATIO = FLT_MAX; // 1e8f;
+    constexpr float ISOCHART_MAX_STRETCH_RATIO = FLT_MAX; // 1e8f;
 
     ///////////////////////////////////////////////////////////
     /////////// Configuration of applying isomap///////////////
@@ -71,16 +71,16 @@ namespace
     // The eigen values and vectors need to compute, when
     // processing the sub-charts which have been partitioned
     // before.
-    const size_t SUB_CHART_EIGEN_DIMENSION = 4;
+    constexpr size_t SUB_CHART_EIGEN_DIMENSION = 4;
 
     // Using to ignore the eigen vectors whose eigen value are too small.
     // Only cosider the larger eigen values which consume 90%
     // percent of all energy presenting by sum of all eigen values.
-    const float PRIMARY_EIGEN_ENERGY_PERCENT = 0.90f;
+    constexpr float PRIMARY_EIGEN_ENERGY_PERCENT = 0.90f;
 
     // To check if current chart is a special-shape, each vertex must has
     // a 3 dimension vector.
-    const size_t DIMENSION_TO_CHECK_SPECIAL_SHAPE = 3;
+    constexpr size_t DIMENSION_TO_CHECK_SPECIAL_SHAPE = 3;
 }
 
 /////////////////////////////////////////////////////////////

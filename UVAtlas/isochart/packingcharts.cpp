@@ -88,20 +88,20 @@ namespace
     // E.g. CHART_ROTATION_NUMBER = 6 means the chart will choose the best pose
     // from rotation of 0, 60, 120, 180, 240, 300 degrees.
 
-    const size_t CHART_ROTATION_NUMBER = 4;
+    constexpr size_t CHART_ROTATION_NUMBER = 4;
 
     // The algorithm moves charts along the tangent direction of atlas borders searching the
     // best position to add new chart. The searching step can be controled by 2 ways:
     //.SEARCH_STEP_LENGTH = 2 means moving 2 pixels each step.
     //.SEARCH_STEP_COUNT = 120 means at most searching 120 steps.
     // Using CONTROL_SEARCH_BY_STEP_COUNT to swich between these 2 ways.
-    const size_t SEARCH_STEP_LENGTH = 2;
-    const size_t SEARCH_STEP_COUNT = 120;
+    constexpr size_t SEARCH_STEP_LENGTH = 2;
+    constexpr size_t SEARCH_STEP_COUNT = 120;
 
     //Based on experiment, when gutter = 2, Width = 512, Height = 512, the space rate of
     // finial UV-atlas.
-    const float STANDARD_UV_SIZE = 512;
-    const float STANDARD_GUTTER = 2;
+    constexpr float STANDARD_UV_SIZE = 512;
+    constexpr float STANDARD_GUTTER = 2;
 
     // Tables for precomputed triangle values.
     float g_PackingCosTable[CHART_ROTATION_NUMBER];
@@ -3452,7 +3452,7 @@ void CIsochartMesh::OptimizeAtlasSignalStretch(
         return;
     }
 
-    const float ShiftError = 1e-4f;
+    constexpr float ShiftError = 1e-4f;
 
     float fTotal2DArea = 0;
     float fTotal = 0;
