@@ -474,51 +474,56 @@ namespace
     {
         PrintLogo();
 
-        wprintf(L"Usage: uvatlas <options> <files>\n");
-        wprintf(L"\n");
-        wprintf(L"   Input file type must be Wavefront Object (.obj)\n\n");
-        wprintf(L"   Output file type:\n");
-        wprintf(L"       -sdkmesh        DirectX SDK .sdkmesh format (default)\n");
-        wprintf(L"       -sdkmesh2       .sdkmesh format version 2 (PBR materials)\n");
-        wprintf(L"       -cmo            Visual Studio Content Pipeline .cmo format\n");
-        wprintf(L"       -vbo            Vertex Buffer Object (.vbo) format\n");
-        wprintf(L"       -wf             WaveFront Object (.obj) format\n\n");
-        wprintf(L"   -r                  wildcard filename search is recursive\n");
-        wprintf(L"   -q <level>          sets quality level to DEFAULT, FAST or QUALITY\n");
-        wprintf(L"   -n <number>         maximum number of charts to generate (def: 0)\n");
-        wprintf(L"   -st <float>         maximum amount of stretch 0.0 to 1.0 (def: 0.16667)\n");
-        wprintf(L"   -lms                enable limit merge stretch option\n");
-        wprintf(L"   -lfs                enable limit face stretch option\n");
-        wprintf(L"   -g <float>          the gutter width betwen charts in texels (def: 2.0)\n");
-        wprintf(L"   -w <number>         texture width (def: 512)\n");
-        wprintf(L"   -h <number>         texture height (def: 512)\n");
-        wprintf(L"   -ta | -ga           generate topological vs. geometric adjancecy (def: ta)\n");
-        wprintf(L"   -nn | -na | -ne     generate normals weighted by angle/area/equal\n");
-        wprintf(L"   -tt                 generate tangents\n");
-        wprintf(L"   -tb                 generate tangents & bi-tangents\n");
-        wprintf(L"   -cw                 faces are clockwise (defaults to counter-clockwise)\n");
-        wprintf(L"   -c                  generate mesh with colors showing charts\n");
-        wprintf(L"   -t                  generates a separate mesh with uvs - (*_texture)\n");
-        wprintf(L"   -it <filename>      calculate IMT for the mesh using this texture map\n");
-        wprintf(
+        static const wchar_t* const s_usage =
+            L"Usage: uvatlas <options> <files>\n"
+            L"\n"
+            L"   Input file type must be Wavefront Object (.obj)\n"
+            L"\n"
+            L"   Output file type:\n"
+            L"       -sdkmesh        DirectX SDK .sdkmesh format (default)\n"
+            L"       -sdkmesh2       .sdkmesh format version 2 (PBR materials)\n"
+            L"       -cmo            Visual Studio Content Pipeline .cmo format\n"
+            L"       -vbo            Vertex Buffer Object (.vbo) format\n"
+            L"       -wf             WaveFront Object (.obj) format\n"
+            L"\n"
+            L"   -r                  wildcard filename search is recursive\n"
+            L"   -q <level>          sets quality level to DEFAULT, FAST or QUALITY\n"
+            L"   -n <number>         maximum number of charts to generate (def: 0)\n"
+            L"   -st <float>         maximum amount of stretch 0.0 to 1.0 (def: 0.16667)\n"
+            L"   -lms                enable limit merge stretch option\n"
+            L"   -lfs                enable limit face stretch option\n"
+            L"   -g <float>          the gutter width betwen charts in texels (def: 2.0)\n"
+            L"   -w <number>         texture width (def: 512)\n"
+            L"   -h <number>         texture height (def: 512)\n"
+            L"   -ta | -ga           generate topological vs. geometric adjancecy (def: ta)\n"
+            L"   -nn | -na | -ne     generate normals weighted by angle/area/equal\n"
+            L"   -tt                 generate tangents\n"
+            L"   -tb                 generate tangents & bi-tangents\n"
+            L"   -cw                 faces are clockwise (defaults to counter-clockwise)\n"
+            L"   -c                  generate mesh with colors showing charts\n"
+            L"   -t                  generates a separate mesh with uvs - (*_texture)\n"
+            L"   -it <filename>      calculate IMT for the mesh using this texture map\n"
             L"   -iv <channel>       calculate IMT using per-vertex data\n"
-            L"                       NORMAL, COLOR, TEXCOORD\n");
-        wprintf(L"   -nodds              prevents extension renaming in exported materials\n");
-        wprintf(L"   -flip               reverse winding of faces\n");
-        wprintf(L"   -flipu              inverts the u texcoords\n");
-        wprintf(L"   -flipv              inverts the v texcoords\n");
-        wprintf(L"   -flipz              flips the handedness of the positions/normals\n");
-        wprintf(L"   -o <filename>       output filename\n");
-        wprintf(L"   -l                  force output filename to lower case\n");
-        wprintf(L"   -y                  overwrite existing output file (if any)\n");
-        wprintf(L"   -nologo             suppress copyright message\n");
-        wprintf(L"   -flist <filename>   use text file with a list of input files (one per line)\n");
-        wprintf(L"\n       (sdkmesh/sdkmesh2 only)\n");
-        wprintf(L"   -ib32               use 32-bit index buffer\n");
-        wprintf(L"   -fn <normal-format> format to use for writing normals/tangents/normals\n");
-        wprintf(L"   -fuv <uv-format>    format to use for texture coordinates\n");
-        wprintf(L"   -fc <color-format>  format to use for writing colors\n");
-        wprintf(L"   -uv2                place uvatlas uvs into a second texture coordinate channel\n");
+            L"                       NORMAL, COLOR, TEXCOORD\n"
+            L"   -nodds              prevents extension renaming in exported materials\n"
+            L"   -flip               reverse winding of faces\n"
+            L"   -flipu              inverts the u texcoords\n"
+            L"   -flipv              inverts the v texcoords\n"
+            L"   -flipz              flips the handedness of the positions/normals\n"
+            L"   -o <filename>       output filename\n"
+            L"   -l                  force output filename to lower case\n"
+            L"   -y                  overwrite existing output file (if any)\n"
+            L"   -nologo             suppress copyright message\n"
+            L"   -flist <filename>   use text file with a list of input files (one per line)\n"
+            L"\n"
+            L"       (sdkmesh/sdkmesh2 only)\n"
+            L"   -ib32               use 32-bit index buffer\n"
+            L"   -fn <normal-format> format to use for writing normals/tangents/normals\n"
+            L"   -fuv <uv-format>    format to use for texture coordinates\n"
+            L"   -fc <color-format>  format to use for writing colors\n"
+            L"   -uv2                place uvatlas uvs into a second texture coordinate channel\n";
+
+        wprintf(L"%ls", s_usage);
 
         wprintf(L"\n   <normal-format>: ");
         PrintList(13, g_vertexNormalFormats);
