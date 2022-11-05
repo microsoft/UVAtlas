@@ -102,6 +102,7 @@ namespace
         OPT_VERT_COLOR_FORMAT,
         OPT_SECOND_UV,
         OPT_VIZ_NORMALS,
+        OPT_OUTPUT_REMAPPING,
         OPT_NOLOGO,
         OPT_FILELIST,
         OPT_MAX
@@ -188,6 +189,7 @@ namespace
         { L"fc",        OPT_VERT_COLOR_FORMAT },
         { L"uv2",       OPT_SECOND_UV },
         { L"vn",        OPT_VIZ_NORMALS },
+        { L"m",         OPT_OUTPUT_REMAPPING },
         { L"nologo",    OPT_NOLOGO },
         { L"flist",     OPT_FILELIST },
         { nullptr,      0 }
@@ -505,6 +507,7 @@ namespace
             L"   -c                  generate mesh with colors showing charts\n"
             L"   -t                  generates a separate mesh with uvs - (*_texture)\n"
             L"   -vn                 with -t creates per vertex colors from normals\n"
+            L"   -m                  generates a text file with vertex remapping (*_map)\n"
             L"   -it <filename>      calculate IMT for the mesh using this texture map\n"
             L"   -iv <channel>       calculate IMT using per-vertex data\n"
             L"                       NORMAL, COLOR, TEXCOORD\n"
@@ -1079,6 +1082,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         }
 
         // Prepare mesh for processing
+        const size_t nVertsOriginal = nVerts;
+        std::vector<uint32_t> dups;
         {
             // Adjacency
             const float epsilon = (dwOptions & (uint64_t(1) << OPT_GEOMETRIC_ADJ)) ? 1e-5f : 0.f;
@@ -1101,7 +1106,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
 
             // Clean
-            hr = inMesh->Clean(true);
+            hr = inMesh->Clean(dups, true);
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed mesh clean (%08X%ls)\n",
@@ -1110,11 +1115,10 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
             else
             {
-                const size_t nNewVerts = inMesh->GetVertexCount();
-                if (nVerts != nNewVerts)
+                nVerts = inMesh->GetVertexCount();
+                if (nVerts != nVertsOriginal)
                 {
-                    wprintf(L" [%zu vertex dups] ", nNewVerts - nVerts);
-                    nVerts = nNewVerts;
+                    wprintf(L" [%zu vertex dups] ", nVerts - nVertsOriginal);
                 }
             }
         }
@@ -1597,6 +1601,63 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         }
 
         wprintf(L" %zu vertices, %zu faces written:\n'%ls'\n", nVerts, nFaces, outputPath);
+
+        // Write out vertex remapping from original mesh
+        if (dwOptions & (uint64_t(1) << OPT_OUTPUT_REMAPPING))
+        {
+            wchar_t mapFilename[_MAX_FNAME] = {};
+            wcscpy_s(mapFilename, fname);
+            wcscat_s(mapFilename, L"_map");
+
+            _wmakepath_s(outputPath, nullptr, nullptr, mapFilename, L"txt");
+
+            if (dwOptions & (uint64_t(1) << OPT_TOLOWER))
+            {
+                std::ignore = _wcslwr_s(outputPath);
+            }
+
+            if (~dwOptions & (uint64_t(1) << OPT_OVERWRITE))
+            {
+                if (GetFileAttributesW(outputPath) != INVALID_FILE_ATTRIBUTES)
+                {
+                    wprintf(L"\nERROR: vertex remapping file already exists, use -y to overwrite:\n'%ls'\n", outputPath);
+                    return 1;
+                }
+            }
+
+            std::wofstream os;
+            os.open(outputPath);
+            if (!os)
+            {
+                wprintf(L"\nERROR: Failed to create vertex remapping file\n");
+                return 1;
+            }
+
+            std::locale system_locale("C");
+            os.imbue(system_locale);
+
+            for (size_t j = 0; j < nVerts; ++j)
+            {
+                uint32_t oldIndex = vertexRemapArray[j];
+                if (oldIndex == uint32_t(-1))
+                    continue;
+
+                if (oldIndex >= nVertsOriginal)
+                {
+                    oldIndex = dups[oldIndex - nVertsOriginal];
+                }
+
+                os << j << L"," << oldIndex << std::endl;
+            }
+
+            os.close();
+
+            if (os.bad())
+            {
+                wprintf(L"\nERROR: Failed to write vertex remapping file\n");
+                return 1;
+            }
+        }
 
         // Write out UV mesh visualization
         if (dwOptions & (uint64_t(1) << OPT_UV_MESH))

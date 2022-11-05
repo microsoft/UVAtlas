@@ -404,12 +404,12 @@ HRESULT Mesh::Validate(DirectX::VALIDATE_FLAGS flags, std::wstring* msgs) const 
 
 
 //--------------------------------------------------------------------------------------
-HRESULT Mesh::Clean(_In_ bool breakBowties) noexcept
+HRESULT Mesh::Clean(std::vector<uint32_t>& dups, _In_ bool breakBowties) noexcept
 {
     if (!mnFaces || !mIndices || !mnVerts || !mPositions)
         return E_UNEXPECTED;
 
-    std::vector<uint32_t> dups;
+    dups.clear();
     HRESULT hr = DirectX::Clean(mIndices.get(), mnFaces, mnVerts, mAdjacency.get(), mAttributes.get(), dups, breakBowties);
     if (FAILED(hr))
         return hr;

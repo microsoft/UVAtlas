@@ -51,7 +51,7 @@ public:
 
     HRESULT Validate(_In_ DirectX::VALIDATE_FLAGS flags, _In_opt_ std::wstring* msgs) const noexcept;
 
-    HRESULT Clean(_In_ bool breakBowties = false) noexcept;
+    HRESULT Clean(std::vector<uint32_t>& dups, _In_ bool breakBowties = false) noexcept;
 
     HRESULT GenerateAdjacency(_In_ float epsilon) noexcept;
 
