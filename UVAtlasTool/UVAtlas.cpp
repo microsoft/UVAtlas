@@ -101,6 +101,7 @@ namespace
         OPT_VERT_UV_FORMAT,
         OPT_VERT_COLOR_FORMAT,
         OPT_SECOND_UV,
+        OPT_VIZ_NORMALS,
         OPT_NOLOGO,
         OPT_FILELIST,
         OPT_MAX
@@ -186,6 +187,7 @@ namespace
         { L"fuv",       OPT_VERT_UV_FORMAT },
         { L"fc",        OPT_VERT_COLOR_FORMAT },
         { L"uv2",       OPT_SECOND_UV },
+        { L"vn",        OPT_VIZ_NORMALS },
         { L"nologo",    OPT_NOLOGO },
         { L"flist",     OPT_FILELIST },
         { nullptr,      0 }
@@ -502,6 +504,7 @@ namespace
             L"   -cw                 faces are clockwise (defaults to counter-clockwise)\n"
             L"   -c                  generate mesh with colors showing charts\n"
             L"   -t                  generates a separate mesh with uvs - (*_texture)\n"
+            L"   -vn                 with -t creates per vertex colors from normals\n"
             L"   -it <filename>      calculate IMT for the mesh using this texture map\n"
             L"   -iv <channel>       calculate IMT using per-vertex data\n"
             L"                       NORMAL, COLOR, TEXCOORD\n"
@@ -521,7 +524,7 @@ namespace
             L"   -fn <normal-format> format to use for writing normals/tangents/normals\n"
             L"   -fuv <uv-format>    format to use for texture coordinates\n"
             L"   -fc <color-format>  format to use for writing colors\n"
-            L"   -uv2                place uvatlas uvs into a second texture coordinate channel\n";
+            L"   -uv2                place UVs into a second texture coordinate channel\n";
 
         wprintf(L"%ls", s_usage);
 
@@ -1598,7 +1601,9 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         // Write out UV mesh visualization
         if (dwOptions & (uint64_t(1) << OPT_UV_MESH))
         {
-            hr = inMesh->VisualizeUVs(dwOptions & (uint64_t(1) << OPT_SECOND_UV));
+            const bool vizNormals = (dwOptions & (uint64_t(1) << OPT_VIZ_NORMALS)) != 0;
+            const bool secondUVs = (dwOptions & (uint64_t(1) << OPT_SECOND_UV)) != 0;
+            hr = inMesh->VisualizeUVs(secondUVs, vizNormals);
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed to create UV visualization mesh\n");
@@ -1647,7 +1652,18 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
             else if (!_wcsicmp(outputExt, L".obj") || !_wcsicmp(outputExt, L"._obj"))
             {
-                wprintf(L"\nWARNING: WaveFront Object (.obj) not supported for UV visualization (requires Vertex Colors)\n");
+                if (secondUVs)
+                {
+                    wprintf(L"\nWARNING: WaveFront Object (.obj) not supported for UV visualization with uv2\n");
+                }
+                else if (vizNormals)
+                {
+                    wprintf(L"\nWARNING: WaveFront Object (.obj) not supported for UV visualization with vn (requires Vertex Colors)\n");
+                }
+                else
+                {
+                    hr = inMesh->ExportToOBJ(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
+                }
             }
             if (FAILED(hr))
             {

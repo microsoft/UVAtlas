@@ -986,7 +986,7 @@ HRESULT Mesh::ReverseHandedness() noexcept
 
 
 //--------------------------------------------------------------------------------------
-HRESULT Mesh::VisualizeUVs(bool useSecondUVs) noexcept
+HRESULT Mesh::VisualizeUVs(bool useSecondUVs, bool vizNormals) noexcept
 {
     if (!mnVerts || !mPositions)
         return E_UNEXPECTED;
@@ -1016,6 +1016,29 @@ HRESULT Mesh::VisualizeUVs(bool useSecondUVs) noexcept
 
     if (mNormals)
     {
+        if (vizNormals)
+        {
+            std::unique_ptr<XMFLOAT4[]> colors;
+            colors.reset(new (std::nothrow) XMFLOAT4[mnVerts]);
+            if (!colors)
+                return E_OUTOFMEMORY;
+
+            const XMFLOAT3* nptr = mNormals.get();
+            XMFLOAT4* cptr = colors.get();
+            for (size_t j = 0; j < mnVerts; ++j)
+            {
+                // Remap -1..1 to 0..1
+                cptr->x = 0.5f * nptr->x + 0.5f;
+                cptr->y = 0.5f * nptr->y + 0.5f;
+                cptr->z = 0.5f * nptr->z + 0.5f;
+                cptr->w = 1.f;
+                ++nptr;
+                ++cptr;
+            }
+
+            mColors.swap(colors);
+        }
+
         XMFLOAT3* nptr = mNormals.get();
         for (size_t j = 0; j < mnVerts; ++j)
         {

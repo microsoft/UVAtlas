@@ -74,7 +74,7 @@ public:
 
     HRESULT ReverseHandedness() noexcept;
 
-    HRESULT VisualizeUVs(bool useSecondUVs) noexcept;
+    HRESULT VisualizeUVs(bool useSecondUVs, bool vizNormals) noexcept;
 
     // Accessors
     const uint32_t* GetAttributeBuffer() const noexcept { return mAttributes.get(); }
