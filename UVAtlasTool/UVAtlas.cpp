@@ -1580,7 +1580,68 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         }
         else if (!_wcsicmp(outputExt, L".obj") || !_wcsicmp(outputExt, L"._obj"))
         {
+            wchar_t mtlFilename[_MAX_FNAME] = {};
+            if ((dwOptions & (uint64_t(1) << OPT_COLOR_MESH))
+                && !inMaterial.empty())
+            {
+                wcscpy_s(mtlFilename, fname);
+                wcscat_s(mtlFilename, L"_charts");
+
+                if (dwOptions & (uint64_t(1) << OPT_TOLOWER))
+                {
+                    std::ignore = _wcslwr_s(mtlFilename);
+                }
+
+                inMesh->SetMTLFileName(mtlFilename);
+            }
+
             hr = inMesh->ExportToOBJ(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
+
+            if (*mtlFilename != 0)
+            {
+                wchar_t drive[_MAX_DRIVE] = {};
+                wchar_t dir[_MAX_DIR] = {};
+                _wsplitpath_s(outputPath, drive, _MAX_DRIVE, dir, _MAX_DIR, nullptr, 0, nullptr, 0);
+
+                wchar_t mtlOutputPath[MAX_PATH] = {};
+                _wmakepath_s(mtlOutputPath, drive, dir, mtlFilename, L"mtl");
+
+                if (~dwOptions & (uint64_t(1) << OPT_OVERWRITE))
+                {
+                    if (GetFileAttributesW(mtlOutputPath) != INVALID_FILE_ATTRIBUTES)
+                    {
+                        wprintf(L"\nERROR: charts mtl file already exists, use -y to overwrite:\n'%ls'\n", mtlOutputPath);
+                        return 1;
+                    }
+                }
+
+                std::wofstream os;
+                os.open(mtlOutputPath);
+                if (!os)
+                {
+                    wprintf(L"\nERROR: Failed to create charts mtl file\n");
+                    return 1;
+                }
+
+                os.imbue(std::locale::classic());
+
+                for (auto const& mtl : inMaterial)
+                {
+                    // Minimal material output.
+                    os << L"newmtl " << mtl.name << std::endl;
+                    os << L"illum 1" << std::endl;
+                    os << L"Ka " << mtl.ambientColor.x << L" " << mtl.ambientColor.y << L" " << mtl.ambientColor.z << std::endl;
+                    os << L"Kd " << mtl.diffuseColor.x << L" " << mtl.diffuseColor.y << L" " << mtl.diffuseColor.z << std::endl << std::endl;
+                }
+
+                os.close();
+
+                if (os.bad())
+                {
+                    wprintf(L"\nERROR: Failed to write charts mtl file\n");
+                    return 1;
+                }
+            }
         }
         else if (!_wcsicmp(outputExt, L".x"))
         {
@@ -1609,32 +1670,36 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             wcscpy_s(mapFilename, fname);
             wcscat_s(mapFilename, L"_map");
 
-            _wmakepath_s(outputPath, nullptr, nullptr, mapFilename, L"txt");
+            wchar_t drive[_MAX_DRIVE] = {};
+            wchar_t dir[_MAX_DIR] = {};
+            _wsplitpath_s(outputPath, drive, _MAX_DRIVE, dir, _MAX_DIR, nullptr, 0, nullptr, 0);
+
+            wchar_t mapOutputPath[MAX_PATH] = {};
+            _wmakepath_s(mapOutputPath, drive, dir, mapFilename, L"txt");
 
             if (dwOptions & (uint64_t(1) << OPT_TOLOWER))
             {
-                std::ignore = _wcslwr_s(outputPath);
+                std::ignore = _wcslwr_s(mapOutputPath);
             }
 
             if (~dwOptions & (uint64_t(1) << OPT_OVERWRITE))
             {
-                if (GetFileAttributesW(outputPath) != INVALID_FILE_ATTRIBUTES)
+                if (GetFileAttributesW(mapOutputPath) != INVALID_FILE_ATTRIBUTES)
                 {
-                    wprintf(L"\nERROR: vertex remapping file already exists, use -y to overwrite:\n'%ls'\n", outputPath);
+                    wprintf(L"\nERROR: vertex remapping file already exists, use -y to overwrite:\n'%ls'\n", mapOutputPath);
                     return 1;
                 }
             }
 
             std::wofstream os;
-            os.open(outputPath);
+            os.open(mapOutputPath);
             if (!os)
             {
                 wprintf(L"\nERROR: Failed to create vertex remapping file\n");
                 return 1;
             }
 
-            std::locale system_locale("C");
-            os.imbue(system_locale);
+            os.imbue(std::locale::classic());
 
             for (size_t j = 0; j < nVerts; ++j)
             {
