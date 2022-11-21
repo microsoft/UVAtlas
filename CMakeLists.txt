@@ -319,6 +319,7 @@ if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
     set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT uvatlastool)
 endif()
 
+#--- Test suite
 include(CTest)
 if(BUILD_TESTING AND WIN32 AND (NOT WINDOWS_STORE) AND (EXISTS "${CMAKE_CURRENT_LIST_DIR}/Tests/CMakeLists.txt"))
   enable_testing()
