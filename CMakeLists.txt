@@ -11,8 +11,6 @@ project (UVAtlas
   HOMEPAGE_URL "https://go.microsoft.com/fwlink/?LinkID=512686"
   LANGUAGES CXX)
 
-option(BUILD_TESTING "Build test suite (if present)" ON)
-
 # To build this tool, you need the DirectXTex (http://go.microsoft.com/fwlink/?LinkId=248926) and
 # DirectXMesh (http://go.microsoft.com/fwlink/?LinkID=324981) cmake packages available.
 #
@@ -321,6 +319,7 @@ if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
     set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT uvatlastool)
 endif()
 
+include(CTest)
 if(BUILD_TESTING AND WIN32 AND (NOT WINDOWS_STORE) AND (EXISTS "${CMAKE_CURRENT_LIST_DIR}/Tests/CMakeLists.txt"))
   enable_testing()
   add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/Tests)
