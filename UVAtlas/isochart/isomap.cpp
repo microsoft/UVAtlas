@@ -15,6 +15,8 @@ using namespace Isochart;
 
 #include "SymmetricMatrix.hpp"
 
+#include <Eigen/Eigen>
+
 CIsoMap::CIsoMap()
     :m_dwMatrixDimension(0),
     m_dwCalculatedDimension(0),
@@ -151,13 +153,29 @@ HRESULT CIsoMap::ComputeLargestEigen(
         return E_OUTOFMEMORY;
     }
 
-    if (!CSymmetricMatrix<float>::GetEigen(
-        m_dwMatrixDimension, m_pfMatrixB,
-        pfEigenValue.get(), pfEigenVector.get(),
-        dwSelectedDimension))
-    {
-        return E_OUTOFMEMORY;
+    Eigen::MatrixXf M(m_dwMatrixDimension, m_dwMatrixDimension);
+    for (int i = 0; i < m_dwMatrixDimension; i++) {
+        for (int j = 0; j < m_dwMatrixDimension; j++) {
+            M(i, j) = m_pfMatrixB[i * m_dwMatrixDimension + j];
+        }
     }
+    Eigen::SelfAdjointEigenSolver<Eigen::MatrixXf> eigenAlg(M);
+
+    for (int i = 0; i < dwSelectedDimension; i++) {
+        int eigenIndex = (int)m_dwMatrixDimension - i - 1;
+        pfEigenValue[i] = eigenAlg.eigenvalues()(eigenIndex);
+        for (int j = 0; j < m_dwMatrixDimension; j++) {
+            pfEigenVector[i * m_dwMatrixDimension + j] = eigenAlg.eigenvectors()(j, eigenIndex);
+        }
+    }
+
+    //if (!CSymmetricMatrix<float>::GetEigen(
+    //    m_dwMatrixDimension, m_pfMatrixB,
+    //    pfEigenValue.get(), pfEigenVector.get(),
+    //    dwSelectedDimension))
+    //{
+    //    return E_OUTOFMEMORY;
+    //}
 
     memcpy(m_pfEigenValue, pfEigenValue.get(), dwSelectedDimension * sizeof(float));
     memcpy(
