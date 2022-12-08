@@ -224,6 +224,7 @@ jobs:
       cmakeArgs: --preset=arm64-Release-Clang
   - task: CMake@1
     displayName: CMake (clang/LLVM; arm64-Release) Build
+    enabled: false
     inputs:
       cwd: $(Build.SourcesDirectory)/UVAtlas
       cmakeArgs: --build out/build/arm64-Release-Clang -v
