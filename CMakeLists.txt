@@ -29,6 +29,9 @@ option(UVATLAS_USE_OPENMP "Build with OpenMP support" ON)
 # Enable use of the Eigen and BLAS libraries (https://eigen.tuxfamily.org/)
 option(ENABLE_USE_EIGEN "Use the Eigen & BLAS libraries" OFF)
 
+# https://devblogs.microsoft.com/cppblog/spectre-mitigations-in-msvc/
+option(ENABLE_SPECTRE_MITIGATION "Build using /Qspectre for MSVC" OFF)
+
 option(ENABLE_CODE_ANALYSIS "Use Static Code Analysis on build" OFF)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -127,7 +130,7 @@ if(NOT MINGW)
 endif()
 
 if(MINGW OR (NOT WIN32) OR VCPKG_TOOLCHAIN)
-    message("INFO: Using VCPKG for DirectX-Headers and DirectXMath.")
+    message(STATUS "Using VCPKG for DirectX-Headers and DirectXMath.")
     find_package(directx-headers CONFIG REQUIRED)
     find_package(directxmath CONFIG REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE Microsoft::DirectX-Headers Microsoft::DirectXMath)
@@ -135,7 +138,7 @@ if(MINGW OR (NOT WIN32) OR VCPKG_TOOLCHAIN)
 endif()
 
 if(ENABLE_USE_EIGEN)
-    message("INFO: Using Eigen3 & Spectra for CSymmetricMatrix::GetEigen.")
+    message(STATUS "Using Eigen3 & Spectra for CSymmetricMatrix::GetEigen.")
     find_package(Eigen3 REQUIRED)
     find_package(spectra REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen Spectra::Spectra)
@@ -158,7 +161,7 @@ install(TARGETS ${PROJECT_NAME}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/.nuget/${PROJECT_NAME}-config.cmake.in
+configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/build/${PROJECT_NAME}-config.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}-config.cmake
   INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PACKAGE_NAME})
 
@@ -179,7 +182,7 @@ install(FILES
 if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
     set(TOOL_EXES uvatlastool)
 
-    message("INFO: Using VCPKG for DirectXMesh and DirectXTex (required for uvatlastool).")
+    message(STATUS "Using VCPKG for DirectXMesh and DirectXTex (required for uvatlastool).")
 
     find_package(directxmesh CONFIG REQUIRED COMPONENTS library utils)
     find_package(directxtex CONFIG REQUIRED)
@@ -210,12 +213,23 @@ if(MSVC)
     endforeach()
 
     if((${CMAKE_SIZEOF_VOID_P} EQUAL 4) AND (NOT ${DIRECTX_ARCH} MATCHES "^arm"))
-        foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
-          target_link_options(${t} PRIVATE /SAFESEH)
-        endforeach()
+      foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+        target_link_options(${t} PRIVATE /SAFESEH)
+      endforeach()
     endif()
 
-    if((MSVC_VERSION GREATER_EQUAL 1928) AND (CMAKE_SIZEOF_VOID_P EQUAL 8)
+    if(ENABLE_SPECTRE_MITIGATION
+       AND (MSVC_VERSION GREATER_EQUAL 1913)
+       AND (NOT WINDOWS_STORE)
+       AND (NOT (CMAKE_CXX_COMPILER_ID MATCHES "Clang")))
+      message(STATUS "Building Spectre-mitigated libraries.")
+      foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+        target_compile_options(${t} PRIVATE "/Qspectre")
+      endforeach()
+    endif()
+
+    if((MSVC_VERSION GREATER_EQUAL 1928)
+       AND (CMAKE_SIZEOF_VOID_P EQUAL 8)
        AND ((NOT (CMAKE_CXX_COMPILER_ID MATCHES "Clang")) OR (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 13.0)))
       foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
         target_compile_options(${t} PRIVATE "$<$<NOT:$<CONFIG:DEBUG>>:/guard:ehcont>")
