@@ -16,12 +16,14 @@
 
   <PropertyGroup>
     <uvatlas-LibPath>$(MSBuildThisFileDirectory)..\..\native\lib\$(PlatformTarget)\$(NuGetConfiguration)</uvatlas-LibPath>
+    <uvatlas-LibName Condition="'$(SpectreMitigation)'!='' AND '$(SpectreMitigation)'!='false'">UVAtlas_Spectre</uvatlas-LibName>
+    <uvatlas-LibName Condition="'$(uvatlas-LibName)'==''">UVAtlas</uvatlas-LibName>
   </PropertyGroup>
 
   <ItemDefinitionGroup>
     <Link>
       <AdditionalLibraryDirectories>$(uvatlas-LibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>UVAtlas.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(uvatlas-LibName).lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
 
