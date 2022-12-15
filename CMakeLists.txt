@@ -296,6 +296,12 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         endforeach()
     endif()
 
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 19.28)
+        foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+          target_compile_options(${t} PRIVATE /Zc:lambda)
+        endforeach()
+    endif()
+
     if(UVATLAS_USE_OPENMP)
         foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
           target_compile_options(${t} PRIVATE /openmp /Zc:twoPhase-)
