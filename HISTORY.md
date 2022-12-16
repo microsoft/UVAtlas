@@ -6,6 +6,14 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### December 15, 2022
+* CMake project updated to require 3.20 or later
+* CMake and MSBuild project updates
+* Added Azure Dev Ops Pipeline YAML files
+* Test suite updated with CTest support
+* Spectre-mitigated libraries added to NuGet package
+* uvatlastool: added switches ``-m`` and ``-vn``; fixed bug with ``-c -wf`` missing ``.mtl`` output file
+
 ### October 17, 2022
 * Minor CMakePresets update
 * Code review (more use of constexpr)
