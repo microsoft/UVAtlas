@@ -11,8 +11,9 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 * CMake and MSBuild project updates
 * Added Azure Dev Ops Pipeline YAML files
 * Test suite updated with CTest support
-* Spectre-mitigated libraries added to NuGet package
+* Spectre-mitigated libraries and ARM64 support added to NuGet package
 * uvatlastool: added switches ``-m`` and ``-vn``; fixed bug with ``-c -wf`` missing ``.mtl`` output file
+* uvatlastool: Updated for December 2022 DirectXTex & DirectXMesh releases
 
 ### October 17, 2022
 * Minor CMakePresets update
