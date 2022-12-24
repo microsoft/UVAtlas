@@ -1831,7 +1831,7 @@ HRESULT __cdecl DirectX::UVAtlasApplyRemap(
 
 
 //-------------------------------------------------------------------------------------
-#ifdef _DEBUG
+#if defined(_WIN32) && defined(_DEBUG)
 _Use_decl_annotations_
 void __cdecl UVAtlasDebugPrintf(unsigned int lvl, const char* szFormat, ...)
 {
@@ -1856,4 +1856,4 @@ void __cdecl UVAtlasDebugPrintf(unsigned int lvl, const char* szFormat, ...)
 
     OutputDebugStringA(strB);
 }
-#endif // _DEBUG
+#endif // _WIN32 && _DEBUG
