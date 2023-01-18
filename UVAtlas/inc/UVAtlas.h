@@ -18,7 +18,11 @@
 #include <d3d11_x.h>
 #else
 #include <Windows.h>
+#ifdef USING_DIRECTX_HEADERS
+#include <directx/dxgiformat.h>
+#else
 #include <dxgiformat.h>
+#endif
 #endif
 #else // !WIN32
 #include <directx/dxgiformat.h>
