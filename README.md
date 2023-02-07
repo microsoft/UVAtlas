@@ -6,7 +6,7 @@ http://go.microsoft.com/fwlink/?LinkID=512686
 
 Copyright (c) Microsoft Corporation.
 
-**December 15, 2022**
+**February 6, 2023**
 
 This package contains UVAtlas, a shared source library for creating and packing an isochart texture atlas.
 
@@ -70,7 +70,7 @@ Sander et al. "Signal-Specialized Parametrization" Europgraphics 2002 [pdf](http
 
 * The UWP projects and the Win10 classic desktop project include configurations for the ARM64 platform. Building these requires installing the ARM64 toolset.
 
-* When using clang/LLVM for the ARM64 platform, the Windows 11 SDK ([22000](https://walbourn.github.io/windows-sdk-for-windows-11/)) is required.
+* When using clang/LLVM for the ARM64 platform, the Windows 11 SDK ([22000](https://walbourn.github.io/windows-sdk-for-windows-11/)) or later is required.
 
 ## Contributing
 
