@@ -6,6 +6,11 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### February 6, 2023
+* CMake project updates
+* Minor code review
+* uvatlastool: Updated for January 2023 DirectXTex release
+
 ### December 15, 2022
 * CMake project updated to require 3.20 or later
 * CMake and MSBuild project updates
