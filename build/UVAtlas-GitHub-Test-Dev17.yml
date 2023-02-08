@@ -12,6 +12,9 @@ schedules:
     include:
     - main
 
+trigger: none
+pr: none
+
 name: $(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)
 
 pool:
