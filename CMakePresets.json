@@ -68,6 +68,22 @@
       "hidden": true
     },
     {
+      "name": "Scarlett",
+      "cacheVariables": {
+        "XBOX_CONSOLE_TARGET": "scarlett",
+        "BUILD_TESTING": false
+      },
+      "hidden": true
+    },
+    {
+      "name": "XboxOne",
+      "cacheVariables": {
+        "XBOX_CONSOLE_TARGET": "xboxone",
+        "BUILD_TESTING": false
+      },
+      "hidden": true
+    },
+    {
       "name": "VCPKG",
       "cacheVariables": {
         "CMAKE_TOOLCHAIN_FILE": {
@@ -157,6 +173,12 @@
     { "name": "arm-Release-UWP"  , "description": "MSVC for ARM (Release) for UWP", "inherits": [ "base", "ARM", "Release", "MSVC", "UWP" ] },
     { "name": "arm64-Debug-UWP"  , "description": "MSVC for ARM64 (Debug) for UWP", "inherits": [ "base", "ARM64", "Debug", "MSVC", "UWP" ] },
     { "name": "arm64-Release-UWP", "description": "MSVC for ARM64 (Release) for UWP", "inherits": [ "base", "ARM64", "Release", "MSVC", "UWP" ] },
+
+    { "name": "x64-Debug-Scarlett"    , "description": "MSVC for x64 (Debug) for Xbox Series X|S", "inherits": [ "base", "x64", "Debug", "MSVC", "Scarlett" ] },
+    { "name": "x64-Release-Scarlett"  , "description": "MSVC for x64 (Release) for Xbox Series X|S", "inherits": [ "base", "x64", "Release", "MSVC", "Scarlett" ] },
+
+    { "name": "x64-Debug-XboxOne"    , "description": "MSVC for x64 (Debug) for Xbox One", "inherits": [ "base", "x64", "Debug", "MSVC", "XboxOne" ] },
+    { "name": "x64-Release-XboxOne"  , "description": "MSVC for x64 (Release) for Xbox One", "inherits": [ "base", "x64", "Release", "MSVC", "XboxOne" ] },
 
     { "name": "x64-Debug-VCPKG"    , "description": "MSVC for x64 (Debug) uvatlastool", "inherits": [ "base", "x64", "Debug", "VCPKG", "MSVC", "Tools" ] },
     { "name": "x64-Release-VCPKG"  , "description": "MSVC for x64 (Release) uvatlastool", "inherits": [ "base", "x64", "Release", "VCPKG", "MSVC", "Tools" ] },
