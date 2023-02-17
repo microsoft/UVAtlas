@@ -230,7 +230,7 @@ namespace
 
                 if (FindEquivParent(pEquivs, v1) != FindEquivParent(pEquivs, v2))
                 {
-                    DPF(0, "False edge data is invalid, %d and %d are only connected by false edges.", pIndexData[v1], pIndexData[v2]);
+                    DPF(0, "False edge data is invalid, %u and %u are only connected by false edges.", pIndexData[v1], pIndexData[v2]);
                     return HRESULT_E_INVALID_DATA;
                 }
             }
