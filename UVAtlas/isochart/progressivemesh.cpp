@@ -310,7 +310,7 @@ HRESULT CProgressiveMesh::Simplify()
         }
     }
 
-    DPF(3, "#Remained vert: %d\n", dwRemainVertNumber);
+    DPF(3, "#Remained vert: %u\n", dwRemainVertNumber);
     DPF(3, "Exported simplified mesh");
 
     return S_OK;

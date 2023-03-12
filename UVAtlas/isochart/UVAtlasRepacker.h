@@ -138,7 +138,7 @@ namespace IsochartRepacker
         _In_                       size_t Height,
         _In_                       float Gutter,
         _In_                       unsigned int Stage,
-        _In_opt_                   Isochart::LPISOCHARTCALLBACK pCallback = nullptr,
+        _In_                       Isochart::LPISOCHARTCALLBACK pCallback = nullptr,
         _In_                       float Frequency = 0.01f,
         _In_                       size_t iNumRotate = 5);
 

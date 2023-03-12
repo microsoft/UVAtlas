@@ -2148,11 +2148,11 @@ static void BruteForceOverlappingChecking(
                     if (bIsIntersect)
                     {
                         DPF(0, "Found intersection...");
-                        DPF(0, "Edge 1 is %d-%d",
+                        DPF(0, "Edge 1 is %u-%u",
                             pVertList1[edge1.dwVertexID[0]].dwIDInRootMesh,
                             pVertList1[edge1.dwVertexID[1]].dwIDInRootMesh);
 
-                        DPF(0, "Edge 2 is %d-%d",
+                        DPF(0, "Edge 2 is %u-%u",
                             pVertList2[edge2.dwVertexID[0]].dwIDInRootMesh,
                             pVertList2[edge2.dwVertexID[1]].dwIDInRootMesh);
 
@@ -3256,7 +3256,7 @@ HRESULT CIsochartMesh::ScanAlongBoundayEdges(
                 {
                     if (pScanEdge)
                     {
-                        DPF(0, "Vertex %d has more than 2 boundary edges leaving it", pVertex->dwIDInRootMesh);
+                        DPF(0, "Vertex %u has more than 2 boundary edges leaving it", pVertex->dwIDInRootMesh);
                         return HRESULT_E_INVALID_DATA;
                     }
 

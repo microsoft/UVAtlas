@@ -230,7 +230,7 @@ namespace
 
                 if (FindEquivParent(pEquivs, v1) != FindEquivParent(pEquivs, v2))
                 {
-                    DPF(0, "False edge data is invalid, %d and %d are only connected by false edges.", pIndexData[v1], pIndexData[v2]);
+                    DPF(0, "False edge data is invalid, %u and %u are only connected by false edges.", pIndexData[v1], pIndexData[v2]);
                     return HRESULT_E_INVALID_DATA;
                 }
             }
@@ -253,7 +253,7 @@ namespace
         _In_reads_(nFaces * 3)      const uint32_t* adjacency,
         _In_reads_opt_(nFaces * 3)  const uint32_t* falseEdgeAdjacency,
         _In_reads_opt_(nFaces * 3)  const float* pIMTArray,
-        _In_opt_                    LPISOCHARTCALLBACK statusCallBack,
+        _In_                        LPISOCHARTCALLBACK& statusCallBack,
         _In_                        float callbackFrequency,
         _In_                        unsigned int options,
         _Inout_                     std::vector<UVAtlasVertex>& vMeshOutVertexBuffer,
@@ -462,7 +462,7 @@ namespace
         _In_                    size_t height,
         _In_                    float gutter,
         _In_                    const std::vector<uint32_t>& vPartitionResultAdjacency,
-        _In_opt_                LPISOCHARTCALLBACK statusCallback,
+        _In_                    LPISOCHARTCALLBACK& statusCallback,
         float                   callbackFrequency,
         _In_                    unsigned int uStageInfo)
     {
