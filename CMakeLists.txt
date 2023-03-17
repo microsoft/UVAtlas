@@ -56,7 +56,7 @@ elseif(CMAKE_GENERATOR_PLATFORM MATCHES "^[Aa][Rr][Mm]64$")
     set(DIRECTX_ARCH arm64)
 endif()
 
-if(DEFINED XBOX_CONSOLE_TARGET)
+if(WINDOWS_STORE OR (DEFINED XBOX_CONSOLE_TARGET))
   set(BUILD_TOOLS OFF)
 endif()
 
@@ -221,7 +221,7 @@ install(FILES
   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PACKAGE_NAME})
 
 #--- Command-line tool
-if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
+if(BUILD_TOOLS AND WIN32)
     set(TOOL_EXES uvatlastool)
 
     message(STATUS "Using DirectXMesh and DirectXTex (required for uvatlastool).")
@@ -402,13 +402,14 @@ if(WIN32)
     endif()
 endif()
 
-if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
+if(BUILD_TOOLS AND WIN32)
     set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT uvatlastool)
 endif()
 
 #--- Test suite
 include(CTest)
-if(BUILD_TESTING AND WIN32 AND (NOT WINDOWS_STORE) AND (EXISTS "${CMAKE_CURRENT_LIST_DIR}/Tests/CMakeLists.txt"))
+if(BUILD_TESTING AND WIN32 AND (NOT WINDOWS_STORE) AND (NOT (DEFINED XBOX_CONSOLE_TARGET))
+   AND (EXISTS "${CMAKE_CURRENT_LIST_DIR}/Tests/CMakeLists.txt"))
   enable_testing()
   add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/Tests)
 endif()
