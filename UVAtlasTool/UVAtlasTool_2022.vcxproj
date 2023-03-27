@@ -142,6 +142,7 @@
       <OpenMPSupport>true</OpenMPSupport>
       <DisableSpecificWarnings>26812</DisableSpecificWarnings>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ole32.lib;windowscodecs.lib;uuid.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -168,6 +169,7 @@
       <OpenMPSupport>true</OpenMPSupport>
       <DisableSpecificWarnings>26812</DisableSpecificWarnings>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ole32.lib;windowscodecs.lib;uuid.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -193,6 +195,7 @@
       <AdditionalOptions>/Zc:__cplusplus /Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <OpenMPSupport>true</OpenMPSupport>
       <DisableSpecificWarnings>26812</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ole32.lib;oleaut32.lib;windowscodecs.lib;uuid.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -220,6 +223,7 @@
       <AdditionalOptions>/Zc:__cplusplus /Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <OpenMPSupport>true</OpenMPSupport>
       <DisableSpecificWarnings>26812</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ole32.lib;oleaut32.lib;windowscodecs.lib;uuid.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -246,6 +250,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus /Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>26812</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ole32.lib;oleaut32.lib;windowscodecs.lib;uuid.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -272,6 +277,7 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalOptions>/Zc:__cplusplus /Zc:twoPhase- %(AdditionalOptions)</AdditionalOptions>
       <DisableSpecificWarnings>26812</DisableSpecificWarnings>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ole32.lib;oleaut32.lib;windowscodecs.lib;uuid.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
