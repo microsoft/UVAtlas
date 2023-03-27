@@ -833,8 +833,11 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                     wprintf(L"Cannot use both if and iv at the same time\n");
                     return 1;
                 }
-
-                wcscpy_s(szTexFile, MAX_PATH, pValue);
+                else
+                {
+                    std::filesystem::path path(pValue);
+                    wcscpy_s(szTexFile, path.make_preferred().c_str());
+                }
                 break;
 
             case OPT_IMT_VERTEX:
