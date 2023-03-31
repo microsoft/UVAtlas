@@ -11,6 +11,7 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 * Code review
 * Retired VS 2017 legacy Xbox One XDK projects
 * uvatlastool: Updated to support Windows or UNIX-style path separators
+* uvatlastool: Updated for March 2023 DirectXTex & DirectXMesh releases
 
 ### February 6, 2023
 * CMake project updates
