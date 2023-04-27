@@ -310,6 +310,9 @@ endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(WarningsLib -Wall -Wpedantic -Wextra)
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 16.0)
+        list(APPEND WarningsLib "-Wno-unsafe-buffer-usage")
+    endif()
     target_compile_options(${PROJECT_NAME} PRIVATE ${WarningsLib})
 
     set(WarningsEXE ${WarningsLib} "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic" "-Wno-switch" "-Wno-switch-enum" "-Wno-exit-time-destructors" "-Wno-switch" "-Wno-switch-enum" "-Wno-language-extension-token" "-Wno-missing-prototypes")

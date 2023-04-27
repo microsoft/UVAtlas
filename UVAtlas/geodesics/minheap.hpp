@@ -26,11 +26,9 @@ namespace Internal
             m_data = R;
         }
 
-        ReverseComparison& operator=(const ReverseComparison& R)
-        {
-            m_data = R.m_data;
-            return *this;
-        }
+        ReverseComparison(const ReverseComparison&) = default;
+        ReverseComparison& operator=(const ReverseComparison&) = default;
+
         bool operator>(const ReverseComparison& R)
         {
             return m_data < R.m_data;

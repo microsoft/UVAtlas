@@ -131,16 +131,15 @@ namespace GeodesicDist
         {
             memset(this, 0, sizeof(EdgeWindow));
         }
-        EdgeWindow(const EdgeWindow& R)
-        {
-            memcpy(this, &R, sizeof(EdgeWindow));
-        }
         // trick constructor
         EdgeWindow(const uint32_t R)
         {
             if (R == 0)
                 memset(this, 0, sizeof(EdgeWindow));
         }
+
+        EdgeWindow(const EdgeWindow&) = default;
+        EdgeWindow& operator=(const EdgeWindow&) = default;
 
 #ifdef _PREFAST_
 #pragma warning(pop)
