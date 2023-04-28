@@ -5,6 +5,10 @@ cmake_minimum_required (VERSION 3.20)
 
 set(UVATLAS_VERSION 1.8.4)
 
+if(DEFINED XBOX_CONSOLE_TARGET)
+  set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
+endif()
+
 project (UVAtlas
   VERSION ${UVATLAS_VERSION}
   DESCRIPTION "UVAtlas Isochart Atlas Library"
@@ -184,7 +188,11 @@ if(DEFINED XBOX_CONSOLE_TARGET)
             message(FATAL_ERROR "Microsoft GDK with Xbox Extensions environment needs to be set for Xbox One.")
         endif()
         target_compile_definitions(${PROJECT_NAME} PUBLIC _GAMING_XBOX _GAMING_XBOX_XBOXONE)
+    else()
+        message(FATAL_ERROR "Unknown XBOX_CONSOLE_TARGET")
     endif()
+elseif(WINDOWS_STORE)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC WINAPI_FAMILY=WINAPI_FAMILY_APP)
 endif()
 
 #--- Package
@@ -302,6 +310,9 @@ endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     set(WarningsLib -Wall -Wpedantic -Wextra)
+    if(CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 16.0)
+        list(APPEND WarningsLib "-Wno-unsafe-buffer-usage")
+    endif()
     target_compile_options(${PROJECT_NAME} PRIVATE ${WarningsLib})
 
     set(WarningsEXE ${WarningsLib} "-Wno-c++98-compat" "-Wno-c++98-compat-pedantic" "-Wno-switch" "-Wno-switch-enum" "-Wno-exit-time-destructors" "-Wno-switch" "-Wno-switch-enum" "-Wno-language-extension-token" "-Wno-missing-prototypes")
@@ -379,10 +390,6 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
 endif()
 
 if(WIN32)
-    if(WINDOWS_STORE)
-      target_compile_definitions(${PROJECT_NAME} PRIVATE WINAPI_FAMILY=WINAPI_FAMILY_APP)
-    endif()
-
     if(WINDOWS_STORE OR (${DIRECTX_ARCH} MATCHES "^arm64") OR (DEFINED XBOX_CONSOLE_TARGET))
         set(WINVER 0x0A00)
     elseif(${DIRECTX_ARCH} MATCHES "^arm")
