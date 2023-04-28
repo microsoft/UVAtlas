@@ -6,6 +6,10 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### April 28, 2023
+* CMake project updates and fixes for clang/LLVM v16 warnings
+* uvatlastool: Windows on ARM64 version
+
 ### March 30, 2023
 * CMake project updates
 * Code review
