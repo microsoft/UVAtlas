@@ -9,6 +9,11 @@ if(BUILD_TOOLS AND WIN32 AND (NOT WINDOWS_STORE))
     find_dependency(directxtex)
 endif()
 
+set(UVATLAS_USE_OPENMP @UVATLAS_USE_OPENMP@)
+if(UVATLAS_USE_OPENMP)
+    find_dependency(OpenMP)
+endif()
+
 set(ENABLE_USE_EIGEN @ENABLE_USE_EIGEN@)
 if (ENABLE_USE_EIGEN)
     find_dependency(Eigen3)
