@@ -42,11 +42,12 @@ resources:
 
 name: $(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)
 
-pool:
-  vmImage: windows-2019
-
 variables:
   GUID_FEED: $(ADOFeedGUID)
+  Codeql.Enabled: true
+
+pool:
+  vmImage: windows-2019
 
 jobs:
 - job: DESKTOP_BUILD
