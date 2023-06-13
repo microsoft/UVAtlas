@@ -303,6 +303,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Manifest Include="settings.manifest" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\directxmesh_desktop_2019.2023.4.28.1\build\native\directxmesh_desktop_2019.targets" Condition="Exists('..\packages\directxmesh_desktop_2019.2023.4.28.1\build\native\directxmesh_desktop_2019.targets')" />

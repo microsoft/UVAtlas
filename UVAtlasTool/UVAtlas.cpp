@@ -125,7 +125,7 @@ namespace
 
     struct SConversion
     {
-        wchar_t szSrc[MAX_PATH];
+        std::wstring szSrc;
     };
 
     template<typename T>
@@ -265,11 +265,11 @@ namespace
         return 0;
     }
 
-    void SearchForFiles(const wchar_t* path, std::list<SConversion>& files, bool recursive)
+    void SearchForFiles(const std::filesystem::path& path, std::list<SConversion>& files, bool recursive)
     {
         // Process files
         WIN32_FIND_DATAW findData = {};
-        ScopedFindHandle hFile(safe_handle(FindFirstFileExW(path,
+        ScopedFindHandle hFile(safe_handle(FindFirstFileExW(path.c_str(),
             FindExInfoBasic, &findData,
             FindExSearchNameMatch, nullptr,
             FIND_FIRST_EX_LARGE_FETCH)));
@@ -279,12 +279,8 @@ namespace
             {
                 if (!(findData.dwFileAttributes & (FILE_ATTRIBUTE_HIDDEN | FILE_ATTRIBUTE_SYSTEM | FILE_ATTRIBUTE_DIRECTORY)))
                 {
-                    wchar_t drive[_MAX_DRIVE] = {};
-                    wchar_t dir[_MAX_DIR] = {};
-                    _wsplitpath_s(path, drive, _MAX_DRIVE, dir, _MAX_DIR, nullptr, 0, nullptr, 0);
-
                     SConversion conv = {};
-                    _wmakepath_s(conv.szSrc, drive, dir, findData.cFileName, nullptr);
+                    conv.szSrc = path.parent_path().append(findData.cFileName).native();
                     files.push_back(conv);
                 }
 
@@ -296,15 +292,9 @@ namespace
         // Process directories
         if (recursive)
         {
-            wchar_t searchDir[MAX_PATH] = {};
-            {
-                wchar_t drive[_MAX_DRIVE] = {};
-                wchar_t dir[_MAX_DIR] = {};
-                _wsplitpath_s(path, drive, _MAX_DRIVE, dir, _MAX_DIR, nullptr, 0, nullptr, 0);
-                _wmakepath_s(searchDir, drive, dir, L"*", nullptr);
-            }
+            auto searchDir = path.parent_path().append(L"*");
 
-            hFile.reset(safe_handle(FindFirstFileExW(searchDir,
+            hFile.reset(safe_handle(FindFirstFileExW(searchDir.c_str(),
                 FindExInfoBasic, &findData,
                 FindExSearchLimitToDirectories, nullptr,
                 FIND_FIRST_EX_LARGE_FETCH)));
@@ -317,17 +307,7 @@ namespace
                 {
                     if (findData.cFileName[0] != L'.')
                     {
-                        wchar_t subdir[MAX_PATH] = {};
-
-                        {
-                            wchar_t drive[_MAX_DRIVE] = {};
-                            wchar_t dir[_MAX_DIR] = {};
-                            wchar_t fname[_MAX_FNAME] = {};
-                            wchar_t ext[_MAX_FNAME] = {};
-                            _wsplitpath_s(path, drive, dir, fname, ext);
-                            wcscat_s(dir, findData.cFileName);
-                            _wmakepath_s(subdir, drive, dir, fname, ext);
-                        }
+                        auto subdir = path.parent_path().append(findData.cFileName).append(path.filename().c_str());
 
                         SearchForFiles(subdir, files, recursive);
                     }
@@ -343,36 +323,38 @@ namespace
     {
         std::list<SConversion> flist;
         std::set<std::wstring> excludes;
-        wchar_t fname[1024] = {};
+
+        auto fname = std::make_unique<wchar_t[]>(32768);
         for (;;)
         {
-            inFile >> fname;
+            inFile >> fname.get();
             if (!inFile)
                 break;
 
-            if (*fname == L'#')
+            if (fname[0] == L'#')
             {
                 // Comment
             }
-            else if (*fname == L'-')
+            else if (fname[0] == L'-')
             {
                 if (flist.empty())
                 {
-                    wprintf(L"WARNING: Ignoring the line '%ls' in -flist\n", fname);
+                    wprintf(L"WARNING: Ignoring the line '%ls' in -flist\n", fname.get());
                 }
                 else
                 {
-                    std::filesystem::path path(fname + 1);
+                    std::filesystem::path path(fname.get() + 1);
                     auto& npath = path.make_preferred();
-                    if (wcspbrk(fname, L"?*") != nullptr)
+                    if (wcspbrk(fname.get(), L"?*") != nullptr)
                     {
                         std::list<SConversion> removeFiles;
-                        SearchForFiles(npath.c_str(), removeFiles, false);
+                        SearchForFiles(npath, removeFiles, false);
 
                         for (auto& it : removeFiles)
                         {
-                            _wcslwr_s(it.szSrc);
-                            excludes.insert(it.szSrc);
+                            std::wstring name = it.szSrc;
+                            std::transform(name.begin(), name.end(), name.begin(), towlower);
+                            excludes.insert(name);
                         }
                     }
                     else
@@ -383,16 +365,16 @@ namespace
                     }
                 }
             }
-            else if (wcspbrk(fname, L"?*") != nullptr)
+            else if (wcspbrk(fname.get(), L"?*") != nullptr)
             {
-                std::filesystem::path path(fname);
-                SearchForFiles(path.make_preferred().c_str(), flist, false);
+                std::filesystem::path path(fname.get());
+                SearchForFiles(path.make_preferred(), flist, false);
             }
             else
             {
                 SConversion conv = {};
-                std::filesystem::path path(fname);
-                wcscpy_s(conv.szSrc, path.make_preferred().c_str());
+                std::filesystem::path path(fname.get());
+                conv.szSrc = path.make_preferred().native();
                 flist.push_back(conv);
             }
 
@@ -452,7 +434,7 @@ namespace
         wchar_t version[32] = {};
 
         wchar_t appName[_MAX_PATH] = {};
-        if (GetModuleFileNameW(nullptr, appName, static_cast<DWORD>(std::size(appName))))
+        if (GetModuleFileNameW(nullptr, appName, _MAX_PATH))
         {
             const DWORD size = GetFileVersionInfoSizeW(appName, nullptr);
             if (size > 0)
@@ -644,8 +626,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
     DXGI_FORMAT uvFormat = DXGI_FORMAT_R32G32_FLOAT;
     DXGI_FORMAT colorFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
 
-    wchar_t szTexFile[MAX_PATH] = {};
-    wchar_t szOutputFile[MAX_PATH] = {};
+    std::wstring texFile;
+    std::wstring outputFile;
 
     // Set locale for output since GetErrorDesc can get localized strings.
     std::locale::global(std::locale(""));
@@ -844,7 +826,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 else
                 {
                     std::filesystem::path path(pValue);
-                    wcscpy_s(szTexFile, path.make_preferred().c_str());
+                    texFile = path.make_preferred().native();
                 }
                 break;
 
@@ -877,7 +859,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             case OPT_OUTPUTFILE:
                 {
                     std::filesystem::path path(pValue);
-                    wcscpy_s(szOutputFile, path.make_preferred().c_str());
+                    outputFile = path.make_preferred().native();
                 }
                 break;
 
@@ -1011,7 +993,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         {
             const size_t count = conversion.size();
             std::filesystem::path path(pArg);
-            SearchForFiles(path.make_preferred().c_str(), conversion, (dwOptions& (1 << OPT_RECURSIVE)) != 0);
+            SearchForFiles(path.make_preferred(), conversion, (dwOptions& (1 << OPT_RECURSIVE)) != 0);
             if (conversion.size() <= count)
             {
                 wprintf(L"No matching files found for %ls\n", pArg);
@@ -1022,7 +1004,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         {
             SConversion conv = {};
             std::filesystem::path path(pArg);
-            wcscpy_s(conv.szSrc, path.make_preferred().c_str());
+            conv.szSrc = path.make_preferred().native();
             conversion.push_back(conv);
         }
     }
@@ -1033,7 +1015,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         return 0;
     }
 
-    if (*szOutputFile && conversion.size() > 1)
+    if (!outputFile.empty() && conversion.size() > 1)
     {
         wprintf(L"Cannot use -o with multiple input files\n");
         return 1;
@@ -1045,46 +1027,45 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
     // Process files
     for (auto pConv = conversion.begin(); pConv != conversion.end(); ++pConv)
     {
-        wchar_t ext[_MAX_EXT] = {};
-        wchar_t fname[_MAX_FNAME] = {};
-        _wsplitpath_s(pConv->szSrc, nullptr, 0, nullptr, 0, fname, _MAX_FNAME, ext, _MAX_EXT);
+        std::filesystem::path curpath(pConv->szSrc);
+        auto const ext = curpath.extension();
 
         if (pConv != conversion.begin())
             wprintf(L"\n");
 
-        wprintf(L"reading %ls", pConv->szSrc);
+        wprintf(L"reading %ls", curpath.c_str());
         fflush(stdout);
 
         std::unique_ptr<Mesh> inMesh;
         std::vector<Mesh::Material> inMaterial;
         hr = E_NOTIMPL;
-        if (_wcsicmp(ext, L".vbo") == 0)
+        if (_wcsicmp(ext.c_str(), L".vbo") == 0)
         {
-            hr = Mesh::CreateFromVBO(pConv->szSrc, inMesh);
+            hr = Mesh::CreateFromVBO(curpath.c_str(), inMesh);
         }
-        else if (_wcsicmp(ext, L".sdkmesh") == 0)
+        else if (_wcsicmp(ext.c_str(), L".sdkmesh") == 0)
         {
             wprintf(L"\nERROR: Importing SDKMESH files not supported\n");
             return 1;
         }
-        else if (_wcsicmp(ext, L".cmo") == 0)
+        else if (_wcsicmp(ext.c_str(), L".cmo") == 0)
         {
             wprintf(L"\nERROR: Importing Visual Studio CMO files not supported\n");
             return 1;
         }
-        else if (_wcsicmp(ext, L".x") == 0)
+        else if (_wcsicmp(ext.c_str(), L".x") == 0)
         {
             wprintf(L"\nERROR: Legacy Microsoft X files not supported\n");
             return 1;
         }
-        else if (_wcsicmp(ext, L".fbx") == 0)
+        else if (_wcsicmp(ext.c_str(), L".fbx") == 0)
         {
             wprintf(L"\nERROR: Autodesk FBX files not supported\n");
             return 1;
         }
         else
         {
-            hr = LoadFromOBJ(pConv->szSrc, inMesh, inMaterial,
+            hr = LoadFromOBJ(curpath.c_str(), inMesh, inMaterial,
                 (dwOptions & (uint64_t(1) << OPT_CLOCKWISE)) ? false : true,
                 (dwOptions & (uint64_t(1) << OPT_NODDS)) ? false : true);
         }
@@ -1252,37 +1233,37 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                     return 1;
                 }
 
-                wchar_t txext[_MAX_EXT] = {};
-                _wsplitpath_s(szTexFile, nullptr, 0, nullptr, 0, nullptr, 0, txext, _MAX_EXT);
+                std::filesystem::path tname(texFile);
+                auto const txext = tname.extension();
 
                 ScratchImage iimage;
 
-                if (_wcsicmp(txext, L".dds") == 0)
+                if (_wcsicmp(txext.c_str(), L".dds") == 0)
                 {
-                    hr = LoadFromDDSFile(szTexFile, DDS_FLAGS_NONE, nullptr, iimage);
+                    hr = LoadFromDDSFile(texFile.c_str(), DDS_FLAGS_NONE, nullptr, iimage);
                 }
-                else if (_wcsicmp(ext, L".tga") == 0)
+                else if (_wcsicmp(ext.c_str(), L".tga") == 0)
                 {
-                    hr = LoadFromTGAFile(szTexFile, nullptr, iimage);
+                    hr = LoadFromTGAFile(texFile.c_str(), nullptr, iimage);
                 }
-                else if (_wcsicmp(ext, L".hdr") == 0)
+                else if (_wcsicmp(ext.c_str(), L".hdr") == 0)
                 {
-                    hr = LoadFromHDRFile(szTexFile, nullptr, iimage);
+                    hr = LoadFromHDRFile(texFile.c_str(), nullptr, iimage);
                 }
 #ifdef USE_OPENEXR
-                else if (_wcsicmp(ext, L".exr") == 0)
+                else if (_wcsicmp(ext.c_str(), L".exr") == 0)
                 {
-                    hr = LoadFromEXRFile(szTexFile, nullptr, iimage);
+                    hr = LoadFromEXRFile(texFile.c_str(), nullptr, iimage);
                 }
 #endif
                 else
                 {
-                    hr = LoadFromWICFile(szTexFile, WIC_FLAGS_NONE, nullptr, iimage);
+                    hr = LoadFromWICFile(texFile.c_str(), WIC_FLAGS_NONE, nullptr, iimage);
                 }
                 if (FAILED(hr))
                 {
                     wprintf(L"\nWARNING: Failed to load texture for IMT (%08X%ls):\n%ls\n",
-                        static_cast<unsigned int>(hr), GetErrorDesc(hr), szTexFile);
+                        static_cast<unsigned int>(hr), GetErrorDesc(hr), texFile.c_str());
                 }
                 else
                 {
@@ -1297,7 +1278,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                         {
                             img = nullptr;
                             wprintf(L"\nWARNING: Failed converting texture for IMT (%08X%ls):\n%ls\n",
-                                static_cast<unsigned int>(hr), GetErrorDesc(hr), szTexFile);
+                                static_cast<unsigned int>(hr), GetErrorDesc(hr), texFile.c_str());
                         }
                         else
                         {
@@ -1307,7 +1288,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
                     if (img)
                     {
-                        wprintf(L"\nComputing IMT from file %ls...\n", szTexFile);
+                        wprintf(L"\nComputing IMT from file %ls...\n", texFile.c_str());
                         IMTData.reset(new (std::nothrow) float[nFaces * 3]);
                         if (!IMTData)
                         {
@@ -1323,7 +1304,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                         {
                             IMTData.reset();
                             wprintf(L"WARNING: Failed to compute IMT from texture (%08X%ls):\n%ls\n",
-                                static_cast<unsigned int>(hr), GetErrorDesc(hr), szTexFile);
+                                static_cast<unsigned int>(hr), GetErrorDesc(hr), texFile.c_str());
                         }
                     }
                 }
@@ -1547,14 +1528,12 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         // Write results
         wprintf(L"\n\t->\n");
 
-        wchar_t outputPath[MAX_PATH] = {};
         wchar_t outputExt[_MAX_EXT] = {};
 
-        if (*szOutputFile)
+        if (!outputFile.empty())
         {
-            wcscpy_s(outputPath, szOutputFile);
-
-            _wsplitpath_s(szOutputFile, nullptr, 0, nullptr, 0, nullptr, 0, outputExt, _MAX_EXT);
+            std::filesystem::path npath(outputFile);
+            wcscpy_s(outputExt, npath.extension().c_str());
         }
         else
         {
@@ -1575,22 +1554,20 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 wcscpy_s(outputExt, L".sdkmesh");
             }
 
-            wchar_t outFilename[_MAX_FNAME] = {};
-            wcscpy_s(outFilename, fname);
-
-            _wmakepath_s(outputPath, nullptr, nullptr, outFilename, outputExt);
+            outputFile = curpath.stem().native();
+            outputFile.append(outputExt);
         }
 
         if (dwOptions & (uint64_t(1) << OPT_TOLOWER))
         {
-            std::ignore = _wcslwr_s(outputPath);
+            std::transform(outputFile.begin(), outputFile.end(), outputFile.begin(), towlower);
         }
 
         if (~dwOptions & (uint64_t(1) << OPT_OVERWRITE))
         {
-            if (GetFileAttributesW(outputPath) != INVALID_FILE_ATTRIBUTES)
+            if (GetFileAttributesW(outputFile.c_str()) != INVALID_FILE_ATTRIBUTES)
             {
-                wprintf(L"\nERROR: Output file already exists, use -y to overwrite:\n'%ls'\n", outputPath);
+                wprintf(L"\nERROR: Output file already exists, use -y to overwrite:\n'%ls'\n", outputFile.c_str());
                 return 1;
             }
         }
@@ -1609,12 +1586,12 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 return 1;
             }
 
-            hr = inMesh->ExportToVBO(outputPath);
+            hr = inMesh->ExportToVBO(outputFile.c_str());
         }
         else if (!_wcsicmp(outputExt, L".sdkmesh"))
         {
             hr = inMesh->ExportToSDKMESH(
-                outputPath,
+                outputFile.c_str(),
                 inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data(),
                 (dwOptions & (uint64_t(1) << OPT_FORCE_32BIT_IB)) ? true : false,
                 (dwOptions & (uint64_t(1) << OPT_SDKMESH_V2)) ? true : false,
@@ -1636,47 +1613,45 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 return 1;
             }
 
-            hr = inMesh->ExportToCMO(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
+            hr = inMesh->ExportToCMO(outputFile.c_str(), inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
         }
         else if (!_wcsicmp(outputExt, L".obj") || !_wcsicmp(outputExt, L"._obj"))
         {
-            wchar_t mtlFilename[_MAX_FNAME] = {};
+            std::wstring mtlFilename;
             if ((dwOptions & (uint64_t(1) << OPT_COLOR_MESH))
                 && !inMaterial.empty())
             {
-                wcscpy_s(mtlFilename, fname);
-                wcscat_s(mtlFilename, L"_charts");
+                mtlFilename = curpath.stem().native();
+                mtlFilename.append(L"_charts");
 
                 if (dwOptions & (uint64_t(1) << OPT_TOLOWER))
                 {
-                    std::ignore = _wcslwr_s(mtlFilename);
+                    std::transform(mtlFilename.begin(), mtlFilename.end(), mtlFilename.begin(), towlower);
                 }
 
                 inMesh->SetMTLFileName(mtlFilename);
             }
 
-            hr = inMesh->ExportToOBJ(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
+            hr = inMesh->ExportToOBJ(outputFile.c_str(), inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
 
-            if (*mtlFilename != 0)
+            if (!mtlFilename.empty())
             {
-                wchar_t drive[_MAX_DRIVE] = {};
-                wchar_t dir[_MAX_DIR] = {};
-                _wsplitpath_s(outputPath, drive, _MAX_DRIVE, dir, _MAX_DIR, nullptr, 0, nullptr, 0);
-
-                wchar_t mtlOutputPath[MAX_PATH] = {};
-                _wmakepath_s(mtlOutputPath, drive, dir, mtlFilename, L"mtl");
+                std::filesystem::path mtlOutputPath(outputFile);
+                mtlOutputPath = mtlOutputPath.parent_path();
+                mtlOutputPath.append(mtlFilename);
+                mtlOutputPath.concat(L".mtl");
 
                 if (~dwOptions & (uint64_t(1) << OPT_OVERWRITE))
                 {
-                    if (GetFileAttributesW(mtlOutputPath) != INVALID_FILE_ATTRIBUTES)
+                    if (GetFileAttributesW(mtlOutputPath.c_str()) != INVALID_FILE_ATTRIBUTES)
                     {
-                        wprintf(L"\nERROR: charts mtl file already exists, use -y to overwrite:\n'%ls'\n", mtlOutputPath);
+                        wprintf(L"\nERROR: charts mtl file already exists, use -y to overwrite:\n'%ls'\n", mtlOutputPath.c_str());
                         return 1;
                     }
                 }
 
                 std::wofstream os;
-                os.open(mtlOutputPath);
+                os.open(mtlOutputPath.c_str());
                 if (!os)
                 {
                     wprintf(L"\nERROR: Failed to create charts mtl file\n");
@@ -1717,42 +1692,39 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         if (FAILED(hr))
         {
             wprintf(L"\nERROR: Failed write (%08X%ls):-> '%ls'\n",
-                static_cast<unsigned int>(hr), GetErrorDesc(hr), outputPath);
+                static_cast<unsigned int>(hr), GetErrorDesc(hr), outputFile.c_str());
             return 1;
         }
 
-        wprintf(L" %zu vertices, %zu faces written:\n'%ls'\n", nVerts, nFaces, outputPath);
+        wprintf(L" %zu vertices, %zu faces written:\n'%ls'\n", nVerts, nFaces, outputFile.c_str());
 
         // Write out vertex remapping from original mesh
         if (dwOptions & (uint64_t(1) << OPT_OUTPUT_REMAPPING))
         {
-            wchar_t mapFilename[_MAX_FNAME] = {};
-            wcscpy_s(mapFilename, fname);
-            wcscat_s(mapFilename, L"_map");
-
-            wchar_t drive[_MAX_DRIVE] = {};
-            wchar_t dir[_MAX_DIR] = {};
-            _wsplitpath_s(outputPath, drive, _MAX_DRIVE, dir, _MAX_DIR, nullptr, 0, nullptr, 0);
-
-            wchar_t mapOutputPath[MAX_PATH] = {};
-            _wmakepath_s(mapOutputPath, drive, dir, mapFilename, L"txt");
+            std::wstring mapFilename;
+            mapFilename = curpath.stem().native();
+            mapFilename.append(L"_map");
 
             if (dwOptions & (uint64_t(1) << OPT_TOLOWER))
             {
-                std::ignore = _wcslwr_s(mapOutputPath);
+                std::transform(mapFilename.begin(), mapFilename.end(), mapFilename.begin(), towlower);
             }
+
+            std::filesystem::path mapOutputPath(outputFile);
+            mapOutputPath = mapOutputPath.parent_path().append(mapFilename);
+            mapOutputPath.concat(L".txt");
 
             if (~dwOptions & (uint64_t(1) << OPT_OVERWRITE))
             {
-                if (GetFileAttributesW(mapOutputPath) != INVALID_FILE_ATTRIBUTES)
+                if (GetFileAttributesW(mapOutputPath.c_str()) != INVALID_FILE_ATTRIBUTES)
                 {
-                    wprintf(L"\nERROR: vertex remapping file already exists, use -y to overwrite:\n'%ls'\n", mapOutputPath);
+                    wprintf(L"\nERROR: vertex remapping file already exists, use -y to overwrite:\n'%ls'\n", mapOutputPath.c_str());
                     return 1;
                 }
             }
 
             std::wofstream os;
-            os.open(mapOutputPath);
+            os.open(mapOutputPath.c_str());
             if (!os)
             {
                 wprintf(L"\nERROR: Failed to create vertex remapping file\n");
@@ -1796,22 +1768,24 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 return 1;
             }
 
-            wchar_t uvFilename[_MAX_FNAME] = {};
-            wcscpy_s(uvFilename, fname);
-            wcscat_s(uvFilename, L"_texture");
-
-            _wmakepath_s(outputPath, nullptr, nullptr, uvFilename, outputExt);
+            std::wstring uvFilename;
+            uvFilename = curpath.stem().native();
+            uvFilename.append(L"_texture");
 
             if (dwOptions & (uint64_t(1) << OPT_TOLOWER))
             {
-                std::ignore = _wcslwr_s(outputPath);
+                std::transform(uvFilename.begin(), uvFilename.end(), uvFilename.begin(), towlower);
             }
+
+            std::filesystem::path uvOutputPath(outputFile);
+            uvOutputPath = uvOutputPath.parent_path().append(uvFilename);
+            uvOutputPath.concat(outputExt);
 
             if (~dwOptions & (uint64_t(1) << OPT_OVERWRITE))
             {
-                if (GetFileAttributesW(outputPath) != INVALID_FILE_ATTRIBUTES)
+                if (GetFileAttributesW(uvOutputPath.c_str()) != INVALID_FILE_ATTRIBUTES)
                 {
-                    wprintf(L"\nERROR: UV visualization mesh file already exists, use -y to overwrite:\n'%ls'\n", outputPath);
+                    wprintf(L"\nERROR: UV visualization mesh file already exists, use -y to overwrite:\n'%ls'\n", uvOutputPath.c_str());
                     return 1;
                 }
             }
@@ -1819,12 +1793,12 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             hr = E_NOTIMPL;
             if (!_wcsicmp(outputExt, L".vbo"))
             {
-                hr = inMesh->ExportToVBO(outputPath);
+                hr = inMesh->ExportToVBO(uvOutputPath.c_str());
             }
             else if (!_wcsicmp(outputExt, L".sdkmesh"))
             {
                 hr = inMesh->ExportToSDKMESH(
-                    outputPath,
+                    uvOutputPath.c_str(),
                     inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data(),
                     (dwOptions & (uint64_t(1) << OPT_FORCE_32BIT_IB)) ? true : false,
                     (dwOptions & (uint64_t(1) << OPT_SDKMESH_V2)) ? true : false,
@@ -1834,7 +1808,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
             else if (!_wcsicmp(outputExt, L".cmo"))
             {
-                hr = inMesh->ExportToCMO(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
+                hr = inMesh->ExportToCMO(uvOutputPath.c_str(), inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
             }
             else if (!_wcsicmp(outputExt, L".obj") || !_wcsicmp(outputExt, L"._obj"))
             {
@@ -1848,16 +1822,16 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 }
                 else
                 {
-                    hr = inMesh->ExportToOBJ(outputPath, inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
+                    hr = inMesh->ExportToOBJ(uvOutputPath.c_str(), inMaterial.size(), inMaterial.empty() ? nullptr : inMaterial.data());
                 }
             }
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed uv mesh write (%08X%ls):-> '%ls'\n",
-                    static_cast<unsigned int>(hr), GetErrorDesc(hr), outputPath);
+                    static_cast<unsigned int>(hr), GetErrorDesc(hr), uvOutputPath.c_str());
                 return 1;
             }
-            wprintf(L"uv mesh visualization '%ls'\n", outputPath);
+            wprintf(L"uv mesh visualization '%ls'\n", uvOutputPath.c_str());
         }
     }
 
