@@ -6,6 +6,11 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### June 13, 2023
+* CMake project updates
+* uvatlastool: Fix minor display issue with error messages
+* uvatlastool: Supports Long Paths on Windows 10, Version 1607 or later
+
 ### April 28, 2023
 * CMake project updates and fixes for clang/LLVM v16 warnings
 * uvatlastool: Windows on ARM64 version
