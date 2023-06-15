@@ -249,7 +249,7 @@ if(BUILD_TOOLS AND WIN32)
     add_executable(uvatlastool
         UVAtlasTool/UVAtlas.cpp
         UVAtlasTool/uvatlas.rc
-        UVAtlasTool/manifest.settings
+        UVAtlasTool/settings.manifest
         UVAtlasTool/Mesh.cpp
         UVAtlasTool/Mesh.h
         UVAtlasTool/MeshOBJ.cpp
