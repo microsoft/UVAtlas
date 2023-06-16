@@ -171,7 +171,7 @@ if(ENABLE_USE_EIGEN)
     message(STATUS "Using Eigen3 & Spectra for CSymmetricMatrix::GetEigen.")
     find_package(Eigen3 REQUIRED)
     find_package(spectra REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE Eigen3::Eigen Spectra::Spectra)
+    target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen Spectra::Spectra)
     target_compile_definitions(${PROJECT_NAME} PRIVATE UVATLAS_USE_EIGEN)
 endif()
 
@@ -254,7 +254,7 @@ if(BUILD_TOOLS AND WIN32)
         UVAtlasTool/Mesh.h
         UVAtlasTool/MeshOBJ.cpp
         UVAtlasTool/SDKMesh.h)
-    target_link_libraries(uvatlastool
+    target_link_libraries(uvatlastool PRIVATE
         ${PROJECT_NAME}
         ole32.lib version.lib
         Microsoft::DirectXMesh
@@ -263,11 +263,11 @@ if(BUILD_TOOLS AND WIN32)
     source_group(uvatlastool REGULAR_EXPRESSION UVAtlasTool/*.*)
 
     if(UVATLAS_USE_OPENMP)
-      target_link_libraries(uvatlastool OpenMP::OpenMP_CXX)
+      target_link_libraries(uvatlastool PRIVATE OpenMP::OpenMP_CXX)
     endif()
 
     if(directxmath_FOUND)
-      target_link_libraries(uvatlastool Microsoft::DirectXMath)
+      target_link_libraries(uvatlastool PRIVATE Microsoft::DirectXMath)
     endif()
 endif()
 
