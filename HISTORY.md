@@ -6,6 +6,12 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### October 31, 2023
+* Retired ARM (32-bit) support for the UWP platform
+* CMake project updates
+* uvatlastool: -flist option updated to support filenames with spaces
+* uvatlastool: Updated for October 2023 DirectXTex & DirectXMesh releases
+
 ### June 13, 2023
 * CMake project updates
 * uvatlastool: Fix minor display issue with error messages
