@@ -53,6 +53,8 @@ jobs:
     displayName: 'Run PoliCheck'
     inputs:
       result: PoliCheck.xml
+      optionsPE: 1
+      optionsRulesDBPath: $(Build.SourcesDirectory)/build/rule.mdb
   - task: Armory@2
     displayName: Run ARMory
   - task: CmdLine@2
