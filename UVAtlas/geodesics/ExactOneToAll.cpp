@@ -43,7 +43,7 @@ void CExactOneToAll::SetSrcVertexIdx(const uint32_t dwSrcVertexIdx)
         m_VertexList[i].bShadowBoundary = false;
     }
 
-    for (uint32_t i = 0; i < m_EdgeList.size(); ++i)
+    for (size_t i = 0; i < m_EdgeList.size(); ++i)
     {
         Edge& thisEdge = m_EdgeList[i];
 
@@ -60,7 +60,7 @@ void CExactOneToAll::SetSrcVertexIdx(const uint32_t dwSrcVertexIdx)
             EdgeWindow tmpEdgeWindow;
 
             // generate a window covering the whole edge as one of the initial windows
-            tmpEdgeWindow.SetEdgeIdx(m_EdgeList, i);
+            tmpEdgeWindow.SetEdgeIdx(m_EdgeList, static_cast<uint32_t>(i));
             tmpEdgeWindow.dPseuSrcToSrcDistance = 0;
             tmpEdgeWindow.b0 = 0;
             tmpEdgeWindow.b1 = tmpEdgeWindow.pEdge->dEdgeLength;
@@ -598,7 +598,7 @@ void CExactOneToAll::InternalRun()
     }
 }
 
-void CExactOneToAll::ProcessNewWindow(EdgeWindow* pNewEdgeWindow)
+void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
 {
     std::vector<EdgeWindow> NewWindowsList;
     NewWindowsList.push_back(*pNewEdgeWindow);
@@ -731,7 +731,7 @@ void CExactOneToAll::ProcessNewWindow(EdgeWindow* pNewEdgeWindow)
             }
 
             Vertex* pAnotherPt = WindowToBeInserted.pEdge->GetAnotherVertex(WindowToBeInserted.dwMarkFromEdgeVertexIdx);
-            if (WindowToBeInserted.b1 > (WindowToBeInserted.pEdge->dEdgeLength - 0.01))
+            if (pAnotherPt && (WindowToBeInserted.b1 > (WindowToBeInserted.pEdge->dEdgeLength - 0.01)))
             {
                 if ((WindowToBeInserted.d1 + WindowToBeInserted.dPseuSrcToSrcDistance) < pAnotherPt->dGeoDistanceToSrc)
                 {
@@ -765,7 +765,7 @@ void CExactOneToAll::ProcessNewWindow(EdgeWindow* pNewEdgeWindow)
             }
 
             Vertex* pAnotherPt = pNewEdgeWindow->pEdge->GetAnotherVertex(pNewEdgeWindow->dwMarkFromEdgeVertexIdx);
-            if (pNewEdgeWindow->b1 > (pNewEdgeWindow->pEdge->dEdgeLength - 0.01))
+            if (pAnotherPt && (pNewEdgeWindow->b1 > (pNewEdgeWindow->pEdge->dEdgeLength - 0.01)))
             {
                 if ((pNewEdgeWindow->d1 + pNewEdgeWindow->dPseuSrcToSrcDistance) < pAnotherPt->dGeoDistanceToSrc)
                 {
@@ -781,8 +781,8 @@ void CExactOneToAll::ProcessNewWindow(EdgeWindow* pNewEdgeWindow)
 }
 
 // [see "intersection of overlapping windows" of the paper]
-void CExactOneToAll::IntersectWindow(EdgeWindow* pExistingWindow,
-    EdgeWindow* pNewWindow,
+void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
+    _In_ EdgeWindow* pNewWindow,
     bool* pExistingWindowChanged,
     bool* pNewWindowChanged,
     bool* pExistingWindowNotAvailable,

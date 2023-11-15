@@ -31,9 +31,9 @@ namespace GeodesicDist
         TypeEdgeWindowsHeap m_EdgeWindowsHeap;
 
         virtual void CutHeapTopData(EdgeWindow& EdgeWindowOut);
-        void ProcessNewWindow(EdgeWindow* pNewEdgeWindow);
-        void IntersectWindow(EdgeWindow* pExistingWindow,
-            EdgeWindow* pNewWindow,
+        void ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow);
+        void IntersectWindow(_In_ EdgeWindow* pExistingWindow,
+            _In_ EdgeWindow* pNewWindow,
             bool* pExistingWindowChanged,
             bool* pNewWindowChanged,
             bool* pExistingWindowNotAvailable,

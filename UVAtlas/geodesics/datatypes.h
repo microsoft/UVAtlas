@@ -43,7 +43,7 @@ namespace GeodesicDist
         {
             x = y = 0;
         }
-        double Length()
+        double Length() const
         {
             return sqrt(x * x + y * y);
         }
@@ -127,15 +127,33 @@ namespace GeodesicDist
 #pragma warning(disable : 26495)
 #endif
 
-        EdgeWindow()
+        EdgeWindow() :
+            dwTag(0),
+            dwEdgeIdx(0),
+            pEdge(nullptr),
+            dwMarkFromEdgeVertexIdx(0),
+            pMarkFromEdgeVertex(nullptr),
+            dwPseuSrcVertexIdx(0),
+            pPseuSrcVertex(nullptr),
+            b0(0.0),
+            b1(0.0),
+            d0(0.0),
+            d1(0.0),
+            dv2Src{},
+            dPseuSrcToSrcDistance(0.0),
+            dwFaceIdxPropagatedFrom(0),
+            pFacePropagatedFrom(nullptr),
+            pEdgePropagatedFrom(nullptr),
+            ksi(0.0)
         {
-            memset(this, 0, sizeof(EdgeWindow));
         }
         // trick constructor
         EdgeWindow(const uint32_t R)
         {
             if (R == 0)
-                memset(this, 0, sizeof(EdgeWindow));
+            {
+                EdgeWindow();
+            }
         }
 
         EdgeWindow(const EdgeWindow&) = default;
@@ -184,7 +202,17 @@ namespace GeodesicDist
 
         double dEdgeLength;                                // the length of this edge
 
-        Edge() : pVertex0(nullptr), pVertex1(nullptr), pAdjFace0(nullptr), pAdjFace1(nullptr) {}
+        Edge() :
+            dwVertexIdx0(0),
+            pVertex0(nullptr),
+            dwVertexIdx1(0),
+            pVertex1(nullptr),
+            dwAdjFaceIdx0(0),
+            pAdjFace0(nullptr),
+            dwAdjFaceIdx1(0),
+            pAdjFace1(nullptr),
+            dEdgeLength(0.0)
+            {}
 
         Vertex* GetVertexByIdx(const uint32_t dwIdx) const
         {
@@ -303,7 +331,7 @@ namespace GeodesicDist
         uint32_t dwVertexIdx2;              // index of the third vertex of the face
         Vertex* pVertex2;                  // pointer to that vertex
 
-        Edge* GetOpposingEdge(const uint32_t dwVertexIdx)
+        Edge* GetOpposingEdge(const uint32_t dwVertexIdx) const
         {
             if (dwVertexIdx != dwVertexIdx0 && dwVertexIdx != dwVertexIdx1 && dwVertexIdx != dwVertexIdx2)
                 return reinterpret_cast<Edge*>(FLAG_INVALID_SIZE_T);
@@ -329,17 +357,17 @@ namespace GeodesicDist
                 return dwEdgeIdx2;
         }
 
-        Vertex* GetOpposingVertex(const Edge* pEdge)
+        Vertex* GetOpposingVertex(const Edge* pEdge) const
         {
             return reinterpret_cast<Vertex*>(intptr_t(pVertex0) ^ intptr_t(pVertex1) ^ intptr_t(pVertex2) ^ intptr_t(pEdge->pVertex0) ^ intptr_t(pEdge->pVertex1));
         }
 
-        uint32_t GetOpposingVertexIdx(TypeEdgeList& EdgeList, const uint32_t dwEdge)
+        uint32_t GetOpposingVertexIdx(TypeEdgeList& EdgeList, const uint32_t dwEdge) const
         {
             return dwVertexIdx0 ^ dwVertexIdx1 ^ dwVertexIdx2 ^ EdgeList[dwEdge].dwVertexIdx0 ^ EdgeList[dwEdge].dwVertexIdx1;
         }
 
-        void GetOtherTwoEdgesIdx(const uint32_t dwThisEdgeIdx, uint32_t& dwResEdgeIdx1, uint32_t& dwResEdgeIdx2)
+        void GetOtherTwoEdgesIdx(const uint32_t dwThisEdgeIdx, uint32_t& dwResEdgeIdx1, uint32_t& dwResEdgeIdx2) const
         {
             if (dwThisEdgeIdx == dwEdgeIdx0)
             {
@@ -445,7 +473,7 @@ namespace GeodesicDist
             z = 0;
         }
 
-        double Length()
+        double Length() const
         {
             return sqrt(x * x + y * y + z * z);
         }
@@ -500,25 +528,25 @@ namespace GeodesicDist
         std::vector<Face*> facesAdj;     // faces that use this vertex
         std::vector<Edge*> edgesAdj;     // edges that have this vertex
 
-        Vertex()
+        Vertex() :
+            bBoundary(false),
+            dAngle(0.0),
+            dLengthOfWindowEdgeToThisVertex(DBL_MAX),
+            dGeoDistanceToSrc(DBL_MAX),
+            pEdgeReportedGeoDist(nullptr),
+            bUsed(false),
+            bShadowBoundary(false)
         {
-            bBoundary = false;
-            dAngle = 0;
-            dGeoDistanceToSrc = DBL_MAX;
-            dLengthOfWindowEdgeToThisVertex = DBL_MAX;
-            pEdgeReportedGeoDist = nullptr;
-            bShadowBoundary = false;
-            bUsed = false;
         }
 
         // get the index in the vertex array
-        size_t GetIdx(TypeVertexList& VertexList)
+        size_t GetIdx(TypeVertexList& VertexList) const
         {
             return (uintptr_t(this) - uintptr_t(&(VertexList[0]))) / sizeof(Vertex);
         }
 
         // is this vertex a saddle or boundary one?
-        bool IsSaddleBoundary()
+        bool IsSaddleBoundary() const
         {
             constexpr double pi = 3.14159265358979323846;
 
