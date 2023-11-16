@@ -710,7 +710,7 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
             }
         }
 
-        if (WindowToBeInserted.b1 - WindowToBeInserted.b0 > 0)
+        if (WindowToBeInserted.pEdge && (WindowToBeInserted.b1 - WindowToBeInserted.b0 > 0))
         {
             TypeEdgeWindowsHeap::item_type* pNewWindowItem =
                 new TypeEdgeWindowsHeap::item_type(std::min(WindowToBeInserted.d0, WindowToBeInserted.d1) + WindowToBeInserted.dPseuSrcToSrcDistance, WindowToBeInserted);
@@ -720,7 +720,7 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
             WindowToBeInserted.pEdge->WindowsList.push_back(Edge::WindowListElement(pNewWindowItem, pNewWindowItem->m_data));
 
             // update the geodesic distance on vertices affected by this new window
-            if (WindowToBeInserted.b0 < 0.01)
+            if (WindowToBeInserted.pMarkFromEdgeVertex && (WindowToBeInserted.b0 < 0.01))
             {
                 if ((WindowToBeInserted.d0 + WindowToBeInserted.dPseuSrcToSrcDistance) < WindowToBeInserted.pMarkFromEdgeVertex->dGeoDistanceToSrc)
                 {

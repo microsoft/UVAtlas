@@ -331,7 +331,7 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeapParallelized(
                 if (pChart->HasChildren())
                 {
                     /// Add children to children vector to be ran in the following parallelization run
-                    for (uint32_t i = 0; i < pChart->GetChildrenCount(); i++)
+                    for (size_t i = 0; i < pChart->GetChildrenCount(); i++)
                     {
                         CIsochartMesh* pChild = pChart->GetChild(i);
                         assert(pChild != nullptr);
@@ -804,7 +804,7 @@ HRESULT CIsochartEngine::AddChildrenToCurrentChartHeap(
 {
     HRESULT hr = S_OK;
 
-    for (uint32_t i = 0; i < pChart->GetChildrenCount(); i++)
+    for (size_t i = 0; i < pChart->GetChildrenCount(); i++)
     {
         CIsochartMesh* pChild = pChart->GetChild(i);
         assert(pChild != nullptr);
@@ -1284,7 +1284,7 @@ HRESULT CIsochartEngine::ApplyInitEngine(
 
         if (pChart->HasChildren())
         {
-            for (uint32_t i = 0; i < pChart->GetChildrenCount(); i++)
+            for (size_t i = 0; i < pChart->GetChildrenCount(); i++)
             {
                 CIsochartMesh* pChild = pChart->GetChild(i);
                 assert(pChild != nullptr);
@@ -1403,7 +1403,7 @@ HRESULT CIsochartEngine::ExportCurrentCharts(
     std::vector<CIsochartMesh*>& finalChartList,
     uint32_t* pFaceAttributeIDOut)
 {
-    for (uint32_t i = 0; i < finalChartList.size(); i++)
+    for (size_t i = 0; i < finalChartList.size(); i++)
     {
         CIsochartMesh* pChart = finalChartList[i];
         assert(pChart != nullptr);
@@ -1414,7 +1414,7 @@ HRESULT CIsochartEngine::ExportCurrentCharts(
         {
             assert(pChartFaceBuffer->dwIDInRootMesh
                 < m_baseInfo.dwFaceCount);
-            pFaceAttributeIDOut[pChartFaceBuffer->dwIDInRootMesh] = i;
+            pFaceAttributeIDOut[pChartFaceBuffer->dwIDInRootMesh] = static_cast<uint32_t>(i);
             pChartFaceBuffer++;
         }
     }
@@ -1579,11 +1579,11 @@ HRESULT CIsochartEngine::PrepareExportBuffers(
                 rgbVertUsed[pVert[j].dwIDInRootMesh] = true;
             }
         }
-        for (uint32_t i = 0; i < m_baseInfo.dwVertexCount; i++)
+        for (size_t i = 0; i < m_baseInfo.dwVertexCount; i++)
         {
             if (!rgbVertUsed[i])
             {
-                notUsedVertList.push_back(i);
+                notUsedVertList.push_back(static_cast<uint32_t>(i));
             }
         }
         dwVertCount += notUsedVertList.size();
@@ -1749,14 +1749,14 @@ HRESULT CIsochartEngine::FillExportFaceAttributeBuffer(
 
     uint32_t dwFaceID = 0;
 
-    for (uint32_t i = 0; i < finalChartList.size(); i++)
+    for (size_t i = 0; i < finalChartList.size(); i++)
     {
         CIsochartMesh* pChart = finalChartList[i];
         const ISOCHARTFACE* pChartFaceBuffer = pChart->GetFaceBuffer();
-        for (uint32_t j = 0; j < pChart->GetFaceNumber(); j++)
+        for (size_t j = 0; j < pChart->GetFaceNumber(); j++)
         {
             dwFaceID = pChartFaceBuffer[j].dwIDInRootMesh;
-            pAttributeID[dwFaceID] = i;
+            pAttributeID[dwFaceID] = static_cast<uint32_t>(i);
         }
     }
 

@@ -238,9 +238,9 @@ namespace
         ISOCHARTFACE* pFace = pFaceBuffer;
         const INDEXTYPE* pFacesIn = pFacesInBase;
 
-        for (uint32_t i = 0; i < dwFaceCount; i++)
+        for (size_t i = 0; i < dwFaceCount; i++)
         {
-            pFace->dwID = pFace->dwIDInRootMesh = i;
+            pFace->dwID = pFace->dwIDInRootMesh = static_cast<uint32_t>(i);
             pFace->dwVertexID[0] = pFacesIn[0];
             pFace->dwVertexID[1] = pFacesIn[1];
             pFace->dwVertexID[2] = pFacesIn[2];
@@ -287,10 +287,10 @@ HRESULT CIsochartMesh::BuildRootChart(
     pChart->m_dwFaceNumber = dwFaceCount;
     pChart->m_dwVertNumber = dwVertexCount;
 
-    for (uint32_t i = 0; i < dwVertexCount; i++)
+    for (size_t i = 0; i < dwVertexCount; i++)
     {
-        pChart->m_pVerts[i].dwID = i;
-        pChart->m_pVerts[i].dwIDInRootMesh = i;
+        pChart->m_pVerts[i].dwID = static_cast<uint32_t>(i);
+        pChart->m_pVerts[i].dwIDInRootMesh = static_cast<uint32_t>(i);
     }
 
     if (DXGI_FORMAT_R32_UINT == IndexFormat)
@@ -475,7 +475,7 @@ namespace
         std::vector<uint32_t> splitEdgePos;
 
         uint32_t* pIdx = rgdwFaceIdx;
-        for (uint32_t iFace = 0; iFace < dwFaceCount; iFace++)
+        for (size_t iFace = 0; iFace < dwFaceCount; iFace++)
         {
             for (size_t iVert = 0; iVert < 3; iVert++)
             {
@@ -491,11 +491,11 @@ namespace
                 if (IsNeedToSplit(
                     pVertEdgeList[v1],
                     v2,
-                    iFace,
+                    static_cast<uint32_t>(iFace),
                     rgdwAdjacency,
                     &pEdge))
                 {
-                    HRESULT hr = AddConnectedFalseEdges(&splitFaceList, rgdwAdjacency, rgdwFalseEdges, iFace);
+                    HRESULT hr = AddConnectedFalseEdges(&splitFaceList, rgdwAdjacency, rgdwFalseEdges, static_cast<uint32_t>(iFace));
                     if (FAILED(hr))
                     {
                         return hr;
@@ -561,16 +561,16 @@ namespace
         memset(rgdwNewFaceIdx, 0xff, dwFaceCount * 3 * sizeof(uint32_t));
 
         dwNewVertCount = 0;
-        for (uint32_t iFace = 0; iFace < dwFaceCount; iFace++)
+        for (size_t iFace = 0; iFace < dwFaceCount; iFace++)
         {
-            for (uint32_t iVert = 0; iVert < 3; iVert++)
+            for (size_t iVert = 0; iVert < 3; iVert++)
             {
                 if (rgdwNewFaceIdx[iFace * 3 + iVert] != INVALID_VERT_ID)
                 {
                     continue;
                 }
 
-                if (!vertIter.Init(iFace, iVert, dwFaceCount))
+                if (!vertIter.Init(static_cast<uint32_t>(iFace), static_cast<uint32_t>(iVert), dwFaceCount))
                 {
                     return HRESULT_E_INVALID_DATA;
                 }
@@ -847,9 +847,9 @@ HRESULT CIsochartMesh::ComputeBiParitionLandmark()
         uint32_t dwIdx1 = INVALID_INDEX;
         uint32_t dwIdx2 = INVALID_INDEX;
 
-        for (uint32_t ii = 0; ii < m_dwVertNumber - 1; ii++)
+        for (size_t ii = 0; ii < m_dwVertNumber - 1; ii++)
         {
-            for (uint32_t jj = ii + 1; jj < m_dwVertNumber; jj++)
+            for (size_t jj = ii + 1; jj < m_dwVertNumber; jj++)
             {
                 float fDeltaX = (m_pVerts[ii].uv.x - m_pVerts[jj].uv.x);
                 float fDeltaY = (m_pVerts[ii].uv.y - m_pVerts[jj].uv.y);
@@ -858,8 +858,8 @@ HRESULT CIsochartMesh::ComputeBiParitionLandmark()
                 if (fMaxDistance < fTempDistance)
                 {
                     fMaxDistance = fTempDistance;
-                    dwIdx1 = ii;
-                    dwIdx2 = jj;
+                    dwIdx1 = static_cast<uint32_t>(ii);
+                    dwIdx2 = static_cast<uint32_t>(jj);
                 }
             }
         }
@@ -880,10 +880,10 @@ HRESULT CIsochartMesh::ComputeBiParitionLandmark()
         uint32_t dwIdx1 = INVALID_INDEX;
         uint32_t dwIdx2 = INVALID_INDEX;
 
-        for (uint32_t ii = 0; ii < m_landmarkVerts.size() - 1; ii++)
+        for (size_t ii = 0; ii < m_landmarkVerts.size() - 1; ii++)
         {
             uint32_t id1 = m_landmarkVerts[ii];
-            for (uint32_t jj = ii + 1; jj < m_landmarkVerts.size(); jj++)
+            for (size_t jj = ii + 1; jj < m_landmarkVerts.size(); jj++)
             {
                 uint32_t id2 = m_landmarkVerts[jj];
                 float fDeltaX = (m_pVerts[id1].uv.x - m_pVerts[id2].uv.x);
@@ -893,8 +893,8 @@ HRESULT CIsochartMesh::ComputeBiParitionLandmark()
                 if (fMaxDistance < fTempDistance)
                 {
                     fMaxDistance = fTempDistance;
-                    dwIdx1 = ii;
-                    dwIdx2 = jj;
+                    dwIdx1 = static_cast<uint32_t>(ii);
+                    dwIdx2 = static_cast<uint32_t>(jj);
                 }
             }
         }
@@ -1048,9 +1048,9 @@ HRESULT CIsochartMesh::Bipartition2D()
     {
         return E_OUTOFMEMORY;
     }
-    for (uint32_t ii = 0; ii < m_dwVertNumber - 1; ii++)
+    for (size_t ii = 0; ii < m_dwVertNumber - 1; ii++)
     {
-        for (uint32_t jj = ii + 1; jj < m_dwVertNumber; jj++)
+        for (size_t jj = ii + 1; jj < m_dwVertNumber; jj++)
         {
             float fDeltaX = (m_pVerts[ii].uv.x - m_pVerts[jj].uv.x);
             float fDeltaY = (m_pVerts[ii].uv.y - m_pVerts[jj].uv.y);
@@ -1059,8 +1059,8 @@ HRESULT CIsochartMesh::Bipartition2D()
             if (fMaxDistance < fTempDistance)
             {
                 fMaxDistance = fTempDistance;
-                keyVerts[0] = ii;
-                keyVerts[1] = jj;
+                keyVerts[0] = static_cast<uint32_t>(ii);
+                keyVerts[1] = static_cast<uint32_t>(jj);
             }
         }
     }
@@ -1556,11 +1556,11 @@ HRESULT CIsochartMesh::FindAllEdges(
             pTriangle++;
         }
 
-        for (uint32_t i = 0; i < m_dwEdgeNumber; i++)
+        for (size_t i = 0; i < m_dwEdgeNumber; i++)
         {
             ISOCHARTEDGE& edge = m_edges[i];
-            m_pVerts[edge.dwVertexID[0]].edgeAdjacent.push_back(i);
-            m_pVerts[edge.dwVertexID[1]].edgeAdjacent.push_back(i);
+            m_pVerts[edge.dwVertexID[0]].edgeAdjacent.push_back(static_cast<uint32_t>(i));
+            m_pVerts[edge.dwVertexID[1]].edgeAdjacent.push_back(static_cast<uint32_t>(i));
         }
     }
     catch (std::bad_alloc&)

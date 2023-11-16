@@ -231,10 +231,10 @@ HRESULT CIsochartMesh::SmoothPartitionResult(
 
     auto pHeapItems = heapItems.get();
 
-    for (uint32_t i = 0; i < dwMaxSubchartCount; i++)
+    for (size_t i = 0; i < dwMaxSubchartCount; i++)
     {
         pHeapItems[i].m_weight = 0;
-        pHeapItems[i].m_data = i;
+        pHeapItems[i].m_data = static_cast<uint32_t>(i);
     }
     for (size_t i = 0; i < m_dwFaceNumber; i++)
     {
@@ -563,7 +563,7 @@ HRESULT CIsochartMesh::FindCongenerFaces(
             congenerFaceCategories.push_back(ii);
             bProcessedFace[ii] = true;
 
-            uint32_t dwCur = dwBegin;
+            size_t dwCur = dwBegin;
             do
             {
                 uint32_t dwCurrentFace = congenerFaceCategories[dwCur];
@@ -591,7 +591,7 @@ HRESULT CIsochartMesh::FindCongenerFaces(
                 dwCur++;
             } while (dwCur < congenerFaceCategories.size());
 
-            uint32_t dwCongEdgeCount = dwCur - dwBegin;
+            uint32_t dwCongEdgeCount = static_cast<uint32_t>(dwCur - dwBegin);
             congenerFaceCategoryLen.push_back(dwCongEdgeCount);
         }
     }
@@ -2281,19 +2281,19 @@ HRESULT CIsochartMesh::CalculateRepresentiveVertices(
         uint32_t vi = INVALID_INDEX;
         uint32_t vj = INVALID_INDEX;
 
-        for (uint32_t i = 0; i < m_landmarkVerts.size(); i++)
+        for (size_t i = 0; i < m_landmarkVerts.size(); i++)
         {
             float fCoord = pfVertMappingCoord[
                 dwPrimaryEigenDimension * m_landmarkVerts[i] + dwDimIndex];
 
             if (fCoord > fMaxDist)
             {
-                vi = i;
+                vi = static_cast<uint32_t>(i);
                 fMaxDist = fCoord;
             }
             if (fCoord < fMinDist)
             {
-                vj = i;
+                vj = static_cast<uint32_t>(i);
                 fMinDist = fCoord;
             }
         }
@@ -2537,7 +2537,7 @@ void CIsochartMesh::ClusterFacesByParameterDistance(
         float fMinDistance = FLT_MAX;
         pdwFaceChartID[i] = INVALID_INDEX;
 
-        for (uint32_t j = 0; j < representativeVertsIdx.size(); j++)
+        for (size_t j = 0; j < representativeVertsIdx.size(); j++)
         {
             const float* pfParameterDistance
                 = pfVertParitionDistance
@@ -2548,7 +2548,7 @@ void CIsochartMesh::ClusterFacesByParameterDistance(
                 + pfParameterDistance[pFace->dwVertexID[2]];
             if (fDistance < fMinDistance)
             {
-                pdwFaceChartID[i] = j;
+                pdwFaceChartID[i] = static_cast<uint32_t>(j);
                 fMinDistance = fDistance;
             }
         }
@@ -2647,12 +2647,12 @@ HRESULT CIsochartMesh::BiPartitionParameterlizeShape(
     // Restore pdwFaceChartID to the content before boundary opitimization
     if (!bIsOptimized)
     {
-        for (uint32_t i = 0; i < m_children.size(); i++)
+        for (size_t i = 0; i < m_children.size(); i++)
         {
             ISOCHARTFACE* pFace = m_children[i]->m_pFaces;
             for (size_t j = 0; j < m_children[i]->m_dwFaceNumber; j++)
             {
-                pdwFaceChartID[pFace->dwIDInFatherMesh] = i;
+                pdwFaceChartID[pFace->dwIDInFatherMesh] = static_cast<uint32_t>(i);
                 pFace++;
             }
         }
@@ -3002,9 +3002,9 @@ HRESULT CIsochartMesh::ReserveFarestTwoLandmarks(
 
     float fMaxDistance = -FLT_MAX;
     uint32_t dwIdx[2] = {};
-    for (uint32_t ii = 0; ii < m_landmarkVerts.size() - 1; ii++)
+    for (size_t ii = 0; ii < m_landmarkVerts.size() - 1; ii++)
     {
-        for (uint32_t jj = ii + 1; jj < m_landmarkVerts.size(); jj++)
+        for (size_t jj = ii + 1; jj < m_landmarkVerts.size(); jj++)
         {
             assert(
                 pfVertGeodesicDistance[ii * m_dwVertNumber + m_landmarkVerts[jj]] ==
@@ -3015,8 +3015,8 @@ HRESULT CIsochartMesh::ReserveFarestTwoLandmarks(
             {
                 fMaxDistance =
                     pfVertGeodesicDistance[ii * m_dwVertNumber + m_landmarkVerts[jj]];
-                dwIdx[0] = ii;
-                dwIdx[1] = jj;
+                dwIdx[0] = static_cast<uint32_t>(ii);
+                dwIdx[1] = static_cast<uint32_t>(jj);
             }
         }
     }

@@ -27,6 +27,8 @@ variables:
   VS_GENERATOR: 'Visual Studio 17 2022'
   VCPKG_CMAKE_DIR: '$(VCPKG_ROOT)/scripts/buildsystems/vcpkg.cmake'
   GITHUB_PAT: $(GITHUBPUBLICTOKEN)
+  Codeql.Language: cpp
+  Codeql.ExcludePathPatterns: vcpkg
 
 pool:
   vmImage: windows-2022

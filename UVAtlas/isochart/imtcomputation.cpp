@@ -902,13 +902,13 @@ namespace
         double* pTanList = tanList.get();
 
         uint32_t dwLeftMost = 0;
-        for (uint32_t ii = 0; ii < keyPointList.size(); ii++)
+        for (size_t ii = 0; ii < keyPointList.size(); ii++)
         {
             if (leftMost.x > keyPointList[ii].x ||
                 (leftMost.x == keyPointList[ii].x && leftMost.y > keyPointList[ii].y))
             {
                 leftMost = keyPointList[ii];
-                dwLeftMost = ii;
+                dwLeftMost = static_cast<uint32_t>(ii);
             }
             if (rightMost.x < keyPointList[ii].x ||
                 (rightMost.x == keyPointList[ii].x && rightMost.y > keyPointList[ii].y))
@@ -966,7 +966,7 @@ namespace
         // 3. Get above & below lines.
         try
         {
-            uint32_t dwCur = 0;
+            size_t dwCur = 0;
             do
             {
                 below.push_back(keyPointList[dwCur]);
@@ -1031,12 +1031,12 @@ namespace
         std::vector<DOUBLEVECTOR2>& line,
         uint32_t dwCur)
     {
-        uint32_t dwNext = dwCur + 1;
+        size_t dwNext = dwCur + 1;
         while (dwNext < line.size())
         {
             if (!IsInZeroRangeDouble(line[dwNext].x - line[dwCur].x))
             {
-                return dwNext;
+                return static_cast<uint32_t>(dwNext);
             }
             dwNext++;
         }

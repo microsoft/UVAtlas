@@ -274,7 +274,7 @@ namespace Isochart
 
         size_t GetChildrenCount() const { return m_children.size(); }
 
-        CIsochartMesh* GetChild(uint32_t dwIndex) const
+        CIsochartMesh* GetChild(size_t dwIndex) const
         {
             if (dwIndex >= m_children.size())
             {
@@ -282,7 +282,7 @@ namespace Isochart
             }
             return m_children[dwIndex];
         }
-        void UnlinkChild(uint32_t dwIndex)
+        void UnlinkChild(size_t dwIndex)
         {
             m_children[dwIndex] = nullptr;
         }

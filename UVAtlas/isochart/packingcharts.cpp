@@ -3087,12 +3087,12 @@ HRESULT CIsochartMesh::CalculateChartBorders(
     // start vertex
     uint32_t dwFirstBoundaryIndex = 0;
     ISOCHARTEDGE* pBoundaryEdge = nullptr;
-    for (uint32_t i = 0; i < pStartVertex->edgeAdjacent.size(); i++)
+    for (size_t i = 0; i < pStartVertex->edgeAdjacent.size(); i++)
     {
         pBoundaryEdge = &(m_edges[pStartVertex->edgeAdjacent[i]]);
         if (pBoundaryEdge->bIsBoundary)
         {
-            dwFirstBoundaryIndex = i;
+            dwFirstBoundaryIndex = static_cast<uint32_t>(i);
             break;
         }
     }
@@ -3111,12 +3111,12 @@ HRESULT CIsochartMesh::CalculateChartBorders(
     // 3. Find the second one of the two boundary edges connecting to
     // start vertex
     pBoundaryEdge = nullptr;
-    for (uint32_t i = dwFirstBoundaryIndex + 1; i < pStartVertex->edgeAdjacent.size(); i++)
+    for (size_t i = dwFirstBoundaryIndex + 1; i < pStartVertex->edgeAdjacent.size(); i++)
     {
         pBoundaryEdge = &(m_edges[pStartVertex->edgeAdjacent[i]]);
         if (pBoundaryEdge->bIsBoundary)
         {
-            dwFirstBoundaryIndex = i;
+            dwFirstBoundaryIndex = static_cast<uint32_t>(i);
             break;
         }
     }
