@@ -159,6 +159,9 @@ namespace GeodesicDist
         EdgeWindow(const EdgeWindow&) = default;
         EdgeWindow& operator=(const EdgeWindow&) = default;
 
+        EdgeWindow(EdgeWindow&&) noexcept = default;
+        EdgeWindow& operator= (EdgeWindow&&) noexcept = default;
+
 #ifdef _PREFAST_
 #pragma warning(pop)
 #endif
@@ -213,6 +216,12 @@ namespace GeodesicDist
             pAdjFace1(nullptr),
             dEdgeLength(0.0)
             {}
+
+        Edge(const Edge&) = default;
+        Edge& operator=(const Edge&) = default;
+
+        Edge(Edge&&) noexcept = default;
+        Edge& operator= (Edge&&) noexcept = default;
 
         Vertex* GetVertexByIdx(const uint32_t dwIdx) const
         {

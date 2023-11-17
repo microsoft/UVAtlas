@@ -84,8 +84,7 @@ void CExactOneToAll::SetSrcVertexIdx(const uint32_t dwSrcVertexIdx)
 void CExactOneToAll::AddWindowToHeapAndEdge(const EdgeWindow& WindowToAdd)
 {
     // add the new window to heap and the edge
-    TypeEdgeWindowsHeap::item_type* pItem =
-        new TypeEdgeWindowsHeap::item_type(std::min(WindowToAdd.d0, WindowToAdd.d1) + WindowToAdd.dPseuSrcToSrcDistance, WindowToAdd);
+    auto pItem = new TypeEdgeWindowsHeap::item_type(std::min(WindowToAdd.d0, WindowToAdd.d1) + WindowToAdd.dPseuSrcToSrcDistance, WindowToAdd);
 
     m_EdgeWindowsHeap.insert(pItem);
     WindowToAdd.pEdge->WindowsList.push_back(Edge::WindowListElement(pItem, WindowToAdd));
@@ -111,7 +110,7 @@ void CExactOneToAll::AddWindowToHeapAndEdge(const EdgeWindow& WindowToAdd)
 // pop off one window from the heap and unreference the corresponding one on the edge
 void CExactOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
 {
-    TypeEdgeWindowsHeap::item_type* pItem = m_EdgeWindowsHeap.cutTop();
+    auto pItem = m_EdgeWindowsHeap.cutTop();
 
     for (size_t i = 0; i < pItem->m_data.pEdge->WindowsList.size(); ++i)
         if (pItem->m_data.pEdge->WindowsList[i].pHeapItem == pItem)
@@ -617,14 +616,12 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
 
         for (i = 0; i < pNewEdgeWindow->pEdge->WindowsList.size(); ++i)
         {
-            TypeEdgeWindowsHeap::item_type* pExistingWindowItem;
-
             bExistingWindowChanged = false;
             bNewWindowChanged = false;
             bExistingWindowNotAvailable = false;
 
             // get a copy of current window on edge
-            pExistingWindowItem =
+            auto pExistingWindowItem =
                 new TypeEdgeWindowsHeap::item_type(
                     std::min(pNewEdgeWindow->pEdge->WindowsList[i].theWindow.d0, pNewEdgeWindow->pEdge->WindowsList[i].theWindow.d1) + pNewEdgeWindow->pEdge->WindowsList[i].theWindow.dPseuSrcToSrcDistance,
                     pNewEdgeWindow->pEdge->WindowsList[i].theWindow
@@ -712,8 +709,7 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
 
         if (WindowToBeInserted.pMarkFromEdgeVertex != nullptr && WindowToBeInserted.pEdge != nullptr && (WindowToBeInserted.b1 - WindowToBeInserted.b0 > 0))
         {
-            TypeEdgeWindowsHeap::item_type* pNewWindowItem =
-                new TypeEdgeWindowsHeap::item_type(std::min(WindowToBeInserted.d0, WindowToBeInserted.d1) + WindowToBeInserted.dPseuSrcToSrcDistance, WindowToBeInserted);
+            auto pNewWindowItem = new TypeEdgeWindowsHeap::item_type(std::min(WindowToBeInserted.d0, WindowToBeInserted.d1) + WindowToBeInserted.dPseuSrcToSrcDistance, WindowToBeInserted);
 
             m_EdgeWindowsHeap.insert(pNewWindowItem);
 
@@ -746,8 +742,7 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
         // add it to the edge and heap
         if (!bNewWindowNotAvailable/*pNewEdgeWindow->b0 < pNewEdgeWindow->b1*/)
         {
-            TypeEdgeWindowsHeap::item_type* pNewWindowItem =
-                new TypeEdgeWindowsHeap::item_type(std::min(pNewEdgeWindow->d0, pNewEdgeWindow->d1) + pNewEdgeWindow->dPseuSrcToSrcDistance, *pNewEdgeWindow);
+            auto pNewWindowItem = new TypeEdgeWindowsHeap::item_type(std::min(pNewEdgeWindow->d0, pNewEdgeWindow->d1) + pNewEdgeWindow->dPseuSrcToSrcDistance, *pNewEdgeWindow);
 
             m_EdgeWindowsHeap.insert(pNewWindowItem);
 

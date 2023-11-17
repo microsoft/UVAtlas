@@ -3299,7 +3299,7 @@ CIsochartMesh* CIsochartMesh::SplitVertices(
         return nullptr;
     }
 
-    uint32_t i = 0;
+    size_t i = 0;
 
     for (; i < m_dwVertNumber; i++)
     {
@@ -3312,7 +3312,7 @@ CIsochartMesh* CIsochartMesh::SplitVertices(
     for (size_t j = 0; j < nDupVerts && i < dwNewVertNumber; i++, j++)
     {
         auto pCurrVertex = m_pVerts + splitPath[j];
-        pChart->m_pVerts[i].dwID = i;
+        pChart->m_pVerts[i].dwID = static_cast<uint32_t>(i);
 
         pChart->m_pVerts[i].dwIDInFatherMesh = pCurrVertex->dwID;
 
