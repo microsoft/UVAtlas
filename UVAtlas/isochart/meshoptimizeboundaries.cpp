@@ -1199,7 +1199,7 @@ HRESULT CIsochartMesh::ApplyGraphCutByStretch(
         }
     }
 
-    for (uint32_t dwChartIdx1 = 0; dwChartIdx1 < m_children.size(); dwChartIdx1++)
+    for (size_t dwChartIdx1 = 0; dwChartIdx1 < m_children.size(); dwChartIdx1++)
     {
         CIsochartMesh* pChart1 = m_children[dwChartIdx1];
 
@@ -1216,7 +1216,7 @@ HRESULT CIsochartMesh::ApplyGraphCutByStretch(
 
             hr =
                 OptimizeOneBoundaryByAngle(
-                    dwChartIdx1,
+                    static_cast<uint32_t>(dwChartIdx1),
                     dwChartIdx2,
                     graphCut,
                     pdwFaceGraphNodeID.get(),

@@ -2964,7 +2964,7 @@ HRESULT CIsochartMesh::FindSplitPath(
     assert(!dijkstraPath.empty());
 
     HRESULT hr = S_OK;
-    uint32_t dwStartCutID = 0;
+    size_t dwStartCutID = 0;
 
     // Find the first vertex need to be splited
     while (dwStartCutID < dijkstraPath.size() - 1
@@ -3095,17 +3095,17 @@ CalSplitInfoOfMiddleSplitVerts(
             size_t dwRingSize = pCurrVertex->vertAdjacent.size();
 
             vertListOnOneSide.clear();
-            for (uint32_t j = 0; j < dwRingSize; j++)
+            for (size_t j = 0; j < dwRingSize; j++)
             {
                 if (pCurrVertex->vertAdjacent[j] == pPrevVertex->dwID)
                 {
-                    dwPrevIndex = j;
+                    dwPrevIndex = static_cast<uint32_t>(j);
                     break;
                 }
             }
-            for (uint32_t k = 1; k < dwRingSize; k++)
+            for (size_t k = 1; k < dwRingSize; k++)
             {
-                dwNextIndex = (dwPrevIndex + k) % dwRingSize;
+                dwNextIndex = static_cast<uint32_t>((dwPrevIndex + k) % dwRingSize);
 
                 if (pCurrVertex->vertAdjacent[dwNextIndex] == pNextVertex->dwID)
                 {
@@ -3171,11 +3171,11 @@ CIsochartMesh::CalSplitInfoOfLastSplitVert(
 
     size_t dwRingSize = pCurrVertex->vertAdjacent.size();
     uint32_t dwPrevIndex = INVALID_INDEX;
-    for (uint32_t i = 0; i < dwRingSize; i++)
+    for (size_t i = 0; i < dwRingSize; i++)
     {
         if (pCurrVertex->vertAdjacent[i] == pPrevVertex->dwID)
         {
-            dwPrevIndex = i;
+            dwPrevIndex = static_cast<uint32_t>(i);
             break;
         }
     }
