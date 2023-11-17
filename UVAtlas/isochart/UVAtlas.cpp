@@ -55,7 +55,7 @@ namespace
         // updated index buffer
         IndexType* pNewIndexData = newIndexData.get();
 
-        for (size_t i = 0; i < 3 * nFaces + nVerts; i++)
+        for (size_t i = 0; i < (3 * nFaces + nVerts); i++)
         {
             pForwardRemapArray[i] = static_cast<uint32_t>(-1);
             pReverseRemapArray[i] = static_cast<uint32_t>(-1);
@@ -172,7 +172,7 @@ namespace
 
         uint32_t* pEquivs = equivs.get();
 
-        for (size_t i = 0; i < nFaces * 3; i++)
+        for (size_t i = 0; i < (nFaces * 3); i++)
         {
             pEquivs[i] = static_cast<uint32_t>(i);
         }
@@ -415,7 +415,7 @@ namespace
 
             for (size_t i = 0; i < outMeshNumVertices; i++)
             {
-                memcpy(&bBaseOut[i].pos, bBaseIn + pdwRemap[i] * sizeof(XMFLOAT3), sizeof(XMFLOAT3));
+                memcpy(&bBaseOut[i], bBaseIn + pdwRemap[i] * sizeof(XMFLOAT3), sizeof(XMFLOAT3));
                 if (pForwardRemapArray[i] == uint32_t(-1))
                 {
                     bBaseOut[i].uv.x = bBaseOut[i].uv.y = 0.f;
