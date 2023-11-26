@@ -23,8 +23,8 @@ namespace
     HRESULT UVAtlasGetRealVertexRemap(
         _In_                            size_t nFaces,
         _In_                            size_t nVerts,
-        _In_reads_(nFaces * 3)            const IndexType* pInIndexData,
-        _Inout_updates_all_(nFaces * 3)  IndexType* pOutIndexData,
+        _In_reads_(nFaces * 3)          const IndexType* pInIndexData,
+        _Inout_updates_all_(nFaces * 3) IndexType* pOutIndexData,
         _Out_                           size_t* nNewVerts,
         _Inout_                         std::vector<uint32_t>& vOutVertexRemapBuffer,
         _Inout_                         std::unique_ptr<uint32_t[]>& forwardRemapArray)
@@ -415,7 +415,7 @@ namespace
 
             for (size_t i = 0; i < outMeshNumVertices; i++)
             {
-                memcpy(&bBaseOut[i], bBaseIn + pdwRemap[i] * sizeof(XMFLOAT3), sizeof(XMFLOAT3));
+                memcpy(&bBaseOut[i].pos, bBaseIn + pdwRemap[i] * sizeof(XMFLOAT3), sizeof(XMFLOAT3));
                 if (pForwardRemapArray[i] == uint32_t(-1))
                 {
                     bBaseOut[i].uv.x = bBaseOut[i].uv.y = 0.f;

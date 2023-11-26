@@ -299,7 +299,7 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
                         // the idx of the popped off window is not yet set, so search for it here
                         // we only need to search from i + 1 (rather than from 0), because the previous ones have already been searched
 
-                        for (size_t t = i + 1; t < pItem->m_data.pEdge->WindowsList.size(); ++t)
+                        for (size_t t = (i + 1); t < pItem->m_data.pEdge->WindowsList.size(); ++t)
                             if (pItem->m_data.pEdge->WindowsList[t].pHeapItem == pItem)
                             {
                                 dwIdxSelf = static_cast<uint32_t>(t);
