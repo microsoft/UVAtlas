@@ -759,11 +759,11 @@ HRESULT CUVAtlasRepacker::GenerateAdjacentInfo()
         // faces that connected with one vertex together
         m_VertexAdjInfo.resize(m_iNumVertices);
 
-        for (uint32_t i = 0; i < m_iNumFaces; i++)
+        for (size_t i = 0; i < m_iNumFaces; i++)
         {
-            m_VertexAdjInfo[ib[i].vertex[0]].push_back(i);
-            m_VertexAdjInfo[ib[i].vertex[1]].push_back(i);
-            m_VertexAdjInfo[ib[i].vertex[2]].push_back(i);
+            m_VertexAdjInfo[ib[i].vertex[0]].push_back(static_cast<uint32_t>(i));
+            m_VertexAdjInfo[ib[i].vertex[1]].push_back(static_cast<uint32_t>(i));
+            m_VertexAdjInfo[ib[i].vertex[2]].push_back(static_cast<uint32_t>(i));
         }
     }
     catch (std::bad_alloc&)
@@ -782,9 +782,9 @@ HRESULT CUVAtlasRepacker::GenerateAdjacentInfo()
     // generate adjacent information
     static const int order[3][2] = { {0, 1}, {1, 2}, {0, 2} };
 
-    for (uint32_t i = 0; i < m_iNumFaces - 1; i++)
+    for (size_t i = 0; i < m_iNumFaces - 1; i++)
     {
-        for (uint32_t j = i + 1; j < m_iNumFaces; j++)
+        for (size_t j = i + 1; j < m_iNumFaces; j++)
         {
             for (size_t m = 0; m < 3; m++) if (m_AdjacentInfo[i * 3 + m] == uint32_t(-1))
                 for (size_t n = 0; n < 3; n++) if (m_AdjacentInfo[j * 3 + n] == uint32_t(-1))
@@ -794,8 +794,8 @@ HRESULT CUVAtlasRepacker::GenerateAdjacentInfo()
                             ib[i].vertex[order[m][1]] == ib[j].vertex[order[n][0]]))
                         // if two triangles have two common vertices, they are adjacent
                     {
-                        m_AdjacentInfo[i * 3 + m] = j;
-                        m_AdjacentInfo[j * 3 + n] = i;
+                        m_AdjacentInfo[i * 3 + m] = static_cast<uint32_t>(j);
+                        m_AdjacentInfo[j * 3 + n] = static_cast<uint32_t>(i);
                         m = 3;
                         break;
                     }
@@ -856,14 +856,14 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
         uint32_t num = 0;
         uint32_t indexnum = 0;
         uint32_t facestart = 0;
-        for (uint32_t i = 0; i < m_iNumFaces; i++)
+        for (size_t i = 0; i < m_iNumFaces; i++)
         {
             if (pAB[i] == uint32_t(-1))
             {
                 ab.clear();
                 if (!bUsedFace[i])
                 {
-                    ab.push_back(i);
+                    ab.push_back(static_cast<uint32_t>(i));
                     bUsedFace[i] = true;
                 }
                 size_t t = 0;
@@ -1305,12 +1305,12 @@ void CUVAtlasRepacker::PutChart(uint32_t index)
 
     std::uniform_int_distribution<> dis(0, 1);
 
-    for (uint32_t i = 0; i < m_iRotateNum; i++)
+    for (size_t i = 0; i < m_iRotateNum; i++)
     {
         // for every position of chart, first do tessellation on it
         // then try to put it into the atlas after rotate 0, 90, 180, 270 degrees
         auto pPosInfo = reinterpret_cast<PositionInfo*>(&(pCInfo->PosInfo[i]));
-        DoTessellation(index, i);
+        DoTessellation(index, static_cast<uint32_t>(i));
         PrepareSpaceInfo(m_currSpaceInfo, m_currChartUVBoard,
             0, pPosInfo->numX, 0, pPosInfo->numY, true);
 
@@ -1388,7 +1388,7 @@ void CUVAtlasRepacker::PutChart(uint32_t index)
         }
 
         // save the best chart position at present
-        if (m_triedRotate == i) {
+        if (m_triedRotate == static_cast<uint32_t>(i)) {
             for (size_t j = 0; j < size_t(pPosInfo->numY); j++)
                 for (size_t k = 0; k < size_t(pPosInfo->numX); k++)
                     m_triedUVBoard[j][k] = m_currChartUVBoard[j][k];

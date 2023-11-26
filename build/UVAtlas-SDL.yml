@@ -27,6 +27,8 @@ variables:
   VS_GENERATOR: 'Visual Studio 17 2022'
   VCPKG_CMAKE_DIR: '$(VCPKG_ROOT)/scripts/buildsystems/vcpkg.cmake'
   GITHUB_PAT: $(GITHUBPUBLICTOKEN)
+  Codeql.Language: cpp
+  Codeql.ExcludePathPatterns: vcpkg
 
 pool:
   vmImage: windows-2022
@@ -53,13 +55,15 @@ jobs:
     displayName: 'Run PoliCheck'
     inputs:
       result: PoliCheck.xml
+      optionsPE: 1
+      optionsRulesDBPath: $(Build.SourcesDirectory)/build/rule.mdb
   - task: Armory@2
     displayName: Run ARMory
   - task: CmdLine@2
     # We can use the preinstalled vcpkg instead of the latest when MS Hosted updates their vcpkg to the newer DirectX-Headers
     displayName: Fetch VCPKG
     inputs:
-      script: git clone --quiet https://%GITHUB_PAT%@github.com/microsoft/vcpkg.git
+      script: git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/microsoft/vcpkg.git
       workingDirectory: $(Build.SourcesDirectory)
   - task: CmdLine@2
     displayName: VCPKG Bootstrap
@@ -93,18 +97,19 @@ jobs:
     inputs:
       cwd: '$(Build.SourcesDirectory)'
       cmakeArgs: '-G "$(VS_GENERATOR)" -A x64 -B out -DENABLE_SPECTRE_MITIGATION=ON -DBUILD_TOOLS=ON -DCMAKE_TOOLCHAIN_FILE="$(VCPKG_CMAKE_DIR)"'
-  - task: Semmle@1
-    displayName: 'Run CodeQL (Semmle) (C++)'
-    env:
-      SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+  - task: CodeQL3000Init@0
     inputs:
-      sourceCodeDirectory: '$(Build.SourcesDirectory)'
-      language: 'cpp'
-      querySuite: 'Recommended'
-      timeout: '1800'
-      ram: '16384'
-      addProjectDirToScanningExclusionList: true
-      buildCommandsString: '"%ProgramFiles%\Microsoft Visual Studio\2022\Enterprise\Common7\Tools\VsMSBuildCmd.bat" && msbuild $(Build.SourcesDirectory)/out/UVAtlas.sln /p:Configuration=Release'
+      Enabled: true
+  - task: VSBuild@1
+    displayName: 'Build C++ with CodeQL'
+    inputs:
+      solution: '$(Build.SourcesDirectory)/out/UVAtlas.sln'
+      vsVersion: 17.0
+      platform: x64
+      configuration: Release
+      msbuildArchitecture: x64
+  - task: CodeQL3000Finalize@0
+    condition: always()
   - task: CMake@1
     displayName: 'CMake (MSVC): Build x64 Release'
     inputs:

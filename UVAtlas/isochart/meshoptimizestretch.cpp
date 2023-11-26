@@ -172,7 +172,7 @@ uint32_t CIsochartMesh::GetChartWidthLargestGeoAvgStretch(
 {
     fMaxAvgL2Stretch = 0;
     uint32_t dwIdx = 0;
-    for (uint32_t ii = 0; ii < chartList.size(); ii++)
+    for (size_t ii = 0; ii < chartList.size(); ii++)
     {
         if (IsInZeroRange(chartList[ii]->m_fChart2DArea)
             || IsInZeroRange(chartList[ii]->m_fChart3DArea))
@@ -191,7 +191,7 @@ uint32_t CIsochartMesh::GetChartWidthLargestGeoAvgStretch(
         {
             fMaxAvgL2Stretch =
                 chartList[ii]->m_fParamStretchL2 / chartList[ii]->m_fChart3DArea;
-            dwIdx = ii;
+            dwIdx = static_cast<uint32_t>(ii);
         }
     }
 
@@ -204,7 +204,7 @@ uint32_t CIsochartMesh::GetBestPartitionCanidate(
     uint32_t dwMaxIdx = INVALID_INDEX;
     float fMaxL2SquaredStretch = -1;
 
-    for (uint32_t ii = 0; ii < chartList.size(); ii++)
+    for (size_t ii = 0; ii < chartList.size(); ii++)
     {
         // The average chart stretch has reached the minimal point, No use to parition
         // it again.
@@ -223,17 +223,17 @@ uint32_t CIsochartMesh::GetBestPartitionCanidate(
         if (fMaxL2SquaredStretch < chartList[ii]->GetL2SquaredStretch())
         {
             fMaxL2SquaredStretch = chartList[ii]->GetL2SquaredStretch();
-            dwMaxIdx = ii;
+            dwMaxIdx = static_cast<uint32_t>(ii);
         }
     }
 
     if (INVALID_INDEX == dwMaxIdx)
     {
-        for (uint32_t ii = 0; ii < chartList.size(); ii++)
+        for (size_t ii = 0; ii < chartList.size(); ii++)
         {
             if (chartList[ii]->GetFaceNumber() > 1)
             {
-                dwMaxIdx = ii;
+                dwMaxIdx = static_cast<uint32_t>(ii);
                 break;
             }
         }

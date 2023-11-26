@@ -88,7 +88,7 @@ HRESULT CIsochartMesh::OptimizeBoundaryByAngle(
     // 2. Decide fuzzy region used in graph cut.
     HRESULT hr = S_OK;
     memset(pbIsFuzzyFatherFace.get(), 0, sizeof(bool) * m_dwFaceNumber);
-    for (uint32_t i = 0; i < m_children.size(); i++)
+    for (size_t i = 0; i < m_children.size(); i++)
     {
         CIsochartMesh* pChart = m_children[i];
         hr = pChart->CalculateFuzzyRegion(pbIsFuzzyFatherFace.get());
@@ -99,7 +99,7 @@ HRESULT CIsochartMesh::OptimizeBoundaryByAngle(
         for (size_t j = 0; j < pChart->m_dwFaceNumber; j++)
         {
             ISOCHARTFACE* pFace = pChart->m_pFaces + j;
-            pdwFaceChartID[pFace->dwIDInFatherMesh] = i;
+            pdwFaceChartID[pFace->dwIDInFatherMesh] = static_cast<uint32_t>(i);
         }
     }
 
@@ -375,14 +375,14 @@ HRESULT CIsochartMesh::DriveGraphCutByAngle(
 {
     HRESULT hr = S_OK;
     // 1. For each sub-chart, get its adjacent sub-charts
-    for (uint32_t i = 0; i < m_children.size(); i++)
+    for (size_t i = 0; i < m_children.size(); i++)
     {
         CIsochartMesh* pChart = m_children[i];
-        pChart->CalculateSubChartAdjacentChart(i, pdwFaceChartID);
+        pChart->CalculateSubChartAdjacentChart(static_cast<uint32_t>(i), pdwFaceChartID);
     }
 
     // 2. Optimize boundaries between each 2 sub-charts
-    for (uint32_t dwChartIdx1 = 0; dwChartIdx1 < m_children.size(); dwChartIdx1++)
+    for (size_t dwChartIdx1 = 0; dwChartIdx1 < m_children.size(); dwChartIdx1++)
     {
         CIsochartMesh* pChart1 = m_children[dwChartIdx1];
         for (size_t i = 0; i < pChart1->m_adjacentChart.size(); i++)
@@ -395,7 +395,7 @@ HRESULT CIsochartMesh::DriveGraphCutByAngle(
 
             FAILURE_RETURN(
                 OptimizeOneBoundaryByAngle(
-                    dwChartIdx1,
+                    static_cast<uint32_t>(dwChartIdx1),
                     dwChartIdx2,
                     graphCut,
                     pdwFaceGraphNodeID,
@@ -685,13 +685,13 @@ HRESULT CIsochartMesh::CalSubchartsFuzzyRegion(
 
     try
     {
-        for (uint32_t i = 0; i < m_children.size(); i++)
+        for (size_t i = 0; i < m_children.size(); i++)
         {
             CIsochartMesh* pChart = m_children[i];
             for (size_t j = 0; j < pChart->GetFaceNumber(); j++)
             {
                 ISOCHARTFACE* pFace = pChart->m_pFaces + j;
-                pdwFaceChartID[pFace->dwIDInFatherMesh] = i;
+                pdwFaceChartID[pFace->dwIDInFatherMesh] = static_cast<uint32_t>(i);
             }
 
             HRESULT hr = pChart->CalculateLandmarkAndFuzzyRegion(
@@ -1189,17 +1189,17 @@ HRESULT CIsochartMesh::ApplyGraphCutByStretch(
 
     // 3.4 For each sub-chart , getting adjacent sub-charts.
     HRESULT hr = S_OK;
-    for (uint32_t i = 0; i < m_children.size(); i++)
+    for (size_t i = 0; i < m_children.size(); i++)
     {
         CIsochartMesh* pChart = m_children[i];
-        hr = pChart->CalculateSubChartAdjacentChart(i, pdwFaceChartID);
+        hr = pChart->CalculateSubChartAdjacentChart(static_cast<uint32_t>(i), pdwFaceChartID);
         if (FAILED(hr))
         {
             return hr;
         }
     }
 
-    for (uint32_t dwChartIdx1 = 0; dwChartIdx1 < m_children.size(); dwChartIdx1++)
+    for (size_t dwChartIdx1 = 0; dwChartIdx1 < m_children.size(); dwChartIdx1++)
     {
         CIsochartMesh* pChart1 = m_children[dwChartIdx1];
 
@@ -1216,7 +1216,7 @@ HRESULT CIsochartMesh::ApplyGraphCutByStretch(
 
             hr =
                 OptimizeOneBoundaryByAngle(
-                    dwChartIdx1,
+                    static_cast<uint32_t>(dwChartIdx1),
                     dwChartIdx2,
                     graphCut,
                     pdwFaceGraphNodeID.get(),

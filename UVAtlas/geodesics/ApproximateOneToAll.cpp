@@ -21,7 +21,7 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
         TypeEdgeWindowsHeap::item_type* pItem = m_EdgeWindowsHeap.cutTop();
 
         uint32_t dwIdxSelf = FLAG_INVALIDDWORD;
-        for (uint32_t i = 0; i < pItem->m_data.pEdge->WindowsList.size(); ++i)
+        for (size_t i = 0; i < pItem->m_data.pEdge->WindowsList.size(); ++i)
         {
             if (!pItem->m_data.pEdge->WindowsList[i].pHeapItem)
             {
@@ -31,7 +31,7 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
             if (pItem->m_data.pEdge->WindowsList[i].pHeapItem == pItem)
             {
                 // here we get a byproduct, because we actually need the idx of the popped off window itself
-                dwIdxSelf = i;
+                dwIdxSelf = static_cast<uint32_t>(i);
 
                 // when searching for a window adjacent to the popped off (from the heap) window, skip the window itself on the edge
                 continue;
@@ -299,11 +299,10 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
                         // the idx of the popped off window is not yet set, so search for it here
                         // we only need to search from i + 1 (rather than from 0), because the previous ones have already been searched
 
-                        for (uint32_t t = i + 1; t < pItem->m_data.pEdge->WindowsList.size(); ++t)
+                        for (size_t t = (i + 1); t < pItem->m_data.pEdge->WindowsList.size(); ++t)
                             if (pItem->m_data.pEdge->WindowsList[t].pHeapItem == pItem)
                             {
-                                dwIdxSelf = t;
-
+                                dwIdxSelf = static_cast<uint32_t>(t);
                                 break;
                             }
                     }

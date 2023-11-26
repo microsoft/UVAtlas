@@ -156,20 +156,20 @@ CIsochartMesh::CalAdjacentChartsForEachChart(
         return E_OUTOFMEMORY;
     }
 
-    for (uint32_t i = 0; i < children.size(); i++)
+    for (size_t i = 0; i < children.size(); i++)
     {
         ISOCHARTFACE* pFace = children[i]->GetFaceBuffer();
         for (size_t j = 0; j < children[i]->GetFaceNumber(); j++)
         {
-            pdwFaceChartId[pFace->dwIDInRootMesh] = i;
+            pdwFaceChartId[pFace->dwIDInRootMesh] = static_cast<uint32_t>(i);
             pFace++;
         }
     }
 
-    for (uint32_t i = 0; i < children.size(); i++)
+    for (size_t i = 0; i < children.size(); i++)
     {
         HRESULT hr = children[i]->CalculateAdjacentChart(
-            i,
+            static_cast<uint32_t>(i),
             pdwFaceChartId.get(),
             pdwFaceAdjacentArray);
         if (FAILED(hr))
@@ -215,10 +215,10 @@ HRESULT CIsochartMesh::PerformMerging(
 
     CIsochartMesh* pChart = nullptr;
     // 1 Prepare all charts to be merged.
-    for (uint32_t i = 0; i < nchildren; i++)
+    for (size_t i = 0; i < nchildren; i++)
     {
         pChart = children[i];
-        pChart->CalculateAveragNormal(pChartNormal.get() + i);
+        pChart->CalculateAveragNormal(pChartNormal.get() + static_cast<uint32_t>(i));
         if (pChart->GetAdjacentChartList().empty())
         {
             continue;
@@ -229,8 +229,8 @@ HRESULT CIsochartMesh::PerformMerging(
         }
 
         pHeapItems[i].m_weight = static_cast<uint32_t>(MAX_FACE_NUMBER - pChart->GetFaceNumber());
-        pHeapItems[i].m_data = i;
-        heap.insert(pHeapItems.get() + i);
+        pHeapItems[i].m_data = static_cast<uint32_t>(i);
+        heap.insert(pHeapItems.get() + static_cast<uint32_t>(i));
     }
     memset(pbMergeFlag.get(), 1, sizeof(bool) * children.size());
 

@@ -43,7 +43,7 @@ void CExactOneToAll::SetSrcVertexIdx(const uint32_t dwSrcVertexIdx)
         m_VertexList[i].bShadowBoundary = false;
     }
 
-    for (uint32_t i = 0; i < m_EdgeList.size(); ++i)
+    for (size_t i = 0; i < m_EdgeList.size(); ++i)
     {
         Edge& thisEdge = m_EdgeList[i];
 
@@ -60,7 +60,7 @@ void CExactOneToAll::SetSrcVertexIdx(const uint32_t dwSrcVertexIdx)
             EdgeWindow tmpEdgeWindow;
 
             // generate a window covering the whole edge as one of the initial windows
-            tmpEdgeWindow.SetEdgeIdx(m_EdgeList, i);
+            tmpEdgeWindow.SetEdgeIdx(m_EdgeList, static_cast<uint32_t>(i));
             tmpEdgeWindow.dPseuSrcToSrcDistance = 0;
             tmpEdgeWindow.b0 = 0;
             tmpEdgeWindow.b1 = tmpEdgeWindow.pEdge->dEdgeLength;
@@ -84,8 +84,7 @@ void CExactOneToAll::SetSrcVertexIdx(const uint32_t dwSrcVertexIdx)
 void CExactOneToAll::AddWindowToHeapAndEdge(const EdgeWindow& WindowToAdd)
 {
     // add the new window to heap and the edge
-    TypeEdgeWindowsHeap::item_type* pItem =
-        new TypeEdgeWindowsHeap::item_type(std::min(WindowToAdd.d0, WindowToAdd.d1) + WindowToAdd.dPseuSrcToSrcDistance, WindowToAdd);
+    auto pItem = new TypeEdgeWindowsHeap::item_type(std::min(WindowToAdd.d0, WindowToAdd.d1) + WindowToAdd.dPseuSrcToSrcDistance, WindowToAdd);
 
     m_EdgeWindowsHeap.insert(pItem);
     WindowToAdd.pEdge->WindowsList.push_back(Edge::WindowListElement(pItem, WindowToAdd));
@@ -111,7 +110,7 @@ void CExactOneToAll::AddWindowToHeapAndEdge(const EdgeWindow& WindowToAdd)
 // pop off one window from the heap and unreference the corresponding one on the edge
 void CExactOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
 {
-    TypeEdgeWindowsHeap::item_type* pItem = m_EdgeWindowsHeap.cutTop();
+    auto pItem = m_EdgeWindowsHeap.cutTop();
 
     for (size_t i = 0; i < pItem->m_data.pEdge->WindowsList.size(); ++i)
         if (pItem->m_data.pEdge->WindowsList[i].pHeapItem == pItem)
@@ -598,7 +597,7 @@ void CExactOneToAll::InternalRun()
     }
 }
 
-void CExactOneToAll::ProcessNewWindow(EdgeWindow* pNewEdgeWindow)
+void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
 {
     std::vector<EdgeWindow> NewWindowsList;
     NewWindowsList.push_back(*pNewEdgeWindow);
@@ -617,14 +616,12 @@ void CExactOneToAll::ProcessNewWindow(EdgeWindow* pNewEdgeWindow)
 
         for (i = 0; i < pNewEdgeWindow->pEdge->WindowsList.size(); ++i)
         {
-            TypeEdgeWindowsHeap::item_type* pExistingWindowItem;
-
             bExistingWindowChanged = false;
             bNewWindowChanged = false;
             bExistingWindowNotAvailable = false;
 
             // get a copy of current window on edge
-            pExistingWindowItem =
+            auto pExistingWindowItem =
                 new TypeEdgeWindowsHeap::item_type(
                     std::min(pNewEdgeWindow->pEdge->WindowsList[i].theWindow.d0, pNewEdgeWindow->pEdge->WindowsList[i].theWindow.d1) + pNewEdgeWindow->pEdge->WindowsList[i].theWindow.dPseuSrcToSrcDistance,
                     pNewEdgeWindow->pEdge->WindowsList[i].theWindow
@@ -710,10 +707,9 @@ void CExactOneToAll::ProcessNewWindow(EdgeWindow* pNewEdgeWindow)
             }
         }
 
-        if (WindowToBeInserted.b1 - WindowToBeInserted.b0 > 0)
+        if (WindowToBeInserted.pMarkFromEdgeVertex != nullptr && WindowToBeInserted.pEdge != nullptr && (WindowToBeInserted.b1 - WindowToBeInserted.b0 > 0))
         {
-            TypeEdgeWindowsHeap::item_type* pNewWindowItem =
-                new TypeEdgeWindowsHeap::item_type(std::min(WindowToBeInserted.d0, WindowToBeInserted.d1) + WindowToBeInserted.dPseuSrcToSrcDistance, WindowToBeInserted);
+            auto pNewWindowItem = new TypeEdgeWindowsHeap::item_type(std::min(WindowToBeInserted.d0, WindowToBeInserted.d1) + WindowToBeInserted.dPseuSrcToSrcDistance, WindowToBeInserted);
 
             m_EdgeWindowsHeap.insert(pNewWindowItem);
 
@@ -731,7 +727,7 @@ void CExactOneToAll::ProcessNewWindow(EdgeWindow* pNewEdgeWindow)
             }
 
             Vertex* pAnotherPt = WindowToBeInserted.pEdge->GetAnotherVertex(WindowToBeInserted.dwMarkFromEdgeVertexIdx);
-            if (WindowToBeInserted.b1 > (WindowToBeInserted.pEdge->dEdgeLength - 0.01))
+            if (pAnotherPt != nullptr && (WindowToBeInserted.b1 > (WindowToBeInserted.pEdge->dEdgeLength - 0.01)))
             {
                 if ((WindowToBeInserted.d1 + WindowToBeInserted.dPseuSrcToSrcDistance) < pAnotherPt->dGeoDistanceToSrc)
                 {
@@ -746,15 +742,14 @@ void CExactOneToAll::ProcessNewWindow(EdgeWindow* pNewEdgeWindow)
         // add it to the edge and heap
         if (!bNewWindowNotAvailable/*pNewEdgeWindow->b0 < pNewEdgeWindow->b1*/)
         {
-            TypeEdgeWindowsHeap::item_type* pNewWindowItem =
-                new TypeEdgeWindowsHeap::item_type(std::min(pNewEdgeWindow->d0, pNewEdgeWindow->d1) + pNewEdgeWindow->dPseuSrcToSrcDistance, *pNewEdgeWindow);
+            auto pNewWindowItem = new TypeEdgeWindowsHeap::item_type(std::min(pNewEdgeWindow->d0, pNewEdgeWindow->d1) + pNewEdgeWindow->dPseuSrcToSrcDistance, *pNewEdgeWindow);
 
             m_EdgeWindowsHeap.insert(pNewWindowItem);
 
             pNewEdgeWindow->pEdge->WindowsList.push_back(Edge::WindowListElement(pNewWindowItem, pNewWindowItem->m_data));
 
             // update the geodesic distance on vertices affected by this new window
-            if (pNewEdgeWindow->b0 < 0.01)
+            if (pNewEdgeWindow->pMarkFromEdgeVertex != nullptr && (pNewEdgeWindow->b0 < 0.01))
             {
                 if ((pNewEdgeWindow->d0 + pNewEdgeWindow->dPseuSrcToSrcDistance) < pNewEdgeWindow->pMarkFromEdgeVertex->dGeoDistanceToSrc)
                 {
@@ -765,7 +760,7 @@ void CExactOneToAll::ProcessNewWindow(EdgeWindow* pNewEdgeWindow)
             }
 
             Vertex* pAnotherPt = pNewEdgeWindow->pEdge->GetAnotherVertex(pNewEdgeWindow->dwMarkFromEdgeVertexIdx);
-            if (pNewEdgeWindow->b1 > (pNewEdgeWindow->pEdge->dEdgeLength - 0.01))
+            if (pAnotherPt && (pNewEdgeWindow->b1 > (pNewEdgeWindow->pEdge->dEdgeLength - 0.01)))
             {
                 if ((pNewEdgeWindow->d1 + pNewEdgeWindow->dPseuSrcToSrcDistance) < pAnotherPt->dGeoDistanceToSrc)
                 {
@@ -781,8 +776,8 @@ void CExactOneToAll::ProcessNewWindow(EdgeWindow* pNewEdgeWindow)
 }
 
 // [see "intersection of overlapping windows" of the paper]
-void CExactOneToAll::IntersectWindow(EdgeWindow* pExistingWindow,
-    EdgeWindow* pNewWindow,
+void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
+    _In_ EdgeWindow* pNewWindow,
     bool* pExistingWindowChanged,
     bool* pNewWindowChanged,
     bool* pExistingWindowNotAvailable,

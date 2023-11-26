@@ -23,8 +23,8 @@ namespace
     HRESULT UVAtlasGetRealVertexRemap(
         _In_                            size_t nFaces,
         _In_                            size_t nVerts,
-        _In_reads_(nFaces * 3)            const IndexType* pInIndexData,
-        _Inout_updates_all_(nFaces * 3)  IndexType* pOutIndexData,
+        _In_reads_(nFaces * 3)          const IndexType* pInIndexData,
+        _Inout_updates_all_(nFaces * 3) IndexType* pOutIndexData,
         _Out_                           size_t* nNewVerts,
         _Inout_                         std::vector<uint32_t>& vOutVertexRemapBuffer,
         _Inout_                         std::unique_ptr<uint32_t[]>& forwardRemapArray)
@@ -55,11 +55,11 @@ namespace
         // updated index buffer
         IndexType* pNewIndexData = newIndexData.get();
 
-        for (uint32_t i = 0; i < 3 * nFaces + nVerts; i++)
+        for (size_t i = 0; i < (3 * nFaces + nVerts); i++)
         {
-            pForwardRemapArray[i] = uint32_t(-1);
-            pReverseRemapArray[i] = uint32_t(-1);
-            pPossibleRemapArray[i] = i;
+            pForwardRemapArray[i] = static_cast<uint32_t>(-1);
+            pReverseRemapArray[i] = static_cast<uint32_t>(-1);
+            pPossibleRemapArray[i] = static_cast<uint32_t>(i);
         }
 
         for (size_t i = 0; i < 3 * nFaces; i++)
@@ -130,10 +130,12 @@ namespace
         }
 
         // ensure that unused vertices are remapped back onto themselves
-        for (uint32_t i = 0; i < nVerts; i++)
+        for (size_t i = 0; i < nVerts; i++)
         {
-            if (pReverseRemapArray[i] == uint32_t(-1))
-                pReverseRemapArray[i] = i;
+            if (pReverseRemapArray[i] == static_cast<uint32_t>(-1))
+            {
+                pReverseRemapArray[i] = static_cast<uint32_t>(i);
+            }
         }
 
         memcpy(vOutVertexRemapBuffer.data(), pReverseRemapArray, (*nNewVerts) * sizeof(uint32_t));
@@ -170,8 +172,10 @@ namespace
 
         uint32_t* pEquivs = equivs.get();
 
-        for (uint32_t i = 0; i < nFaces * 3; i++)
-            pEquivs[i] = i;
+        for (size_t i = 0; i < (nFaces * 3); i++)
+        {
+            pEquivs[i] = static_cast<uint32_t>(i);
+        }
 
         // join vertices that are equivalent through adjacency
         for (size_t i = 0; i < nFaces; i++)
@@ -411,7 +415,7 @@ namespace
 
             for (size_t i = 0; i < outMeshNumVertices; i++)
             {
-                memcpy(&bBaseOut[i].pos.x, bBaseIn + pdwRemap[i] * sizeof(XMFLOAT3), sizeof(XMFLOAT3));
+                memcpy(&bBaseOut[i].pos, bBaseIn + pdwRemap[i] * sizeof(XMFLOAT3), sizeof(XMFLOAT3));
                 if (pForwardRemapArray[i] == uint32_t(-1))
                 {
                     bBaseOut[i].uv.x = bBaseOut[i].uv.y = 0.f;
