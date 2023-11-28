@@ -147,14 +147,6 @@ namespace GeodesicDist
             ksi(0.0)
         {
         }
-        // trick constructor
-        EdgeWindow(const uint32_t R)
-        {
-            if (R == 0)
-            {
-                EdgeWindow();
-            }
-        }
 
         EdgeWindow(const EdgeWindow&) = default;
         EdgeWindow& operator=(const EdgeWindow&) = default;

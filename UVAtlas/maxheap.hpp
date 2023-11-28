@@ -163,14 +163,7 @@ namespace Isochart
             item_type* pTop = removeAt(0);
             if (!pTop)
             {
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
-#endif
-                return 0;
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
+                return data_type{};
             }
 
             data_type data = pTop->m_data;
