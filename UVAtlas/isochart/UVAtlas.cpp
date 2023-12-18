@@ -113,7 +113,9 @@ namespace
             }
         }
 
+#ifdef _MSC_VER
 #pragma warning( suppress : 4127 )
+#endif
         if ((sizeof(IndexType) == sizeof(uint16_t)) && (*nNewVerts > 0x0fffe))
         {
             DPF(0, "Resulting mesh is too large to fit in 16-bit mesh.");

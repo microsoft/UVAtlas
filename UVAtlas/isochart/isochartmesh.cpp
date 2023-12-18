@@ -2752,8 +2752,10 @@ HRESULT CIsochartMesh::CalMinPathToOtherBoundary(
 
 }
 
+#ifdef _MSC_VER
 #pragma warning(push)
 #pragma warning( disable : 4706 )
+#endif
 
 HRESULT CIsochartMesh::RetreiveVertDijkstraPathToSource(
     uint32_t dwVertexID,
@@ -2787,7 +2789,9 @@ HRESULT CIsochartMesh::RetreiveVertDijkstraPathToSource(
     return hr;
 }
 
+#ifdef _MSC_VER
 #pragma warning(pop)
+#endif
 
 HRESULT CIsochartMesh::CalMinPathBetweenBoundaries(
     VERTEX_ARRAY& allBoundaryList,

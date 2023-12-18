@@ -1488,7 +1488,6 @@ Isochart::IMTFromTextureMapEx(
 
     memset(tempSumIMT, 0, sizeof(double) * IMT_DIM);
 
-    double dTotal2DArea = 0;
     double dPieceArea = 0;
     for (size_t ii = 0; ii < dwRowLineCount - 1; ii++)
     {
@@ -1518,7 +1517,6 @@ Isochart::IMTFromTextureMapEx(
                 tempSumIMT[kk] += tempIMT[kk];
             }
 
-            dTotal2DArea += dPieceArea;
         }
     }
 
