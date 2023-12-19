@@ -245,14 +245,14 @@ join_paths(UVATLAS_LIBDIR_FOR_PKG_CONFIG "\${prefix}"     "${CMAKE_INSTALL_LIBDI
 
 set(UVATLAS_DEP_L "")
 if(ENABLE_USE_EIGEN)
-list(APPEND UVATLAS_DEP_L "eigen3")
+  list(APPEND UVATLAS_DEP_L "eigen3")
 endif()
 if(directxmath_FOUND)
-list(APPEND UVATLAS_DEP_L "DirectX-Headers")
+  list(APPEND UVATLAS_DEP_L "DirectX-Headers")
 endif()
 list(LENGTH UVATLAS_DEP_L DEP_L)
 if(DEP_L)
-STRING(REPLACE ";" ", " UVATLAS_DEP " ${UVATLAS_DEP_L}")
+  STRING(REPLACE ";" ", " UVATLAS_DEP " ${UVATLAS_DEP_L}")
 endif()
 
 configure_file(
