@@ -242,6 +242,18 @@ include(build/JoinPaths.cmake)
 # from: https://github.com/jtojnar/cmake-snips#concatenating-paths-when-building-pkg-config-files
 join_paths(UVATLAS_INCLUDEDIR_FOR_PKG_CONFIG "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 join_paths(UVATLAS_LIBDIR_FOR_PKG_CONFIG "\${prefix}"     "${CMAKE_INSTALL_LIBDIR}")
+
+if(ENABLE_USE_EIGEN)
+list(APPEND UVATLAS_DEP_L "eigen3")
+endif()
+if(directxmath_FOUND)
+list(APPEND UVATLAS_DEP_L "DirectX-Headers")
+endif()
+list(LENGTH UVATLAS_DEP_L DEP_L)
+if(DEP_L)
+STRING(REPLACE ";" ", " UVATLAS_DEP " ${UVATLAS_DEP_L}")
+endif()
+
 configure_file(
     "${CMAKE_CURRENT_SOURCE_DIR}/build/UVAtlas.pc.in"
     "${CMAKE_CURRENT_BINARY_DIR}/UVAtlas.pc" @ONLY)
