@@ -243,6 +243,7 @@ include(build/JoinPaths.cmake)
 join_paths(UVATLAS_INCLUDEDIR_FOR_PKG_CONFIG "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 join_paths(UVATLAS_LIBDIR_FOR_PKG_CONFIG "\${prefix}"     "${CMAKE_INSTALL_LIBDIR}")
 
+set(UVATLAS_DEP_L "")
 if(ENABLE_USE_EIGEN)
 list(APPEND UVATLAS_DEP_L "eigen3")
 endif()
