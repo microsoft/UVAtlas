@@ -237,6 +237,35 @@ install(FILES
     ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}-config-version.cmake
   DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/${PACKAGE_NAME})
 
+# Create pkg-config file
+include(build/JoinPaths.cmake)
+# from: https://github.com/jtojnar/cmake-snips#concatenating-paths-when-building-pkg-config-files
+join_paths(UVATLAS_INCLUDEDIR_FOR_PKG_CONFIG "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
+join_paths(UVATLAS_LIBDIR_FOR_PKG_CONFIG "\${prefix}"     "${CMAKE_INSTALL_LIBDIR}")
+
+set(UVATLAS_DEP_L "")
+if(ENABLE_USE_EIGEN)
+  list(APPEND UVATLAS_DEP_L "eigen3")
+endif()
+if(directxmath_FOUND)
+  list(APPEND UVATLAS_DEP_L "DirectXMath")
+endif()
+if(directx-headers_FOUND)
+  list(APPEND UVATLAS_DEP_L "DirectX-Headers")
+endif()
+list(LENGTH UVATLAS_DEP_L DEP_L)
+if(DEP_L)
+  string(REPLACE ";" ", " UVATLAS_DEP " ${UVATLAS_DEP_L}")
+endif()
+
+configure_file(
+    "${CMAKE_CURRENT_SOURCE_DIR}/build/UVAtlas.pc.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/UVAtlas.pc" @ONLY)
+
+# Install the pkg-config file
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/UVAtlas.pc"
+        DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+
 #--- Command-line tool
 if(BUILD_TOOLS AND WIN32)
     set(TOOL_EXES uvatlastool)
