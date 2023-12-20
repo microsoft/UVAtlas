@@ -332,7 +332,9 @@ elseif(NOT (${DIRECTX_ARCH} MATCHES "^arm"))
 endif()
 
 if(MINGW)
-    target_link_options(${t} PRIVATE -municode)
+    foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+      target_link_options(${t} PRIVATE -municode)
+    endforeach()
 endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
