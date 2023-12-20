@@ -260,7 +260,6 @@ if(BUILD_TOOLS AND WIN32)
         Microsoft::DirectXMesh
         Microsoft::DirectXTex
         Microsoft::DirectXMesh::Utilities)
-    target_link_options(uvatlastool PRIVATE -municode)
     source_group(uvatlastool REGULAR_EXPRESSION UVAtlasTool/*.*)
 
     if(UVATLAS_USE_OPENMP)
