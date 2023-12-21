@@ -29,14 +29,16 @@ jobs:
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
   steps:
-  - checkout: none
+  - checkout: self
+    clean: true
+    fetchTags: false
+    path: UVAtlas
   - task: DeleteFiles@1
     displayName: Delete files
     inputs:
       Contents: |
         DirectXTex\**
         DirectXMesh\**
-        UVAtlas\**
         Tests\**
 
       RemoveDotFiles: true
@@ -46,7 +48,6 @@ jobs:
       script: |
         git clone --quiet https://%GITHUB_PAT%@github.com/microsoft/DirectXMesh.git
         git clone --quiet https://%GITHUB_PAT%@github.com/microsoft/DirectXTex.git
-        git clone --quiet https://%GITHUB_PAT%@github.com/microsoft/UVAtlas.git
 
       workingDirectory: $(Build.SourcesDirectory)
       failOnStderr: true
@@ -115,14 +116,16 @@ jobs:
   displayName: 'CMake BUILD_TESTING=ON'
   timeoutInMinutes: 120
   steps:
-  - checkout: none
+  - checkout: self
+    clean: true
+    fetchTags: false
+    path: UVAtlas
   - task: DeleteFiles@1
     displayName: Delete files
     inputs:
       Contents: |
         DirectXTex\**
         DirectXMesh\**
-        UVAtlas\**
         Tests\**
 
       RemoveDotFiles: true
@@ -132,7 +135,6 @@ jobs:
       script: |
         git clone --quiet https://%GITHUB_PAT%@github.com/microsoft/DirectXMesh.git
         git clone --quiet https://%GITHUB_PAT%@github.com/microsoft/DirectXTex.git
-        git clone --quiet https://%GITHUB_PAT%@github.com/microsoft/UVAtlas.git
 
       workingDirectory: $(Build.SourcesDirectory)
       failOnStderr: true

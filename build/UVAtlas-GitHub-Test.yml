@@ -48,7 +48,10 @@ jobs:
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
   steps:
-  - checkout: none
+  - checkout: self
+    clean: true
+    fetchTags: false
+    path: UVAtlas
   - task: DeleteFiles@1
     displayName: Delete files
     inputs:
@@ -65,7 +68,6 @@ jobs:
       script: |
         git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/microsoft/DirectXMesh.git
         git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/microsoft/DirectXTex.git
-        git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/microsoft/UVAtlas.git
 
       workingDirectory: $(Build.SourcesDirectory)
       failOnStderr: true
