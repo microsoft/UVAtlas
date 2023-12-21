@@ -47,6 +47,8 @@ jobs:
   displayName: 'Win32 Desktop'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
+  workspace:
+    clean: all
   steps:
   - checkout: self
     clean: true
@@ -58,7 +60,6 @@ jobs:
       Contents: |
         DirectXTex\**
         DirectXMesh\**
-        UVAtlas\**
         Tests\**
 
       RemoveDotFiles: true
