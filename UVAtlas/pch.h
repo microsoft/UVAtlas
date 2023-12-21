@@ -105,6 +105,7 @@
 #include <utility>
 #include <vector>
 #include <queue>
+#include <tuple>
 
 #ifdef UVATLAS_USE_EIGEN
 #ifdef _MSC_VER
