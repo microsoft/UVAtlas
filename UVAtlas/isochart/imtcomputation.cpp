@@ -1488,6 +1488,7 @@ Isochart::IMTFromTextureMapEx(
 
     memset(tempSumIMT, 0, sizeof(double) * IMT_DIM);
 
+    double dTotal2DArea = 0;
     double dPieceArea = 0;
     for (size_t ii = 0; ii < dwRowLineCount - 1; ii++)
     {
@@ -1517,9 +1518,11 @@ Isochart::IMTFromTextureMapEx(
                 tempSumIMT[kk] += tempIMT[kk];
             }
 
+            dTotal2DArea += dPieceArea;
         }
     }
 
+    std::ignore = dTotal2DArea;
     DPF(3, "2d area by formal %f", double(f2dArea));
     DPF(3, "integrated 2d area %f", dTotal2DArea);
 

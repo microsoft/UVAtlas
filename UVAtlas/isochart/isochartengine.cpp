@@ -1263,6 +1263,8 @@ HRESULT CIsochartEngine::ApplyInitEngine(
         delete pRootChart;
         return E_OUTOFMEMORY;
     }
+    size_t dwTestVertexCount = 0;
+    size_t dwTestFaceCount = 0;
     while (!m_currentChartHeap.empty())
     {
         CIsochartMesh* pChart = m_currentChartHeap.cutTopData();
@@ -1310,9 +1312,13 @@ HRESULT CIsochartEngine::ApplyInitEngine(
                 delete pChart;
                 return E_OUTOFMEMORY;
             }
+            dwTestVertexCount += pChart->GetVertexNumber();
+            dwTestFaceCount += pChart->GetFaceNumber();
         }
     }
 
+    std::ignore = dwTestVertexCount;
+    std::ignore = dwTestFaceCount;
     DPF(3, "Old Vert Number is %zu, New Vert Number is %zu",
         baseInfo.dwVertexCount,
         dwTestVertexCount);
@@ -1700,6 +1706,7 @@ HRESULT CIsochartEngine::FillExportFaceIndexBuffer(
 {
     assert(pvFaceBuffer != nullptr);
 
+    uint32_t dwFaceId = 0;
     size_t dwOffset = 0;
 
     auto pBaseFaces = reinterpret_cast<INDEXTYPE*>(pvFaceBuffer->data());
@@ -1724,10 +1731,12 @@ HRESULT CIsochartEngine::FillExportFaceIndexBuffer(
                 = static_cast<INDEXTYPE>(pChartFaceBuffer[j].dwVertexID[2]
                     + dwOffset);
 
+            dwFaceId++;
         }
         dwOffset += pChart->GetVertexNumber();
     }
 
+    std::ignore = dwFaceId;
     assert(dwFaceId == m_baseInfo.dwFaceCount);
 
     return S_OK;
