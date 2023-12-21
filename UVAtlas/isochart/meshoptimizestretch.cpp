@@ -769,7 +769,6 @@ HRESULT CIsochartMesh::OptimizeGeoLnInfiniteStretch(
         return hr;
     }
 
-    size_t dwBoundaryInfFaces = 0;
     if (bCanOptimize)
     {
         if (optimizeInfo.dwInfinitStretchVertexCount == 0)
@@ -811,12 +810,6 @@ HRESULT CIsochartMesh::OptimizeGeoLnInfiniteStretch(
                 optimizeInfo.dwInfinitStretchVertexCount++;
                 optimizeInfo.fInfinitFacesArea +=
                     m_baseInfo.pfFaceAreaArray[m_pFaces[i].dwIDInRootMesh];
-
-                bool bBoundary =
-                    m_pVerts[m_pFaces[i].dwVertexID[0]].bIsBoundary
-                    || m_pVerts[m_pFaces[i].dwVertexID[1]].bIsBoundary
-                    || m_pVerts[m_pFaces[i].dwVertexID[2]].bIsBoundary;
-                dwBoundaryInfFaces += (bBoundary ? 1 : 0);
             }
             else if (optimizeInfo.pfFaceStretch[i] > m_baseInfo.fExpectAvgL2SquaredStretch)
             {

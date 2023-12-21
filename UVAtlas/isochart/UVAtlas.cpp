@@ -113,7 +113,10 @@ namespace
             }
         }
 
+#ifdef _MSC_VER
+#pragma warning(push)
 #pragma warning( suppress : 4127 )
+#endif
         if ((sizeof(IndexType) == sizeof(uint16_t)) && (*nNewVerts > 0x0fffe))
         {
             DPF(0, "Resulting mesh is too large to fit in 16-bit mesh.");
@@ -137,6 +140,9 @@ namespace
                 pReverseRemapArray[i] = static_cast<uint32_t>(i);
             }
         }
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
 
         memcpy(vOutVertexRemapBuffer.data(), pReverseRemapArray, (*nNewVerts) * sizeof(uint32_t));
         memcpy(pOutIndexData, pNewIndexData, 3 * nFaces * sizeof(IndexType));
