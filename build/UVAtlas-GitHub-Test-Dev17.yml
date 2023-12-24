@@ -35,34 +35,25 @@ jobs:
     clean: true
     fetchTags: false
     path: 's/UVAtlas'
-  - task: DeleteFiles@1
-    displayName: Delete files
-    inputs:
-      Contents: |
-        DirectXTex\**
-        DirectXMesh\**
-        Tests\**
-
-      RemoveDotFiles: true
   - task: CmdLine@2
     displayName: Fetch Libraries
     inputs:
       script: |
-        git clone --quiet https://%GITHUB_PAT%@github.com/microsoft/DirectXMesh.git
-        git clone --quiet https://%GITHUB_PAT%@github.com/microsoft/DirectXTex.git
+        git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/microsoft/DirectXMesh.git
+        git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/microsoft/DirectXTex.git
 
-      workingDirectory: $(Build.SourcesDirectory)
+      workingDirectory: $(Pipeline.Workspace)/s
       failOnStderr: true
   - task: CmdLine@2
     displayName: Fetch Tests
     inputs:
-      script: git clone --quiet https://%GITHUB_PAT%@github.com/walbourn/uvatlastest.git Tests
-      workingDirectory: $(Build.SourcesDirectory)/UVAtlas
+      script: git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/walbourn/uvatlastest.git Tests
+      workingDirectory: $(Build.SourcesDirectory)
       failOnStderr: true
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2022.sln 32dbg
     inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2022.sln
+      solution: Tests/xtuvatlas_Desktop_2022.sln
       vsVersion: 17.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: x86
@@ -71,7 +62,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solutionxtuvatlas_Desktop_2022.sln 32rel
     inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2022.sln
+      solution: Tests/xtuvatlas_Desktop_2022.sln
       vsVersion: 17.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: x86
@@ -80,7 +71,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2022.sln 64dbg
     inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2022.sln
+      solution: Tests/xtuvatlas_Desktop_2022.sln
       vsVersion: 17.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: x64
@@ -89,7 +80,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2022.sln 64rel
     inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2022.sln
+      solution: Tests/xtuvatlas_Desktop_2022.sln
       vsVersion: 17.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: x64
@@ -98,7 +89,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2022.sln arm64dbg
     inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2022.sln
+      solution: Tests/xtuvatlas_Desktop_2022.sln
       vsVersion: 17.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: ARM64
@@ -107,7 +98,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2022.sln arm64rel
     inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2022.sln
+      solution: Tests/xtuvatlas_Desktop_2022.sln
       vsVersion: 17.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: ARM64
@@ -124,29 +115,20 @@ jobs:
     clean: true
     fetchTags: false
     path: 's/UVAtlas'
-  - task: DeleteFiles@1
-    displayName: Delete files
-    inputs:
-      Contents: |
-        DirectXTex\**
-        DirectXMesh\**
-        Tests\**
-
-      RemoveDotFiles: true
   - task: CmdLine@2
     displayName: Fetch Libraries
     inputs:
       script: |
-        git clone --quiet https://%GITHUB_PAT%@github.com/microsoft/DirectXMesh.git
-        git clone --quiet https://%GITHUB_PAT%@github.com/microsoft/DirectXTex.git
+        git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/microsoft/DirectXMesh.git
+        git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/microsoft/DirectXTex.git
 
-      workingDirectory: $(Build.SourcesDirectory)
+      workingDirectory: $(Pipeline.Workspace)/s
       failOnStderr: true
   - task: CmdLine@2
     displayName: Fetch Tests
     inputs:
-      script: git clone --quiet https://%GITHUB_PAT%@github.com/walbourn/uvatlastest.git Tests
-      workingDirectory: $(Build.SourcesDirectory)/UVAtlas
+      script: git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/walbourn/uvatlastest.git Tests
+      workingDirectory: $(Build.SourcesDirectory)
       failOnStderr: true
   - task: ChocolateyCommand@0
     displayName: Install Ninja
@@ -173,12 +155,12 @@ jobs:
   - task: CMake@1
     displayName: CMake (MSVC; x64-Debug) Config
     inputs:
-      cwd: $(Build.SourcesDirectory)/UVAtlas
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --preset=x64-Debug
   - task: CMake@1
     displayName: CMake (MSVC; x64-Debug) Build
     inputs:
-      cwd: $(Build.SourcesDirectory)/UVAtlas
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --build out/build/x64-Debug -v
   - task: DeleteFiles@1
     inputs:
@@ -186,12 +168,12 @@ jobs:
   - task: CMake@1
     displayName: CMake (MSVC; x64-Release) Config
     inputs:
-      cwd: $(Build.SourcesDirectory)/UVAtlas
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --preset=x64-Release
   - task: CMake@1
     displayName: CMake (MSVC; x64-Release) Build
     inputs:
-      cwd: $(Build.SourcesDirectory)/UVAtlas
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --build out/build/x64-Release -v
   - task: DeleteFiles@1
     inputs:
@@ -199,12 +181,12 @@ jobs:
   - task: CMake@1
     displayName: CMake (clang/LLVM; x64-Debug) Config
     inputs:
-      cwd: $(Build.SourcesDirectory)/UVAtlas
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --preset=x64-Debug-Clang
   - task: CMake@1
     displayName: CMake (clang/LLVM; x64-Debug) Build
     inputs:
-      cwd: $(Build.SourcesDirectory)/UVAtlas
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --build out/build/x64-Debug-Clang -v
   - task: DeleteFiles@1
     inputs:
@@ -212,12 +194,12 @@ jobs:
   - task: CMake@1
     displayName: CMake (clang/LLVM; x64-Release) Config
     inputs:
-      cwd: $(Build.SourcesDirectory)/UVAtlas
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --preset=x64-Release-Clang
   - task: CMake@1
     displayName: CMake (clang/LLVM; x64-Release) Build
     inputs:
-      cwd: $(Build.SourcesDirectory)/UVAtlas
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --build out/build/x64-Release-Clang -v
   - task: DeleteFiles@1
     inputs:
@@ -236,12 +218,12 @@ jobs:
   - task: CMake@1
     displayName: CMake (clang/LLVM; arm64-Debug) Config
     inputs:
-      cwd: $(Build.SourcesDirectory)/UVAtlas
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --preset=arm64-Debug-Clang
   - task: CMake@1
     displayName: CMake (clang/LLVM; arm64-Debug) Build
     inputs:
-      cwd: $(Build.SourcesDirectory)/UVAtlas
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --build out/build/arm64-Debug-Clang -v
   - task: DeleteFiles@1
     inputs:
@@ -249,12 +231,12 @@ jobs:
   - task: CMake@1
     displayName: CMake (clang/LLVM; arm64-Release) Config
     inputs:
-      cwd: $(Build.SourcesDirectory)/UVAtlas
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --preset=arm64-Release-Clang
   - task: CMake@1
     # This is disabled to avoid an ICE with clang v15.0.1
     displayName: CMake (clang/LLVM; arm64-Release) Build
     enabled: false
     inputs:
-      cwd: $(Build.SourcesDirectory)/UVAtlas
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --build out/build/arm64-Release-Clang -v
