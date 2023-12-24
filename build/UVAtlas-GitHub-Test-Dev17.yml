@@ -34,7 +34,7 @@ jobs:
   - checkout: self
     clean: true
     fetchTags: false
-    path: UVAtlas
+    path: 's/UVAtlas'
   - task: DeleteFiles@1
     displayName: Delete files
     inputs:
@@ -123,7 +123,7 @@ jobs:
   - checkout: self
     clean: true
     fetchTags: false
-    path: UVAtlas
+    path: 's/UVAtlas'
   - task: DeleteFiles@1
     displayName: Delete files
     inputs:
