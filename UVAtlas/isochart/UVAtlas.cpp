@@ -115,7 +115,7 @@ namespace
 
 #ifdef _MSC_VER
 #pragma warning(push)
-#pragma warning( suppress : 4127 )
+#pragma warning( disable : 4127 )
 #endif
         if ((sizeof(IndexType) == sizeof(uint16_t)) && (*nNewVerts > 0x0fffe))
         {

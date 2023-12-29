@@ -47,38 +47,32 @@ jobs:
   displayName: 'Win32 Desktop'
   timeoutInMinutes: 60
   cancelTimeoutInMinutes: 1
+  workspace:
+    clean: all
   steps:
-  - checkout: none
-  - task: DeleteFiles@1
-    displayName: Delete files
-    inputs:
-      Contents: |
-        DirectXTex\**
-        DirectXMesh\**
-        UVAtlas\**
-        Tests\**
-
-      RemoveDotFiles: true
+  - checkout: self
+    clean: true
+    fetchTags: false
+    path: 's/UVAtlas'
   - task: CmdLine@2
     displayName: Fetch Libraries
     inputs:
       script: |
         git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/microsoft/DirectXMesh.git
         git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/microsoft/DirectXTex.git
-        git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/microsoft/UVAtlas.git
 
-      workingDirectory: $(Build.SourcesDirectory)
+      workingDirectory: $(Pipeline.Workspace)/s
       failOnStderr: true
   - task: CmdLine@2
     displayName: Fetch Tests
     inputs:
       script: git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/walbourn/uvatlastest.git Tests
-      workingDirectory: $(Build.SourcesDirectory)/UVAtlas
+      workingDirectory: $(Build.SourcesDirectory)
       failOnStderr: true
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2019.sln 32dbg
     inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2019.sln
+      solution: Tests/xtuvatlas_Desktop_2019.sln
       vsVersion: 16.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: x86
@@ -86,7 +80,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solutionxtuvatlas_Desktop_2019.sln 32rel
     inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2019.sln
+      solution: Tests/xtuvatlas_Desktop_2019.sln
       vsVersion: 16.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: x86
@@ -94,7 +88,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2019.sln 64dbg
     inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2019.sln
+      solution: Tests/xtuvatlas_Desktop_2019.sln
       vsVersion: 16.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: x64
@@ -102,7 +96,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2019.sln 64rel
     inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2019.sln
+      solution: Tests/xtuvatlas_Desktop_2019.sln
       vsVersion: 16.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: x64
@@ -110,7 +104,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2019.sln arm64dbg
     inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2019.sln
+      solution: Tests/xtuvatlas_Desktop_2019.sln
       vsVersion: 16.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: ARM64
@@ -118,7 +112,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2019.sln arm64rel
     inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2019.sln
+      solution: Tests/xtuvatlas_Desktop_2019.sln
       vsVersion: 16.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: ARM64
