@@ -562,7 +562,6 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexKS98(
     {
         return E_OUTOFMEMORY;
     }
-
     for(size_t i = 0; i < m_dwVertNumber; ++i) {
         pbVertProcessed[i] = 0;
     }
