@@ -3347,14 +3347,9 @@ HRESULT CIsochartMesh::CalculateDijkstraPathToVertex(
     }
 
     bool* pbVertProcessed = vertProcessed.get();
-#ifdef __GNUC__
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wstringop-overflow"
-#endif
-    memset(pbVertProcessed, 0, sizeof(bool) * m_dwVertNumber);
-#ifdef __GNUC__
-#pragma GCC diagnostic pop
-#endif
+    for(size_t i = 0; i < m_dwVertNumber; ++i) {
+        pbVertProcessed[i] = 0;
+    }
 
     auto pHeapItem = heapItem.get();
 
