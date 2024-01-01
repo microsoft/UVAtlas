@@ -562,7 +562,14 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexKS98(
     {
         return E_OUTOFMEMORY;
     }
+#ifdef __GNUC__
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wstringop-overflow"
+#endif
     memset(pbVertProcessed.get(), 0, sizeof(bool) * m_dwVertNumber);
+#ifdef __GNUC__
+#pragma GCC diagnostic pop
+#endif
 
     CMaxHeap<float, uint32_t> heap;
     if (!heap.resize(m_dwVertNumber))
