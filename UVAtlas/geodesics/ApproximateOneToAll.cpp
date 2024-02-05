@@ -276,6 +276,9 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
                         tmpdif = fabs(sigma + SqrtMin0(SquredD2Dist(spie, tmpp)) - tmpDp);
                     }
                     break;
+
+                    default:
+                    break;
                     }
 
                     if (tmpdif > diflargest)

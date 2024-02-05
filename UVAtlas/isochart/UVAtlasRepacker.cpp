@@ -1560,6 +1560,8 @@ void CUVAtlasRepacker::GetChartPutPosition(uint32_t index)
         else
             m_chartFromX = m_fromX + m_triedOverlappedLen - pPosInfo->numY;
         break;
+    default:
+        break;
     }
 
     if (m_triedPutRotation == 0 || m_triedPutRotation == 180) {
@@ -1637,6 +1639,8 @@ void CUVAtlasRepacker::PutChartInPosition(uint32_t index)
         transMatrix = XMMatrixTranslation(
             m_PixelWidth * float(m_chartFromX) - pPosInfo->basePoint.x,
             m_PixelWidth * float(m_chartToY) - pPosInfo->basePoint.y, 0.0f);
+        break;
+    default:
         break;
     }
 
@@ -1754,6 +1758,8 @@ void CUVAtlasRepacker::UpdateSpaceInfo(int direction)
             while (j > minY&& m_UVBoard[size_t(--j)][size_t(i)] == 0);
             m_SpaceInfo[UV_DOWNSIDE][size_t(i)] = maxY - j - 1;
         }
+        break;
+    default:
         break;
     }
 
