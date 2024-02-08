@@ -295,6 +295,7 @@ if(BUILD_TOOLS AND WIN32)
         UVAtlasTool/Mesh.h
         UVAtlasTool/MeshOBJ.cpp
         UVAtlasTool/SDKMesh.h)
+    target_compile_features(uvatlastool PRIVATE cxx_std_17)
     target_link_libraries(uvatlastool PRIVATE
         ${PROJECT_NAME}
         ole32.lib version.lib
@@ -383,6 +384,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Intel")
     foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
       target_compile_options(${t} PRIVATE /Zc:__cplusplus /Zc:inline /fp:fast /Qdiag-disable:161)
     endforeach()
+    set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 14)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
       target_compile_options(${t} PRIVATE /sdl /permissive- /JMC- /Zc:__cplusplus /Zc:inline /fp:fast)
