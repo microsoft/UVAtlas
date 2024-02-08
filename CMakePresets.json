@@ -152,6 +152,28 @@
         "VCPKG_HOST_TRIPLET": "x64-mingw-static"
       }
     },
+    {
+      "name": "Intel",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "icl.exe"
+      },
+      "toolset": {
+        "value": "host=x64",
+        "strategy": "external"
+      }
+    },
+    {
+      "name": "IntelLLVM",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_COMPILER": "icx.exe"
+      },
+      "toolset": {
+        "value": "host=x64",
+        "strategy": "external"
+      }
+    },
 
     { "name": "x64-Debug"    , "description": "MSVC for x64 (Debug) Library only", "inherits": [ "base", "x64", "Debug", "MSVC" ] },
     { "name": "x64-Release"  , "description": "MSVC for x64 (Release) Library only", "inherits": [ "base", "x64", "Release", "MSVC" ] },
@@ -206,6 +228,12 @@
     { "name": "x86-Debug-MinGW"  , "description": "MinG-W32 (Debug)", "inherits": [ "base", "x86", "Debug", "GNUC", "VCPKG", "MinGW32" ] },
     { "name": "x86-Release-MinGW", "description": "MinG-W32 (Release)", "inherits": [ "base", "x86", "Release", "GNUC", "VCPKG", "MinGW32" ] },
 
+    { "name": "x64-Debug-ICC"     , "description": "Intel Classic Compiler (Debug) Library only", "inherits": [ "base", "x64", "Debug", "Intel" ] },
+    { "name": "x64-Release-ICC"   , "description": "Intel Classic Compiler (Release) Library only", "inherits": [ "base", "x64", "Release", "Intel" ] },
+
+    { "name": "x64-Debug-ICX"    , "description": "Intel oneAPI Compiler (Debug) Library only", "inherits": [ "base", "x64", "Debug", "IntelLLVM" ] },
+    { "name": "x64-Release-ICX"  , "description": "Intel oneAPI Compiler (Release) Library only", "inherits": [ "base", "x64", "Release", "IntelLLVM" ] },
+
     { "name": "x64-Debug-Linux",     "description": "WSL Linux x64 (Debug)", "inherits": [ "base", "x64", "Debug", "VCPKG" ] },
     { "name": "x64-Release-Linux",   "description": "WSL Linux x64 (Release)", "inherits": [ "base", "x64", "Release", "VCPKG" ] },
     { "name": "arm64-Debug-Linux",   "description": "WSL Linux ARM64 (Debug)", "inherits": [ "base", "ARM64", "Debug", "VCPKG" ] },
@@ -229,7 +257,9 @@
     { "name": "x64-Debug-MinGW"    , "configurePreset": "x64-Debug-MinGW" },
     { "name": "x64-Release-MinGW"  , "configurePreset": "x64-Release-MinGW" },
     { "name": "x86-Debug-MinGW"    , "configurePreset": "x86-Debug-MinGW" },
-    { "name": "x86-Release-MinGW"  , "configurePreset": "x86-Release-MinGW" }
+    { "name": "x86-Release-MinGW"  , "configurePreset": "x86-Release-MinGW" },
 
+    { "name": "x64-Debug-ICX"    , "configurePreset": "x64-Debug-ICX" },
+    { "name": "x64-Release-ICX"  , "configurePreset": "x64-Release-ICX"}
   ]
 }
