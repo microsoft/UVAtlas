@@ -424,7 +424,7 @@ namespace
 
     // Binary searching to find a vertex on the border. The vertex's coordinate in TangentAxis
     // is largest in all vertices whose coordinates in TangentAxis are smaller than target.
-    inline size_t static FindVertexRangeStartOnBorder(
+    static inline size_t FindVertexRangeStartOnBorder(
         VERTEX_ARRAY& aBorder,
         float target,
         Axis TangentAxis)
@@ -478,7 +478,7 @@ namespace
 
     // Searching along the border, finding a vertex whose coordinate in TangentAxis is the
     // smallest in all vertices whose coordinate in TangentAxis is larger than target.
-    inline size_t static FindVertexRangeEndOnBorder(
+    static inline size_t FindVertexRangeEndOnBorder(
         VERTEX_ARRAY& aBorder,
         size_t dwBorderStart,
         float target,
