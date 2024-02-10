@@ -39,6 +39,7 @@ option(ENABLE_SPECTRE_MITIGATION "Build using /Qspectre for MSVC" OFF)
 option(DISABLE_MSVC_ITERATOR_DEBUGGING "Disable iterator debugging in Debug configurations with the MSVC CRT" OFF)
 
 option(ENABLE_CODE_ANALYSIS "Use Static Code Analysis on build" OFF)
+option(BUILD_SHARED_LIBS "Build the shared library" ON)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -129,6 +130,19 @@ set(LIBRARY_SOURCES
 )
 
 add_library (${PROJECT_NAME} STATIC ${LIBRARY_SOURCES} ${LIBRARY_HEADERS})
+if(BUILD_SHARED_LIBS)
+  if(WIN32)
+    string(REPLACE "." "," _RC_VER "${PROJECT_VERSION}.0")
+    configure_file(
+      "${CMAKE_CURRENT_SOURCE_DIR}/build/UVAtlas.rc.in"
+      "${CMAKE_CURRENT_BINARY_DIR}/UVAtlas.rc" @ONLY)
+    add_library(${PROJECT_NAME}_shared SHARED ${LIBRARY_SOURCES} ${LIBRARY_HEADERS} "${CMAKE_CURRENT_BINARY_DIR}/UVAtlas.rc")
+  else()
+    add_library(${PROJECT_NAME}_shared SHARED ${LIBRARY_SOURCES} ${LIBRARY_HEADERS})
+  endif()
+
+  set_target_properties(${PROJECT_NAME}_shared PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+endif()
 
 source_group(inc REGULAR_EXPRESSION UVAtlas/inc/*.*)
 source_group(geodesics REGULAR_EXPRESSION UVAtlas/geodesics/*.*)
@@ -138,22 +152,39 @@ source_group(isochart REGULAR_EXPRESSION UVAtlas/isochart/*.*)
 target_include_directories(${PROJECT_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/UVAtlas/inc>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+if(BUILD_SHARED_LIBS)
+  target_include_directories(${PROJECT_NAME}_shared PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/UVAtlas/inc>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
+endif()
 
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_11)
+if(BUILD_SHARED_LIBS)
+  target_compile_features(${PROJECT_NAME}_shared PUBLIC cxx_std_11)
+endif()
 
 if(UVATLAS_USE_OPENMP)
   find_package(OpenMP)
   if(OpenMP_CXX_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_CXX)
+    if(BUILD_SHARED_LIBS)
+      target_link_libraries(${PROJECT_NAME}_shared PUBLIC OpenMP::OpenMP_CXX)
+    endif()
   else()
     set(UVATLAS_USE_OPENMP OFF)
   endif()
 endif()
 
 target_include_directories(${PROJECT_NAME} PRIVATE UVAtlas UVAtlas/geodesics UVAtlas/isochart)
+if(BUILD_SHARED_LIBS)
+  target_include_directories(${PROJECT_NAME}_shared PRIVATE UVAtlas UVAtlas/geodesics UVAtlas/isochart)
+endif()
 
 if(NOT MINGW)
     target_precompile_headers(${PROJECT_NAME} PRIVATE UVAtlas/pch.h)
+    if(BUILD_SHARED_LIBS)
+        target_precompile_headers(${PROJECT_NAME}_shared PRIVATE UVAtlas/pch.h)
+    endif()
 endif()
 
 if(MINGW OR (NOT WIN32))
@@ -167,12 +198,19 @@ endif()
 if(directxmath_FOUND)
     message(STATUS "Using DirectXMath package")
     target_link_libraries(${PROJECT_NAME} PUBLIC Microsoft::DirectXMath)
+    if(BUILD_SHARED_LIBS)
+        target_link_libraries(${PROJECT_NAME}_shared PUBLIC Microsoft::DirectXMath)
+    endif()
 endif()
 
 if(directx-headers_FOUND)
     message(STATUS "Using DirectX-Headers package")
     target_link_libraries(${PROJECT_NAME} PUBLIC Microsoft::DirectX-Headers)
     target_compile_definitions(${PROJECT_NAME} PUBLIC USING_DIRECTX_HEADERS)
+    if(BUILD_SHARED_LIBS)
+      target_link_libraries(${PROJECT_NAME}_shared PUBLIC Microsoft::DirectX-Headers)
+      target_compile_definitions(${PROJECT_NAME}_shared PUBLIC USING_DIRECTX_HEADERS)
+    endif()
 endif()
 
 if(ENABLE_USE_EIGEN)
@@ -181,6 +219,10 @@ if(ENABLE_USE_EIGEN)
     find_package(spectra REQUIRED)
     target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen Spectra::Spectra)
     target_compile_definitions(${PROJECT_NAME} PRIVATE UVATLAS_USE_EIGEN)
+    if(BUILD_SHARED_LIBS)
+      target_link_libraries(${PROJECT_NAME}_shared PUBLIC Eigen3::Eigen Spectra::Spectra)
+      target_compile_definitions(${PROJECT_NAME}_shared PRIVATE UVATLAS_USE_EIGEN)
+    endif()
 endif()
 
 include(CheckIncludeFileCXX)
@@ -214,6 +256,9 @@ if(DEFINED XBOX_CONSOLE_TARGET)
     endif()
 elseif(WINDOWS_STORE)
     target_compile_definitions(${PROJECT_NAME} PUBLIC WINAPI_FAMILY=WINAPI_FAMILY_APP)
+    if(BUILD_SHARED_LIBS)
+        target_compile_definitions(${PROJECT_NAME}_shared PUBLIC WINAPI_FAMILY=WINAPI_FAMILY_APP)
+    endif()
 endif()
 
 #--- Package
@@ -231,6 +276,12 @@ install(TARGETS ${PROJECT_NAME}
   ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+if(BUILD_SHARED_LIBS)
+  install(TARGETS ${PROJECT_NAME}_shared
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
 
 configure_package_config_file(${CMAKE_CURRENT_SOURCE_DIR}/build/${PROJECT_NAME}-config.cmake.in
   ${CMAKE_CURRENT_BINARY_DIR}/${PACKAGE_NAME}-config.cmake
