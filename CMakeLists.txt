@@ -260,7 +260,7 @@ endif()
 
 if(MSVC)
     foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
-      target_compile_options(${t} PRIVATE /Wall /GR-)
+      target_compile_options(${t} PRIVATE /Wall /EHsc /GR-)
     endforeach()
 endif()
 
