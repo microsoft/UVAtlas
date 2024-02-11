@@ -34,15 +34,7 @@
 // C5264 'const' variable is not used
 // 26451: Arithmetic overflow: Using operator '*' on a 4 byte value and then casting the result to a 8 byte value.
 // 26812: The enum type 'x' is unscoped. Prefer 'enum class' over 'enum' (Enum.3).
-
-// Windows 8.1 SDK related Off by default warnings
-#pragma warning(disable : 5029)
-// C5029 nonstandard extension used
-
-// Xbox One XDK related Off by default warnings
-#pragma warning(disable : 4643)
-// C4643 Forward declaring in namespace std is not permitted by the C++ Standard
-#endif
+#endif // _MSC_VER
 
 #ifdef __clang__
 #pragma clang diagnostic ignored "-Wc++98-compat"
