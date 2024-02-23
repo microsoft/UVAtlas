@@ -9,6 +9,7 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 ### February 21, 2024
 * CMake project updates and refactor
 * Minor code review for Clang, MinGW, and Intel compilers
+* uvatlastool: Updated for February 2024 DirectXTex & DirectXMesh releases
 
 ### December 31, 2023
 * CMake project updates including pkg-config file generation
