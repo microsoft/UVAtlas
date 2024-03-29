@@ -27,8 +27,10 @@ variables:
   VS_GENERATOR: 'Visual Studio 17 2022'
   VCPKG_CMAKE_DIR: '$(VCPKG_ROOT)/scripts/buildsystems/vcpkg.cmake'
   GITHUB_PAT: $(GITHUBPUBLICTOKEN)
+  URL_FEED: $(ADOFeedURL)
   Codeql.Language: cpp
   Codeql.ExcludePathPatterns: vcpkg
+  skipNugetSecurityAnalysis: true # We explicitly call this task so we don't need it to be auto-injected
 
 pool:
   vmImage: windows-2022
@@ -42,6 +44,24 @@ jobs:
   - checkout: self
     clean: true
     fetchTags: false
+  - task: NuGetCommand@2
+    displayName: 'NuGet set package source to ADO feed'
+    inputs:
+      command: custom
+      arguments: sources add -Name xboxgdk -Source $(URL_FEED) -ConfigFile $(Build.SourcesDirectory)\NuGet.config
+  - task: PowerShell@2
+    displayName: 'Set nuget.config to single source'
+    inputs:
+      targetType: inline
+      script: |
+        $file = '.\NuGet.Config'
+        $doc = [xml](Get-Content $file)
+        $newelement = $doc.CreateElement("clear")
+        $clearadd = $doc.configuration.packageSources.PrependChild($newelement)
+        $doc.OuterXml | Set-Content $file
+
+  - task: nuget-security-analysis@0
+    displayName: 'Secure Supply Chain Analysis'
   - task: NodeTool@0
     displayName: 'NPM install'
     inputs:
@@ -80,9 +100,9 @@ jobs:
         @if ERRORLEVEL 1 goto error
         call vcpkg install directx-headers
         @if ERRORLEVEL 1 goto error
-        call vcpkg install directxmesh
+        call vcpkg install directxmesh[spectre]
         @if ERRORLEVEL 1 goto error
-        call vcpkg install directxtex
+        call vcpkg install directxtex[spectre]
         @if ERRORLEVEL 1 goto error
         :finish
         @echo --- VCPKG COMPLETE ---
