@@ -18,20 +18,29 @@ trigger:
     - main
   paths:
     exclude:
-    - README.md
-    - HISTORY.md
-    - SECURITY.md
+    - '*.md'
     - LICENSE
+    - CMake*
+    - '.nuget/*'
+    - build/*.cmake
+    - build/*.in
+    - build/*.mdb
+    - build/*.ps1
+
 pr:
   branches:
     include:
     - main
   paths:
     exclude:
-    - README.md
-    - HISTORY.md
-    - SECURITY.md
+    - '*.md'
     - LICENSE
+    - CMake*
+    - '.nuget/*'
+    - build/*.cmake
+    - build/*.in
+    - build/*.mdb
+    - build/*.ps1
   drafts: false
 
 name: $(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)

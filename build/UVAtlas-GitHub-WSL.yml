@@ -18,20 +18,23 @@ trigger:
     - main
   paths:
     exclude:
-    - README.md
-    - HISTORY.md
-    - SECURITY.md
+    - '*.md'
     - LICENSE
+    - '.nuget/*'
+    - build/*.mdb
+    - build/*.ps1
+
 pr:
   branches:
     include:
     - main
   paths:
     exclude:
-    - README.md
-    - HISTORY.md
-    - SECURITY.md
+    - '*.md'
     - LICENSE
+    - '.nuget/*'
+    - build/*.mdb
+    - build/*.ps1
   drafts: false
 
 resources:
