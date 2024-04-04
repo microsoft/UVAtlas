@@ -17,20 +17,24 @@ trigger:
     include:
     - main
   paths:
-    include:
-    - CMakeLists.txt
-    - build/CompilerAndLinker.cmake
-    - build/JoinPaths.cmake
+    exclude:
+    - '*.md'
+    - LICENSE
+    - '.nuget/*'
+    - build/*.mdb
+    - build/*.ps1
 
 pr:
   branches:
     include:
     - main
   paths:
-    include:
-    - CMakeLists.txt
-    - build/CompilerAndLinker.cmake
-    - build/JoinPaths.cmake
+    exclude:
+    - '*.md'
+    - LICENSE
+    - '.nuget/*'
+    - build/*.mdb
+    - build/*.ps1
   drafts: false
 
 resources:
