@@ -34,6 +34,7 @@ pool:
   vmImage: windows-2022
 
 variables:
+  Codeql.Enabled: false
   GUID_FEED: $(ADOFeedGUID)
 
 jobs:
