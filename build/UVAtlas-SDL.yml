@@ -24,12 +24,13 @@ resources:
 name: $(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)
 
 variables:
+  Codeql.Enabled: true
+  Codeql.Language: cpp
+  Codeql.ExcludePathPatterns: vcpkg
   VS_GENERATOR: 'Visual Studio 17 2022'
   VCPKG_CMAKE_DIR: '$(VCPKG_ROOT)/scripts/buildsystems/vcpkg.cmake'
   GITHUB_PAT: $(GITHUBPUBLICTOKEN)
   URL_FEED: $(ADOFeedURL)
-  Codeql.Language: cpp
-  Codeql.ExcludePathPatterns: vcpkg
   skipNugetSecurityAnalysis: true # We explicitly call this task so we don't need it to be auto-injected
 
 pool:
