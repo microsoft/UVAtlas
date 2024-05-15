@@ -62,6 +62,10 @@ Sander et al. "Signal-Specialized Parametrization" Europgraphics 2002 [pdf](http
 
 ## Release Notes
 
+FOR SECURITY ADVISORIES, see [GitHub](https://github.com/microsoft/UVAtlas/security/advisories).
+
+For a full change history, see [CHANGELOG.md](https://github.com/microsoft/UVAtlas/blob/main/CHANGELOG.md).
+
 * Starting with the December 2020 release, this library makes use of typed enum bitmask flags per the recommendation of the _C++ Standard_ section *17.5.2.1.3 Bitmask types*. This is consistent with Direct3D 12's use of the ``DEFINE_ENUM_FLAG_OPERATORS`` macro. This may have *breaking change* impacts to client code:
 
   * You cannot pass the ``0`` literal as your option flags value. Instead you must make use of the appropriate default enum value: ``UVATLAS_DEFAULT`` or ``UVATLAS_IMT_DEFAULT``.
@@ -77,6 +81,8 @@ Sander et al. "Signal-Specialized Parametrization" Europgraphics 2002 [pdf](http
 This project welcomes contributions and suggestions. Most contributions require you to agree to a Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us the rights to use your contribution. For details, visit https://cla.opensource.microsoft.com.
 
 When you submit a pull request, a CLA bot will automatically determine whether you need to provide a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions provided by the bot. You will only need to do this once across all repos using our CLA.
+
+Tests for new features should also be submitted as a PR to the [Test Suite](https://github.com/walbourn/uvatlastest/wiki) repository.
 
 ## Code of Conduct
 
