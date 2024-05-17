@@ -285,6 +285,9 @@ HRESULT CIsochartEngine::InitializeCurrentChartHeap()
 }
 
 #ifdef _OPENMP
+#ifdef _MSC_VER
+#pragma warning(disable : 6993)
+#endif
 HRESULT CIsochartEngine::ParameterizeChartsInHeapParallelized(
     bool bFirstTime,
     size_t MaxChartNumber)

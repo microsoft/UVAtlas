@@ -62,6 +62,10 @@ Sander et al. "Signal-Specialized Parametrization" Europgraphics 2002 [pdf](http
 
 ## Release Notes
 
+FOR SECURITY ADVISORIES, see [GitHub](https://github.com/microsoft/UVAtlas/security/advisories).
+
+For a full change history, see [CHANGELOG.md](https://github.com/microsoft/UVAtlas/blob/main/CHANGELOG.md).
+
 * Starting with the December 2020 release, this library makes use of typed enum bitmask flags per the recommendation of the _C++ Standard_ section *17.5.2.1.3 Bitmask types*. This is consistent with Direct3D 12's use of the ``DEFINE_ENUM_FLAG_OPERATORS`` macro. This may have *breaking change* impacts to client code:
 
   * You cannot pass the ``0`` literal as your option flags value. Instead you must make use of the appropriate default enum value: ``UVATLAS_DEFAULT`` or ``UVATLAS_IMT_DEFAULT``.
@@ -78,6 +82,8 @@ This project welcomes contributions and suggestions. Most contributions require 
 
 When you submit a pull request, a CLA bot will automatically determine whether you need to provide a CLA and decorate the PR appropriately (e.g., status check, comment). Simply follow the instructions provided by the bot. You will only need to do this once across all repos using our CLA.
 
+Tests for new features should also be submitted as a PR to the [Test Suite](https://github.com/walbourn/uvatlastest/wiki) repository.
+
 ## Code of Conduct
 
 This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/). For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
@@ -85,5 +91,9 @@ This project has adopted the [Microsoft Open Source Code of Conduct](https://ope
 ## Trademarks
 
 This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general). Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party's policies.
+
+# Credits
+
+The UVAtlas library is the work of Xin Huang and Chuck Walbourn, with contributions from Chris Messer, Steve Schroeder, Microsoft Research China, and Team Bungie.
 
 Thanks to Andrew Farrier and Scott Matloff for their on-going help with code reviews.
