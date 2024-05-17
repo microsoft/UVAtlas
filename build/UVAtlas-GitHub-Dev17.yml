@@ -12,15 +12,36 @@ schedules:
     include:
     - main
 
-trigger: none
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    exclude:
+    - '*.md'
+    - LICENSE
+    - CMake*
+    - '.nuget/*'
+    - build/*.cmake
+    - build/*.in
+    - build/*.mdb
+    - build/*.ps1
 
 pr:
   branches:
     include:
     - main
   paths:
-    include:
-    - build/UVAtlas-GitHub-Dev17.yml
+    exclude:
+    - '*.md'
+    - LICENSE
+    - CMake*
+    - '.nuget/*'
+    - build/*.cmake
+    - build/*.in
+    - build/*.mdb
+    - build/*.ps1
+  drafts: false
 
 resources:
   repositories:

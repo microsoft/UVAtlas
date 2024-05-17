@@ -51,12 +51,12 @@ resources:
 
 name: $(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)
 
+pool:
+  vmImage: windows-2019
+
 variables:
   Codeql.Enabled: false
   GUID_FEED: $(ADOFeedGUID)
-
-pool:
-  vmImage: windows-2022
 
 jobs:
 - job: DESKTOP_BUILD
@@ -174,56 +174,5 @@ jobs:
     inputs:
       solution: UVAtlas_2019_Win10.sln
       msbuildArgs: /p:PreferredToolArchitecture=x64 /p:SpectreMitigation=Spectre
-      platform: ARM64
-      configuration: Release
-
-- job: UWP_BUILD
-  displayName: 'Universal Windows Platform (UWP)'
-  timeoutInMinutes: 60
-  cancelTimeoutInMinutes: 1
-  steps:
-  - checkout: self
-    clean: true
-    fetchTags: false
-  - task: VSBuild@1
-    displayName: Build solution UVAtlas_Windows10_2022.sln 32dbg
-    inputs:
-      solution: UVAtlas_Windows10_2022.sln
-      msbuildArgs: /p:PreferredToolArchitecture=x64
-      platform: x86
-      configuration: Debug
-  - task: VSBuild@1
-    displayName: Build solution UVAtlas_Windows10_2022.sln 32rel
-    inputs:
-      solution: UVAtlas_Windows10_2022.sln
-      msbuildArgs: /p:PreferredToolArchitecture=x64
-      platform: x86
-      configuration: Release
-  - task: VSBuild@1
-    displayName: Build solution UVAtlas_Windows10_2022.sln 64dbg
-    inputs:
-      solution: UVAtlas_Windows10_2022.sln
-      msbuildArgs: /p:PreferredToolArchitecture=x64
-      platform: x64
-      configuration: Debug
-  - task: VSBuild@1
-    displayName: Build solution UVAtlas_Windows10_2022.sln 64rel
-    inputs:
-      solution: UVAtlas_Windows10_2022.sln
-      msbuildArgs: /p:PreferredToolArchitecture=x64
-      platform: x64
-      configuration: Release
-  - task: VSBuild@1
-    displayName: Build solution UVAtlas_Windows10_2022.sln arm64dbg
-    inputs:
-      solution: UVAtlas_Windows10_2022.sln
-      msbuildArgs: /p:PreferredToolArchitecture=x64
-      platform: ARM64
-      configuration: Debug
-  - task: VSBuild@1
-    displayName: Build solution UVAtlas_Windows10_2022.sln arm64rel
-    inputs:
-      solution: UVAtlas_Windows10_2022.sln
-      msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: ARM64
       configuration: Release
