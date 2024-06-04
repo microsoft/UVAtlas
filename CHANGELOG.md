@@ -6,6 +6,10 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### June 4, 2024
+* CMake project updates
+* Retired VS 2019 projects for the UWP platform
+
 ### February 21, 2024
 * CMake project updates and refactor
 * Minor code review for Clang, MinGW, and Intel compilers
