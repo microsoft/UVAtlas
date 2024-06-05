@@ -9,6 +9,7 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 ### June 4, 2024
 * CMake project updates
 * Retired VS 2019 projects for the UWP platform
+* uvatlastool: Updated for June 2024 DirectXTex & DirectXMesh releases
 
 ### February 21, 2024
 * CMake project updates and refactor
