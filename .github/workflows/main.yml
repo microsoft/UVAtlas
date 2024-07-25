@@ -14,10 +14,9 @@ on:
       - '*.md'
       - LICENSE
       - '.nuget/*'
-      - build/*.cmd
+      - build/*.mdb
       - build/*.props
       - build/*.ps1
-      - build/*.targets
       - build/*.yml
 
 jobs:
