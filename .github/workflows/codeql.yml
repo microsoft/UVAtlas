@@ -19,7 +19,7 @@ on:
       - build/*.ps1
       - build/*.yml
   schedule:
-    - cron: '23 14 * * 1'
+    - cron: '19 19 * * 0'
 
 jobs:
   analyze:
