@@ -136,6 +136,7 @@ jobs:
       run: >
         cmake --preset=${{ matrix.build_type }} -DBUILD_TOOLS=ON -DBUILD_TESTING=ON
         -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_MANIFEST_DIR="${{ github.workspace }}/build"
+        -DVCPKG_TARGET_TRIPLET=${env:VCPKG_TARGET_TRIPLET}
 
     - name: 'Build'
       working-directory: ${{ github.workspace }}
