@@ -726,6 +726,9 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                     pValue = argv[iArg];
                 }
                 break;
+
+            default:
+                break;
             }
 
             switch (dwOption)
@@ -975,20 +978,23 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
 
             case OPT_FILELIST:
-            {
-                std::filesystem::path path(pValue);
-                std::wifstream inFile(path.make_preferred().c_str());
-                if (!inFile)
                 {
-                    wprintf(L"Error opening -flist file %ls\n", pValue);
-                    return 1;
+                    std::filesystem::path path(pValue);
+                    std::wifstream inFile(path.make_preferred().c_str());
+                    if (!inFile)
+                    {
+                        wprintf(L"Error opening -flist file %ls\n", pValue);
+                        return 1;
+                    }
+
+                    inFile.imbue(std::locale::classic());
+
+                    ProcessFileList(inFile, conversion);
                 }
+                break;
 
-                inFile.imbue(std::locale::classic());
-
-                ProcessFileList(inFile, conversion);
-            }
-            break;
+            default:
+                break;
             }
         }
         else if (wcspbrk(pArg, L"?*") != nullptr)
@@ -1347,6 +1353,9 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                         signalDim = 2;
                         signalStride = sizeof(XMFLOAT2);
                     }
+                    break;
+
+                default:
                     break;
                 }
 

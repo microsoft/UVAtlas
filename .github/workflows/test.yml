@@ -21,7 +21,7 @@ on:
 
 env:
   DIRECTXMESH_MEDIA_PATH: ${{ github.workspace }}/Media
-  DIRECTXMESH_TEX_PATH: ${{ github.workspace }}/Media
+  DIRECTXTEX_MEDIA_PATH: ${{ github.workspace }}/Media
 
 jobs:
   build:
@@ -98,9 +98,13 @@ jobs:
       name: 'Set triplet x86-windows'
       run: echo "VCPKG_DEFAULT_TRIPLET=x86-windows" >> $env:GITHUB_ENV
 
-    - if: matrix.arch == 'amd64_arm64'
+    - if: (matrix.build_type == 'arm64-Debug') || (matrix.build_type == 'arm64-Release')
       name: 'Set triplet arm64-Windows'
       run: echo "VCPKG_DEFAULT_TRIPLET=arm64-windows" >> $env:GITHUB_ENV
+
+    - if: (matrix.build_type == 'arm64ec-Debug') || (matrix.build_type == 'arm64ec-Release')
+      name: 'Set triplet arm64ec-Windows'
+      run: echo "VCPKG_DEFAULT_TRIPLET=arm64ec-windows" >> $env:GITHUB_ENV
 
     - uses: lukka/run-vcpkg@v11
       with:
