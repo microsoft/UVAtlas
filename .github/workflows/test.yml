@@ -100,24 +100,20 @@ jobs:
         if ("${{ matrix.arch }}" -eq "amd64")
         {
             echo "VCPKG_DEFAULT_TRIPLET=x64-windows" >> $env:GITHUB_ENV
-            echo "VCPKG_TARGET_TRIPLET=x64-windows" >> $env:GITHUB_ENV
         }
         elseif ("${{ matrix.arch }}" -eq "amd64_x86")
         {
             echo "VCPKG_DEFAULT_TRIPLET=x86-windows" >> $env:GITHUB_ENV
-            echo "VCPKG_TARGET_TRIPLET=x86-windows" >> $env:GITHUB_ENV
         }
         elseif ("${{ matrix.arch }}" -eq "amd64_arm64")
         {
             if ("${{ matrix.build_type }}" -match "^arm64ec")
             {
                 echo "VCPKG_DEFAULT_TRIPLET=arm64ec-windows" >> $env:GITHUB_ENV
-                echo "VCPKG_TARGET_TRIPLET=arm64ec-windows" >> $env:GITHUB_ENV
             }
             else
             {
                 echo "VCPKG_DEFAULT_TRIPLET=arm64-windows" >> $env:GITHUB_ENV
-                echo "VCPKG_TARGET_TRIPLET=arm64-windows" >> $env:GITHUB_ENV
             }
         }
         else
@@ -136,7 +132,7 @@ jobs:
       run: >
         cmake --preset=${{ matrix.build_type }} -DBUILD_TOOLS=ON -DBUILD_TESTING=ON
         -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_MANIFEST_DIR="${{ github.workspace }}/build"
-        -DVCPKG_TARGET_TRIPLET=${env:VCPKG_TARGET_TRIPLET}
+        -DVCPKG_TARGET_TRIPLET="${env:VCPKG_DEFAULT_TRIPLET}"
 
     - name: 'Build'
       working-directory: ${{ github.workspace }}
