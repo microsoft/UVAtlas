@@ -107,7 +107,7 @@ jobs:
         }
         elseif ("${{ matrix.arch }}" -eq "amd64_arm64")
         {
-            if ("${{ matrix.build_type }}"" -match "^arm64ec")
+            if ("${{ matrix.build_type }}" -match "^arm64ec")
             {
                 echo "VCPKG_DEFAULT_TRIPLET=arm64ec-windows" >> $env:GITHUB_ENV
             }
