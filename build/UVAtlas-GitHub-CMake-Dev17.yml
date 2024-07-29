@@ -22,6 +22,7 @@ trigger:
     - LICENSE
     - '.github/*'
     - '.nuget/*'
+    - build/*.json
     - build/*.props
     - build/*.mdb
     - build/*.ps1
@@ -36,6 +37,7 @@ pr:
     - LICENSE
     - '.github/*'
     - '.nuget/*'
+    - build/*.json
     - build/*.props
     - build/*.mdb
     - build/*.ps1

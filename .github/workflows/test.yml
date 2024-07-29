@@ -1,0 +1,128 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+#
+# http://go.microsoft.com/fwlink/?LinkID=512686
+
+name: 'CTest (Windows)'
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - '*.md'
+      - LICENSE
+      - '.nuget/*'
+      - build/*.mdb
+      - build/*.props
+      - build/*.ps1
+      - build/*.yml
+
+env:
+  DIRECTXMESH_MEDIA_PATH: ${{ github.workspace }}/MediaMesh
+  DIRECTXMESH_TEX_PATH: ${{ github.workspace }}/MediaTex
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [windows-2019, windows-2022]
+        build_type: [x64-Debug, x64-Release, x64-Debug-Clang, x64-Release-Clang]
+        arch: [amd64]
+        include:
+          - os: windows-2019
+            build_type: x86-Debug
+            arch: amd64_x86
+          - os: windows-2019
+            build_type: x86-Release
+            arch: amd64_x86
+          - os: windows-2019
+            build_type: x86-Debug-Clang
+            arch: amd64_x86
+          - os: windows-2019
+            build_type: x86-Release-Clang
+            arch: amd64_x86
+          - os: windows-2022
+            build_type: x86-Debug
+            arch: amd64_x86
+          - os: windows-2022
+            build_type: x86-Release
+            arch: amd64_x86
+          - os: windows-2022
+            build_type: x86-Debug-Clang
+            arch: amd64_x86
+          - os: windows-2022
+            build_type: x86-Release-Clang
+            arch: amd64_x86
+          - os: windows-2022
+            build_type: arm64-Debug
+            arch: amd64_arm64
+          - os: windows-2022
+            build_type: arm64-Release
+            arch: amd64_arm64
+          - os: windows-2022
+            build_type: arm64ec-Debug
+            arch: amd64_arm64
+          - os: windows-2022
+            build_type: arm64ec-Release
+            arch: amd64_arm64
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Clone test repository
+      uses: actions/checkout@v4
+      with:
+        repository: walbourn/uvatlastest
+        path: Tests
+        ref: main
+
+    - if: (matrix.build_type == 'x64-Release') || (matrix.build_type == 'x86-Release')
+      name: Clone media repository (Tex)
+      uses: actions/checkout@v4
+      with:
+        repository: walbourn/directxtexmedia
+        path: MediaTex
+        ref: main
+        lfs: true
+
+    - if: (matrix.build_type == 'x64-Release') || (matrix.build_type == 'x86-Release')
+      name: Clone media repository (Mesh)
+      uses: actions/checkout@v4
+      with:
+        repository: walbourn/directxmeshmedia
+        path: MediaMesh
+        ref: main
+        lfs: true
+
+    - name: 'Install Ninja'
+      run: choco install ninja
+
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: ${{ matrix.arch }}
+
+    - uses: lukka/run-vcpkg@v11
+      with:
+        runVcpkgInstall: true
+        vcpkgJsonGlob: '**/build/vcpkg.json'
+
+    - name: 'Configure CMake'
+      working-directory: ${{ github.workspace }}
+      run: cmake --preset=${{ matrix.build_type }} -DBUILD_TOOLS=ON -DBUILD_TESTING=ON -DCMAKE_TOOLCHAIN_FILE=${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}/scripts/buildsystems/vcpkg.cmake
+
+    - name: 'Build'
+      working-directory: ${{ github.workspace }}
+      run: cmake --build out\build\${{ matrix.build_type }}
+
+    - if: (matrix.build_type == 'x64-Release') || (matrix.build_type == 'x86-Release')
+      timeout-minutes: 10
+      name: 'Test'
+      working-directory: ${{ github.workspace }}
+      run: ctest --preset=${{ matrix.build_type }}
