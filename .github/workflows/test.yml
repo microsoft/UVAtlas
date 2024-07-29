@@ -97,17 +97,17 @@ jobs:
     - name: 'Set triplet'
       shell: pwsh
       run: |
-        if ($env:MATRIX_ARCH -eq "amd64")
+        if ("${{ matrix.arch }}" -eq "amd64")
         {
             echo "VCPKG_DEFAULT_TRIPLET=x64-windows" >> $env:GITHUB_ENV
         }
-        elseif ($env:MATRIX_ARCH -eq "amd64_x86")
+        elseif ("${{ matrix.arch }}" -eq "amd64_x86")
         {
             echo "VCPKG_DEFAULT_TRIPLET=x86-windows" >> $env:GITHUB_ENV
         }
-        elseif ($env:MATRIX_ARCH -eq "amd64_arm64")
+        elseif ("${{ matrix.arch }}" -eq "amd64_arm64")
         {
-            if ($env:MATRIX_BUILD_TYPE -match "^arm64ec")
+            if ("${{ matrix.build_type }}"" -match "^arm64ec")
             {
                 echo "VCPKG_DEFAULT_TRIPLET=arm64ec-windows" >> $env:GITHUB_ENV
             }
