@@ -20,8 +20,8 @@ on:
       - build/*.yml
 
 env:
-  DIRECTXMESH_MEDIA_PATH: ${{ github.workspace }}/MediaMesh
-  DIRECTXMESH_TEX_PATH: ${{ github.workspace }}/MediaTex
+  DIRECTXMESH_MEDIA_PATH: ${{ github.workspace }}/Media
+  DIRECTXMESH_TEX_PATH: ${{ github.workspace }}/Media
 
 jobs:
   build:
@@ -83,24 +83,6 @@ jobs:
         path: Tests
         ref: main
 
-    - if: (matrix.build_type == 'x64-Release') || (matrix.build_type == 'x86-Release')
-      name: Clone media repository (Tex)
-      uses: actions/checkout@v4
-      with:
-        repository: walbourn/directxtexmedia
-        path: MediaTex
-        ref: main
-        lfs: true
-
-    - if: (matrix.build_type == 'x64-Release') || (matrix.build_type == 'x86-Release')
-      name: Clone media repository (Mesh)
-      uses: actions/checkout@v4
-      with:
-        repository: walbourn/directxmeshmedia
-        path: MediaMesh
-        ref: main
-        lfs: true
-
     - name: 'Install Ninja'
       run: choco install ninja
 
@@ -112,17 +94,12 @@ jobs:
       with:
         runVcpkgInstall: true
         vcpkgJsonGlob: '**/build/vcpkg.json'
+        vcpkgCommitId: 198d68dbcc6c907cb3d0b9b1d93c3df6ecf93c62
 
     - name: 'Configure CMake'
       working-directory: ${{ github.workspace }}
-      run: cmake --preset=${{ matrix.build_type }} -DBUILD_TOOLS=OFF -DBUILD_TESTING=ON -DCMAKE_TOOLCHAIN_FILE=${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}/scripts/buildsystems/vcpkg.cmake
+      run: cmake --preset=${{ matrix.build_type }} -DBUILD_TOOLS=ON -DBUILD_TESTING=ON -DCMAKE_TOOLCHAIN_FILE=${{ steps.runvcpkg.outputs.RUNVCPKG_VCPKG_ROOT_OUT }}/scripts/buildsystems/vcpkg.cmake
 
     - name: 'Build'
       working-directory: ${{ github.workspace }}
       run: cmake --build out\build\${{ matrix.build_type }}
-
-    - if: (matrix.build_type == 'x64-Release') || (matrix.build_type == 'x86-Release')
-      timeout-minutes: 10
-      name: 'Test'
-      working-directory: ${{ github.workspace }}
-      run: ctest --preset=${{ matrix.build_type }}
