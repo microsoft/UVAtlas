@@ -72,6 +72,10 @@ jobs:
           - os: windows-2022
             build_type: arm64ec-Release
             arch: amd64_arm64
+        exclude:
+          # Exclude failing case due to linker issue.
+          - os: windows-2022
+            build_type: x64-Debug-Clang
 
     steps:
     - uses: actions/checkout@v4
@@ -90,21 +94,32 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
 
-    - if: matrix.arch == 'amd64'
-      name: 'Set triplet x64-windows'
-      run: echo "VCPKG_DEFAULT_TRIPLET=x64-windows" >> $env:GITHUB_ENV
-
-    - if: matrix.arch == 'amd64_x86'
-      name: 'Set triplet x86-windows'
-      run: echo "VCPKG_DEFAULT_TRIPLET=x86-windows" >> $env:GITHUB_ENV
-
-    - if: (matrix.build_type == 'arm64-Debug') || (matrix.build_type == 'arm64-Release')
-      name: 'Set triplet arm64-Windows'
-      run: echo "VCPKG_DEFAULT_TRIPLET=arm64-windows" >> $env:GITHUB_ENV
-
-    - if: (matrix.build_type == 'arm64ec-Debug') || (matrix.build_type == 'arm64ec-Release')
-      name: 'Set triplet arm64ec-Windows'
-      run: echo "VCPKG_DEFAULT_TRIPLET=arm64ec-windows" >> $env:GITHUB_ENV
+    - name: 'Set triplet'
+      shell: pwsh
+      run: |
+        if ($env:MATRIX_ARCH -eq "amd64")
+        {
+            echo "VCPKG_DEFAULT_TRIPLET=x64-windows" >> $env:GITHUB_ENV
+        }
+        elseif ($env:MATRIX_ARCH -eq "amd64_x86")
+        {
+            echo "VCPKG_DEFAULT_TRIPLET=x86-windows" >> $env:GITHUB_ENV
+        }
+        elseif ($env:MATRIX_ARCH -eq "amd64_arm64")
+        {
+            if ($env:MATRIX_BUILD_TYPE -match "^arm64ec")
+            {
+                echo "VCPKG_DEFAULT_TRIPLET=arm64ec-windows" >> $env:GITHUB_ENV
+            }
+            else
+            {
+                echo "VCPKG_DEFAULT_TRIPLET=arm64-windows" >> $env:GITHUB_ENV
+            }
+        }
+        else
+        {
+            echo "::error Unknown architecture/build-type triplet mapping"
+        }
 
     - uses: lukka/run-vcpkg@v11
       with:
