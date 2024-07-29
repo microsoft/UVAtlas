@@ -90,6 +90,21 @@ jobs:
       with:
         arch: ${{ matrix.arch }}
 
+    - if: matrix.arch == 'amd64'
+      name: 'Set triplet x64-windows'
+      shell: cmd
+      run: set VCPKG_DEFAULT_TRIPLET=x64-windows
+
+    - if: matrix.arch == 'amd64_x86'
+      name: 'Set triplet x86-windows'
+      shell: cmd
+      run: set VCPKG_DEFAULT_TRIPLET=x86-windows
+
+    - if: matrix.arch == 'amd64_arm64'
+      name: 'Set triplet arm64-Windows'
+      shell: cmd
+      run: set VCPKG_DEFAULT_TRIPLET=arm64-windows
+
     - uses: lukka/run-vcpkg@v11
       with:
         runVcpkgInstall: true
