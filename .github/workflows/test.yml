@@ -129,6 +129,7 @@ jobs:
 
     - name: 'Configure CMake'
       working-directory: ${{ github.workspace }}
+      shell: pwsh
       run: >
         cmake --preset=${{ matrix.build_type }} -DBUILD_TOOLS=ON -DBUILD_TESTING=ON
         -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_MANIFEST_DIR="${{ github.workspace }}/build"
