@@ -23,6 +23,7 @@ pr:
     - CMake*
     - build/*.cmake
     - build/*.in
+    - build/vcpkg.json
     - build/UVAtlas-GitHub-WSL-11.yml
 
 resources:
@@ -39,7 +40,8 @@ pool:
 
 variables:
   Codeql.Enabled: false
-  VCPKG_CMAKE_DIR: '$(VCPKG_ROOT)/scripts/buildsystems/vcpkg.cmake'
+  VCPKG_ROOT: '$(Build.SourcesDirectory)/vcpkg'
+  VCPKG_CMAKE_DIR: '$(Build.SourcesDirectory)/vcpkg/scripts/buildsystems/vcpkg.cmake'
   GITHUB_PAT: $(GITHUBPUBLICTOKEN)
   LOCAL_PKG_DIR: '$(Agent.BuildDirectory)/install/'
 
@@ -154,13 +156,13 @@ jobs:
   - task: CmdLine@2
     displayName: VCPKG install headers
     inputs:
-      script: $(Build.SourcesDirectory)/vcpkg/vcpkg install directxmath directx-headers eigen3 spectra
+      script: $(Build.SourcesDirectory)/vcpkg/vcpkg install --x-manifest-root=$(Build.SourcesDirectory)/build
       workingDirectory: $(Build.SourcesDirectory)/vcpkg
   - task: CMake@1
     displayName: CMake UVAtlas (Config) dbg
     inputs:
       cwd: '$(Build.SourcesDirectory)'
-      cmakeArgs: -B out -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="$(VCPKG_CMAKE_DIR)"
+      cmakeArgs: -B out -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="$(VCPKG_CMAKE_DIR)" -DVCPKG_MANIFEST_DIR=$(Build.SourcesDirectory)/build
   - task: CMake@1
     displayName: CMake UVAtlas (Build) dbg
     inputs:
@@ -170,7 +172,7 @@ jobs:
     displayName: CMake UVAtlas (Config) rel
     inputs:
       cwd: '$(Build.SourcesDirectory)'
-      cmakeArgs: -B out2 -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="$(VCPKG_CMAKE_DIR)"
+      cmakeArgs: -B out2 -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="$(VCPKG_CMAKE_DIR)" -DVCPKG_MANIFEST_DIR=$(Build.SourcesDirectory)/build
   - task: CMake@1
     displayName: CMake UVAtlas (Build) rel
     inputs:
@@ -180,7 +182,7 @@ jobs:
     displayName: CMake UVAtlas (Config) w/ Eigen
     inputs:
       cwd: '$(Build.SourcesDirectory)'
-      cmakeArgs: -B out3 -DCMAKE_BUILD_TYPE=Debug -DENABLE_USE_EIGEN=ON -DCMAKE_TOOLCHAIN_FILE="$(VCPKG_CMAKE_DIR)"
+      cmakeArgs: -B out3 -DCMAKE_BUILD_TYPE=Debug -DENABLE_USE_EIGEN=ON -DCMAKE_TOOLCHAIN_FILE="$(VCPKG_CMAKE_DIR)" -DVCPKG_MANIFEST_DIR=$(Build.SourcesDirectory)/build
   - task: CMake@1
     displayName: CMake UVAtlas (Build) w/ Eigen
     inputs:

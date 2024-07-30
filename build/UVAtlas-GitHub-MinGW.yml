@@ -20,7 +20,10 @@ trigger:
     exclude:
     - '*.md'
     - LICENSE
+    - '.github/*'
     - '.nuget/*'
+    - build/*.json
+    - build/*.props
     - build/*.mdb
     - build/*.ps1
 
@@ -32,7 +35,10 @@ pr:
     exclude:
     - '*.md'
     - LICENSE
+    - '.github/*'
     - '.nuget/*'
+    - build/*.json
+    - build/*.props
     - build/*.mdb
     - build/*.ps1
   drafts: false

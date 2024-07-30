@@ -38,6 +38,15 @@
       "cacheVariables": { "DIRECTX_ARCH": "arm64" },
       "hidden": true
     },
+    {
+      "name": "ARM64EC",
+      "architecture": {
+        "value": "arm64ec",
+        "strategy": "external"
+      },
+      "cacheVariables": { "DIRECTX_ARCH": "arm64ec" },
+      "hidden": true
+    },
 
     {
       "name": "Debug",
@@ -174,12 +183,14 @@
       }
     },
 
-    { "name": "x64-Debug"    , "description": "MSVC for x64 (Debug) Library only", "inherits": [ "base", "x64", "Debug", "MSVC" ] },
-    { "name": "x64-Release"  , "description": "MSVC for x64 (Release) Library only", "inherits": [ "base", "x64", "Release", "MSVC" ] },
-    { "name": "x86-Debug"    , "description": "MSVC for x86 (Debug) Library only", "inherits": [ "base", "x86", "Debug", "MSVC" ] },
-    { "name": "x86-Release"  , "description": "MSVC for x86 (Release) Library only", "inherits": [ "base", "x86", "Release", "MSVC" ] },
-    { "name": "arm64-Debug"  , "description": "MSVC for ARM64 (Debug) Library only", "inherits": [ "base", "ARM64", "Debug", "MSVC" ] },
-    { "name": "arm64-Release", "description": "MSVC for ARM64 (Release) Library only", "inherits": [ "base", "ARM64", "Release", "MSVC" ] },
+    { "name": "x64-Debug"      , "description": "MSVC for x64 (Debug) Library only", "inherits": [ "base", "x64", "Debug", "MSVC" ] },
+    { "name": "x64-Release"    , "description": "MSVC for x64 (Release) Library only", "inherits": [ "base", "x64", "Release", "MSVC" ] },
+    { "name": "x86-Debug"      , "description": "MSVC for x86 (Debug) Library only", "inherits": [ "base", "x86", "Debug", "MSVC" ] },
+    { "name": "x86-Release"    , "description": "MSVC for x86 (Release) Library only", "inherits": [ "base", "x86", "Release", "MSVC" ] },
+    { "name": "arm64-Debug"    , "description": "MSVC for ARM64 (Debug) Library only", "inherits": [ "base", "ARM64", "Debug", "MSVC" ] },
+    { "name": "arm64-Release"  , "description": "MSVC for ARM64 (Release) Library only", "inherits": [ "base", "ARM64", "Release", "MSVC" ] },
+    { "name": "arm64ec-Debug"  , "description": "MSVC for ARM64EC (Debug) Library only", "inherits": [ "base", "ARM64EC", "Debug", "MSVC" ], "environment": { "CXXFLAGS": "/arm64EC" } },
+    { "name": "arm64ec-Release", "description": "MSVC for ARM64EC (Release) Library only", "inherits": [ "base", "ARM64EC", "Release", "MSVC" ], "environment": { "CXXFLAGS": "/arm64EC" } },
 
     { "name": "x64-Debug-UWP"    , "description": "MSVC for x64 (Debug) for UWP", "inherits": [ "base", "x64", "Debug", "MSVC", "UWP" ] },
     { "name": "x64-Release-UWP"  , "description": "MSVC for x64 (Release) for UWP", "inherits": [ "base", "x64", "Release", "MSVC", "UWP" ] },
@@ -194,12 +205,14 @@
     { "name": "x64-Debug-XboxOne"    , "description": "MSVC for x64 (Debug) for Xbox One", "inherits": [ "base", "x64", "Debug", "MSVC", "XboxOne" ] },
     { "name": "x64-Release-XboxOne"  , "description": "MSVC for x64 (Release) for Xbox One", "inherits": [ "base", "x64", "Release", "MSVC", "XboxOne" ] },
 
-    { "name": "x64-Debug-VCPKG"    , "description": "MSVC for x64 (Debug) uvatlastool", "inherits": [ "base", "x64", "Debug", "VCPKG", "MSVC", "Tools" ] },
-    { "name": "x64-Release-VCPKG"  , "description": "MSVC for x64 (Release) uvatlastool", "inherits": [ "base", "x64", "Release", "VCPKG", "MSVC", "Tools" ] },
-    { "name": "x86-Debug-VCPKG"    , "description": "MSVC for x86 (Debug) uvatlastool", "inherits": [ "base", "x86", "Debug", "VCPKG", "MSVC", "Tools" ] },
-    { "name": "x86-Release-VCPKG"  , "description": "MSVC for x86 (Release) uvatlastool", "inherits": [ "base", "x86", "Release", "VCPKG", "MSVC", "Tools" ] },
-    { "name": "arm64-Debug-VCPKG"  , "description": "MSVC for ARM64 (Debug) uvatlastool", "inherits": [ "base", "ARM64", "Debug", "VCPKG", "MSVC", "Tools" ] },
-    { "name": "arm64-Release-VCPKG", "description": "MSVC for ARM64 (Release) uvatlastool", "inherits": [ "base", "ARM64", "Release", "VCPKG", "MSVC", "Tools" ] },
+    { "name": "x64-Debug-VCPKG"      , "description": "MSVC for x64 (Debug) uvatlastool", "inherits": [ "base", "x64", "Debug", "VCPKG", "MSVC", "Tools" ] },
+    { "name": "x64-Release-VCPKG"    , "description": "MSVC for x64 (Release) uvatlastool", "inherits": [ "base", "x64", "Release", "VCPKG", "MSVC", "Tools" ] },
+    { "name": "x86-Debug-VCPKG"      , "description": "MSVC for x86 (Debug) uvatlastool", "inherits": [ "base", "x86", "Debug", "VCPKG", "MSVC", "Tools" ] },
+    { "name": "x86-Release-VCPKG"    , "description": "MSVC for x86 (Release) uvatlastool", "inherits": [ "base", "x86", "Release", "VCPKG", "MSVC", "Tools" ] },
+    { "name": "arm64-Debug-VCPKG"    , "description": "MSVC for ARM64 (Debug) uvatlastool", "inherits": [ "base", "ARM64", "Debug", "VCPKG", "MSVC", "Tools" ] },
+    { "name": "arm64-Release-VCPKG"  , "description": "MSVC for ARM64 (Release) uvatlastool", "inherits": [ "base", "ARM64", "Release", "VCPKG", "MSVC", "Tools" ] },
+    { "name": "arm64ec-Debug-VCPKG"  , "description": "MSVC for ARM64EC (Debug) uvatlastool", "inherits": [ "base", "ARM64EC", "Debug", "VCPKG", "MSVC", "Tools" ], "environment": { "CXXFLAGS": "/arm64EC" }, "cacheVariables": { "VCPKG_TARGET_TRIPLET": "arm64ec-windows" } },
+    { "name": "arm64ec-Release-VCPKG", "description": "MSVC for ARM64EC (Release) uvatlastool", "inherits": [ "base", "ARM64EC", "Release", "VCPKG", "MSVC", "Tools" ], "environment": { "CXXFLAGS": "/arm64EC" }, "cacheVariables": { "VCPKG_TARGET_TRIPLET": "arm64ec-windows" } },
 
     { "name": "x64-Debug-Clang"    , "description": "Clang/LLVM for x64 (Debug) Library only", "inherits": [ "base", "x64", "Debug", "Clang" ] },
     { "name": "x64-Release-Clang"  , "description": "Clang/LLVM for x64 (Release) Library only", "inherits": [ "base", "x64", "Release", "Clang" ] },
@@ -251,6 +264,8 @@
     { "name": "x86-Release"  , "configurePreset": "x86-Release" },
     { "name": "arm64-Debug"  , "configurePreset": "arm64-Debug" },
     { "name": "arm64-Release", "configurePreset": "arm64-Release" },
+    { "name": "arm64ec-Debug"  , "configurePreset": "arm64ec-Debug" },
+    { "name": "arm64ec-Release", "configurePreset": "arm64ec-Release" },
 
     { "name": "x64-Debug-Clang"    , "configurePreset": "x64-Debug-Clang" },
     { "name": "x64-Release-Clang"  , "configurePreset": "x64-Release-Clang" },

@@ -1,0 +1,140 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+#
+# http://go.microsoft.com/fwlink/?LinkID=512686
+
+name: 'CTest (Windows)'
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - '*.md'
+      - LICENSE
+      - '.nuget/*'
+      - build/*.mdb
+      - build/*.props
+      - build/*.ps1
+      - build/*.yml
+
+env:
+  DIRECTXMESH_MEDIA_PATH: ${{ github.workspace }}/Media
+  DIRECTXTEX_MEDIA_PATH: ${{ github.workspace }}/Media
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [windows-2019, windows-2022]
+        build_type: [x64-Debug, x64-Release, x64-Debug-Clang, x64-Release-Clang]
+        arch: [amd64]
+        include:
+          - os: windows-2019
+            build_type: x86-Debug
+            arch: amd64_x86
+          - os: windows-2019
+            build_type: x86-Release
+            arch: amd64_x86
+          - os: windows-2019
+            build_type: x86-Debug-Clang
+            arch: amd64_x86
+          - os: windows-2019
+            build_type: x86-Release-Clang
+            arch: amd64_x86
+          - os: windows-2022
+            build_type: x86-Debug
+            arch: amd64_x86
+          - os: windows-2022
+            build_type: x86-Release
+            arch: amd64_x86
+          - os: windows-2022
+            build_type: x86-Debug-Clang
+            arch: amd64_x86
+          - os: windows-2022
+            build_type: x86-Release-Clang
+            arch: amd64_x86
+          - os: windows-2022
+            build_type: arm64-Debug
+            arch: amd64_arm64
+          - os: windows-2022
+            build_type: arm64-Release
+            arch: amd64_arm64
+          - os: windows-2022
+            build_type: arm64ec-Debug
+            arch: amd64_arm64
+          - os: windows-2022
+            build_type: arm64ec-Release
+            arch: amd64_arm64
+        exclude:
+          # Exclude failing case due to linker issue.
+          - os: windows-2022
+            build_type: x64-Debug-Clang
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Clone test repository
+      uses: actions/checkout@v4
+      with:
+        repository: walbourn/uvatlastest
+        path: Tests
+        ref: main
+
+    - name: 'Install Ninja'
+      run: choco install ninja
+
+    - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: ${{ matrix.arch }}
+
+    - name: 'Set triplet'
+      shell: pwsh
+      run: |
+        if ("${{ matrix.arch }}" -eq "amd64")
+        {
+            echo "VCPKG_DEFAULT_TRIPLET=x64-windows" >> $env:GITHUB_ENV
+        }
+        elseif ("${{ matrix.arch }}" -eq "amd64_x86")
+        {
+            echo "VCPKG_DEFAULT_TRIPLET=x86-windows" >> $env:GITHUB_ENV
+        }
+        elseif ("${{ matrix.arch }}" -eq "amd64_arm64")
+        {
+            if ("${{ matrix.build_type }}" -match "^arm64ec")
+            {
+                echo "VCPKG_DEFAULT_TRIPLET=arm64ec-windows" >> $env:GITHUB_ENV
+            }
+            else
+            {
+                echo "VCPKG_DEFAULT_TRIPLET=arm64-windows" >> $env:GITHUB_ENV
+            }
+        }
+        else
+        {
+            echo "::error Unknown architecture/build-type triplet mapping"
+        }
+
+    - uses: lukka/run-vcpkg@v11
+      with:
+        runVcpkgInstall: true
+        vcpkgJsonGlob: '**/build/vcpkg.json'
+        vcpkgGitCommitId: 'cacf5994341f27e9a14a7b8724b0634b138ecb30'
+
+    - name: 'Configure CMake'
+      working-directory: ${{ github.workspace }}
+      shell: pwsh
+      run: >
+        cmake --preset=${{ matrix.build_type }} -DBUILD_TOOLS=ON -DBUILD_TESTING=ON
+        -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_MANIFEST_DIR="${{ github.workspace }}/build"
+        -DVCPKG_TARGET_TRIPLET="${env:VCPKG_DEFAULT_TRIPLET}"
+
+    - name: 'Build'
+      working-directory: ${{ github.workspace }}
+      run: cmake --build out\build\${{ matrix.build_type }}

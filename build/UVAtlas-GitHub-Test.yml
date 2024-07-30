@@ -12,36 +12,15 @@ schedules:
     include:
     - main
 
-trigger:
-  branches:
-    include:
-    - main
-  paths:
-    exclude:
-    - '*.md'
-    - LICENSE
-    - CMake*
-    - '.nuget/*'
-    - build/*.cmake
-    - build/*.in
-    - build/*.mdb
-    - build/*.ps1
-
+# GitHub Actions handles test suite for CI/PR
+trigger: none
 pr:
   branches:
     include:
     - main
   paths:
-    exclude:
-    - '*.md'
-    - LICENSE
-    - CMake*
-    - '.nuget/*'
-    - build/*.cmake
-    - build/*.in
-    - build/*.mdb
-    - build/*.ps1
-  drafts: false
+    include:
+    - build/UVAtlas-GitHub-Test.yml
 
 name: $(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)
 

@@ -6,42 +6,21 @@
 # Builds the library for Windows Desktop and UWP.
 
 schedules:
-- cron: "0 5 * * *"
+- cron: "40 5 * * *"
   displayName: 'Nightly build'
   branches:
     include:
     - main
 
-trigger:
-  branches:
-    include:
-    - main
-  paths:
-    exclude:
-    - '*.md'
-    - LICENSE
-    - CMake*
-    - '.nuget/*'
-    - build/*.cmake
-    - build/*.in
-    - build/*.mdb
-    - build/*.ps1
-
+# GitHub Actions handles MSBuild for CI/PR
+trigger: none
 pr:
   branches:
     include:
     - main
   paths:
-    exclude:
-    - '*.md'
-    - LICENSE
-    - CMake*
-    - '.nuget/*'
-    - build/*.cmake
-    - build/*.in
-    - build/*.mdb
-    - build/*.ps1
-  drafts: false
+    include:
+    - build/UVAtlas-GitHub.yml
 
 resources:
   repositories:
