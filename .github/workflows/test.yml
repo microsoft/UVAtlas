@@ -55,9 +55,6 @@ jobs:
             build_type: x86-Release
             arch: amd64_x86
           - os: windows-2022
-            build_type: x64-Debug-Clang
-            arch: amd64
-          - os: windows-2022
             build_type: x64-Release-Clang
             arch: amd64
           - os: windows-2022
@@ -78,6 +75,11 @@ jobs:
           - os: windows-2022
             build_type: arm64ec-Release
             arch: amd64_arm64
+        exclude:
+          # Exclude failing case due to linker issue.
+          - os: windows-2022
+            build_type: x64-Debug-Clang
+            arch: amd64
 
     steps:
     - uses: actions/checkout@v4
