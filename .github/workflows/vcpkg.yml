@@ -3,7 +3,7 @@
 #
 # http://go.microsoft.com/fwlink/?LinkID=512686
 
-name: 'CTest (Windows)'
+name: 'CMake (Windows using VCPKG)'
 
 on:
   push:
@@ -13,81 +13,32 @@ on:
     paths-ignore:
       - '*.md'
       - LICENSE
-      - '.nuget/*'
-      - build/*.mdb
-      - build/*.props
-      - build/*.ps1
-      - build/*.yml
-
-env:
-  DIRECTXMESH_MEDIA_PATH: ${{ github.workspace }}/Media
-  DIRECTXTEX_MEDIA_PATH: ${{ github.workspace }}/Media
+      - build/*
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    timeout-minutes: 30
 
     strategy:
       fail-fast: false
 
       matrix:
         os: [windows-2019, windows-2022]
-        build_type: [x64-Debug, x64-Release]
+        build_type: [x64-Debug-VCPKG]
         arch: [amd64]
         include:
-          - os: windows-2019
-            build_type: x86-Debug
-            arch: amd64_x86
-          - os: windows-2019
-            build_type: x86-Release
-            arch: amd64_x86
-          - os: windows-2019
-            build_type: x86-Debug-Clang
-            arch: amd64_x86
-          - os: windows-2019
-            build_type: x86-Release-Clang
-            arch: amd64_x86
           - os: windows-2022
-            build_type: x86-Debug
-            arch: amd64_x86
-          - os: windows-2022
-            build_type: x86-Release
-            arch: amd64_x86
-          - os: windows-2022
-            build_type: x64-Debug-Clang
+            build_type: x64-Debug-Clang-VCPKG
             arch: amd64
           - os: windows-2022
-            build_type: x64-Release-Clang
-            arch: amd64
-          - os: windows-2022
-            build_type: x86-Debug-Clang
+            build_type: x86-Debug-VCPKG
             arch: amd64_x86
           - os: windows-2022
-            build_type: x86-Release-Clang
-            arch: amd64_x86
-          - os: windows-2022
-            build_type: arm64-Debug
-            arch: amd64_arm64
-          - os: windows-2022
-            build_type: arm64-Release
-            arch: amd64_arm64
-          - os: windows-2022
-            build_type: arm64ec-Debug
-            arch: amd64_arm64
-          - os: windows-2022
-            build_type: arm64ec-Release
+            build_type: arm64-Debug-VCPKG
             arch: amd64_arm64
 
     steps:
     - uses: actions/checkout@v4
-
-    - name: Clone test repository
-      uses: actions/checkout@v4
-      with:
-        repository: walbourn/uvatlastest
-        path: Tests
-        ref: main
 
     - name: 'Install Ninja'
       run: choco install ninja
@@ -131,9 +82,8 @@ jobs:
 
     - name: 'Configure CMake'
       working-directory: ${{ github.workspace }}
-      shell: pwsh
       run: >
-        cmake --preset=${{ matrix.build_type }} -DBUILD_TESTING=ON
+        cmake --preset=${{ matrix.build_type }} -DBUILD_TESTING=OFF -DBUILD_TOOLS=ON -DENABLE_USE_EIGEN=ON
         -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_MANIFEST_DIR="${{ github.workspace }}/build"
         -DVCPKG_TARGET_TRIPLET="${env:VCPKG_DEFAULT_TRIPLET}"
 
