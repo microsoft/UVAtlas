@@ -53,6 +53,7 @@ if(WINDOWS_STORE OR (DEFINED XBOX_CONSOLE_TARGET))
 endif()
 
 include(GNUInstallDirs)
+include(build/CompilerAndLinker.cmake)
 
 #--- Library
 set(LIBRARY_HEADERS
@@ -263,8 +264,6 @@ if(MSVC)
       target_compile_options(${t} PRIVATE /Wall /EHsc /GR-)
     endforeach()
 endif()
-
-include(build/CompilerAndLinker.cmake)
 
 foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
   target_compile_definitions(${t} PRIVATE ${COMPILER_DEFINES})
