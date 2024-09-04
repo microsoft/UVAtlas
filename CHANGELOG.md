@@ -6,6 +6,11 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### September 4, 2024
+* CMake project updates including support for ARM64EC
+* Code review
+* Added GitHub Actions YAML files
+
 ### June 5, 2024
 * CMake project updates
 * Retired VS 2019 projects for the UWP platform
