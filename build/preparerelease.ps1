@@ -1,5 +1,9 @@
 <#
 
+.NOTES
+Copyright (c) Microsoft Corporation.
+Licensed under the MIT License.
+
 .SYNOPSIS
 Prepares a PR for release
 
