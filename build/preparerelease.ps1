@@ -6,11 +6,14 @@ Prepares a PR for release
 .DESCRIPTION
 This script is used to do the edits required for preparing a release PR.
 
-.PARAMETER TargetBranch
+.PARAMETER BaseBranch
 This the branch to use as the base of the release. Defaults to 'main'.
 
+.PARAMETER TargetBranch
+This is the name of the newly created branch for the release PR. Defaults to '<DATETAG>release'. If set to 'none', then no branch is created.
+
 .PARAMETER UpdateVersion
-This is a $true or $false value that indicates if the library version should be incremented. Defaults to $true. 
+This is a $true or $false value that indicates if the library version number should be incremented. Defaults to $true.
 
 .LINK
 https://github.com/microsoft/UVAtlas/wiki
@@ -18,7 +21,8 @@ https://github.com/microsoft/UVAtlas/wiki
 #>
 
 param(
-    [string]$TargetBranch = "main",
+    [string]$BaseBranch = "main",
+    [string]$TargetBranch = $null,
     [bool]$UpdateVersion = $true
 )
 
@@ -28,30 +32,29 @@ $header = $reporoot + "\UVAtlas\inc\UVAtlas.h"
 $readme = $reporoot + "\README.md"
 $history = $reporoot + "\CHANGELOG.md"
 
-if ((-Not (Test-Path $cmake)) -Or (-Not (Test-Path $header)) -Or (-Not (Test-Path $readme)) -Or (-Not (Test-Path $history)))
-{
+if ((-Not (Test-Path $cmake)) -Or (-Not (Test-Path $header)) -Or (-Not (Test-Path $readme)) -Or (-Not (Test-Path $history))) {
     Write-Error "ERROR: Unexpected location of script file!" -ErrorAction Stop
 }
 
 $branch = git branch --show-current
-if ($branch -ne $TargetBranch)
-{
-    Write-Error "ERROR: Must be in the $TargetBranch branch!" -ErrorAction Stop
+if ($branch -ne $BaseBranch) {
+    Write-Error "ERROR: Must be in the $BaseBranch branch!" -ErrorAction Stop
 }
 
 git pull -q
-if ($LastExitCode -ne 0)
-{
+if ($LastExitCode -ne 0) {
     Write-Error "ERROR: Failed to sync branch!" -ErrorAction Stop
 }
 
-$newreleasedate = Get-Date -Format "MMMM d, yyyy"
-$newreleasetag = (Get-Date -Format "MMMyyyy").ToLower()
-
 $version = Get-Content ($cmake) | Select-String -Pattern "set\(UVATLAS_VERSION" -CaseSensitive
-$version -match "([0-9]?\.[0-9]?\.[0-9]?)" > $null
+if (-Not ($version -match "([0-9]?\.[0-9]?\.[0-9]?)")) {
+    Write-Error "ERROR: Failed to current version!" -ErrorAction Stop
+}
 $version = $Matches.0
 $rawversion = $version.replace('.','')
+
+$newreleasedate = Get-Date -Format "MMMM d, yyyy"
+$newreleasetag = (Get-Date -Format "MMMyyyy").ToLower()
 
 if($UpdateVersion) {
     [string]$newrawversion = ([int]$rawversion + 1)
@@ -63,7 +66,21 @@ else {
 $newversion = $newrawversion[0] + "." + $newrawversion[1] + "." + $newrawversion[2]
 
 $rawreleasedate = $(Get-Content $readme) | Select-String -Pattern "\*\*[A-Z][a-z]+\S.\d+,?\S.\d\d\d\d\*\*"
+if ([string]::IsNullOrEmpty($rawreleasedate)) {
+    Write-Error "ERROR: Failed to current release date!" -ErrorAction Stop
+}
 $releasedate = $rawreleasedate -replace '\*',''
+
+if ($TargetBranch -ne 'none') {
+    if ([string]::IsNullOrEmpty($TargetBranch)) {
+        $TargetBranch = $newreleasetag + "release"
+    }
+
+    git checkout -b $TargetBranch
+    if ($LastExitCode -ne 0) {
+        Write-Error "ERROR: Failed to create new topic branch!" -ErrorAction Stop
+    }
+}
 
 Write-Host "     Old Version: " $version
 Write-Host "Old Release Date: " $releasedate
@@ -94,3 +111,8 @@ for ($i=0; $i -lt $file.count; $i++) {
 
 $file.insert($inserthere[0], "`n### $newreleasedate`n* change history here")
 Set-Content -Path $history -Value $file
+
+code $history $readme
+if ($LastExitCode -ne 0) {
+    Write-Error "ERROR: Failed to launch VS Code!" -ErrorAction Stop
+}
