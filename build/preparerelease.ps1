@@ -75,6 +75,10 @@ if ([string]::IsNullOrEmpty($rawreleasedate)) {
 }
 $releasedate = $rawreleasedate -replace '\*',''
 
+if($releasedate -eq $newreleasedate) {
+    Write-Error ("ERROR: Release "+$releasedate+" already exists!") -ErrorAction Stop
+}
+
 if ($TargetBranch -ne 'none') {
     if ([string]::IsNullOrEmpty($TargetBranch)) {
         $TargetBranch = $newreleasetag + "release"
