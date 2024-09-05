@@ -1,0 +1,57 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+#
+# http://go.microsoft.com/fwlink/?LinkID=512686
+
+name: 'CMake (WSL)'
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - '*.md'
+      - LICENSE
+      - '.nuget/*'
+      - build/*.mdb
+      - build/*.props
+      - build/*.ps1
+      - build/*.yml
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        build_type: [x64-Debug-Linux, x64-Release-Linux]
+        gcc: [10, 11, 12]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: seanmiddleditch/gha-setup-ninja@v5
+
+    - uses: lukka/run-vcpkg@v11
+      with:
+        runVcpkgInstall: true
+        vcpkgJsonGlob: '**/build/vcpkg.json'
+        vcpkgGitCommitId: '7516a02de04e8f8ff4e4beb8f5bac0565f9bf9da'
+
+    - name: 'Configure CMake'
+      working-directory: ${{ github.workspace }}
+      run: >
+        cmake --preset=${{ matrix.build_type }}
+        -DCMAKE_TOOLCHAIN_FILE="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" -DVCPKG_MANIFEST_DIR="${{ github.workspace }}/build"
+        -DVCPKG_TARGET_TRIPLET="x64-linux"
+
+      env:
+        CC: gcc-${{ matrix.gcc }}
+        CXX: g++-${{ matrix.gcc }}
+
+    - name: 'Build'
+      working-directory: ${{ github.workspace }}
+      run: cmake --build out/build/${{ matrix.build_type }}
