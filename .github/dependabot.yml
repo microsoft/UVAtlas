@@ -6,3 +6,8 @@ updates:
       interval: "weekly"
     commit-message:
       prefix: "[nuget] "
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
