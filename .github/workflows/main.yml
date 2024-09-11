@@ -19,6 +19,9 @@ on:
       - build/*.ps1
       - build/*.yml
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
