@@ -21,6 +21,9 @@ on:
   schedule:
     - cron: '19 19 * * 0'
 
+permissions:
+  contents: read
+
 jobs:
   analyze:
     name: Analyze (C/C++)
