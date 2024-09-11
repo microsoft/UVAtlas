@@ -1,9 +1,9 @@
 version: 2
 updates:
-  - package-ecosystem: "nuget"
+  - package-ecosystem: nuget
     directory: "/UVAtlasTool"
     schedule:
-      interval: "weekly"
+      interval: weekly
     commit-message:
       prefix: "[nuget] "
 
