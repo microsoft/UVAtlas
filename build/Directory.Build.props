@@ -12,15 +12,15 @@
   </PropertyGroup>
 
   <Import Condition="'$(WSDKEnableBWOI)' == 'true'"
-          Project="$(ExtractedFolder)SDK\Microsoft.Windows.SDK.cpp\build\Microsoft.Windows.SDK.cpp.props" />
+          Project="$(ExtractedFolder)Microsoft.Windows.SDK.cpp\build\Microsoft.Windows.SDK.cpp.props" />
 
   <Import Condition="'$(WSDKEnableBWOI)' == 'true' and $(Platform.Contains('x64'))"
-          Project="$(ExtractedFolder)SDK\Microsoft.Windows.SDK.cpp.x64\build\native\Microsoft.Windows.SDK.cpp.x64.props" />
+          Project="$(ExtractedFolder)Microsoft.Windows.SDK.cpp.x64\build\native\Microsoft.Windows.SDK.cpp.x64.props" />
 
   <Import Condition="'$(WSDKEnableBWOI)' == 'true' and '$(Platform)' == 'Win32'"
-          Project="$(ExtractedFolder)SDK\Microsoft.Windows.SDK.cpp.x86\build\native\Microsoft.Windows.SDK.cpp.x86.props" />
+          Project="$(ExtractedFolder)Microsoft.Windows.SDK.cpp.x86\build\native\Microsoft.Windows.SDK.cpp.x86.props" />
 
   <Import Condition="'$(WSDKEnableBWOI)' == 'true' and '$(Platform)' == 'ARM64'"
-          Project="$(ExtractedFolder)SDK\Microsoft.Windows.SDK.cpp.arm64\build\native\Microsoft.Windows.SDK.cpp.arm64.props" />
+          Project="$(ExtractedFolder)Microsoft.Windows.SDK.cpp.arm64\build\native\Microsoft.Windows.SDK.cpp.arm64.props" />
 
 </Project>
