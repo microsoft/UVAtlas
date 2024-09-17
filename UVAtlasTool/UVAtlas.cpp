@@ -56,6 +56,8 @@
 #include "DirectXTex.h"
 
 #include "Mesh.h"
+
+#define TOOL_VERSION UVATLAS_VERSION
 #include "CmdLineHelpers.h"
 
 //Uncomment to add support for OpenEXR (.exr)
