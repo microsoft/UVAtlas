@@ -164,7 +164,7 @@ namespace Helpers
 
         if (!*version || wcscmp(version, L"1.0.0.0") == 0)
         {
-            swprintf_s(version, L"%03d (library)", DIRECTX_MESH_VERSION);
+            swprintf_s(version, L"%03d (library)", UVATLAS_VERSION);
         }
 
         if (versionOnly)
