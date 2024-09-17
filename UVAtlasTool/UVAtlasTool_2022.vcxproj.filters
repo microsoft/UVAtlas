@@ -19,6 +19,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SDKMesh.h" />
+    <ClInclude Include="CmdLineHelpers.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UVAtlas.rc">

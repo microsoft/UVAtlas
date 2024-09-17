@@ -239,6 +239,7 @@ if(BUILD_TOOLS AND WIN32)
         UVAtlasTool/UVAtlas.cpp
         UVAtlasTool/uvatlas.rc
         UVAtlasTool/settings.manifest
+        UVAtlasTool/CmdLineHelpers.h
         UVAtlasTool/Mesh.cpp
         UVAtlasTool/Mesh.h
         UVAtlasTool/MeshOBJ.cpp
