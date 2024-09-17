@@ -300,6 +300,7 @@
     <ClCompile Include="MeshOBJ.cpp" />
     <ClCompile Include="UVAtlas.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClInclude Include="CmdLineHelpers.h" />
     <CLInclude Include="Mesh.h" />
     <ClInclude Include="SDKMesh.h" />
   </ItemGroup>

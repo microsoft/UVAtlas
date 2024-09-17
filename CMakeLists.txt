@@ -239,6 +239,7 @@ if(BUILD_TOOLS AND WIN32)
         UVAtlasTool/UVAtlas.cpp
         UVAtlasTool/uvatlas.rc
         UVAtlasTool/settings.manifest
+        UVAtlasTool/CmdLineHelpers.h
         UVAtlasTool/Mesh.cpp
         UVAtlasTool/Mesh.h
         UVAtlasTool/MeshOBJ.cpp
@@ -257,6 +258,10 @@ if(directxmath_FOUND)
     foreach(t IN LISTS TOOL_EXES)
       target_link_libraries(${t} PRIVATE Microsoft::DirectXMath)
     endforeach()
+endif()
+
+if(TOOL_EXES)
+  message(STATUS "Building tools: ${TOOL_EXES}")
 endif()
 
 if(MSVC)
@@ -296,6 +301,7 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "Intel")
     set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 14)
 elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
     if(ENABLE_CODE_ANALYSIS)
+      message(STATUS "Building with Code Analysis (PREFIX)")
       foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
         target_compile_options(${t} PRIVATE /analyze /WX)
       endforeach()
