@@ -260,6 +260,10 @@ if(directxmath_FOUND)
     endforeach()
 endif()
 
+if(TOOL_EXES)
+  message("INFO: Building tools: ${TOOL_EXES}")
+endif()
+
 if(MSVC)
     foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
       target_compile_options(${t} PRIVATE /Wall /EHsc /GR-)
