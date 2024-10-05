@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 #
-# http://go.microsoft.com/fwlink/?LinkID=512686
+# https://go.microsoft.com/fwlink/?LinkID=512686
 
 # Runs various SDL recommended tools on the code.
 
@@ -27,6 +27,11 @@ resources:
   - repository: self
     type: git
     ref: refs/heads/main
+  - repository: vcpkgRepo
+    name: Microsoft/vcpkg
+    type: github
+    endpoint: microsoft
+    ref: refs/tags/$(VCPKG_TAG)
 
 name: $(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)
 
@@ -36,10 +41,9 @@ variables:
   Codeql.ExcludePathPatterns: vcpkg
   VC_PATH: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC'
   VS_GENERATOR: 'Visual Studio 17 2022'
-  VCPKG_CMAKE_DIR: '$(VCPKG_ROOT)/scripts/buildsystems/vcpkg.cmake'
-  GITHUB_PAT: $(GITHUBPUBLICTOKEN)
-  URL_FEED: $(ADOFeedURL)
-  skipNugetSecurityAnalysis: true # We explicitly call this task so we don't need it to be auto-injected
+  VCPKG_ROOT: $(Build.SourcesDirectory)/vcpkg
+  VCPKG_CMAKE_DIR: $(Build.SourcesDirectory)/vcpkg/scripts/buildsystems/vcpkg.cmake
+  VCPKG_MANIFEST_DIR: $(Build.SourcesDirectory)/build
 
 pool:
   vmImage: windows-2022
@@ -53,28 +57,14 @@ jobs:
   - checkout: self
     clean: true
     fetchTags: false
-  - task: PowerShell@2
-    displayName: 'Create nuget.config with single source'
-    inputs:
-      targetType: inline
-      script: |
-        $xml = @'
-        <?xml version="1.0" encoding="utf-8"?>
-        <configuration>
-          <packageSources>
-            <clear />
-          </packageSources>
-        </configuration>
-        '@
-        $xml | Set-Content -Path "$(Build.SourcesDirectory)\NuGet.config"
-
-  - task: NuGetCommand@2
-    displayName: 'NuGet set package source to ADO feed'
-    inputs:
-      command: custom
-      arguments: sources add -Name xboxgdk -Source $(URL_FEED) -ConfigFile $(Build.SourcesDirectory)\NuGet.config
-  - task: nuget-security-analysis@0
-    displayName: 'Secure Supply Chain Analysis'
+    fetchDepth: 1
+    path: 's'
+  - checkout: vcpkgRepo
+    displayName: Fetch VCPKG
+    clean: true
+    fetchTags: false
+    fetchDepth: 1
+    path: 's/vcpkg'
   - task: NodeTool@0
     displayName: 'NPM install'
     inputs:
@@ -93,43 +83,17 @@ jobs:
   - task: Armory@2
     displayName: Run ARMory
   - task: CmdLine@2
-    # We can use the preinstalled vcpkg instead of the latest when MS Hosted updates their vcpkg to the newer DirectX-Headers
-    displayName: Fetch VCPKG
+    displayName: VCPKG install packages
     inputs:
-      script: git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/microsoft/vcpkg.git
-      workingDirectory: $(Build.SourcesDirectory)
-  - task: CmdLine@2
-    displayName: VCPKG Bootstrap
-    inputs:
-      script: |
-        call bootstrap-vcpkg.bat
-
-      workingDirectory: $(Build.SourcesDirectory)\vcpkg
-  - task: CmdLine@2
-    displayName: VCPKG install headers
-    inputs:
-      script: |
-        call vcpkg install directxmath
-        @if ERRORLEVEL 1 goto error
-        call vcpkg install directx-headers
-        @if ERRORLEVEL 1 goto error
-        call vcpkg install directxmesh[spectre]
-        @if ERRORLEVEL 1 goto error
-        call vcpkg install directxtex[spectre]
-        @if ERRORLEVEL 1 goto error
-        :finish
-        @echo --- VCPKG COMPLETE ---
-        exit /b 0
-        :error
-        @echo --- ERROR: VCPKG FAILED ---
-        exit /b 1
-
-      workingDirectory: $(Build.SourcesDirectory)\vcpkg
+      script: call vcpkg install --x-manifest-root=$(VCPKG_MANIFEST_DIR) --triplet=x64-windows
+      workingDirectory: $(VCPKG_ROOT)
   - task: CMake@1
     displayName: 'CMake (MSVC): Config x64'
     inputs:
-      cwd: '$(Build.SourcesDirectory)'
-      cmakeArgs: '-G "$(VS_GENERATOR)" -A x64 -B out -DENABLE_SPECTRE_MITIGATION=ON -DBUILD_TOOLS=ON -DCMAKE_TOOLCHAIN_FILE="$(VCPKG_CMAKE_DIR)"'
+      cwd: $(Build.SourcesDirectory)
+      cmakeArgs: >
+        -G "$(VS_GENERATOR)" -A x64 -B out -DENABLE_SPECTRE_MITIGATION=ON -DBUILD_TOOLS=ON
+        -DCMAKE_TOOLCHAIN_FILE="$(VCPKG_CMAKE_DIR)" -DVCPKG_MANIFEST_DIR="$(VCPKG_MANIFEST_DIR)" -DVCPKG_TARGET_TRIPLET=x64-windows
   - task: CodeQL3000Init@0
     inputs:
       Enabled: true
@@ -146,7 +110,7 @@ jobs:
   - task: CMake@1
     displayName: 'CMake (MSVC): Build x64 Release'
     inputs:
-      cwd: '$(Build.SourcesDirectory)'
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --build out -v --config RelWithDebInfo
   - task: securedevelopmentteam.vss-secure-development-tools.build-task-antimalware.AntiMalware@4
     displayName: 'Run AntiMalware'
@@ -183,6 +147,7 @@ jobs:
   - checkout: self
     clean: true
     fetchTags: false
+    fetchDepth: 1
   - task: CmdLine@2
     displayName: Setup environment for CMake to use VS
     inputs:
@@ -201,10 +166,10 @@ jobs:
   - task: CMake@1
     displayName: CMake Config
     inputs:
-      cwd: '$(Build.SourcesDirectory)'
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --preset=x64-Debug -DENABLE_CODE_ANALYSIS=ON
   - task: CMake@1
     displayName: CMake Build
     inputs:
-      cwd: '$(Build.SourcesDirectory)'
+      cwd: $(Build.SourcesDirectory)
       cmakeArgs: --build out/build/x64-Debug

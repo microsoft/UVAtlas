@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 #
-# http://go.microsoft.com/fwlink/?LinkID=512686
+# https://go.microsoft.com/fwlink/?LinkID=512686
 
 # Builds the library and test suite.
 
@@ -22,6 +22,27 @@ pr:
     include:
     - build/UVAtlas-GitHub-Test.yml
 
+resources:
+  repositories:
+  - repository: self
+    type: git
+    ref: refs/heads/main
+  - repository: dxMeshRepo
+    name: Microsoft/DirectXMesh
+    type: github
+    endpoint: microsoft
+    ref: refs/heads/main
+  - repository: dxTexRepo
+    name: Microsoft/DirectXTex
+    type: github
+    endpoint: microsoft
+    ref: refs/heads/main
+  - repository: testRepo
+    name: walbourn/uvatlastest
+    type: github
+    endpoint: microsoft
+    ref: refs/heads/main
+
 name: $(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)
 
 pool:
@@ -29,7 +50,6 @@ pool:
 
 variables:
   Codeql.Enabled: false
-  GITHUB_PAT: $(GITHUBPUBLICTOKEN)
 
 jobs:
 - job: DESKTOP_BUILD
@@ -43,25 +63,28 @@ jobs:
     clean: true
     fetchTags: false
     path: 's/UVAtlas'
-  - task: CmdLine@2
-    displayName: Fetch Libraries
-    inputs:
-      script: |
-        git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/microsoft/DirectXMesh.git
-        git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/microsoft/DirectXTex.git
-
-      workingDirectory: $(Pipeline.Workspace)/s
-      failOnStderr: true
-  - task: CmdLine@2
+  - checkout: dxMeshRepo
+    displayName: Fetch DirectXMesh
+    clean: true
+    fetchTags: false
+    fetchDepth: 1
+    path: 's/DirectXMesh'
+  - checkout: dxTexRepo
+    displayName: Fetch DirectXTex
+    clean: true
+    fetchTags: false
+    fetchDepth: 1
+    path: 's/DirectXTex'
+  - checkout: testRepo
     displayName: Fetch Tests
-    inputs:
-      script: git clone --quiet --no-tags https://%GITHUB_PAT%@github.com/walbourn/uvatlastest.git Tests
-      workingDirectory: $(Build.SourcesDirectory)
-      failOnStderr: true
+    clean: true
+    fetchTags: false
+    fetchDepth: 1
+    path: 's/UVAtlas/Tests'
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2019.sln 32dbg
     inputs:
-      solution: Tests/xtuvatlas_Desktop_2019.sln
+      solution: UVAtlas/Tests/xtuvatlas_Desktop_2019.sln
       vsVersion: 16.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: x86
@@ -69,7 +92,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solutionxtuvatlas_Desktop_2019.sln 32rel
     inputs:
-      solution: Tests/xtuvatlas_Desktop_2019.sln
+      solution: UVAtlas/Tests/xtuvatlas_Desktop_2019.sln
       vsVersion: 16.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: x86
@@ -77,7 +100,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2019.sln 64dbg
     inputs:
-      solution: Tests/xtuvatlas_Desktop_2019.sln
+      solution: UVAtlas/Tests/xtuvatlas_Desktop_2019.sln
       vsVersion: 16.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: x64
@@ -85,7 +108,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2019.sln 64rel
     inputs:
-      solution: Tests/xtuvatlas_Desktop_2019.sln
+      solution: UVAtlas/Tests/xtuvatlas_Desktop_2019.sln
       vsVersion: 16.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: x64
@@ -93,7 +116,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2019.sln arm64dbg
     inputs:
-      solution: Tests/xtuvatlas_Desktop_2019.sln
+      solution: UVAtlas/Tests/xtuvatlas_Desktop_2019.sln
       vsVersion: 16.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: ARM64
@@ -101,7 +124,7 @@ jobs:
   - task: VSBuild@1
     displayName: Build solution xtuvatlas_Desktop_2019.sln arm64rel
     inputs:
-      solution: Tests/xtuvatlas_Desktop_2019.sln
+      solution: UVAtlas/Tests/xtuvatlas_Desktop_2019.sln
       vsVersion: 16.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: ARM64

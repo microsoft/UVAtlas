@@ -1,7 +1,7 @@
 # Copyright (c) Microsoft Corporation.
 # Licensed under the MIT License.
 #
-# http://go.microsoft.com/fwlink/?LinkID=512686
+# https://go.microsoft.com/fwlink/?LinkID=512686
 
 name: 'CMake (WSL)'
 
