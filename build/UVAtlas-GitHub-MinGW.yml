@@ -124,6 +124,9 @@ jobs:
             Write-Host "##vso[task.setvariable variable=WindowsSdkVerBinPath;]$wsdkverbin"
             Write-Host "##vso[task.prependpath]$wsdkarchbin"
         }
+        else {
+            Write-Error -Message "##[error]Can't find Windows SDK ($(WIN11_SDK))" -ErrorAction Stop
+        }
 
       workingDirectory: $(Build.SourcesDirectory)
   - task: CmdLine@2
