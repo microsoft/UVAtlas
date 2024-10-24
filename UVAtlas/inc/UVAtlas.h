@@ -57,7 +57,7 @@ namespace DirectX
     // UVATLAS_IMT_WRAP_U means the texture wraps in the U direction
     // UVATLAS_IMT_WRAP_V means the texture wraps in the V direction
     // UVATLAS_IMT_WRAP_UV means the texture wraps in both directions
-    enum UVATLAS_IMT : unsigned int
+    enum UVATLAS_IMT : uint32_t
     {
         UVATLAS_IMT_DEFAULT = 0x00,
         UVATLAS_IMT_WRAP_U = 0x01,
@@ -69,7 +69,7 @@ namespace DirectX
     // UVATLAS_DEFAULT - Meshes with more than 25k faces go through fast, meshes with fewer than 25k faces go through quality
     // UVATLAS_GEODESIC_FAST - Uses approximations to improve charting speed at the cost of added stretch or more charts.
     // UVATLAS_GEODESIC_QUALITY - Provides better quality charts, but requires more time and memory than fast.
-    enum UVATLAS : unsigned int
+    enum UVATLAS : uint32_t
     {
         UVATLAS_DEFAULT = 0x00,
         UVATLAS_GEODESIC_FAST = 0x01,
@@ -376,8 +376,8 @@ namespace DirectX
 #pragma clang diagnostic ignored "-Wdeprecated-dynamic-exception-spec"
 #endif
 
-    DEFINE_ENUM_FLAG_OPERATORS(UVATLAS_IMT);
-    DEFINE_ENUM_FLAG_OPERATORS(UVATLAS);
+    DEFINE_ENUM_FLAG_OPERATORS(UVATLAS_IMT)
+    DEFINE_ENUM_FLAG_OPERATORS(UVATLAS)
 
 #ifdef __clang__
 #pragma clang diagnostic pop
