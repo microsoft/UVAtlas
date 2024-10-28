@@ -6,7 +6,7 @@ http://go.microsoft.com/fwlink/?LinkID=512686
 
 Copyright (c) Microsoft Corporation.
 
-**September 4, 2024**
+**October 28, 2024**
 
 This package contains UVAtlas, a shared source library for creating and packing an isochart texture atlas.
 
@@ -16,25 +16,27 @@ These components are designed to work without requiring any content from the leg
 
 ## Directory Layout
 
-* ``Inc\``
+* ``UVAtlas\``
 
-  + Public Header File (in the DirectX C++ namespace):
+  + ``Inc\``
 
-    * UVtlas.h
-      - UVAtlasCreate
-      - UVAtlasPartition
-      - UVAtlasPack
-      - UVAtlasComputeIMTFromPerVertexSignal
-      - UVAtlasComputeIMTFromSignal
-      - UVAtlasComputeIMTFromTexture
-      - UVAtlasComputeIMTFromPerTexelSignal
-      - UVAtlasApplyRemap
+    + Public Header File (in the DirectX C++ namespace):
 
-* ``geodesics\``, ``isochart\``
+      * UVtlas.h
+        - UVAtlasCreate
+        - UVAtlasPartition
+        - UVAtlasPack
+        - UVAtlasComputeIMTFromPerVertexSignal
+        - UVAtlasComputeIMTFromSignal
+        - UVAtlasComputeIMTFromTexture
+        - UVAtlasComputeIMTFromPerTexelSignal
+        - UVAtlasApplyRemap
 
-  + Library source files
+  * ``geodesics\``, ``isochart\``
 
-* ``UVAtasTool\``
+    + Library source files
+
+* ``UVAtlasTool\``
 
   + Command line tool and sample for UVAtlas library
 
@@ -77,6 +79,19 @@ For a full change history, see [CHANGELOG.md](https://github.com/microsoft/UVAtl
 * For ARM64/AArch64 development, the VS 2022 compiler is strongly recommended over the VS 2019 toolset. The Windows SDK (26100 or later) is not compatible with VS 2019 for Win32 on ARM64 development. *Note that the ARM32/AArch32 platform is [deprecated](https://learn.microsoft.com/windows/arm/arm32-to-arm64)*.
 
 * When using clang/LLVM for the ARM64/AArch64 platform, the Windows 11 SDK ([22000](https://walbourn.github.io/windows-sdk-for-windows-11/)) or later is required.
+
+* As of the October 2024 release, the command-line tool also supports GNU-style long options using ``--``. All existing switches continue to function, but some of the `-` options are now deprecated per this table:
+
+|Old switch|New switch|
+|---|---|
+|-sdkmesh|-ft sdkmesh<br />--file-type sdkmesh|
+|-sdkmesh2|-ft sdkmesh2<br />--file-type sdkmesh2|
+|-cmo|-ft cmo<br />--file-type cmo|
+|-vbo|-ft vbo<br />--file-type vbo|
+|-wf|-ft obj<br />--file-type obj|
+|-flipu|--flip-u|
+|-flipv|--flip-v|
+|-flipz|--flip-z|
 
 ## Contributing
 

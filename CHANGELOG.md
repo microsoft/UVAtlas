@@ -6,10 +6,19 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### October 28, 2024
+* All enums now use ``uint32_t`` as the underlying type rather than ``unsigned long`` or ``int``.
+* uvatlastool:
+  * Add "GNU-style" *--long-options* to the command-line tools (all existing switches are still supported)
+  * Refactored code to use shared header
+  * Updated for October 2024 DirectXTex & DirectXMesh releases
+* CMake and MSBuild project updates
+
 ### September 4, 2024
 * CMake project updates including support for ARM64EC
 * Code review
 * Added GitHub Actions YAML files
+* uvatlastool: Updated for September 2024 DirectXTex & DirectXMesh releases
 
 ### June 5, 2024
 * CMake project updates
