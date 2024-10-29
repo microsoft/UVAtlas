@@ -65,7 +65,9 @@ HRESULT LoadFromOBJ(
     bool ccw,
     bool dds)
 {
-    WaveFrontReader<uint32_t> wfReader;
+    using Vertex = DX::WaveFrontReader<uint32_t>::Vertex;
+
+    DX::WaveFrontReader<uint32_t> wfReader;
     HRESULT hr = wfReader.Load(szFilename, ccw);
     if (FAILED(hr))
         return hr;
@@ -117,7 +119,7 @@ HRESULT LoadFromOBJ(
     if (FAILED(hr))
         return hr;
 
-    hr = vbr.AddStream(wfReader.vertices.data(), wfReader.vertices.size(), 0, sizeof(WaveFrontReader<uint32_t>::Vertex));
+    hr = vbr.AddStream(wfReader.vertices.data(), wfReader.vertices.size(), 0, sizeof(Vertex));
     if (FAILED(hr))
         return hr;
 
