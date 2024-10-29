@@ -6,7 +6,7 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
-### October 28, 2024
+### October 29, 2024
 * All enums now use ``uint32_t`` as the underlying type rather than ``unsigned long`` or ``int``.
 * uvatlastool:
   * Add "GNU-style" *--long-options* to the command-line tools (all existing switches are still supported)
