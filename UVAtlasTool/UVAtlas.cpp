@@ -1072,7 +1072,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             hr = inMesh->ComputeNormals(flags);
             if (FAILED(hr))
             {
-                wprintf(L"\nERROR: Failed computing normals (flags:%X, %08X%ls)\n", flags,
+                wprintf(L"\nERROR: Failed computing normals (flags:%X, %08X%ls)\n", static_cast<unsigned int>(flags),
                     static_cast<unsigned int>(hr), GetErrorDesc(hr));
                 return 1;
             }
