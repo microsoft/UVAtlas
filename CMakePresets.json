@@ -45,6 +45,10 @@
         "strategy": "external"
       },
       "cacheVariables": { "DIRECTX_ARCH": "arm64ec" },
+      "environment": {
+        "CFLAGS": "/arm64EC",
+        "CXXFLAGS": "/arm64EC"
+      },
       "hidden": true
     },
 
@@ -127,6 +131,22 @@
       }
     },
     {
+      "name": "Clang-X86",
+      "environment": {
+        "CFLAGS": "-m32",
+        "CXXFLAGS": "-m32"
+      },
+      "hidden": true
+    },
+    {
+      "name": "Clang-AArch64",
+      "environment": {
+        "CFLAGS": "--target=arm64-pc-windows-msvc",
+        "CXXFLAGS": "--target=arm64-pc-windows-msvc"
+      },
+      "hidden": true
+    },
+    {
       "name": "GNUC",
       "hidden": true,
       "cacheVariables": {
@@ -145,7 +165,7 @@
       },
       "cacheVariables": {
         "VCPKG_TARGET_TRIPLET": "x86-mingw-static",
-        "VCPKG_HOST_TRIPLET": "x86-mingw-static"
+        "VCPKG_HOST_TRIPLET": "x64-windows"
       }
     },
     {
@@ -156,7 +176,7 @@
       },
       "cacheVariables": {
         "VCPKG_TARGET_TRIPLET": "x64-mingw-static",
-        "VCPKG_HOST_TRIPLET": "x64-mingw-static"
+        "VCPKG_HOST_TRIPLET": "x64-windows"
       }
     },
     {
@@ -189,8 +209,8 @@
     { "name": "x86-Release"    , "description": "MSVC for x86 (Release) Library only", "inherits": [ "base", "x86", "Release", "MSVC" ] },
     { "name": "arm64-Debug"    , "description": "MSVC for ARM64 (Debug) Library only", "inherits": [ "base", "ARM64", "Debug", "MSVC" ] },
     { "name": "arm64-Release"  , "description": "MSVC for ARM64 (Release) Library only", "inherits": [ "base", "ARM64", "Release", "MSVC" ] },
-    { "name": "arm64ec-Debug"  , "description": "MSVC for ARM64EC (Debug) Library only", "inherits": [ "base", "ARM64EC", "Debug", "MSVC" ], "environment": { "CXXFLAGS": "/arm64EC" } },
-    { "name": "arm64ec-Release", "description": "MSVC for ARM64EC (Release) Library only", "inherits": [ "base", "ARM64EC", "Release", "MSVC" ], "environment": { "CXXFLAGS": "/arm64EC" } },
+    { "name": "arm64ec-Debug"  , "description": "MSVC for ARM64EC (Debug) Library only", "inherits": [ "base", "ARM64EC", "Debug", "MSVC" ] },
+    { "name": "arm64ec-Release", "description": "MSVC for ARM64EC (Release) Library only", "inherits": [ "base", "ARM64EC", "Release", "MSVC" ] },
 
     { "name": "x64-Debug-UWP"    , "description": "MSVC for x64 (Debug) for UWP", "inherits": [ "base", "x64", "Debug", "MSVC", "UWP" ] },
     { "name": "x64-Release-UWP"  , "description": "MSVC for x64 (Release) for UWP", "inherits": [ "base", "x64", "Release", "MSVC", "UWP" ] },
@@ -211,29 +231,29 @@
     { "name": "x86-Release-VCPKG"    , "description": "MSVC for x86 (Release) uvatlastool", "inherits": [ "base", "x86", "Release", "VCPKG", "MSVC", "Tools" ] },
     { "name": "arm64-Debug-VCPKG"    , "description": "MSVC for ARM64 (Debug) uvatlastool", "inherits": [ "base", "ARM64", "Debug", "VCPKG", "MSVC", "Tools" ] },
     { "name": "arm64-Release-VCPKG"  , "description": "MSVC for ARM64 (Release) uvatlastool", "inherits": [ "base", "ARM64", "Release", "VCPKG", "MSVC", "Tools" ] },
-    { "name": "arm64ec-Debug-VCPKG"  , "description": "MSVC for ARM64EC (Debug) uvatlastool", "inherits": [ "base", "ARM64EC", "Debug", "VCPKG", "MSVC", "Tools" ], "environment": { "CXXFLAGS": "/arm64EC" }, "cacheVariables": { "VCPKG_TARGET_TRIPLET": "arm64ec-windows" } },
-    { "name": "arm64ec-Release-VCPKG", "description": "MSVC for ARM64EC (Release) uvatlastool", "inherits": [ "base", "ARM64EC", "Release", "VCPKG", "MSVC", "Tools" ], "environment": { "CXXFLAGS": "/arm64EC" }, "cacheVariables": { "VCPKG_TARGET_TRIPLET": "arm64ec-windows" } },
+    { "name": "arm64ec-Debug-VCPKG"  , "description": "MSVC for ARM64EC (Debug) uvatlastool", "inherits": [ "base", "ARM64EC", "Debug", "VCPKG", "MSVC", "Tools" ], "cacheVariables": { "VCPKG_TARGET_TRIPLET": "arm64ec-windows" } },
+    { "name": "arm64ec-Release-VCPKG", "description": "MSVC for ARM64EC (Release) uvatlastool", "inherits": [ "base", "ARM64EC", "Release", "VCPKG", "MSVC", "Tools" ], "cacheVariables": { "VCPKG_TARGET_TRIPLET": "arm64ec-windows" } },
 
     { "name": "x64-Debug-Clang"    , "description": "Clang/LLVM for x64 (Debug) Library only", "inherits": [ "base", "x64", "Debug", "Clang" ] },
     { "name": "x64-Release-Clang"  , "description": "Clang/LLVM for x64 (Release) Library only", "inherits": [ "base", "x64", "Release", "Clang" ] },
-    { "name": "x86-Debug-Clang"    , "description": "Clang/LLVM for x86 (Debug) Library only", "inherits": [ "base", "x86", "Debug", "Clang" ], "environment": { "CXXFLAGS": "-m32" } },
-    { "name": "x86-Release-Clang"  , "description": "Clang/LLVM for x86 (Release) Library only", "inherits": [ "base", "x86", "Release", "Clang" ], "environment": { "CXXFLAGS": "-m32" } },
-    { "name": "arm64-Debug-Clang"  , "description": "Clang/LLVM for AArch64 (Debug) Library only", "inherits": [ "base", "ARM64", "Debug", "Clang" ], "environment": { "CXXFLAGS": "--target=arm64-pc-windows-msvc" } },
-    { "name": "arm64-Release-Clang", "description": "Clang/LLVM for AArch64 (Release) Library only", "inherits": [ "base", "ARM64", "Release", "Clang" ], "environment": { "CXXFLAGS": "--target=arm64-pc-windows-msvc" } },
+    { "name": "x86-Debug-Clang"    , "description": "Clang/LLVM for x86 (Debug) Library only", "inherits": [ "base", "x86", "Debug", "Clang", "Clang-X86" ] },
+    { "name": "x86-Release-Clang"  , "description": "Clang/LLVM for x86 (Release) Library only", "inherits": [ "base", "x86", "Release", "Clang", "Clang-X86" ] },
+    { "name": "arm64-Debug-Clang"  , "description": "Clang/LLVM for AArch64 (Debug) Library only", "inherits": [ "base", "ARM64", "Debug", "Clang", "Clang-AArch64" ] },
+    { "name": "arm64-Release-Clang", "description": "Clang/LLVM for AArch64 (Release) Library only", "inherits": [ "base", "ARM64", "Release", "Clang", "Clang-AArch64" ] },
 
     { "name": "x64-Debug-UWP-Clang"    , "description": "Clang/LLVM for x64 (Debug) for UWP", "inherits": [ "base", "x64", "Debug", "Clang", "UWP" ] },
     { "name": "x64-Release-UWP-Clang"  , "description": "Clang/LLVM for x64 (Release) for UWP", "inherits": [ "base", "x64", "Release", "Clang", "UWP" ] },
-    { "name": "x86-Debug-UWP-Clang"    , "description": "Clang/LLVM for x86 (Debug) for UWP", "inherits": [ "base", "x86", "Debug", "Clang", "UWP" ], "environment": { "CXXFLAGS": "-m32" } },
-    { "name": "x86-Release-UWP-Clang"  , "description": "Clang/LLVM for x86 (Release) for UWP", "inherits": [ "base", "x86", "Release", "Clang", "UWP" ], "environment": { "CXXFLAGS": "-m32" } },
-    { "name": "arm64-Debug-UWP-Clang"  , "description": "Clang/LLVM for AArch64 (Debug) for UWP", "inherits": [ "base", "ARM64", "Debug", "Clang", "UWP" ], "environment": { "CXXFLAGS": "--target=arm64-pc-windows-msvc" } },
-    { "name": "arm64-Release-UWP-Clang", "description": "Clang/LLVM for AArch64 (Release) for UWP", "inherits": [ "base", "ARM64", "Release", "Clang", "UWP" ], "environment": { "CXXFLAGS": "--target=arm64-pc-windows-msvc" } },
+    { "name": "x86-Debug-UWP-Clang"    , "description": "Clang/LLVM for x86 (Debug) for UWP", "inherits": [ "base", "x86", "Debug", "Clang", "Clang-X86", "UWP" ] },
+    { "name": "x86-Release-UWP-Clang"  , "description": "Clang/LLVM for x86 (Release) for UWP", "inherits": [ "base", "x86", "Release", "Clang", "Clang-X86", "UWP" ] },
+    { "name": "arm64-Debug-UWP-Clang"  , "description": "Clang/LLVM for AArch64 (Debug) for UWP", "inherits": [ "base", "ARM64", "Debug", "Clang", "Clang-AArch64", "UWP" ] },
+    { "name": "arm64-Release-UWP-Clang", "description": "Clang/LLVM for AArch64 (Release) for UWP", "inherits": [ "base", "ARM64", "Release", "Clang", "Clang-AArch64", "UWP" ] },
 
     { "name": "x64-Debug-Clang-VCPKG"    , "description": "Clang/LLVM for x64 (Debug) uvatlastool", "inherits": [ "base", "x64", "Debug", "VCPKG", "Clang", "Tools" ] },
     { "name": "x64-Release-Clang-VCPKG"  , "description": "Clang/LLVM for x64 (Release) uvatlastool", "inherits": [ "base", "x64", "Release", "VCPKG", "Clang", "Tools" ] },
-    { "name": "x86-Debug-Clang-VCPKG"    , "description": "Clang/LLVM for x86 (Debug) uvatlastool", "inherits": [ "base", "x86", "Debug", "VCPKG", "Clang", "Tools" ], "environment": { "CXXFLAGS": "-m32" } },
-    { "name": "x86-Release-Clang-VCPKG"  , "description": "Clang/LLVM for x86 (Release) uvatlastool", "inherits": [ "base", "x86", "Release", "VCPKG", "Clang", "Tools" ], "environment": { "CXXFLAGS": "-m32" } },
-    { "name": "arm64-Debug-Clang-VCPKG"  , "description": "Clang/LLVM for AArch64 (Debug) uvatlastool", "inherits": [ "base", "ARM64", "Debug", "VCPKG", "Clang", "Tools" ], "environment": { "CXXFLAGS": "--target=arm64-pc-windows-msvc" } },
-    { "name": "arm64-Release-Clang-VCPKG", "description": "Clang/LLVM for AArch64 (Release) uvatlastool", "inherits": [ "base", "ARM64", "Release", "VCPKG", "Clang", "Tools" ], "environment": { "CXXFLAGS": "--target=arm64-pc-windows-msvc" } },
+    { "name": "x86-Debug-Clang-VCPKG"    , "description": "Clang/LLVM for x86 (Debug) uvatlastool", "inherits": [ "base", "x86", "Debug", "VCPKG", "Clang", "Clang-X86", "Tools" ] },
+    { "name": "x86-Release-Clang-VCPKG"  , "description": "Clang/LLVM for x86 (Release) uvatlastool", "inherits": [ "base", "x86", "Release", "VCPKG", "Clang", "Clang-X86", "Tools" ] },
+    { "name": "arm64-Debug-Clang-VCPKG"  , "description": "Clang/LLVM for AArch64 (Debug) uvatlastool", "inherits": [ "base", "ARM64", "Debug", "VCPKG", "Clang", "Clang-AArch64", "Tools" ] },
+    { "name": "arm64-Release-Clang-VCPKG", "description": "Clang/LLVM for AArch64 (Release) uvatlastool", "inherits": [ "base", "ARM64", "Release", "VCPKG", "Clang", "Clang-AArch64", "Tools" ] },
 
     { "name": "x64-Debug-Scarlett-Clang"  , "description": "Clang/LLVM for x64 (Debug) for Xbox Series X|S", "inherits": [ "base", "x64", "Debug", "Clang", "Scarlett" ] },
     { "name": "x64-Release-Scarlett-Clang", "description": "Clang/LLVM for x64 (Release) for Xbox Series X|S", "inherits": [ "base", "x64", "Release", "Clang", "Scarlett" ] },
