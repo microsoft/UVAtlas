@@ -24,7 +24,7 @@ project (UVAtlas
 #
 # cmake install the individual packages and add the per-configuration variables for directxmesh_DIR and directxtex_DIR
 #
-# Note to support Windows 7, turn off BUILD_DX12 build options for both libraries.
+# Note to support Windows 8.1, turn off BUILD_DX12 build options for both libraries.
 option(BUILD_TOOLS "Build UVAtlasTool" OFF)
 
 # Enable the use of OpenMP
