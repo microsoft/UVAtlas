@@ -24,7 +24,7 @@ project (UVAtlas
 #
 # cmake install the individual packages and add the per-configuration variables for directxmesh_DIR and directxtex_DIR
 #
-# Note to support Windows 7, turn off BUILD_DX12 build options for both libraries.
+# Note to support Windows 8.1, turn off BUILD_DX12 build options for both libraries.
 option(BUILD_TOOLS "Build UVAtlasTool" OFF)
 
 # Enable the use of OpenMP
@@ -327,10 +327,8 @@ endif()
 if(WIN32)
     if(WINDOWS_STORE OR (${DIRECTX_ARCH} MATCHES "^arm64") OR (DEFINED XBOX_CONSOLE_TARGET))
         set(WINVER 0x0A00)
-    elseif(${DIRECTX_ARCH} MATCHES "^arm")
-        set(WINVER 0x0602)
     else()
-        set(WINVER 0x0601)
+        set(WINVER 0x0603)
     endif()
 
     foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
