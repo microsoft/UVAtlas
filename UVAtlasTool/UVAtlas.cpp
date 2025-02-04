@@ -903,7 +903,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
     for (auto pConv = conversion.begin(); pConv != conversion.end(); ++pConv)
     {
         std::filesystem::path curpath(pConv->szSrc);
-        auto const ext = curpath.extension();
+        const auto ext = curpath.extension();
 
         if (pConv != conversion.begin())
             wprintf(L"\n");
@@ -1109,7 +1109,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 }
 
                 std::filesystem::path tname(texFile);
-                auto const txext = tname.extension();
+                const auto txext = tname.extension();
 
                 ScratchImage iimage;
 
@@ -1540,7 +1540,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
                 os.imbue(std::locale::classic());
 
-                for (auto const& mtl : inMaterial)
+                for (const auto& mtl : inMaterial)
                 {
                     // Minimal material output.
                     os << L"newmtl " << mtl.name << std::endl;

@@ -24,7 +24,7 @@ pr:
     - build/*.cmake
     - build/*.in
     - build/vcpkg.json
-    - build/UVAtlas-GitHub-WSL-11.yml
+    - build/UVAtlas-GitHub-WSL-13.yml
 
 resources:
   repositories:
