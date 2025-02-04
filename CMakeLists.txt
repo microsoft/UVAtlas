@@ -27,6 +27,8 @@ project (UVAtlas
 # Note to support Windows 8.1, turn off BUILD_DX12 build options for both libraries.
 option(BUILD_TOOLS "Build UVAtlasTool" OFF)
 
+option(BUILD_SHARED_LIBS "Build UVAtlas as a shared library" OFF)
+
 # Enable the use of OpenMP
 option(UVATLAS_USE_OPENMP "Build with OpenMP support" ON)
 
@@ -109,7 +111,20 @@ set(LIBRARY_SOURCES
     UVAtlas/isochart/Vis_Maxflow.h
 )
 
-add_library (${PROJECT_NAME} STATIC ${LIBRARY_SOURCES} ${LIBRARY_HEADERS})
+if(WIN32 AND BUILD_SHARED_LIBS)
+  message(STATUS "Build library as a DLL")
+
+  configure_file(
+      "${CMAKE_CURRENT_SOURCE_DIR}/build/UVAtlas.rc.in"
+      "${CMAKE_CURRENT_BINARY_DIR}/UVAtlas.rc" @ONLY)
+
+  add_library(${PROJECT_NAME} SHARED ${LIBRARY_SOURCES} ${LIBRARY_HEADERS} "${CMAKE_CURRENT_BINARY_DIR}/UVAtlas.rc")
+
+  target_compile_definitions(${PROJECT_NAME} PRIVATE UVATLAS_EXPORT)
+  target_compile_definitions(${PROJECT_NAME} INTERFACE UVATLAS_IMPORT)
+else()
+  add_library (${PROJECT_NAME} ${LIBRARY_SOURCES} ${LIBRARY_HEADERS})
+endif()
 
 source_group(inc REGULAR_EXPRESSION UVAtlas/inc/*.*)
 source_group(geodesics REGULAR_EXPRESSION UVAtlas/geodesics/*.*)
