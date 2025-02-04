@@ -63,7 +63,7 @@ namespace Isochart
                         static_cast<int>(std::min(dwMaxRange * 2, dwDimension))
                     );
                     eigs.init();
-                    auto const numConverged = eigs.compute(
+                    const auto numConverged = eigs.compute(
                         Spectra::SortRule::LargestAlge,  // Sort by descending eigenvalues.
                         maxIterations,
                         epsilon
