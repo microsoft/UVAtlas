@@ -44,6 +44,14 @@
 
 #define UVATLAS_VERSION 189
 
+#ifdef UVATLAS_EXPORT
+#define UVATLAS_API __declspec(dllexport)
+#elif UVATLAS_IMPORT
+#define UVATLAS_API __declspec(dllimport)
+#else
+#define UVATLAS_API
+#endif
+
 
 namespace DirectX
 {
@@ -146,7 +154,7 @@ namespace DirectX
     //                 maximum number of charts was too low, this gives the minimum
     //                 number of charts needed to create an atlas.
 
-    HRESULT __cdecl UVAtlasCreate(
+    UVATLAS_API HRESULT __cdecl UVAtlasCreate(
         _In_reads_(nVerts)                  const XMFLOAT3* positions,
         _In_                                size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
@@ -195,7 +203,7 @@ namespace DirectX
     // |_____|
     //
 
-    HRESULT __cdecl UVAtlasPartition(
+    UVATLAS_API HRESULT __cdecl UVAtlasPartition(
         _In_reads_(nVerts)          const XMFLOAT3* positions,
         _In_                        size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
@@ -221,7 +229,7 @@ namespace DirectX
     // This takes the face partitioning result from Partition and packs it into an
     // atlas of the given size. pPartitionResultAdjacency should be derived from
     // the adjacency returned from the partition step.
-    HRESULT __cdecl UVAtlasPack(
+    UVATLAS_API HRESULT __cdecl UVAtlasPack(
         _Inout_                 std::vector<UVAtlasVertex>& vMeshVertexBuffer,
         _Inout_                 std::vector<uint8_t>& vMeshIndexBuffer,
         _In_                    DXGI_FORMAT indexFormat,
@@ -261,7 +269,7 @@ namespace DirectX
     //                    a multiple of sizeof(float)
     // pIMTArray        - An array of 3 * nFaces floats for the result
 
-    HRESULT __cdecl UVAtlasComputeIMTFromPerVertexSignal(
+    UVATLAS_API HRESULT __cdecl UVAtlasComputeIMTFromPerVertexSignal(
         _In_reads_(nVerts)                  const XMFLOAT3* positions,
         _In_                                size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
@@ -291,7 +299,7 @@ namespace DirectX
     //                   signalOut - A pointer to where to store the signal data.
     // userData        - A pointer that will be passed in to the callback.
     // pIMTArray        - An array of 3 * nFaces floats for the result
-    HRESULT __cdecl UVAtlasComputeIMTFromSignal(
+    UVATLAS_API HRESULT __cdecl UVAtlasComputeIMTFromSignal(
         _In_reads_(nVerts)                  const XMFLOAT3* positions,
         _In_reads_(nVerts)                  const XMFLOAT2* texcoords,
         _In_                                size_t nVerts,
@@ -316,7 +324,7 @@ namespace DirectX
     // pTexture         - The texture to load data from (4 floats per texel)
     // options          - Combination of one or more UVATLAS_IMT flags.
     // pIMTArray        - An array of 3 * nFaces floats for the result
-    HRESULT __cdecl UVAtlasComputeIMTFromTexture(
+    UVATLAS_API HRESULT __cdecl UVAtlasComputeIMTFromTexture(
         _In_reads_(nVerts)                  const XMFLOAT3* positions,
         _In_reads_(nVerts)                  const XMFLOAT2* texcoords,
         _In_                                size_t nVerts,
@@ -341,7 +349,7 @@ namespace DirectX
     // nComponents      - The number of floats in each texel
     // options          - Combination of one or more UVATLAS_IMT flags
     // pIMTArray        - An array of 3 * nFaces floats for the result
-    HRESULT __cdecl UVAtlasComputeIMTFromPerTexelSignal(
+    UVATLAS_API HRESULT __cdecl UVAtlasComputeIMTFromPerTexelSignal(
         _In_reads_(nVerts)                      const XMFLOAT3* positions,
         _In_reads_(nVerts)                      const XMFLOAT2* texcoords,
         _In_                                    size_t nVerts,
@@ -363,7 +371,7 @@ namespace DirectX
     // vbin         - This is the original vertex buffer and is nVerts*stride in size
     // vbout        - This is the output vertex buffer and is nNewVerts*stride in size
     // nNewVerts    - This should be >= nVerts
-    HRESULT __cdecl UVAtlasApplyRemap(
+    UVATLAS_API HRESULT __cdecl UVAtlasApplyRemap(
         _In_reads_bytes_(nVerts* stride)        const void* vbin,
         _In_                                    size_t stride,
         _In_                                    size_t nVerts,
