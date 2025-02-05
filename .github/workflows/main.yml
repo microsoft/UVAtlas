@@ -118,6 +118,8 @@ jobs:
       working-directory: ${{ github.workspace }}
       run: cmake --preset=${{ matrix.build_type }} -DBUILD_SHARED_LIBS=ON
 
-    - name: 'Build (DLL)'
+    - if: matrix.build_type != 'arm64-Release-Clang'
+      # skip lld linker failure
+      name: 'Build (DLL)'
       working-directory: ${{ github.workspace }}
       run: cmake --build out\build\${{ matrix.build_type }}
