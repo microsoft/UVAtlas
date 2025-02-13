@@ -46,7 +46,7 @@
 
 #ifdef UVATLAS_EXPORT
 #define UVATLAS_API __declspec(dllexport)
-#elif UVATLAS_IMPORT
+#elif defined(UVATLAS_IMPORT)
 #define UVATLAS_API __declspec(dllimport)
 #else
 #define UVATLAS_API
