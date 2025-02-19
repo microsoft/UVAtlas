@@ -122,6 +122,10 @@ if(WIN32 AND BUILD_SHARED_LIBS)
 
   target_compile_definitions(${PROJECT_NAME} PRIVATE UVATLAS_EXPORT)
   target_compile_definitions(${PROJECT_NAME} INTERFACE UVATLAS_IMPORT)
+
+  if(XBOX_CONSOLE_TARGET MATCHES "scarlett|xboxone")
+    target_link_libraries(${PROJECT_NAME} PRIVATE xgameplatform.lib)
+  endif()
 else()
   add_library (${PROJECT_NAME} ${LIBRARY_SOURCES} ${LIBRARY_HEADERS})
 endif()
