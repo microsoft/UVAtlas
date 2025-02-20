@@ -15,6 +15,10 @@ project (UVAtlas
   HOMEPAGE_URL "https://go.microsoft.com/fwlink/?LinkID=512686"
   LANGUAGES CXX)
 
+if(DEFINED XBOX_CONSOLE_TARGET)
+  set(CMAKE_CXX_STANDARD_LIBRARIES "")
+endif()
+
 # To build this tool, you need the DirectXTex (http://go.microsoft.com/fwlink/?LinkId=248926) and
 # DirectXMesh (http://go.microsoft.com/fwlink/?LinkID=324981) cmake packages available.
 #
