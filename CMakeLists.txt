@@ -15,6 +15,10 @@ project (UVAtlas
   HOMEPAGE_URL "https://go.microsoft.com/fwlink/?LinkID=512686"
   LANGUAGES CXX)
 
+if(DEFINED XBOX_CONSOLE_TARGET)
+  set(CMAKE_CXX_STANDARD_LIBRARIES "")
+endif()
+
 # To build this tool, you need the DirectXTex (http://go.microsoft.com/fwlink/?LinkId=248926) and
 # DirectXMesh (http://go.microsoft.com/fwlink/?LinkID=324981) cmake packages available.
 #
@@ -122,6 +126,10 @@ if(WIN32 AND BUILD_SHARED_LIBS)
 
   target_compile_definitions(${PROJECT_NAME} PRIVATE UVATLAS_EXPORT)
   target_compile_definitions(${PROJECT_NAME} INTERFACE UVATLAS_IMPORT)
+
+  if(XBOX_CONSOLE_TARGET MATCHES "scarlett|xboxone")
+    target_link_libraries(${PROJECT_NAME} PRIVATE xgameplatform.lib)
+  endif()
 else()
   add_library (${PROJECT_NAME} ${LIBRARY_SOURCES} ${LIBRARY_HEADERS})
 endif()
