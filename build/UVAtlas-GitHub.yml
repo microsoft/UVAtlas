@@ -84,20 +84,6 @@ jobs:
       msbuildArgs: /p:PreferredToolArchitecture=x64
       platform: x64
       configuration: Release
-  - task: VSBuild@1
-    displayName: Build solution UVAtlas_2019_Win10.sln arm64dbg
-    inputs:
-      solution: UVAtlas_2019_Win10.sln
-      msbuildArgs: /p:PreferredToolArchitecture=x64
-      platform: ARM64
-      configuration: Debug
-  - task: VSBuild@1
-    displayName: Build solution UVAtlas_2019_Win10.sln arm64rel
-    inputs:
-      solution: UVAtlas_2019_Win10.sln
-      msbuildArgs: /p:PreferredToolArchitecture=x64
-      platform: ARM64
-      configuration: Release
 
 - job: DESKTOP_BUILD_SPECTRE
   displayName: 'Win32 Desktop (Spectre-mitigated)'
@@ -144,18 +130,4 @@ jobs:
       solution: UVAtlas_2019_Win10.sln
       msbuildArgs: /p:PreferredToolArchitecture=x64 /p:SpectreMitigation=Spectre
       platform: x64
-      configuration: Release
-  - task: VSBuild@1
-    displayName: Build solution UVAtlas_2019_Win10.sln arm64dbg
-    inputs:
-      solution: UVAtlas_2019_Win10.sln
-      msbuildArgs: /p:PreferredToolArchitecture=x64 /p:SpectreMitigation=Spectre
-      platform: ARM64
-      configuration: Debug
-  - task: VSBuild@1
-    displayName: Build solution UVAtlas_2019_Win10.sln arm64rel
-    inputs:
-      solution: UVAtlas_2019_Win10.sln
-      msbuildArgs: /p:PreferredToolArchitecture=x64 /p:SpectreMitigation=Spectre
-      platform: ARM64
       configuration: Release
