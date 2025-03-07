@@ -77,7 +77,7 @@ jobs:
       working-directory: ${{ github.workspace }}
       run: cmake --preset=${{ matrix.build_type }} -DBUILD_SHARED_LIBS=ON
 
-    - if: matrix.build_type != 'arm64-Release-Clang'
+    - if: matrix.build_type != 'arm64-Release-UWP-Clang'
       # skip lld linker failure
       name: 'Build (DLL)'
       working-directory: ${{ github.workspace }}
