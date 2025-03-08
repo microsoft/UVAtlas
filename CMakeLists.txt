@@ -5,10 +5,6 @@ cmake_minimum_required (VERSION 3.20)
 
 set(UVATLAS_VERSION 1.8.9)
 
-if(WINDOWS_STORE OR (DEFINED XBOX_CONSOLE_TARGET))
-  set(CMAKE_TRY_COMPILE_TARGET_TYPE "STATIC_LIBRARY")
-endif()
-
 project (UVAtlas
   VERSION ${UVATLAS_VERSION}
   DESCRIPTION "UVAtlas Isochart Atlas Library"
