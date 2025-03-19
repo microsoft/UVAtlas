@@ -27,6 +27,10 @@ HRESULT CIsochartMesh::GenerateAllSubCharts(
     {
         return S_OK;
     }
+    else if (dwMaxSubchartCount > UINT16_MAX)
+    {
+        return E_INVALIDARG;
+    }
     DeleteChildren();
 
     std::unique_ptr<std::vector<uint32_t>[]> chartFaceList(new (std::nothrow) std::vector<uint32_t>[dwMaxSubchartCount]);
