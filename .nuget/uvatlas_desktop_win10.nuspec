@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata minClientVersion="2.8.6">
+        <id>uvatlas_desktop_win10</id>
+        <version>0.0.0-SpecifyVersionOnCommandline</version>
+        <title>UVAtlas Library (VS 2022 Win32)</title>
+        <authors>Microsoft</authors>
+        <owners>microsoft,directxtk</owners>
+        <summary>UVAtlas Isochart library</summary>
+        <description>This version is for Windows desktop applications using Visual Studio 2022 on Windows 8.1 or later.
+
+UVAtlas, a shared source library for creating and packing an isochart texture atlas.</description>
+        <releaseNotes>Matches the October 29, 2024 release on GitHub.</releaseNotes>
+        <projectUrl>http://go.microsoft.com/fwlink/?LinkID=512686</projectUrl>
+        <repository type="git" url="https://github.com/microsoft/UVAtlas.git" />
+        <icon>images\icon.jpg</icon>
+        <readme>docs\README.md</readme>
+        <license type="expression">MIT</license>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <copyright>&#169; Microsoft Corporation. All rights reserved.</copyright>
+        <tags>DirectX  UVAtlas  native nativepackage  ARM64</tags>
+    </metadata>
+
+    <files>
+
+        <file target="docs" src="*.md" />
+
+        <file target="include" src="UVAtlas\inc\UVAtlas.h" />
+
+        <file target="native\lib\x86\Debug" src="UVAtlas\Bin\Desktop_2022_Win10\Win32\Debug\*.lib" />
+        <file target="native\lib\x86\Debug" src="UVAtlas\Bin\Desktop_2022_Win10\Win32\Debug\*.pdb" />
+
+        <file target="native\lib\x86\Debug" src="UVAtlas\Bin\Desktop_2022_Win10\Win32\DebugSpectre\*.lib" />
+        <file target="native\lib\x86\Debug" src="UVAtlas\Bin\Desktop_2022_Win10\Win32\DebugSpectre\*.pdb" />
+
+        <file target="native\lib\x86\Release" src="UVAtlas\Bin\Desktop_2022_Win10\Win32\Release\*.lib" />
+        <file target="native\lib\x86\Release" src="UVAtlas\Bin\Desktop_2022_Win10\Win32\Release\*.pdb" />
+
+        <file target="native\lib\x86\Release" src="UVAtlas\Bin\Desktop_2022_Win10\Win32\ReleaseSpectre\*.lib" />
+        <file target="native\lib\x86\Release" src="UVAtlas\Bin\Desktop_2022_Win10\Win32\ReleaseSpectre\*.pdb" />
+
+        <file target="native\lib\x64\Debug" src="UVAtlas\Bin\Desktop_2022_Win10\x64\Debug\*.lib" />
+        <file target="native\lib\x64\Debug" src="UVAtlas\Bin\Desktop_2022_Win10\x64\Debug\*.pdb" />
+
+        <file target="native\lib\x64\Debug" src="UVAtlas\Bin\Desktop_2022_Win10\x64\DebugSpectre\*.lib" />
+        <file target="native\lib\x64\Debug" src="UVAtlas\Bin\Desktop_2022_Win10\x64\DebugSpectre\*.pdb" />
+
+        <file target="native\lib\x64\Release" src="UVAtlas\Bin\Desktop_2022_Win10\x64\Release\*.lib" />
+        <file target="native\lib\x64\Release" src="UVAtlas\Bin\Desktop_2022_Win10\x64\Release\*.pdb" />
+
+        <file target="native\lib\x64\Release" src="UVAtlas\Bin\Desktop_2022_Win10\x64\ReleaseSpectre\*.lib" />
+        <file target="native\lib\x64\Release" src="UVAtlas\Bin\Desktop_2022_Win10\x64\ReleaseSpectre\*.pdb" />
+
+        <file target="native\lib\ARM64\Debug" src="UVAtlas\Bin\Desktop_2022_Win10\ARM64\Debug\*.lib" />
+        <file target="native\lib\ARM64\Debug" src="UVAtlas\Bin\Desktop_2022_Win10\ARM64\Debug\*.pdb" />
+
+        <file target="native\lib\ARM64\Debug" src="UVAtlas\Bin\Desktop_2022_Win10\ARM64\DebugSpectre\*.lib" />
+        <file target="native\lib\ARM64\Debug" src="UVAtlas\Bin\Desktop_2022_Win10\ARM64\DebugSpectre\*.pdb" />
+
+        <file target="native\lib\ARM64\Release" src="UVAtlas\Bin\Desktop_2022_Win10\ARM64\Release\*.lib" />
+        <file target="native\lib\ARM64\Release" src="UVAtlas\Bin\Desktop_2022_Win10\ARM64\Release\*.pdb" />
+
+        <file target="native\lib\ARM64\Release" src="UVAtlas\Bin\Desktop_2022_Win10\ARM64\ReleaseSpectre\*.lib" />
+        <file target="native\lib\ARM64\Release" src="UVAtlas\Bin\Desktop_2022_Win10\ARM64\ReleaseSpectre\*.pdb" />
+
+        <file src=".nuget/uvatlas_desktop_win10.targets" target="build\native" />
+
+        <file src=".nuget/icon.jpg" target="images\" />
+
+    </files>
+</package>
