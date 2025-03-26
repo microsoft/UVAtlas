@@ -42,7 +42,7 @@
 
 #include <DirectXMath.h>
 
-#define UVATLAS_VERSION 189
+#define UVATLAS_VERSION 190
 
 #ifdef UVATLAS_EXPORT
 #define UVATLAS_API __declspec(dllexport)

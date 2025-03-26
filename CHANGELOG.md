@@ -6,6 +6,13 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### March 26, 2025
+* Retired support for Windows 7 and Windows 8.0
+* Minor code review
+* CMake project updates including support for BUILD_SHARED_LIBS (i.e. DLL vs. static library)
+* uvatlastool:
+  * Updated for March 2025 DirectXTex & DirectXMesh releases
+
 ### October 29, 2024
 * All enums now use ``uint32_t`` as the underlying type rather than ``unsigned long`` or ``int``.
 * uvatlastool:

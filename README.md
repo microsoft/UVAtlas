@@ -6,7 +6,7 @@ http://go.microsoft.com/fwlink/?LinkID=512686
 
 Copyright (c) Microsoft Corporation.
 
-**October 29, 2024**
+**March 26, 2025**
 
 This package contains UVAtlas, a shared source library for creating and packing an isochart texture atlas.
 
@@ -67,6 +67,8 @@ Sander et al. "Signal-Specialized Parametrization" Europgraphics 2002 [pdf](http
 FOR SECURITY ADVISORIES, see [GitHub](https://github.com/microsoft/UVAtlas/security/advisories).
 
 For a full change history, see [CHANGELOG.md](https://github.com/microsoft/UVAtlas/blob/main/CHANGELOG.md).
+
+* Starting with the March 2025 release, Windows 7 and Windows 8.0 support has been retired.
 
 * Starting with the December 2020 release, this library makes use of typed enum bitmask flags per the recommendation of the _C++ Standard_ section *17.5.2.1.3 Bitmask types*. This is consistent with Direct3D 12's use of the ``DEFINE_ENUM_FLAG_OPERATORS`` macro. This may have *breaking change* impacts to client code:
 
