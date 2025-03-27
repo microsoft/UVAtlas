@@ -44,10 +44,18 @@
 
 #define UVATLAS_VERSION 190
 
-#ifdef UVATLAS_EXPORT
+#if defined(_WIN32) && defined(UVATLAS_EXPORT)
+#ifdef __GNUC__
+#define UVATLAS_API __attribute__ ((dllexport))
+#else
 #define UVATLAS_API __declspec(dllexport)
-#elif defined(UVATLAS_IMPORT)
+#endif
+#elif defined(_WIN32) && defined(UVATLAS_IMPORT)
+#ifdef __GNUC__
+#define UVATLAS_API __attribute__ ((dllimport))
+#else
 #define UVATLAS_API __declspec(dllimport)
+#endif
 #else
 #define UVATLAS_API
 #endif
