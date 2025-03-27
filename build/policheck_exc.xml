@@ -1,0 +1,3 @@
+<PoliCheckExclusions>
+  <Exclusion Type="FolderPathStart">VCPKG</Exclusion>
+</PoliCheckExclusions>
