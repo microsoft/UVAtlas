@@ -81,6 +81,7 @@ jobs:
       result: PoliCheck.xml
       optionsPE: 1
       optionsRulesDBPath: $(Build.SourcesDirectory)/build/rule.mdb
+      optionsUEPATH: $(Build.SourcesDirectory)/build/policheck_exc.xml
   - task: Armory@2
     displayName: Run ARMory
   - task: CmdLine@2
