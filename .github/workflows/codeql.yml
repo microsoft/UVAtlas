@@ -13,11 +13,12 @@ on:
     paths-ignore:
       - '*.md'
       - LICENSE
+      - '.azuredevops/*'
       - '.nuget/*'
       - build/*.mdb
       - build/*.props
       - build/*.ps1
-      - build/*.yml
+      - build/*.xml
   schedule:
     - cron: '19 19 * * 0'
 

@@ -20,7 +20,7 @@ pr:
     - main
   paths:
     include:
-    - build/UVAtlas-GitHub.yml
+    - '.azuredevops/pipelines/UVAtlas-GitHub.yml'
 
 resources:
   repositories:

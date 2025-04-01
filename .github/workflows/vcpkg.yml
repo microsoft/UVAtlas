@@ -12,8 +12,12 @@ on:
     branches: [ "main" ]
     paths-ignore:
       - '*.md'
+      - '.azuredevops/*'
       - LICENSE
-      - build/*
+      - build/*.props
+      - build/*.mdb
+      - build/*.ps1
+      - build/*.xml
 
 permissions:
   contents: read
