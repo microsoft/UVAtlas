@@ -25,6 +25,7 @@ trigger:
     - build/*.props
     - build/*.mdb
     - build/*.ps1
+    - build/*.xml
 
 pr:
   branches:
@@ -39,6 +40,7 @@ pr:
     - build/*.props
     - build/*.mdb
     - build/*.ps1
+    - build/*.xml
   drafts: false
 
 resources:
