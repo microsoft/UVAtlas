@@ -37,14 +37,23 @@ resources:
 name: $(Year:yyyy).$(Month).$(DayOfMonth)$(Rev:.r)
 
 variables:
-  Codeql.Enabled: true
-  Codeql.Language: cpp
-  Codeql.ExcludePathPatterns: vcpkg
-  VC_PATH: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC'
-  VS_GENERATOR: 'Visual Studio 17 2022'
-  VCPKG_ROOT: $(Build.SourcesDirectory)/vcpkg
-  VCPKG_CMAKE_DIR: $(Build.SourcesDirectory)/vcpkg/scripts/buildsystems/vcpkg.cmake
-  VCPKG_MANIFEST_DIR: $(Build.SourcesDirectory)/build
+- group: uvatlas-shared-variables
+- name: Codeql.Enabled
+  value: true
+- name: Codeql.Language
+  value: cpp
+- name: Codeql.ExcludePathPatterns
+  value: vcpkg
+- name: VC_PATH
+  value: 'C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC'
+- name: VS_GENERATOR
+  value: 'Visual Studio 17 2022'
+- name: VCPKG_ROOT
+  value: '$(Build.SourcesDirectory)/vcpkg'
+- name: VCPKG_CMAKE_DIR
+  value: '$(Build.SourcesDirectory)/vcpkg/scripts/buildsystems/vcpkg.cmake'
+- name: VCPKG_MANIFEST_DIR
+  value: '$(Build.SourcesDirectory)/build'
 
 pool:
   vmImage: windows-2022
