@@ -1398,13 +1398,25 @@ HRESULT Mesh::CreateFromVBO(const wchar_t* szFileName, std::unique_ptr<Mesh>& re
     if (!result)
         return E_OUTOFMEMORY;
 
+    const uint64_t vertSizeBytes = static_cast<uint64_t>(header.numVertices) * sizeof(vertex_t);
+    if (vertSizeBytes > UINT32_MAX)
+    {
+        return HRESULT_FROM_WIN32(ERROR_ARITHMETIC_OVERFLOW);
+    }
+
+    const uint64_t indexSizeBytes = static_cast<uint64_t>(header.numIndices) * sizeof(uint16_t);
+    if (indexSizeBytes > UINT32_MAX)
+    {
+        return HRESULT_FROM_WIN32(ERROR_ARITHMETIC_OVERFLOW);
+    }
+
     // Read vertices/indices from VBO
     std::unique_ptr<vertex_t[]> vb(new (std::nothrow) vertex_t[header.numVertices]);
     std::unique_ptr<uint16_t[]> ib(new (std::nothrow) uint16_t[header.numIndices]);
     if (!vb || !ib)
         return E_OUTOFMEMORY;
 
-    const auto vertSize = static_cast<DWORD>(sizeof(vertex_t) * header.numVertices);
+    const auto vertSize = static_cast<DWORD>(vertSizeBytes);
 
     if (!ReadFile(hFile.get(), vb.get(), vertSize, &bytesRead, nullptr))
     {
@@ -1414,7 +1426,7 @@ HRESULT Mesh::CreateFromVBO(const wchar_t* szFileName, std::unique_ptr<Mesh>& re
     if (bytesRead != vertSize)
         return E_FAIL;
 
-    const auto indexSize = static_cast<DWORD>(sizeof(uint16_t) * header.numIndices);
+    const auto indexSize = static_cast<DWORD>(indexSizeBytes);
 
     if (!ReadFile(hFile.get(), ib.get(), indexSize, &bytesRead, nullptr))
     {
