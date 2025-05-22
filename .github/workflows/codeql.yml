@@ -8,12 +8,21 @@ name: "CodeQL"
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - '*.md'
+      - LICENSE
+      - '.azuredevops/**'
+      - '.nuget/*'
+      - build/*.mdb
+      - build/*.props
+      - build/*.ps1
+      - build/*.xml
   pull_request:
     branches: [ "main" ]
     paths-ignore:
       - '*.md'
       - LICENSE
-      - '.azuredevops/*'
+      - '.azuredevops/**'
       - '.nuget/*'
       - build/*.mdb
       - build/*.props
