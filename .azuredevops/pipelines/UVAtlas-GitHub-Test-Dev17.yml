@@ -59,6 +59,27 @@ jobs:
   cancelTimeoutInMinutes: 1
   workspace:
     clean: all
+  strategy:
+    maxParallel: 3
+    matrix:
+      Release_arm64:
+        BuildPlatform: ARM64
+        BuildConfiguration: Release
+      Debug_arm64:
+        BuildPlatform: ARM64
+        BuildConfiguration: Debug
+      Release_x64:
+        BuildPlatform: x64
+        BuildConfiguration: Release
+      Debug_x64:
+        BuildPlatform: x64
+        BuildConfiguration: Debug
+      Release_x86:
+        BuildPlatform: x86
+        BuildConfiguration: Release
+      Debug_x86:
+        BuildPlatform: x86
+        BuildConfiguration: Debug
   steps:
   - checkout: self
     clean: true
@@ -83,58 +104,13 @@ jobs:
     fetchDepth: 1
     path: 's/UVAtlas/Tests'
   - task: VSBuild@1
-    displayName: Build solution xtuvatlas_Desktop_2022.sln 32dbg
+    displayName: Build solution xtuvatlas_Desktop_2022.sln
     inputs:
       solution: UVAtlas/Tests/xtuvatlas_Desktop_2022.sln
       vsVersion: 17.0
       msbuildArgs: /p:PreferredToolArchitecture=x64
-      platform: x86
-      configuration: Debug
-      msbuildArchitecture: x64
-  - task: VSBuild@1
-    displayName: Build solutionxtuvatlas_Desktop_2022.sln 32rel
-    inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2022.sln
-      vsVersion: 17.0
-      msbuildArgs: /p:PreferredToolArchitecture=x64
-      platform: x86
-      configuration: Release
-      msbuildArchitecture: x64
-  - task: VSBuild@1
-    displayName: Build solution xtuvatlas_Desktop_2022.sln 64dbg
-    inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2022.sln
-      vsVersion: 17.0
-      msbuildArgs: /p:PreferredToolArchitecture=x64
-      platform: x64
-      configuration: Debug
-      msbuildArchitecture: x64
-  - task: VSBuild@1
-    displayName: Build solution xtuvatlas_Desktop_2022.sln 64rel
-    inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2022.sln
-      vsVersion: 17.0
-      msbuildArgs: /p:PreferredToolArchitecture=x64
-      platform: x64
-      configuration: Release
-      msbuildArchitecture: x64
-  - task: VSBuild@1
-    displayName: Build solution xtuvatlas_Desktop_2022.sln arm64dbg
-    inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2022.sln
-      vsVersion: 17.0
-      msbuildArgs: /p:PreferredToolArchitecture=x64
-      platform: ARM64
-      configuration: Debug
-      msbuildArchitecture: x64
-  - task: VSBuild@1
-    displayName: Build solution xtuvatlas_Desktop_2022.sln arm64rel
-    inputs:
-      solution: UVAtlas/Tests/xtuvatlas_Desktop_2022.sln
-      vsVersion: 17.0
-      msbuildArgs: /p:PreferredToolArchitecture=x64
-      platform: ARM64
-      configuration: Release
+      platform: '$(BuildPlatform)'
+      configuration: '$(BuildConfiguration)'
       msbuildArchitecture: x64
 
 - job: CMAKE_BUILD_X64

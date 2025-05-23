@@ -20,7 +20,7 @@ trigger:
     exclude:
     - '*.md'
     - LICENSE
-    - '.github/*'
+    - '.github/**'
     - '.nuget/*'
     - build/*.props
     - build/*.mdb
@@ -35,7 +35,7 @@ pr:
     exclude:
     - '*.md'
     - LICENSE
-    - '.github/*'
+    - '.github/**'
     - '.nuget/*'
     - build/*.props
     - build/*.mdb

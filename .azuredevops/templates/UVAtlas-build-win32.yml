@@ -1,0 +1,57 @@
+# Copyright (c) Microsoft Corporation.
+# Licensed under the MIT License.
+#
+# http://go.microsoft.com/fwlink/?LinkID=512686
+
+# Template used by SDK-release and SDK-prerelease pipelines
+
+steps:
+- task: NuGetCommand@2
+  displayName: NuGet restore
+  inputs:
+    solution: UVAtlas_2019_Win10.sln
+    selectOrConfig: config
+    nugetConfigPath: NuGet.Config
+- task: VSBuild@1
+  displayName: Build solution UVAtlas_2019_Win10.sln 32dbg
+  inputs:
+    solution: UVAtlas_2019_Win10.sln
+    msbuildArgs: /p:PreferredToolArchitecture=x64
+    platform: x86
+    configuration: Debug
+- task: VSBuild@1
+  displayName: Build solution UVAtlas_2019_Win10.sln 32rel
+  inputs:
+    solution: UVAtlas_2019_Win10.sln
+    msbuildArgs: /p:PreferredToolArchitecture=x64
+    platform: x86
+    configuration: Release
+- task: VSBuild@1
+  displayName: Build solution UVAtlas_2019_Win10.sln 64dbg
+  inputs:
+    solution: UVAtlas_2019_Win10.sln
+    msbuildArgs: /p:PreferredToolArchitecture=x64
+    platform: x64
+    configuration: Debug
+- task: VSBuild@1
+  displayName: Build solution UVAtlas_2019_Win10.sln 64rel
+  inputs:
+    solution: UVAtlas_2019_Win10.sln
+    msbuildArgs: /p:PreferredToolArchitecture=x64
+    platform: x64
+    configuration: Release
+# VS 2019 for Win32 on ARM64 is out of support.
+- task: VSBuild@1
+  displayName: Build solution UVAtlas_2022_Win10.sln arm64dbg
+  inputs:
+    solution: UVAtlas_2022_Win10.sln
+    msbuildArgs: /p:PreferredToolArchitecture=x64
+    platform: ARM64
+    configuration: Debug
+- task: VSBuild@1
+  displayName: Build solution UVAtlas_2022_Win10.sln arm64rel
+  inputs:
+    solution: UVAtlas_2022_Win10.sln
+    msbuildArgs: /p:PreferredToolArchitecture=x64
+    platform: ARM64
+    configuration: Release
