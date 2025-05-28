@@ -266,7 +266,9 @@ if(BUILD_TOOLS AND WIN32)
         UVAtlasTool/Mesh.cpp
         UVAtlasTool/Mesh.h
         UVAtlasTool/MeshOBJ.cpp
-        UVAtlasTool/SDKMesh.h)
+        UVAtlasTool/CMO.h
+        UVAtlasTool/SDKMesh.h
+        UVAtlasTool/vbo.h)
     target_compile_features(uvatlastool PRIVATE cxx_std_17)
     target_link_libraries(uvatlastool PRIVATE
         ${PROJECT_NAME}
