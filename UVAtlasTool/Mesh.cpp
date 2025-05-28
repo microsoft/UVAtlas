@@ -1575,7 +1575,7 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
     }
 
     // Write materials
-    static const Mesh::Material s_defMaterial = { L"default", false, 1.f, 1.f,
+    static const Mesh::Material s_defCMOMaterial = { L"default", false, 1.f, 1.f,
         XMFLOAT3(0.2f, 0.2f, 0.2f), XMFLOAT3(0.8f, 0.8f, 0.8f),
         XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f), L"" };
 
@@ -1587,7 +1587,7 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
     else
     {
         nMaterials = 1;
-        materials = &s_defMaterial;
+        materials = &s_defCMOMaterial;
     }
 
     hr = write_file(hFile.get(), materialCount);
