@@ -301,8 +301,10 @@
     <ClCompile Include="UVAtlas.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClInclude Include="CmdLineHelpers.h" />
+    <ClInclude Include="CMO.h" />
     <CLInclude Include="Mesh.h" />
     <ClInclude Include="SDKMesh.h" />
+    <ClInclude Include="vbo.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="UVAtlas.rc" />
