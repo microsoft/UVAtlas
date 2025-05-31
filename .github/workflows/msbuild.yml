@@ -28,7 +28,7 @@ permissions:
 
 jobs:
   build:
-    runs-on: windows-${{ matrix.vs }}
+    runs-on: windows-2022
 
     strategy:
       fail-fast: false
@@ -66,6 +66,6 @@ jobs:
         name: 'Build (Spectre)'
         working-directory: ${{ github.workspace }}
         run: >
-          msbuild /m p:Configuration=${{ matrix.build_type }} /p:Platform=${{ matrix.platform }}
+          msbuild /m /p:Configuration=${{ matrix.build_type }} /p:Platform=${{ matrix.platform }}
           /p:SpectreMitigation=Spectre
           UVAtlas_${{ matrix.vs }}_Win10.sln
