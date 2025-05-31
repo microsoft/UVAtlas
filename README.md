@@ -23,14 +23,14 @@ These components are designed to work without requiring any content from the leg
     * Public Header File (in the DirectX C++ namespace):
 
       * UVtlas.h
-        - UVAtlasCreate
-        - UVAtlasPartition
-        - UVAtlasPack
-        - UVAtlasComputeIMTFromPerVertexSignal
-        - UVAtlasComputeIMTFromSignal
-        - UVAtlasComputeIMTFromTexture
-        - UVAtlasComputeIMTFromPerTexelSignal
-        - UVAtlasApplyRemap
+        * UVAtlasCreate
+        * UVAtlasPartition
+        * UVAtlasPack
+        * UVAtlasComputeIMTFromPerVertexSignal
+        * UVAtlasComputeIMTFromSignal
+        * UVAtlasComputeIMTFromTexture
+        * UVAtlasComputeIMTFromPerTexelSignal
+        * UVAtlasApplyRemap
 
   * ``geodesics\``, ``isochart\``
 
