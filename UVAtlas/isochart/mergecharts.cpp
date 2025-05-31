@@ -946,7 +946,7 @@ HRESULT CIsochartMesh::TryMergeChart(
     }
     while (!bSimpleChart);
 
- // 6. Ccompute the adjacent sub-charts of new sub-chart.
+     // 6. Ccompute the adjacent sub-charts of new sub-chart.
     auto &adjacentChartList = pMainChart->m_adjacentChart;
     try
     {

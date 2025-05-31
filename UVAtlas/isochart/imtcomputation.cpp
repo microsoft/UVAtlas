@@ -490,7 +490,7 @@ Isochart::IMTFromTextureMap(
     }
     while (!subFaceIdxList.empty());
 
- // 4. Get signal on all vertex.
+    // 4. Get signal on all vertex.
     pfSignalBase.reset(new (std::nothrow) float[vertList.size() * dwSignalDimension]);
     if (!pfSignalBase)
     {

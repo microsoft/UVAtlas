@@ -97,21 +97,21 @@ namespace Isochart
         LPISOCHARTCALLBACK m_pCallback; // Callback function
         float m_fCallbackFrequency;     // The frequency to call callback function.
 
-        size_t m_dwTotalWork;     // Steps of current sub-task.
-        size_t m_dwWorkDone;      // Steps have been completed in the sub-task.
-        size_t m_dwNextCallback;  // The next point to call callback function.
-        size_t m_dwCallbackDelta; // The frequence to call callback, indicate hwo
-                                  // many steps should be done before next callback
-        size_t m_dwWaitPoint;     // When sub-task reach this point, don't update the
-                                  // rate of progress until FinishWorkAdapt
-        size_t m_dwWaitCount;     // Work with m_dwWaitPoint. keep the frequence of
-                                  // calling callback, but not update rate of progress
-        bool m_bIsWaitToFinish;   // Inidicate sub-task has reached to wait point.
+        size_t m_dwTotalWork;       // Steps of current sub-task.
+        size_t m_dwWorkDone;        // Steps have been completed in the sub-task.
+        size_t m_dwNextCallback;    // The next point to call callback function.
+        size_t m_dwCallbackDelta;   // The frequence to call callback, indicate hwo
+                                    // many steps should be done before next callback
+        size_t m_dwWaitPoint;       // When sub-task reach this point, don't update the
+                                    // rate of progress until FinishWorkAdapt
+        size_t m_dwWaitCount;       // Work with m_dwWaitPoint. keep the frequence of
+                                    // calling callback, but not update rate of progress
+        bool m_bIsWaitToFinish;     // Inidicate sub-task has reached to wait point.
 
-        float m_fPercentScale; // One step of sub-task can complete how many work
-                               //(in percent)of main work
-        float m_fBase;         // The complete percent of main task before performing
-                               // current sub-task.
+        float m_fPercentScale;      // One step of sub-task can complete how many work
+                                    //(in percent)of main work
+        float m_fBase;              // The complete percent of main task before performing
+                                    // current sub-task.
 
         unsigned int m_dwTotalStage;
         unsigned int m_dwDoneStage;

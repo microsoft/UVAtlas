@@ -62,13 +62,13 @@ namespace Isochart
     // Edge in progressive mesh
     struct PMISOCHARTEDGE
     {
-        uint32_t dwID;               // Index in the edge array of current mesh
-        uint32_t dwVertexID[2];      // The ID of 2 vertices of this edge
-        uint32_t dwFaceID[2];        // The ID of 2 faces at the two sides of the edge
-                                     // if the edge has only one face beside it,
-                                     // dwFaceID[1] should be INVALID_FACE_ID
-        uint32_t dwOppositVertID[2]; // Vertex opposite to the edge in the face
-        bool bIsBoundary;            // Indicate if the edge is a boundary.
+        uint32_t dwID;                  // Index in the edge array of current mesh
+        uint32_t dwVertexID[2];         // The ID of 2 vertices of this edge
+        uint32_t dwFaceID[2];           // The ID of 2 faces at the two sides of the edge
+                                        // if the edge has only one face beside it,
+                                        // dwFaceID[1] should be INVALID_FACE_ID
+        uint32_t dwOppositVertID[2];    // Vertex opposite to the edge in the face
+        bool bIsBoundary;               // Indicate if the edge is a boundary.
 
         double fDeleteCost; // Delete cost
 

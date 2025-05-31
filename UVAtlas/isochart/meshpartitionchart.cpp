@@ -736,10 +736,10 @@ HRESULT CIsochartMesh::SatifyManifoldRule(
     }
     while (bIsModifiedCurPass && dwIteration <= dwMaxSubchartCount);
 
- // if found and fixed some non-manifold topology, check all vetices
- // again. This algorithm can not gurantee convergence. If current
- // partition method still causes non-manifold topology after dwMaxSubchartCount
- // times iteration, it's not a valid partition.
+    // if found and fixed some non-manifold topology, check all vetices
+    // again. This algorithm can not gurantee convergence. If current
+    // partition method still causes non-manifold topology after dwMaxSubchartCount
+    // times iteration, it's not a valid partition.
     if (dwIteration > dwMaxSubchartCount)
     {
         bIsManifold = false;

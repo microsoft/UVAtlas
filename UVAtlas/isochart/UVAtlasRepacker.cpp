@@ -800,7 +800,7 @@ HRESULT CUVAtlasRepacker::GenerateAdjacentInfo()
                                 ib[i].vertex[order[m][1]] == ib[j].vertex[order[n][1]]) ||
                                 (ib[i].vertex[order[m][0]] == ib[j].vertex[order[n][1]] &&
                                     ib[i].vertex[order[m][1]] == ib[j].vertex[order[n][0]]))
-                               // if two triangles have two common vertices, they are adjacent
+                                // if two triangles have two common vertices, they are adjacent
                             {
                                 m_AdjacentInfo[i * 3 + m] = static_cast<uint32_t>(j);
                                 m_AdjacentInfo[j * 3 + n] = static_cast<uint32_t>(i);
@@ -929,7 +929,7 @@ HRESULT CUVAtlasRepacker::GenerateNewBuffers()
                     memcpy(&m_NewAdjacentInfo[j * 3 + facestart * 3],
                         &m_AdjacentInfo[3 * ab[j]], sizeof(uint32_t) * 3);
 
-                 // copy the original index information continuously in new index buffer
+                    // copy the original index information continuously in new index buffer
                     m_IndexBuffer.push_back(index1);
                     m_IndexBuffer.push_back(index2);
                     m_IndexBuffer.push_back(index3);
@@ -1356,13 +1356,13 @@ void CUVAtlasRepacker::PutChart(uint32_t index)
             TryPut(UV_UPSIDE, UV_LEFTSIDE, 90, pPosInfo->numY,
                 m_toX - m_fromX, m_fromY, m_toY, pPosInfo->numX);
 
-         // try to put right side
+            // try to put right side
             TryPut(UV_LEFTSIDE, UV_RIGHTSIDE, 0, pPosInfo->numX,
                 m_toX - m_fromX, m_fromY, m_toY, pPosInfo->numY);
             TryPut(UV_DOWNSIDE, UV_RIGHTSIDE, 90, pPosInfo->numY,
                 m_toX - m_fromX, m_fromY, m_toY, pPosInfo->numX);
 
-         // try to put left side
+            // try to put left side
             Reverse(m_currSpaceInfo[UV_LEFTSIDE], size_t(pPosInfo->numY));
             TryPut(UV_LEFTSIDE, UV_LEFTSIDE, 180, pPosInfo->numX,
                 m_toX - m_fromX, m_fromY, m_toY, pPosInfo->numY);
@@ -1370,7 +1370,7 @@ void CUVAtlasRepacker::PutChart(uint32_t index)
             TryPut(UV_DOWNSIDE, UV_LEFTSIDE, 270, pPosInfo->numY,
                 m_toX - m_fromX, m_fromY, m_toY, pPosInfo->numX);
 
-         // try to put right side
+            // try to put right side
             Reverse(m_currSpaceInfo[UV_RIGHTSIDE], size_t(pPosInfo->numY));
             TryPut(UV_RIGHTSIDE, UV_RIGHTSIDE, 180, pPosInfo->numX,
                 m_toX - m_fromX, m_fromY, m_toY, pPosInfo->numY);
@@ -1388,13 +1388,13 @@ void CUVAtlasRepacker::PutChart(uint32_t index)
             TryPut(UV_LEFTSIDE, UV_UPSIDE, 270, pPosInfo->numX,
                 m_toY - m_fromY, m_fromX, m_toX, pPosInfo->numY);
 
-         // try to put down side
+            // try to put down side
             TryPut(UV_RIGHTSIDE, UV_DOWNSIDE, 270, pPosInfo->numX,
                 m_toY - m_fromY, m_fromX, m_toX, pPosInfo->numY);
             TryPut(UV_UPSIDE, UV_DOWNSIDE, 0, pPosInfo->numY,
                 m_toY - m_fromY, m_fromX, m_toX, pPosInfo->numX);
 
-         // try to put top side
+            // try to put top side
             Reverse(m_currSpaceInfo[UV_RIGHTSIDE], size_t(pPosInfo->numY));
             TryPut(UV_RIGHTSIDE, UV_UPSIDE, 90, pPosInfo->numX,
                 m_toY - m_fromY, m_fromX, m_toX, pPosInfo->numY);
@@ -1402,7 +1402,7 @@ void CUVAtlasRepacker::PutChart(uint32_t index)
             TryPut(UV_UPSIDE, UV_UPSIDE, 180, pPosInfo->numY,
                 m_toY - m_fromY, m_fromX, m_toX, pPosInfo->numX);
 
-         // try to put down side
+            // try to put down side
             Reverse(m_currSpaceInfo[UV_LEFTSIDE], size_t(pPosInfo->numY));
             TryPut(UV_LEFTSIDE, UV_DOWNSIDE, 90, pPosInfo->numX,
                 m_toY - m_fromY, m_fromX, m_toX, pPosInfo->numY);

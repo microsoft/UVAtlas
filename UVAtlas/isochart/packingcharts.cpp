@@ -7,61 +7,61 @@
 // http://go.microsoft.com/fwlink/?LinkID=512686
 //-------------------------------------------------------------------------------------
 
-/*
-    [Levy 2002]Levy, B. Pettjean, S., Ray, N.,And Mallet, J.-L. 2002
-    Least squares conformal maps for automatic texture atlas generation.
-    In Processings of SIGGRAPH 2002. 362-371.
-
-    [SGSH02] SANDER P., GORTLER S., SNYDER J., HOPPE H.:
-    Signal-specialized parameterization
-    In Proceedings of Eurographics Workshop on Rendering 2002(2002)
-
-    Algorithm Introduction:
-
-    The packing algorithm is an extension of the "Tetris" algroithm in
-    [Levy 2002]. In "Tetris", charts can only be introducted from the top;
-    isochart introduces them from the top, bottom, left or right sides.
-
-    This packing algroithm keeps track of the current "borders" of atlas
-    for each of the four directions, given all the charts introduced so far.
-
-    Specified the desired atlas width and height, packing performs the
-    following steps:
-        (1) Align all charts to their longest axis.
-        (2) Rescale charts
-        (3) For each chart:
-            - Choose the direction pair in which to add the chart
-              The rule is try to keep atlas width/height ratio.
-            - Insert the chart into the atlas
-              From the direction pair of the previous step, choose the
-              single direction that wastes the least space.
-            - Merge the new chart and old atlas border for next iteration.
-
-    Terms:
-    Radial direction:
-        Direction that the chart is packed into atlas. E.g. when packing
-        a chart from left or right side, radial direction is along X axis,
-        otherwise, it's along Y axis.
-
-    Tangent direction:
-        Tangent direction is the counterpart of radial direction.
-        When packing a chart along radial direction. the chart can move
-        along a corresponding tangent direction to find the best place.
-        If radial direction is along X axis then tangent direction is
-        along Y coordinate.
-
-                                Tangent
-                              --------->
-                                   |
-                                   | Radial
-                                   |
-                                   V
-                        |-------------------|
-                        |                   |   Radial    |
-                        |        Atlas      | <-----------| Tangent
-                        |                   |             |
-                        --------------------|             V
-*/
+//
+//  [Levy 2002]Levy, B. Pettjean, S., Ray, N.,And Mallet, J.-L. 2002
+//  Least squares conformal maps for automatic texture atlas generation.
+//  In Processings of SIGGRAPH 2002. 362-371.
+//
+//  [SGSH02] SANDER P., GORTLER S., SNYDER J., HOPPE H.:
+//  Signal-specialized parameterization
+//  In Proceedings of Eurographics Workshop on Rendering 2002(2002)
+//
+//  Algorithm Introduction:
+//
+//  The packing algorithm is an extension of the "Tetris" algroithm in
+//  [Levy 2002]. In "Tetris", charts can only be introducted from the top;
+//  isochart introduces them from the top, bottom, left or right sides.
+//
+//  This packing algroithm keeps track of the current "borders" of atlas
+//  for each of the four directions, given all the charts introduced so far.
+//
+//  Specified the desired atlas width and height, packing performs the
+//  following steps:
+//      (1) Align all charts to their longest axis.
+//      (2) Rescale charts
+//      (3) For each chart:
+//          - Choose the direction pair in which to add the chart
+//            The rule is try to keep atlas width/height ratio.
+//          - Insert the chart into the atlas
+//            From the direction pair of the previous step, choose the
+//            single direction that wastes the least space.
+//          - Merge the new chart and old atlas border for next iteration.
+//
+//  Terms:
+//  Radial direction:
+//      Direction that the chart is packed into atlas. E.g. when packing
+//      a chart from left or right side, radial direction is along X axis,
+//      otherwise, it's along Y axis.
+//
+//  Tangent direction:
+//      Tangent direction is the counterpart of radial direction.
+//      When packing a chart along radial direction. the chart can move
+//      along a corresponding tangent direction to find the best place.
+//      If radial direction is along X axis then tangent direction is
+//      along Y coordinate.
+//
+//                                Tangent
+//                              --------->
+//                                   |
+//                                   | Radial
+//                                   |
+//                                   V
+//                        |-------------------|
+//                        |                   |   Radial    |
+//                        |        Atlas      | <-----------| Tangent
+//                        |                   |             |
+//                        --------------------|             V
+//
 
 #include "pch.h"
 #include "isochartmesh.h"

@@ -528,5 +528,4 @@ namespace Isochart
         }
         return S_OK;
     }
-
 }

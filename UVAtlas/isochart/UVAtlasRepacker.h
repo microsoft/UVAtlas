@@ -226,11 +226,11 @@ namespace IsochartRepacker
         float m_EstimatedSpacePercent;                          // the ratio of final charts area to the total area of UV atlas.
         bool m_OutOfRange;                                      // if the current atlas is out of user defined atlas
 
-        std::vector<uint32_t> m_vAttributeID;      // attribute buffer to be output
-        std::vector<uint32_t> m_vFacePartitioning; // the output face partition information
-                                                   // (output) the output face partitioning data
-        bool m_bDwIndex;                           // whether the index buffer is uint32_t
-        bool m_bStopIteration;                     // if the iterate operation should stop
+        std::vector<uint32_t> m_vAttributeID;       // attribute buffer to be output
+        std::vector<uint32_t> m_vFacePartitioning;  // the output face partition information
+                                                    // (output) the output face partitioning data
+        bool m_bDwIndex;                            // whether the index buffer is uint32_t
+        bool m_bStopIteration;                      // if the iterate operation should stop
 
         int m_TexCoordOffset; // the offset of the needed data in vertex buffer
         size_t m_iRotateNum;  // describe the rotation times of each chart when pack

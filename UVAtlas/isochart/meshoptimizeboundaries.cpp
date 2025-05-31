@@ -586,9 +586,9 @@ HRESULT CIsochartMesh::OptimizeBoundaryByStretch(
         pdwFaceChartID,
         sizeof(uint32_t) * m_dwFaceNumber);
 
- // 1. Calculate dihedral angle for each edge using formula
- // in [Kun04], section 4
- // If failed to caculate dihedral, then just give up optimize
+    // 1. Calculate dihedral angle for each edge using formula
+    // in [Kun04], section 4
+    // If failed to caculate dihedral, then just give up optimize
     float fAverageAngleDistance = 0;
     if (!CalculateEdgeAngleDistance(
         pfEdgeAngleDistance.get(),

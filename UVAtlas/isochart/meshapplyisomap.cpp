@@ -744,9 +744,9 @@ HRESULT CIsochartMesh::CalculateVertMappingCoord(
     const float *pfVertGeodesicDistance,
     size_t dwLandmarkNumber,
     size_t dwPrimaryEigenDimension,
-    float *pfVertMappingCoord) // If not nullptr, store dwPrimaryEigenDimension
-                               // coordinates of each vertex in it.Not Only
-                               // store UV coordinate in vertex
+    float *pfVertMappingCoord)  // If not nullptr, store dwPrimaryEigenDimension
+                                // coordinates of each vertex in it.Not Only
+                                // store UV coordinate in vertex
 {
     assert(pfVertGeodesicDistance != nullptr);
     assert(dwPrimaryEigenDimension >= 2);

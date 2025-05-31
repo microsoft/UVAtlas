@@ -102,17 +102,17 @@ namespace Isochart
 
     struct ISOCHARTEDGE
     {
-        uint32_t dwID;               // Index in the edge array of current mesh
-        uint32_t dwVertexID[2];      // The ID of 2 vertices of this edge
-        uint32_t dwFaceID[2];        // The ID of 2 faces at the two sides of the edge.
-                                     // if the edge has only one face beside it,
-                                     // dwFaceID[1] should be INVALID_FACE_ID
-        uint32_t dwOppositVertID[2]; // Vertex opposite to the edge in the face
+        uint32_t dwID;                  // Index in the edge array of current mesh
+        uint32_t dwVertexID[2];         // The ID of 2 vertices of this edge
+        uint32_t dwFaceID[2];           // The ID of 2 faces at the two sides of the edge.
+                                        // if the edge has only one face beside it,
+                                        // dwFaceID[1] should be INVALID_FACE_ID
+        uint32_t dwOppositVertID[2];    // Vertex opposite to the edge in the face
 
-        float fLength;       // The length of the edge
-        float fSignalLength; // The length adjusted by IMT
-        bool bIsBoundary;    // Indicate if the edge a boundary.
-        bool bCanBeSplit;    // Indicate if the edge can be splitted, boundary edges always be set to true
+        float fLength;          // The length of the edge
+        float fSignalLength;    // The length adjusted by IMT
+        bool bIsBoundary;       // Indicate if the edge a boundary.
+        bool bCanBeSplit;       // Indicate if the edge can be splitted, boundary edges always be set to true
     };
     typedef std::vector<ISOCHARTEDGE *> EDGE_ARRAY;
 
