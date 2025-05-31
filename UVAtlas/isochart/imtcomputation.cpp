@@ -126,15 +126,17 @@ namespace
                     q[jj] = pfSignalArray[jj * dwSignalDimension + ii];
                 }
 
-                Ss[ii] = (q[0] * (pv2D1->y - pv2D2->y) +
-                          q[1] * (pv2D2->y - pv2D0->y) +
-                          q[2] * (pv2D0->y - pv2D1->y)) /
-                         f2D;
+                Ss[ii] = (
+                    q[0] * (pv2D1->y - pv2D2->y) +
+                    q[1] * (pv2D2->y - pv2D0->y) +
+                    q[2] * (pv2D0->y - pv2D1->y)
+                ) / f2D;
 
-                St[ii] = (q[0] * (pv2D2->x - pv2D1->x) +
-                          q[1] * (pv2D0->x - pv2D2->x) +
-                          q[2] * (pv2D1->x - pv2D0->x)) /
-                         f2D;
+                St[ii] = (
+                    q[0] * (pv2D2->x - pv2D1->x) +
+                    q[1] * (pv2D0->x - pv2D2->x) +
+                    q[2] * (pv2D1->x - pv2D0->x)
+                ) / f2D;
             }
 
             (*pfIMTArray)[0] = IsochartVectorDot(Ss, Ss, dwSignalDimension);
@@ -208,10 +210,11 @@ namespace
         {
             for (size_t ii = 0; ii < 3; ii++)
             {
-                XMStoreFloat2(&vNew,
-                              XMVectorDivide(
-                                  XMVectorAdd(XMLoadFloat2(&vertList[pFace->dwVertIdx[ii]]), XMLoadFloat2(&vertList[pFace->dwVertIdx[(ii + 1) % 3]])),
-                                  g_XMTwo));
+                XMStoreFloat2(
+                    &vNew,
+                    XMVectorDivide(
+                        XMVectorAdd(XMLoadFloat2(&vertList[pFace->dwVertIdx[ii]]), XMLoadFloat2(&vertList[pFace->dwVertIdx[(ii + 1) % 3]])),
+                        g_XMTwo));
                 vertList.push_back(vNew);
             }
         }
@@ -462,9 +465,9 @@ Isochart::IMTFromTextureMap(
         {
             // Split current face
             if (FAILED(hr = SplitFace(
-                           pCurrFace,
-                           subFaceIdxList,
-                           vertList)))
+                    pCurrFace,
+                    subFaceIdxList,
+                    vertList)))
             {
                 delete pCurrFace;
                 goto LEnd;
@@ -837,10 +840,11 @@ namespace
         double fEdgeLengthH,
         DOUBLEVECTOR2 &point)
     {
-        return point.x >= leftBottom.x &&
-               point.y >= leftBottom.y &&
-               point.x <= leftBottom.x + fEdgeLengthW &&
-               point.y <= leftBottom.y + fEdgeLengthH;
+        return
+            point.x >= leftBottom.x &&
+            point.y >= leftBottom.y &&
+            point.x <= leftBottom.x + fEdgeLengthW &&
+            point.y <= leftBottom.y + fEdgeLengthH;
     }
 
     static HRESULT GenerateAccumulationLines(
@@ -1456,14 +1460,14 @@ Isochart::IMTFromTextureMapEx(
     }
 
     if (FAILED(hr = ComputeAllIntersection(
-                   uv,
-                   fTexelLengthW,
-                   fTexelLengthH,
-                   leftBottom,
-                   dwRowLineCount,
-                   dwColLineCount,
-                   rgvVerticalIntersection.get(),
-                   rgvHorizonIntersection.get())))
+                        uv,
+                        fTexelLengthW,
+                        fTexelLengthH,
+                        leftBottom,
+                        dwRowLineCount,
+                        dwColLineCount,
+                        rgvVerticalIntersection.get(),
+                        rgvHorizonIntersection.get())))
     {
         return hr;
     }
@@ -1480,20 +1484,20 @@ Isochart::IMTFromTextureMapEx(
         for (size_t jj = 0; jj < dwColLineCount - 1; jj++)
         {
             if (FAILED(hr = ComputeIMTOnPixel(
-                           tempIMT,
-                           uv,
-                           fTexelLengthW,
-                           fTexelLengthH,
-                           ii,
-                           rgvHorizonIntersection.get(),
-                           jj,
-                           rgvVerticalIntersection.get(),
-                           leftBottom,
-                           uPrimitiveId,
-                           dwSignalDimension,
-                           pfnGetSignal,
-                           lpTextureData,
-                           dPieceArea)))
+                                tempIMT,
+                                uv,
+                                fTexelLengthW,
+                                fTexelLengthH,
+                                ii,
+                                rgvHorizonIntersection.get(),
+                                jj,
+                                rgvVerticalIntersection.get(),
+                                leftBottom,
+                                uPrimitiveId,
+                                dwSignalDimension,
+                                pfnGetSignal,
+                                lpTextureData,
+                                dPieceArea)))
             {
                 return hr;
             }

@@ -53,14 +53,14 @@ jobs:
         working-directory: ${{ github.workspace }}
         run: >
           msbuild /m /p:Configuration=${{ matrix.build_type }} /p:Platform=${{ matrix.platform }}
-          ./UVAtlas_${{ matrix.vs }}_Win10.sln
+          UVAtlas_${{ matrix.vs }}_Win10.sln
 
       - if: matrix.vs == '2022'
         name: 'Build (UWP)'
         working-directory: ${{ github.workspace }}
         run: >
           msbuild /m /p:Configuration=${{ matrix.build_type }} /p:Platform=${{ matrix.platform }}
-          ./UVAtlas_Windows10_2022.sln
+          UVAtlas_Windows10_2022.sln
 
       - if: matrix.platform != 'ARM64'
         name: 'Build (Spectre)'
@@ -68,4 +68,4 @@ jobs:
         run: >
           msbuild /m p:Configuration=${{ matrix.build_type }} /p:Platform=${{ matrix.platform }}
           /p:SpectreMitigation=Spectre
-          ./UVAtlas_${{ matrix.vs }}_Win10.sln
+          UVAtlas_${{ matrix.vs }}_Win10.sln

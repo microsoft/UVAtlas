@@ -42,7 +42,7 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow &EdgeWindowOut)
             EdgeWindow *pWindowRight = &(pItem->m_data.pEdge->WindowsList[i].theWindow);
 
             if ((pWindowLeft->b0 == pWindowRight->b1 || pWindowLeft->b1 == pWindowRight->b0) /*&&
-                 (pWindowLeft->dwFaceIdxPropagatedFrom == pWindowRight->dwFaceIdxPropagatedFrom)*/
+                (pWindowLeft->dwFaceIdxPropagatedFrom == pWindowRight->dwFaceIdxPropagatedFrom)*/
             )
             {
                 // found an adjacent window
@@ -70,8 +70,9 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow &EdgeWindowOut)
 
                 DVector2 ptRes;
                 bool bTmp;
-                GetCommonPointOf2Lines(pWindowLeft->dv2Src, DVector2(pWindowLeft->b0, 0),
-                                       pWindowRight->dv2Src, DVector2(pWindowRight->b1, 0), ptRes, bTmp);
+                GetCommonPointOf2Lines(
+                    pWindowLeft->dv2Src, DVector2(pWindowLeft->b0, 0),
+                    pWindowRight->dv2Src, DVector2(pWindowRight->b1, 0), ptRes, bTmp);
 
                 double sigma = DBL_MAX;
                 DVector2 spie;

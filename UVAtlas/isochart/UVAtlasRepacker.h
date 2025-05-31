@@ -59,15 +59,15 @@ namespace IsochartRepacker
     // save the information about the chart in a specific position and rotate angle
     struct PositionInfo
     {
-        DirectX::XMFLOAT2 basePoint; // record one specific point in a corner point of tessellation grids
-                                     // we can get the transformation matrix through this point
-        DirectX::XMFLOAT2 minPoint;  // top left corner of bounding box
-        DirectX::XMFLOAT2 maxPoint;  // bottom right corner of bounding box
-        int numX;                    // number of grids in X direction
-        int numY;                    // number of grids in Y direction
-        DirectX::XMFLOAT2 adjustLen; // make the chart in a best place
-        float angle;                 // chart rotate angle from the original position
-        std::vector<EDGE> edges;     // describe the edges of each chart
+        DirectX::XMFLOAT2 basePoint;    // record one specific point in a corner point of tessellation grids
+                                        // we can get the transformation matrix through this point
+        DirectX::XMFLOAT2 minPoint;     // top left corner of bounding box
+        DirectX::XMFLOAT2 maxPoint;     // bottom right corner of bounding box
+        int numX;                       // number of grids in X direction
+        int numY;                       // number of grids in Y direction
+        DirectX::XMFLOAT2 adjustLen;    // make the chart in a best place
+        float angle;                    // chart rotate angle from the original position
+        std::vector<EDGE> edges;        // describe the edges of each chart
     };
 
     // save chart information
@@ -150,20 +150,21 @@ namespace IsochartRepacker
     class CUVAtlasRepacker
     {
     public:
-        CUVAtlasRepacker(std::vector<DirectX::UVAtlasVertex> *pvVertexArray,
-                         size_t VertexCount,
-                         std::vector<uint8_t> *pvFaceIndexArray,
-                         size_t FaceCount,
-                         const uint32_t *pdwAdjacency,
-                         size_t iNumRotate,
-                         size_t Width,
-                         size_t Height,
-                         float Gutter,
-                         double *pPercentOur,
-                         size_t *pFinalWidth,
-                         size_t *pFinalHeight,
-                         size_t *pChartNumber,
-                         size_t *pIterationTimes);
+        CUVAtlasRepacker(
+            std::vector<DirectX::UVAtlasVertex> *pvVertexArray,
+            size_t VertexCount,
+            std::vector<uint8_t> *pvFaceIndexArray,
+            size_t FaceCount,
+            const uint32_t *pdwAdjacency,
+            size_t iNumRotate,
+            size_t Width,
+            size_t Height,
+            float Gutter,
+            double *pPercentOur,
+            size_t *pFinalWidth,
+            size_t *pFinalHeight,
+            size_t *pChartNumber,
+            size_t *pIterationTimes);
 
         ~CUVAtlasRepacker();
 
@@ -191,14 +192,16 @@ namespace IsochartRepacker
         HRESULT PrepareRepack();
         void PutChart(uint32_t index);
         void UpdateSpaceInfo(int direction);
-        void TryPut(int chartPutSide, int PutSide, int Rotation, int chartWidth,
-                    int width, int from, int to, int chartSideLen);
+        void TryPut(
+            int chartPutSide, int PutSide, int Rotation, int chartWidth,
+            int width, int from, int to, int chartSideLen);
         void PutChartInPosition(uint32_t index);
         void Normalize();
         void GrowChart(uint32_t chartindex, size_t angleindex, int layer);
         void CleanUp();
-        void PrepareSpaceInfo(SpaceInfo &spaceInfo, UVBoard &board, int fromX,
-                              int toX, int fromY, int toY, bool bNeglectGrows);
+        void PrepareSpaceInfo(
+            SpaceInfo &spaceInfo, UVBoard &board, int fromX,
+            int toX, int fromY, int toY, bool bNeglectGrows);
         HRESULT Initialize();
         void ComputeBoundingBox(std::vector<DirectX::XMFLOAT2> &Vec, DirectX::XMFLOAT2 *minV, DirectX::XMFLOAT2 *maxV);
         void ComputeFinalAtlasRect();
@@ -216,12 +219,12 @@ namespace IsochartRepacker
     private:
         const uint32_t *m_pPartitionAdj;
 
-        std::vector<DirectX::UVAtlasVertex> *m_pvVertexBuffer; // pointer to the input vertex buffer
-        std::vector<uint8_t> *m_pvIndexBuffer;                 // pointer to the input index buffer
-        std::vector<uint32_t> m_vAttributeBuffer;              // pointer to the attribute buffer
-                                                               // generated in GenerateNewBuffers according to m_pPartitionAdj
-        float m_EstimatedSpacePercent;                         // the ratio of final charts area to the total area of UV atlas.
-        bool m_OutOfRange;                                     // if the current atlas is out of user defined atlas
+        std::vector<DirectX::UVAtlasVertex> *m_pvVertexBuffer;  // pointer to the input vertex buffer
+        std::vector<uint8_t> *m_pvIndexBuffer;                  // pointer to the input index buffer
+        std::vector<uint32_t> m_vAttributeBuffer;               // pointer to the attribute buffer
+                                                                // generated in GenerateNewBuffers according to m_pPartitionAdj
+        float m_EstimatedSpacePercent;                          // the ratio of final charts area to the total area of UV atlas.
+        bool m_OutOfRange;                                      // if the current atlas is out of user defined atlas
 
         std::vector<uint32_t> m_vAttributeID;      // attribute buffer to be output
         std::vector<uint32_t> m_vFacePartitioning; // the output face partition information
@@ -237,12 +240,12 @@ namespace IsochartRepacker
         size_t m_iNumFaces;          // the number of faces (triangles)
         size_t m_iNumBytesPerVertex; // the number of bytes per vertex in vertex buffer
 
-        float m_fChartsTotalArea; // the area of all the charts
-                                  // used to calculate the pixel length
-        size_t m_dwAtlasHeight;   // user defined atlas height in pixel
-        size_t m_dwAtlasWidth;    // user defined atlas width in pixel
-        float m_AspectRatio;      // the user defined ratio of atlas width and height
-        int m_iGutter;            // the minimal distance between two chart
+        float m_fChartsTotalArea;   // the area of all the charts
+                                    // used to calculate the pixel length
+        size_t m_dwAtlasHeight;     // user defined atlas height in pixel
+        size_t m_dwAtlasWidth;      // user defined atlas width in pixel
+        float m_AspectRatio;        // the user defined ratio of atlas width and height
+        int m_iGutter;              // the minimal distance between two chart
 
         bool m_bRepacked; // if the repack operation is over
 

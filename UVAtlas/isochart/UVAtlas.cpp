@@ -343,27 +343,27 @@ namespace
         float maxChartingStretch = 0.f;
 
         hr = isochartpartition(positions,
-                               nVerts,
-                               sizeof(XMFLOAT3),
-                               indexFormat,
-                               indices,
-                               nFaces,
-                               reinterpret_cast<const FLOAT3 *>(pIMTArray),
-                               maxChartNumber,
-                               maxStretch,
-                               adjacency,
-                               &vOutVertexBuffer,
-                               &vOutIndexBuffer,
-                               &vOutVertexRemapArray,
-                               &vOutFacePartitioning,
-                               &vOutAdjacency,
-                               &numCharts,
-                               &maxChartingStretch,
-                               uStageInfo,
-                               statusCallBack,
-                               callbackFrequency,
-                               falseEdgeAdjacency,
-                               options);
+                nVerts,
+                sizeof(XMFLOAT3),
+                indexFormat,
+                indices,
+                nFaces,
+                reinterpret_cast<const FLOAT3 *>(pIMTArray),
+                maxChartNumber,
+                maxStretch,
+                adjacency,
+                &vOutVertexBuffer,
+                &vOutIndexBuffer,
+                &vOutVertexRemapArray,
+                &vOutFacePartitioning,
+                &vOutAdjacency,
+                &numCharts,
+                &maxChartingStretch,
+                uStageInfo,
+                statusCallBack,
+                callbackFrequency,
+                falseEdgeAdjacency,
+                options);
         if (FAILED(hr))
             return hr;
 
@@ -545,16 +545,16 @@ namespace
         memcpy(vTempIndexBuffer.data(), vMeshIndexBuffer.data(), vTempIndexBuffer.size());
 
         hr = IsochartRepacker::isochartpack2(&vTempVertexBuffer,
-                                             nVerts,
-                                             &vTempIndexBuffer,
-                                             nFaces,
-                                             vPartitionResultAdjacency.data(),
-                                             width,
-                                             height,
-                                             gutter,
-                                             uStageInfo,
-                                             statusCallback,
-                                             callbackFrequency);
+                nVerts,
+                &vTempIndexBuffer,
+                nFaces,
+                vPartitionResultAdjacency.data(),
+                width,
+                height,
+                gutter,
+                uStageInfo,
+                statusCallback,
+                callbackFrequency);
         if (FAILED(hr))
             return hr;
 
@@ -598,26 +598,26 @@ _Use_decl_annotations_
         size_t *numChartsOut)
 {
     return UVAtlasPartitionInt(positions,
-                               nVerts,
-                               indices,
-                               indexFormat,
-                               nFaces,
-                               maxChartNumber,
-                               maxStretch,
-                               adjacency,
-                               falseEdgeAdjacency,
-                               pIMTArray,
-                               statusCallBack,
-                               callbackFrequency,
-                               options,
-                               vMeshOutVertexBuffer,
-                               vMeshOutIndexBuffer,
-                               pvFacePartitioning,
-                               pvVertexRemapArray,
-                               vPartitionResultAdjacency,
-                               maxStretchOut,
-                               numChartsOut,
-                               (maxChartNumber == 0) ? MAKE_STAGE(2U, 0U, 2U) : MAKE_STAGE(3U, 0U, 3U));
+                nVerts,
+                indices,
+                indexFormat,
+                nFaces,
+                maxChartNumber,
+                maxStretch,
+                adjacency,
+                falseEdgeAdjacency,
+                pIMTArray,
+                statusCallBack,
+                callbackFrequency,
+                options,
+                vMeshOutVertexBuffer,
+                vMeshOutIndexBuffer,
+                pvFacePartitioning,
+                pvVertexRemapArray,
+                vPartitionResultAdjacency,
+                maxStretchOut,
+                numChartsOut,
+                (maxChartNumber == 0) ? MAKE_STAGE(2U, 0U, 2U) : MAKE_STAGE(3U, 0U, 3U));
 }
 
 //-------------------------------------------------------------------------------------
@@ -634,15 +634,15 @@ _Use_decl_annotations_
         float callbackFrequency)
 {
     return UVAtlasPackInt(vMeshVertexBuffer,
-                          vMeshIndexBuffer,
-                          indexFormat,
-                          width,
-                          height,
-                          gutter,
-                          vPartitionResultAdjacency,
-                          statusCallBack,
-                          callbackFrequency,
-                          MAKE_STAGE(1, 0, 1));
+                vMeshIndexBuffer,
+                indexFormat,
+                width,
+                height,
+                gutter,
+                vPartitionResultAdjacency,
+                statusCallBack,
+                callbackFrequency,
+                MAKE_STAGE(1, 0, 1));
 }
 
 //-------------------------------------------------------------------------------------
@@ -675,39 +675,39 @@ _Use_decl_annotations_
     std::vector<uint32_t> vAdjacencyOut;
 
     HRESULT hr = UVAtlasPartitionInt(positions,
-                                     nVerts,
-                                     indices,
-                                     indexFormat,
-                                     nFaces,
-                                     maxChartNumber,
-                                     maxStretch,
-                                     adjacency,
-                                     falseEdgeAdjacency,
-                                     pIMTArray,
-                                     statusCallBack,
-                                     callbackFrequency,
-                                     options,
-                                     vMeshOutVertexBuffer,
-                                     vMeshOutIndexBuffer,
-                                     &vFacePartitioning,
-                                     pvVertexRemapArray,
-                                     vAdjacencyOut,
-                                     maxStretchOut,
-                                     numChartsOut,
-                                     (maxChartNumber == 0) ? MAKE_STAGE(3U, 0U, 2U) : MAKE_STAGE(4U, 0U, 3U));
+                    nVerts,
+                    indices,
+                    indexFormat,
+                    nFaces,
+                    maxChartNumber,
+                    maxStretch,
+                    adjacency,
+                    falseEdgeAdjacency,
+                    pIMTArray,
+                    statusCallBack,
+                    callbackFrequency,
+                    options,
+                    vMeshOutVertexBuffer,
+                    vMeshOutIndexBuffer,
+                    &vFacePartitioning,
+                    pvVertexRemapArray,
+                    vAdjacencyOut,
+                    maxStretchOut,
+                    numChartsOut,
+                    (maxChartNumber == 0) ? MAKE_STAGE(3U, 0U, 2U) : MAKE_STAGE(4U, 0U, 3U));
     if (FAILED(hr))
         return hr;
 
     hr = UVAtlasPackInt(vMeshOutVertexBuffer,
-                        vMeshOutIndexBuffer,
-                        indexFormat,
-                        width,
-                        height,
-                        gutter,
-                        vAdjacencyOut,
-                        statusCallBack,
-                        callbackFrequency,
-                        (maxChartNumber == 0) ? MAKE_STAGE(3U, 2U, 1U) : MAKE_STAGE(4U, 3U, 1U));
+            vMeshOutIndexBuffer,
+            indexFormat,
+            width,
+            height,
+            gutter,
+            vAdjacencyOut,
+            statusCallBack,
+            callbackFrequency,
+            (maxChartNumber == 0) ? MAKE_STAGE(3U, 2U, 1U) : MAKE_STAGE(4U, 3U, 1U));
     if (FAILED(hr))
         return hr;
 
@@ -927,13 +927,13 @@ _Use_decl_annotations_
         }
 
         hr = IMTFromTextureMap(pos, uv,
-                               8, // max 64k subtesselations
-                               maxUVDistance,
-                               i,
-                               signalDimension,
-                               signalCallback,
-                               userData,
-                               reinterpret_cast<FLOAT3 *>(pfIMTData + 3 * i));
+                8, // max 64k subtesselations
+                maxUVDistance,
+                i,
+                signalDimension,
+                signalCallback,
+                userData,
+                reinterpret_cast<FLOAT3 *>(pfIMTData + 3 * i));
         if (FAILED(hr))
         {
             DPF(0, "UVAtlasComputeIMT: IMT data calculation failed.");
@@ -960,11 +960,12 @@ namespace
         size_t uHeight, uWidth;
     };
 
-    HRESULT __cdecl IMTTextureCbWrapNone(const XMFLOAT2 *uv,
-                                         size_t uPrimitiveId,
-                                         size_t uSignalDimension,
-                                         void *pUserData,
-                                         float *pfSignalOut)
+    HRESULT __cdecl IMTTextureCbWrapNone(
+        const XMFLOAT2 *uv,
+        size_t uPrimitiveId,
+        size_t uSignalDimension,
+        void *pUserData,
+        float *pfSignalOut)
     {
         UNREFERENCED_PARAMETER(uPrimitiveId);
         UNREFERENCED_PARAMETER(uSignalDimension);
@@ -1023,11 +1024,12 @@ namespace
         return S_OK;
     }
 
-    HRESULT __cdecl IMTTextureCbWrapU(const XMFLOAT2 *uv,
-                                      size_t uPrimitiveId,
-                                      size_t uSignalDimension,
-                                      void *pUserData,
-                                      float *pfSignalOut)
+    HRESULT __cdecl IMTTextureCbWrapU(
+        const XMFLOAT2 *uv,
+        size_t uPrimitiveId,
+        size_t uSignalDimension,
+        void *pUserData,
+        float *pfSignalOut)
     {
         UNREFERENCED_PARAMETER(uPrimitiveId);
         UNREFERENCED_PARAMETER(uSignalDimension);
@@ -1090,11 +1092,12 @@ namespace
         return S_OK;
     }
 
-    HRESULT __cdecl IMTTextureCbWrapV(const XMFLOAT2 *uv,
-                                      size_t uPrimitiveId,
-                                      size_t uSignalDimension,
-                                      void *pUserData,
-                                      float *pfSignalOut)
+    HRESULT __cdecl IMTTextureCbWrapV(
+        const XMFLOAT2 *uv,
+        size_t uPrimitiveId,
+        size_t uSignalDimension,
+        void *pUserData,
+        float *pfSignalOut)
     {
         UNREFERENCED_PARAMETER(uPrimitiveId);
         UNREFERENCED_PARAMETER(uSignalDimension);
@@ -1157,11 +1160,12 @@ namespace
         return S_OK;
     }
 
-    HRESULT __cdecl IMTTextureCbWrapUV(const XMFLOAT2 *uv,
-                                       size_t uPrimitiveId,
-                                       size_t uSignalDimension,
-                                       void *pUserData,
-                                       float *pfSignalOut)
+    HRESULT __cdecl IMTTextureCbWrapUV(
+        const XMFLOAT2 *uv,
+        size_t uPrimitiveId,
+        size_t uSignalDimension,
+        void *pUserData,
+        float *pfSignalOut)
     {
         UNREFERENCED_PARAMETER(uPrimitiveId);
         UNREFERENCED_PARAMETER(uSignalDimension);
@@ -1368,11 +1372,12 @@ namespace
         size_t uHeight, uWidth, uStride;
     };
 
-    HRESULT __cdecl IMTFloatArrayCbWrapNone(const XMFLOAT2 *uv,
-                                            size_t uPrimitiveId,
-                                            size_t uSignalDimension,
-                                            void *pUserData,
-                                            float *pfSignalOut)
+    HRESULT __cdecl IMTFloatArrayCbWrapNone(
+        const XMFLOAT2 *uv,
+        size_t uPrimitiveId,
+        size_t uSignalDimension,
+        void *pUserData,
+        float *pfSignalOut)
     {
         UNREFERENCED_PARAMETER(uPrimitiveId);
 
@@ -1429,11 +1434,12 @@ namespace
         return S_OK;
     }
 
-    HRESULT __cdecl IMTFloatArrayCbWrapU(const XMFLOAT2 *uv,
-                                         size_t uPrimitiveId,
-                                         size_t uSignalDimension,
-                                         void *pUserData,
-                                         float *pfSignalOut)
+    HRESULT __cdecl IMTFloatArrayCbWrapU(
+        const XMFLOAT2 *uv,
+        size_t uPrimitiveId,
+        size_t uSignalDimension,
+        void *pUserData,
+        float *pfSignalOut)
     {
         UNREFERENCED_PARAMETER(uPrimitiveId);
 
@@ -1494,11 +1500,12 @@ namespace
         return S_OK;
     }
 
-    HRESULT __cdecl IMTFloatArrayCbWrapV(const XMFLOAT2 *uv,
-                                         size_t uPrimitiveId,
-                                         size_t uSignalDimension,
-                                         void *pUserData,
-                                         float *pfSignalOut)
+    HRESULT __cdecl IMTFloatArrayCbWrapV(
+        const XMFLOAT2 *uv,
+        size_t uPrimitiveId,
+        size_t uSignalDimension,
+        void *pUserData,
+        float *pfSignalOut)
     {
         UNREFERENCED_PARAMETER(uPrimitiveId);
 
@@ -1559,11 +1566,12 @@ namespace
         return S_OK;
     }
 
-    HRESULT __cdecl IMTFloatArrayCbWrapUV(const XMFLOAT2 *uv,
-                                          size_t uPrimitiveId,
-                                          size_t uSignalDimension,
-                                          void *pUserData,
-                                          float *pfSignalOut)
+    HRESULT __cdecl IMTFloatArrayCbWrapUV(
+        const XMFLOAT2 *uv,
+        size_t uPrimitiveId,
+        size_t uSignalDimension,
+        void *pUserData,
+        float *pfSignalOut)
     {
         UNREFERENCED_PARAMETER(uPrimitiveId);
 

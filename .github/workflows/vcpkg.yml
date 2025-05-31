@@ -71,12 +71,7 @@ jobs:
             build_type: x64-Release-MinGW
             arch: amd64
             shared: 'ON'
-        exclude:
-          # Exclude failing case due to linker issue.
-          - toolver: '14'
-            build_type: x64-Debug-Clang-VCPKG
-            arch: amd64
-            shared: 'OFF'
+          # Exclude failing case due to linker issue: x64-Debug-Clang-VCPKG
 
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
