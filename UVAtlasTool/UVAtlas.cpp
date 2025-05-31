@@ -73,8 +73,8 @@ using namespace DirectX;
 
 namespace
 {
-    const wchar_t *g_ToolName = L"uvatlastool";
-    const wchar_t *g_Description = L"Microsoft (R) UVAtlas Command-line Tool";
+    const wchar_t* g_ToolName = L"uvatlastool";
+    const wchar_t* g_Description = L"Microsoft (R) UVAtlas Command-line Tool";
 
     enum OPTIONS : uint64_t
     {
@@ -155,118 +155,123 @@ namespace
 
     const SValue<uint64_t> g_pOptions[] =
     {
-        {L"r", OPT_RECURSIVE},
-        {L"q", OPT_QUALITY},
-        {L"n", OPT_MAXCHARTS},
-        {L"st", OPT_MAXSTRETCH},
-        {L"lms", OPT_LIMIT_MERGE_STRETCH},
-        {L"lfs", OPT_LIMIT_FACE_STRETCH},
-        {L"g", OPT_GUTTER},
-        {L"w", OPT_WIDTH},
-        {L"h", OPT_HEIGHT},
-        {L"ta", OPT_TOPOLOGICAL_ADJ},
-        {L"ga", OPT_GEOMETRIC_ADJ},
-        {L"nn", OPT_NORMALS},
-        {L"na", OPT_WEIGHT_BY_AREA},
-        {L"ne", OPT_WEIGHT_BY_EQUAL},
-        {L"tt", OPT_TANGENTS},
-        {L"tb", OPT_CTF},
-        {L"c", OPT_COLOR_MESH},
-        {L"t", OPT_UV_MESH},
-        {L"it", OPT_IMT_TEXFILE},
-        {L"iv", OPT_IMT_VERTEX},
-        {L"o", OPT_OUTPUTFILE},
-        {L"l", OPT_TOLOWER},
-        {L"cw", OPT_CLOCKWISE},
-        {L"ib32", OPT_FORCE_32BIT_IB},
-        {L"y", OPT_OVERWRITE},
-        {L"ft", OPT_FILETYPE},
-        {L"nodds", OPT_NODDS},
-        {L"flip", OPT_FLIP},
-        {L"fn", OPT_VERT_NORMAL_FORMAT},
-        {L"fuv", OPT_VERT_UV_FORMAT},
-        {L"fc", OPT_VERT_COLOR_FORMAT},
-        {L"uv2", OPT_SECOND_UV},
-        {L"vn", OPT_VIZ_NORMALS},
-        {L"m", OPT_OUTPUT_REMAPPING},
-        {L"nologo", OPT_NOLOGO},
-        {L"flist", OPT_FILELIST},
+        { L"r",         OPT_RECURSIVE },
+        { L"q",         OPT_QUALITY },
+        { L"n",         OPT_MAXCHARTS },
+        { L"st",        OPT_MAXSTRETCH },
+        { L"lms",       OPT_LIMIT_MERGE_STRETCH },
+        { L"lfs",       OPT_LIMIT_FACE_STRETCH },
+        { L"g",         OPT_GUTTER },
+        { L"w",         OPT_WIDTH },
+        { L"h",         OPT_HEIGHT },
+        { L"ta",        OPT_TOPOLOGICAL_ADJ },
+        { L"ga",        OPT_GEOMETRIC_ADJ },
+        { L"nn",        OPT_NORMALS },
+        { L"na",        OPT_WEIGHT_BY_AREA },
+        { L"ne",        OPT_WEIGHT_BY_EQUAL },
+        { L"tt",        OPT_TANGENTS },
+        { L"tb",        OPT_CTF },
+        { L"c",         OPT_COLOR_MESH },
+        { L"t",         OPT_UV_MESH },
+        { L"it",        OPT_IMT_TEXFILE },
+        { L"iv",        OPT_IMT_VERTEX },
+        { L"o",         OPT_OUTPUTFILE },
+        { L"l",         OPT_TOLOWER },
+        { L"cw",        OPT_CLOCKWISE },
+        { L"ib32",      OPT_FORCE_32BIT_IB },
+        { L"y",         OPT_OVERWRITE },
+        { L"ft",        OPT_FILETYPE },
+        { L"nodds",     OPT_NODDS },
+        { L"flip",      OPT_FLIP },
+        { L"fn",        OPT_VERT_NORMAL_FORMAT },
+        { L"fuv",       OPT_VERT_UV_FORMAT },
+        { L"fc",        OPT_VERT_COLOR_FORMAT },
+        { L"uv2",       OPT_SECOND_UV },
+        { L"vn",        OPT_VIZ_NORMALS },
+        { L"m",         OPT_OUTPUT_REMAPPING },
+        { L"nologo",    OPT_NOLOGO },
+        { L"flist",     OPT_FILELIST },
 
         // Legacy selection switches for file type (use -ft instead)
-        {L"sdkmesh", OPT_SDKMESH},
-        {L"sdkmesh2", OPT_SDKMESH_V2},
-        {L"cmo", OPT_CMO},
-        {L"vbo", OPT_VBO},
-        {L"wf", OPT_WAVEFRONT_OBJ},
+        { L"sdkmesh",   OPT_SDKMESH },
+        { L"sdkmesh2",  OPT_SDKMESH_V2 },
+        { L"cmo",       OPT_CMO },
+        { L"vbo",       OPT_VBO },
+        { L"wf",        OPT_WAVEFRONT_OBJ },
 
         // Deprecated options (recommend using new -- alternatives)
-        {L"flipu", OPT_FLIPU},
-        {L"flipv", OPT_FLIPV},
-        {L"flipz", OPT_FLIPZ},
-        {nullptr, 0} };
+        { L"flipu",     OPT_FLIPU },
+        { L"flipv",     OPT_FLIPV },
+        { L"flipz",     OPT_FLIPZ },
+        { nullptr,      0 }
+    };
 
     const SValue<uint64_t> g_pOptionsLong[] =
     {
-        {L"clockwise", OPT_CLOCKWISE},
-        {L"color-format", OPT_VERT_COLOR_FORMAT},
-        {L"color-mesh", OPT_COLOR_MESH},
-        {L"file-list", OPT_FILELIST},
-        {L"file-type", OPT_FILETYPE},
-        {L"flip-face-winding", OPT_FLIP},
-        {L"flip-u", OPT_FLIPU},
-        {L"flip-v", OPT_FLIPV},
-        {L"flip-z", OPT_FLIPZ},
-        {L"geometric-adjacency", OPT_GEOMETRIC_ADJ},
-        {L"gutter-width", OPT_GUTTER},
-        {L"height", OPT_HEIGHT},
-        {L"help", OPT_HELP},
-        {L"imt-tex-file", OPT_IMT_TEXFILE},
-        {L"imt-vertex", OPT_IMT_VERTEX},
-        {L"index-buffer-32-bit", OPT_FORCE_32BIT_IB},
-        {L"limit-face-stretch", OPT_LIMIT_FACE_STRETCH},
-        {L"limit-merge-stretch", OPT_LIMIT_MERGE_STRETCH},
-        {L"max-charts", OPT_MAXCHARTS},
-        {L"max-stretch", OPT_MAXSTRETCH},
-        {L"normal-format", OPT_VERT_NORMAL_FORMAT},
-        {L"normals-by-angle", OPT_NORMALS},
-        {L"normals-by-area", OPT_WEIGHT_BY_AREA},
-        {L"normals-by-equal", OPT_WEIGHT_BY_EQUAL},
-        {L"output-remap", OPT_OUTPUT_REMAPPING},
-        {L"overwrite", OPT_OVERWRITE},
-        {L"quality", OPT_QUALITY},
-        {L"tangent-frame", OPT_CTF},
-        {L"tangents", OPT_TANGENTS},
-        {L"to-lowercase", OPT_TOLOWER},
-        {L"topological-adjacency", OPT_TOPOLOGICAL_ADJ},
-        {L"uv-format", OPT_VERT_UV_FORMAT},
-        {L"uv-mesh", OPT_UV_MESH},
-        {L"version", OPT_VERSION},
-        {L"visualize-normals", OPT_VIZ_NORMALS},
-        {L"width", OPT_WIDTH},
-        {nullptr, 0} };
+        { L"clockwise",                 OPT_CLOCKWISE },
+        { L"color-format",              OPT_VERT_COLOR_FORMAT },
+        { L"color-mesh",                OPT_COLOR_MESH },
+        { L"file-list",                 OPT_FILELIST },
+        { L"file-type",                 OPT_FILETYPE },
+        { L"flip-face-winding",         OPT_FLIP },
+        { L"flip-u",                    OPT_FLIPU },
+        { L"flip-v",                    OPT_FLIPV },
+        { L"flip-z",                    OPT_FLIPZ },
+        { L"geometric-adjacency",       OPT_GEOMETRIC_ADJ },
+        { L"gutter-width",              OPT_GUTTER },
+        { L"height",                    OPT_HEIGHT },
+        { L"help",                      OPT_HELP },
+        { L"imt-tex-file",              OPT_IMT_TEXFILE },
+        { L"imt-vertex",                OPT_IMT_VERTEX },
+        { L"index-buffer-32-bit",       OPT_FORCE_32BIT_IB },
+        { L"limit-face-stretch",        OPT_LIMIT_FACE_STRETCH },
+        { L"limit-merge-stretch",       OPT_LIMIT_MERGE_STRETCH },
+        { L"max-charts",                OPT_MAXCHARTS },
+        { L"max-stretch",               OPT_MAXSTRETCH },
+        { L"normal-format",             OPT_VERT_NORMAL_FORMAT },
+        { L"normals-by-angle",          OPT_NORMALS },
+        { L"normals-by-area",           OPT_WEIGHT_BY_AREA },
+        { L"normals-by-equal",          OPT_WEIGHT_BY_EQUAL },
+        { L"output-remap",              OPT_OUTPUT_REMAPPING },
+        { L"overwrite",                 OPT_OVERWRITE },
+        { L"quality",                   OPT_QUALITY },
+        { L"tangent-frame",             OPT_CTF },
+        { L"tangents",                  OPT_TANGENTS },
+        { L"to-lowercase",              OPT_TOLOWER },
+        { L"topological-adjacency",     OPT_TOPOLOGICAL_ADJ },
+        { L"uv-format",                 OPT_VERT_UV_FORMAT },
+        { L"uv-mesh",                   OPT_UV_MESH },
+        { L"version",                   OPT_VERSION },
+        { L"visualize-normals",         OPT_VIZ_NORMALS },
+        { L"width",                     OPT_WIDTH },
+        { nullptr,                      0 }
+    };
 
-    const SValue<uint32_t> g_vertexNormalFormats[] =
+    const SValue<DXGI_FORMAT> g_vertexNormalFormats[] =
     {
-        {L"float3", DXGI_FORMAT_R32G32B32_FLOAT},
-        {L"float16_4", DXGI_FORMAT_R16G16B16A16_FLOAT},
-        {L"r11g11b10", DXGI_FORMAT_R11G11B10_FLOAT},
-        {nullptr, 0} };
+        { L"float3",    DXGI_FORMAT_R32G32B32_FLOAT },
+        { L"float16_4", DXGI_FORMAT_R16G16B16A16_FLOAT },
+        { L"r11g11b10", DXGI_FORMAT_R11G11B10_FLOAT },
+        { nullptr,      DXGI_FORMAT_UNKNOWN }
+    };
 
-    const SValue<uint32_t> g_vertexUVFormats[] =
+    const SValue<DXGI_FORMAT> g_vertexUVFormats[] =
     {
-        {L"float2", DXGI_FORMAT_R32G32_FLOAT},
-        {L"float16_2", DXGI_FORMAT_R16G16_FLOAT},
-        {nullptr, 0} };
+        { L"float2",    DXGI_FORMAT_R32G32_FLOAT },
+        { L"float16_2", DXGI_FORMAT_R16G16_FLOAT },
+        { nullptr,      DXGI_FORMAT_UNKNOWN }
+    };
 
-    const SValue<uint32_t> g_vertexColorFormats[] =
+    const SValue<DXGI_FORMAT> g_vertexColorFormats[] =
     {
-        {L"bgra", DXGI_FORMAT_B8G8R8A8_UNORM},
-        {L"rgba", DXGI_FORMAT_R8G8B8A8_UNORM},
-        {L"float4", DXGI_FORMAT_R32G32B32A32_FLOAT},
-        {L"float16_4", DXGI_FORMAT_R16G16B16A16_FLOAT},
-        {L"rgba_10", DXGI_FORMAT_R10G10B10A2_UNORM},
-        {L"r11g11b10", DXGI_FORMAT_R11G11B10_FLOAT},
-        {nullptr, 0} };
+        { L"bgra",      DXGI_FORMAT_B8G8R8A8_UNORM },
+        { L"rgba",      DXGI_FORMAT_R8G8B8A8_UNORM },
+        { L"float4",    DXGI_FORMAT_R32G32B32A32_FLOAT },
+        { L"float16_4", DXGI_FORMAT_R16G16B16A16_FLOAT },
+        { L"rgba_10",   DXGI_FORMAT_R10G10B10A2_UNORM },
+        { L"r11g11b10", DXGI_FORMAT_R11G11B10_FLOAT },
+        { nullptr,      DXGI_FORMAT_UNKNOWN }
+    };
 
     enum MESH_CODEC : uint32_t
     {
@@ -279,21 +284,22 @@ namespace
 
     const SValue<uint32_t> g_pMeshFileTypes[] = // valid formats to write to
     {
-        {L"sdkmesh", CODEC_SDKMESH},
-        {L"sdkmesh2", CODEC_SDKMESH_V2},
-        {L"cmo", CODEC_CMO},
-        {L"vbo", CODEC_VBO},
-        {L"obj", CODEC_WAVEFRONT_OBJ},
-        {L"_obj", CODEC_WAVEFRONT_OBJ},
-        {nullptr, 0} };
+        { L"sdkmesh",   CODEC_SDKMESH },
+        { L"sdkmesh2",  CODEC_SDKMESH_V2 },
+        { L"cmo",       CODEC_CMO },
+        { L"vbo",       CODEC_VBO },
+        { L"obj",       CODEC_WAVEFRONT_OBJ },
+        { L"_obj",      CODEC_WAVEFRONT_OBJ },
+        { nullptr,      0 }
+    };
 }
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
 
-HRESULT LoadFromOBJ(const wchar_t *szFilename,
-    std::unique_ptr<Mesh> &inMesh, std::vector<Mesh::Material> &inMaterial,
+HRESULT LoadFromOBJ(const wchar_t* szFilename,
+    std::unique_ptr<Mesh>& inMesh, std::vector<Mesh::Material>& inMaterial,
     bool ccw, bool dds);
 
 //////////////////////////////////////////////////////////////////////////////
@@ -306,7 +312,7 @@ namespace
     {
         PrintLogo(false, g_ToolName, g_Description);
 
-        static const wchar_t *const s_usage =
+        static const wchar_t* const s_usage =
             L"Usage: uvatlas <options> [--] <files>\n"
             L"\n"
             L"   Input file type must be Wavefront Object (.obj)\n"
@@ -418,7 +424,7 @@ namespace
 #pragma prefast(disable : 28198, "Command-line tool, frees all memory on exit")
 #endif
 
-int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
+int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 {
     // Parameters and defaults
     size_t maxCharts = 0;
@@ -474,8 +480,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
                 {
                     pArg += 2;
 
-                    for (pValue = pArg; *pValue && (':' != *pValue) && ('=' != *pValue); ++pValue)
-                        ;
+                    for (pValue = pArg; *pValue && (':' != *pValue) && ('=' != *pValue); ++pValue);
 
                     if (*pValue)
                         *pValue++ = 0;
@@ -487,8 +492,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
             {
                 pArg++;
 
-                for (pValue = pArg; *pValue && (':' != *pValue) && ('=' != *pValue); ++pValue)
-                    ;
+                for (pValue = pArg; *pValue && (':' != *pValue) && ('=' != *pValue); ++pValue);
 
                 if (*pValue)
                     *pValue++ = 0;
@@ -801,33 +805,30 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
                 break;
 
             case OPT_VERT_NORMAL_FORMAT:
-                normalFormat = static_cast<DXGI_FORMAT>(LookupByName(pValue, g_vertexNormalFormats));
+                normalFormat = LookupByName(pValue, g_vertexNormalFormats);
                 if (!normalFormat)
                 {
-                    wprintf(L"Invalid value specified with -fn (%ls)\n", pValue);
-                    wprintf(L"\n");
+                    wprintf(L"Invalid value specified with -fn (%ls)\n\n", pValue);
                     PrintUsage();
                     return 1;
                 }
                 break;
 
             case OPT_VERT_UV_FORMAT:
-                uvFormat = static_cast<DXGI_FORMAT>(LookupByName(pValue, g_vertexUVFormats));
+                uvFormat = LookupByName(pValue, g_vertexUVFormats);
                 if (!uvFormat)
                 {
-                    wprintf(L"Invalid value specified with -fuv (%ls)\n", pValue);
-                    wprintf(L"\n");
+                    wprintf(L"Invalid value specified with -fuv (%ls)\n\n", pValue);
                     PrintUsage();
                     return 1;
                 }
                 break;
 
             case OPT_VERT_COLOR_FORMAT:
-                colorFormat = static_cast<DXGI_FORMAT>(LookupByName(pValue, g_vertexColorFormats));
+                colorFormat = LookupByName(pValue, g_vertexColorFormats);
                 if (!colorFormat)
                 {
-                    wprintf(L"Invalid value specified with -fc (%ls)\n", pValue);
-                    wprintf(L"\n");
+                    wprintf(L"Invalid value specified with -fc (%ls)\n\n", pValue);
                     PrintUsage();
                     return 1;
                 }
@@ -1042,7 +1043,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
         }
 
         // Compute vertex normals from faces
-        if ((dwOptions & (UINT64_C(1) << OPT_NORMALS)) || ((dwOptions & ((UINT64_C(1) << OPT_TANGENTS) | (UINT64_C(1) << OPT_CTF))) && !inMesh->GetNormalBuffer()))
+        if ((dwOptions & (UINT64_C(1) << OPT_NORMALS))
+            || ((dwOptions & ((UINT64_C(1) << OPT_TANGENTS) | (UINT64_C(1) << OPT_CTF))) && !inMesh->GetNormalBuffer()))
         {
             CNORM_FLAGS flags = CNORM_DEFAULT;
 
@@ -1063,8 +1065,10 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
             hr = inMesh->ComputeNormals(flags);
             if (FAILED(hr))
             {
-                wprintf(L"\nERROR: Failed computing normals (flags:%X, %08X%ls)\n", static_cast<unsigned int>(flags),
-                    static_cast<unsigned int>(hr), GetErrorDesc(hr));
+                wprintf(L"\nERROR: Failed computing normals (flags:%X, %08X%ls)\n",
+                    static_cast<unsigned int>(flags),
+                    static_cast<unsigned int>(hr),
+                    GetErrorDesc(hr));
                 return 1;
             }
         }
@@ -1389,7 +1393,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
             hr = inMesh->ReverseWinding();
             if (FAILED(hr))
             {
-                wprintf(L"\nERROR: Failed reversing winding (%08X%ls)\n", static_cast<unsigned int>(hr), GetErrorDesc(hr));
+                wprintf(L"\nERROR: Failed reversing winding (%08X%ls)\n",
+                    static_cast<unsigned int>(hr), GetErrorDesc(hr));
                 return 1;
             }
         }
@@ -1425,7 +1430,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
                 break;
             }
 
-            outputFile = curpath.stem().native();
+            outputFile.assign(curpath.stem());
             outputFile.append(outputExt);
         }
 
