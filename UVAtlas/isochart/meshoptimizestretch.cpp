@@ -84,33 +84,32 @@ namespace Isochart
         float fInfinitFacesArea;
 
         CHARTOPTIMIZEINFO() : bOptLn(false),
-                              bOptSignal(false),
-                              bUseBoundingBox(false),
-                              bOptBoundaryVert(false),
-                              bOptInternalVert(false),
-                              fStretchScale(0),
-                              dwOptTimes(0),
-                              dwRandOptOneVertTimes(0),
-                              fBarToStopOptAll(0),
-                              fAverageEdgeLength(0),
-                              fTolerance(0),
-                              pHeapItems(nullptr),
-                              pfVertStretch(nullptr),
-                              pfFaceStretch(nullptr),
-                              minBound{},
-                              maxBound{},
-                              fPreveMaxFaceStretch(0),
-                              fInfiniteStretch(0),
-                              dwInfinitStretchVertexCount(0),
-                              fInfinitFacesArea(0)
-        {
-        }
+            bOptSignal(false),
+            bUseBoundingBox(false),
+            bOptBoundaryVert(false),
+            bOptInternalVert(false),
+            fStretchScale(0),
+            dwOptTimes(0),
+            dwRandOptOneVertTimes(0),
+            fBarToStopOptAll(0),
+            fAverageEdgeLength(0),
+            fTolerance(0),
+            pHeapItems(nullptr),
+            pfVertStretch(nullptr),
+            pfFaceStretch(nullptr),
+            minBound{},
+            maxBound{},
+            fPreveMaxFaceStretch(0),
+            fInfiniteStretch(0),
+            dwInfinitStretchVertexCount(0),
+            fInfinitFacesArea(0)
+        {}
 
         ~CHARTOPTIMIZEINFO()
         {
             SAFE_DELETE_ARRAY(pfVertStretch)
-            SAFE_DELETE_ARRAY(pfFaceStretch)
-            SAFE_DELETE_ARRAY(pHeapItems)
+                SAFE_DELETE_ARRAY(pfFaceStretch)
+                SAFE_DELETE_ARRAY(pHeapItems)
         }
     };
 
@@ -159,8 +158,8 @@ bool CIsochartMesh::IsReachExpectedTotalAvgL2SqrStretch(
     float fExpectRatio)
 {
     return (fCurrAvgL2SqrStretch -
-                ISOCHART_ZERO_EPS * 10 <=
-            fExpectRatio);
+        ISOCHART_ZERO_EPS * 10 <=
+        fExpectRatio);
 }
 
 uint32_t CIsochartMesh::GetChartWidthLargestGeoAvgStretch(
@@ -263,7 +262,7 @@ float CIsochartMesh::ComputeGeoAvgL2Stretch(
     {
         if (bReCompute)
             chartList[ii]->m_fGeoL2Stretch =
-                chartList[ii]->CalChartL2GeoSquaredStretch();
+            chartList[ii]->CalChartL2GeoSquaredStretch();
 
         fTotalGeoL2Stretch += chartList[ii]->m_fGeoL2Stretch;
         fTotal2DArea += chartList[ii]->m_fChart2DArea;
@@ -421,8 +420,8 @@ HRESULT CIsochartMesh::OptimizeWholeChart(
     // 2. Calculate sum of IMT of all triangles.
     float f2D = 0;
 
-    double dm[3] = {0, 0, 0};
-    double dGeoM[3] = {0, 0, 0};
+    double dm[3] = { 0, 0, 0 };
+    double dGeoM[3] = { 0, 0, 0 };
 
     float m[3];
     float geoM[3];
@@ -529,9 +528,9 @@ HRESULT CIsochartMesh::InitOptimizeInfo(
         float fChartArea2D = 0;
         float fChartArea3D = 0;
         if (!CalculateChart2DTo3DScale(
-                optimizeInfo.fStretchScale,
-                fChartArea3D,
-                fChartArea2D))
+            optimizeInfo.fStretchScale,
+            fChartArea3D,
+            fChartArea2D))
         {
             return S_OK;
         }
@@ -609,10 +608,12 @@ HRESULT CIsochartMesh::InitOptimizeInfo(
 }
 
 void CIsochartMesh::ReleaseOptimizeInfo(
-    CHARTOPTIMIZEINFO &optimizeInfo){
+    CHARTOPTIMIZEINFO &optimizeInfo)
+{
     SAFE_DELETE_ARRAY(optimizeInfo.pfFaceStretch)
         SAFE_DELETE_ARRAY(optimizeInfo.pfVertStretch)
-            SAFE_DELETE_ARRAY(optimizeInfo.pHeapItems)}
+        SAFE_DELETE_ARRAY(optimizeInfo.pHeapItems)
+}
 
 HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)
 {
@@ -646,18 +647,18 @@ HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)
     if (bOptimizeSignal)
     {
         if (FAILED(hr =
-                       InitOptimizeInfo(
-                           false,
-                           true,
-                           false,
-                           false,
-                           true,
-                           0,
-                           L2_PREV_OPTIMIZESIG_COUNT,
-                           RAND_OPTIMIZE_L2_COUNT,
-                           true,
-                           optimizeInfo,
-                           bCanOptimize)) ||
+            InitOptimizeInfo(
+                false,
+                true,
+                false,
+                false,
+                true,
+                0,
+                L2_PREV_OPTIMIZESIG_COUNT,
+                RAND_OPTIMIZE_L2_COUNT,
+                true,
+                optimizeInfo,
+                bCanOptimize)) ||
             !bCanOptimize)
         {
             return hr;
@@ -667,18 +668,18 @@ HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)
         OptimizeWholeChart(m_baseInfo.fExpectAvgL2SquaredStretch);
 
         if (FAILED(hr =
-                       InitOptimizeInfo(
-                           false,
-                           true,
-                           true,
-                           true,
-                           true,
-                           0,
-                           L2_POST_OPTIMIZESIG_COUNT,
-                           RAND_OPTIMIZE_L2_COUNT,
-                           true,
-                           optimizeInfo,
-                           bCanOptimize)) ||
+            InitOptimizeInfo(
+                false,
+                true,
+                true,
+                true,
+                true,
+                0,
+                L2_POST_OPTIMIZESIG_COUNT,
+                RAND_OPTIMIZE_L2_COUNT,
+                true,
+                optimizeInfo,
+                bCanOptimize)) ||
             !bCanOptimize)
         {
             return hr;
@@ -688,18 +689,18 @@ HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)
     else
     {
         if (FAILED(hr =
-                       InitOptimizeInfo(
-                           true,
-                           false,
-                           false,
-                           true,
-                           true,
-                           STRETCH_TO_STOP_LN_OPTIMIZE,
-                           LN_OPTIMIZE_COUNT,
-                           RAND_OPTIMIZE_LN_COUNT,
-                           true,
-                           optimizeInfo,
-                           bCanOptimize)) ||
+            InitOptimizeInfo(
+                true,
+                false,
+                false,
+                true,
+                true,
+                STRETCH_TO_STOP_LN_OPTIMIZE,
+                LN_OPTIMIZE_COUNT,
+                RAND_OPTIMIZE_LN_COUNT,
+                true,
+                optimizeInfo,
+                bCanOptimize)) ||
             !bCanOptimize)
         {
             return hr;
@@ -707,18 +708,18 @@ HRESULT CIsochartMesh::OptimizeChartL2Stretch(bool bOptimizeSignal)
         FAILURE_RETURN(OptimizeStretch(optimizeInfo));
 
         if (FAILED(hr =
-                       InitOptimizeInfo(
-                           false,
-                           false,
-                           false,
-                           false,
-                           true,
-                           0,
-                           L2_OPTIMIZE_COUNT,
-                           RAND_OPTIMIZE_L2_COUNT,
-                           true,
-                           optimizeInfo,
-                           bCanOptimize)) ||
+            InitOptimizeInfo(
+                false,
+                false,
+                false,
+                false,
+                true,
+                0,
+                L2_OPTIMIZE_COUNT,
+                RAND_OPTIMIZE_L2_COUNT,
+                true,
+                optimizeInfo,
+                bCanOptimize)) ||
             !bCanOptimize)
         {
             return hr;
@@ -748,18 +749,18 @@ HRESULT CIsochartMesh::OptimizeGeoLnInfiniteStretch(
 
     bool bCanOptimize = false;
     if (FAILED(hr =
-                   InitOptimizeInfo(
-                       true,
-                       false,
-                       false,
-                       true,
-                       true,
-                       0,
-                       INFINITE_VERTICES_OPTIMIZE_COUNT,
-                       RAND_OPTIMIZE_INFINIT_COUNT,
-                       true,
-                       optimizeInfo,
-                       bCanOptimize)))
+        InitOptimizeInfo(
+            true,
+            false,
+            false,
+            true,
+            true,
+            0,
+            INFINITE_VERTICES_OPTIMIZE_COUNT,
+            RAND_OPTIMIZE_INFINIT_COUNT,
+            true,
+            optimizeInfo,
+            bCanOptimize)))
     {
         return hr;
     }
@@ -827,7 +828,7 @@ HRESULT CIsochartMesh::OptimizeGeoLnInfiniteStretch(
         {
             bSucceed =
                 ((optimizeInfo.fInfinitFacesArea / m_fChart3DArea) <=
-                 m_baseInfo.fOverturnTolerance);
+                    m_baseInfo.fOverturnTolerance);
         }
     }
 
@@ -1117,7 +1118,7 @@ float CIsochartMesh::CalFaceSigL2SquraedStretch(
             m_baseInfo.pFaceCanonicalUVCoordinate + pFace->dwIDInRootMesh * 3;
 
         FLOAT3 newIMT;
-        float geo[3] = {0.0};
+        float geo[3] = { 0.0 };
         AffineIMTOn2D(
             f2D,
             &v0,
@@ -1132,10 +1133,10 @@ float CIsochartMesh::CalFaceSigL2SquraedStretch(
 
         float fGeoStretch = (geo[0] + geo[1]) / 2 * f3D;
 
-#if PIECEWISE_CONSTANT_IMT
+    #if PIECEWISE_CONSTANT_IMT
         float fSigStretch = (newIMT[0] + newIMT[2]) / 2;
-#else
-#endif
+    #else
+    #endif
 
         SetAffineParameter(
             pGeoM,
@@ -1167,12 +1168,12 @@ float CIsochartMesh::CalFaceGeoL2SquraedStretch(
         return 0;
     }
     else if (f2D < 0 ||
-             (f2D < ISOCHART_ZERO_EPS2 && f2D < f3D / 2))
+        (f2D < ISOCHART_ZERO_EPS2 && f2D < f3D / 2))
     {
         return INFINITE_STRETCH;
     }
     else if (IsInZeroRange2(f2D) &&
-             IsInZeroRange2(f3D))
+        IsInZeroRange2(f3D))
     {
         return 0;
     }
@@ -1218,7 +1219,7 @@ float CIsochartMesh::CalFaceGeoLNSquraedStretch(
         return 1;
     }
     else if (f2D < 0 ||
-             (f2D < ISOCHART_ZERO_EPS2 && f2D < f3D / 2))
+        (f2D < ISOCHART_ZERO_EPS2 && f2D < f3D / 2))
     {
         return INFINITE_STRETCH;
     }
@@ -1332,8 +1333,8 @@ HRESULT CIsochartMesh::OptimizeVertexWithInfiniteStretch(
     HRESULT hr = S_OK;
 
     for (size_t dwIteration = 0;
-         dwIteration < optimizeInfo.dwOptTimes;
-         dwIteration++)
+        dwIteration < optimizeInfo.dwOptTimes;
+        dwIteration++)
     {
         optimizeInfo.dwInfinitStretchVertexCount =
             CollectInfiniteVerticesInHeap(
@@ -1344,7 +1345,7 @@ HRESULT CIsochartMesh::OptimizeVertexWithInfiniteStretch(
             return hr;
         }
         if (FAILED(hr = OptimizeVerticesInHeap(
-                       optimizeInfo)))
+            optimizeInfo)))
         {
             return hr;
         }
@@ -1371,7 +1372,7 @@ HRESULT CIsochartMesh::OptimizeAllVertex(
         }
 
         if (FAILED(hr = OptimizeVerticesInHeap(
-                       optimizeInfo)))
+            optimizeInfo)))
         {
             return hr;
         }
@@ -1396,7 +1397,8 @@ HRESULT CIsochartMesh::OptimizeAllVertex(
             optimizeInfo.fPreveMaxFaceStretch = fCurrentMaxFaceStretch;
         }
         dwIteration++;
-    } while (dwIteration < optimizeInfo.dwOptTimes);
+    }
+    while (dwIteration < optimizeInfo.dwOptTimes);
     return hr;
 }
 
@@ -1730,9 +1732,9 @@ void CIsochartMesh::PrepareInternalVertOpt(
     {
         pVertex1 = m_pVerts + pOptimizeVertex->vertAdjacent[i];
         XMStoreFloat2(&middle,
-                      XMVectorAdd(
-                          XMVectorScale(XMLoadFloat2(&pVertex1->uv), CONSERVATIVE_OPTIMIZE_FACTOR),
-                          XMVectorScale(XMLoadFloat2(&vertInfo.center), 1.f - CONSERVATIVE_OPTIMIZE_FACTOR)));
+            XMVectorAdd(
+                XMVectorScale(XMLoadFloat2(&pVertex1->uv), CONSERVATIVE_OPTIMIZE_FACTOR),
+                XMVectorScale(XMLoadFloat2(&vertInfo.center), 1.f - CONSERVATIVE_OPTIMIZE_FACTOR)));
 
         float fTempStretch = 0;
         TryAdjustVertexParamStretch(
@@ -2235,9 +2237,9 @@ void CIsochartMesh::ParameterizeOneFace(
 
         // float fOld2DArea = Cal2DTriangleArea( p[0], p[1],  p[2]);
 
-#ifdef _DEBUG
+    #ifdef _DEBUG
         float fNewStretch =
-#endif
+        #endif
             CalFaceSigL2SquraedStretch(
                 pFace,
                 m_pVerts[m_pFaces->dwVertexID[0]].uv,

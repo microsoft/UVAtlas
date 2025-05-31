@@ -33,12 +33,11 @@ namespace
             ISOCHARTVERTEX *pVerts,
             const XMFLOAT3 *pVert3dPos)
             : m_dwInit(dwInit),
-              m_dwPrev(dwInit),
-              m_dwCurr(dwInit),
-              m_pVerts(pVerts),
-              m_pVert3dPos(pVert3dPos)
-        {
-        }
+            m_dwPrev(dwInit),
+            m_dwCurr(dwInit),
+            m_pVerts(pVerts),
+            m_pVert3dPos(pVert3dPos)
+        {}
 
         uint32_t Next()
         {
@@ -71,8 +70,8 @@ namespace
                 m_pVert3dPos + m_pVerts[m_dwPrev].dwIDInRootMesh;
 
             return IsochartSqrtf((p1->x - p2->x) * (p1->x - p2->x) +
-                                 (p1->y - p2->y) * (p1->y - p2->y) +
-                                 (p1->z - p2->z) * (p1->z - p2->z));
+                (p1->y - p2->y) * (p1->y - p2->y) +
+                (p1->z - p2->z) * (p1->z - p2->z));
         }
     };
 }
@@ -316,14 +315,14 @@ HRESULT CIsochartMesh::BarycentricParameterization(
     // 4. Solve the linear equation set
     FAILURE_GOTO_END(
         (false != CSparseMatrix<double>::ConjugateGradient(
-                      U,
-                      A,
-                      BU,
-                      BC_MAX_ITERATION,
-                      1e-8,
-                      nIterCount)
-             ? S_OK
-             : E_FAIL));
+            U,
+            A,
+            BU,
+            BC_MAX_ITERATION,
+            1e-8,
+            nIterCount)
+            ? S_OK
+            : E_FAIL));
     if (nIterCount >= BC_MAX_ITERATION)
     {
         goto LEnd;
@@ -332,14 +331,14 @@ HRESULT CIsochartMesh::BarycentricParameterization(
     nIterCount = 0;
     FAILURE_GOTO_END(
         (false != CSparseMatrix<double>::ConjugateGradient(
-                      V,
-                      A,
-                      BV,
-                      BC_MAX_ITERATION,
-                      1e-8,
-                      nIterCount)
-             ? S_OK
-             : E_FAIL));
+            V,
+            A,
+            BV,
+            BC_MAX_ITERATION,
+            1e-8,
+            nIterCount)
+            ? S_OK
+            : E_FAIL));
     if (nIterCount >= BC_MAX_ITERATION)
     {
         goto LEnd;

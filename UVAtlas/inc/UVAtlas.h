@@ -165,7 +165,7 @@ namespace DirectX
         _In_reads_(nVerts) const XMFLOAT3 *positions,
         _In_ size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
-            _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
         _In_ DXGI_FORMAT indexFormat,
         _In_ size_t nFaces,
         _In_ size_t maxChartNumber,
@@ -214,7 +214,7 @@ namespace DirectX
         _In_reads_(nVerts) const XMFLOAT3 *positions,
         _In_ size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
-            _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
         _In_ DXGI_FORMAT indexFormat,
         _In_ size_t nFaces,
         _In_ size_t maxChartNumber,
@@ -279,7 +279,7 @@ namespace DirectX
         _In_reads_(nVerts) const XMFLOAT3 *positions,
         _In_ size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
-            _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
         _In_ DXGI_FORMAT indexFormat,
         _In_ size_t nFaces,
         _In_reads_(signalStride *nVerts) const float *pVertexSignal,
@@ -310,13 +310,13 @@ namespace DirectX
         _In_reads_(nVerts) const XMFLOAT2 *texcoords,
         _In_ size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
-            _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
         _In_ DXGI_FORMAT indexFormat,
         _In_ size_t nFaces,
         _In_ size_t signalDimension,
         _In_ float maxUVDistance,
         _In_ std::function<HRESULT __cdecl(const DirectX::XMFLOAT2 *uv, size_t primitiveID, size_t signalDimension, void *userData, float *signalOut)>
-            signalCallback,
+        signalCallback,
         _In_opt_ void *userData,
         _In_ std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
         _Out_writes_(nFaces * 3) float *pIMTArray);
@@ -335,7 +335,7 @@ namespace DirectX
         _In_reads_(nVerts) const XMFLOAT2 *texcoords,
         _In_ size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
-            _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
         _In_ DXGI_FORMAT indexFormat,
         _In_ size_t nFaces,
         _In_reads_(width *height * 4) const float *pTexture,
@@ -360,7 +360,7 @@ namespace DirectX
         _In_reads_(nVerts) const XMFLOAT2 *texcoords,
         _In_ size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
-            _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
         _In_ DXGI_FORMAT indexFormat,
         _In_ size_t nFaces,
         _In_reads_(width *height *nComponents) const float *pTexelSignal,

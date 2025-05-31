@@ -33,14 +33,14 @@ namespace GeodesicDist
         virtual void CutHeapTopData(EdgeWindow &EdgeWindowOut);
         void ProcessNewWindow(_In_ EdgeWindow *pNewEdgeWindow);
         void IntersectWindow(_In_ EdgeWindow *pExistingWindow,
-                             _In_ EdgeWindow *pNewWindow,
-                             bool *pExistingWindowChanged,
-                             bool *pNewWindowChanged,
-                             bool *pExistingWindowNotAvailable,
-                             bool *pNewWindowNotAvailable);
+            _In_ EdgeWindow *pNewWindow,
+            bool *pExistingWindowChanged,
+            bool *pNewWindowChanged,
+            bool *pExistingWindowNotAvailable,
+            bool *pNewWindowNotAvailable);
         void GenerateWindowsAroundSaddleOrBoundaryVertex(const EdgeWindow &WindowToBePropagated,
-                                                         const uint32_t dwSaddleOrBoundaryVertexId,
-                                                         std::vector<EdgeWindow> &WindowsOut);
+            const uint32_t dwSaddleOrBoundaryVertexId,
+            std::vector<EdgeWindow> &WindowsOut);
         void InternalRun();
         void AddWindowToHeapAndEdge(const EdgeWindow &WindowToAdd);
 

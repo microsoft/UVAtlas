@@ -15,15 +15,14 @@ using namespace Isochart;
 
 CVertIter::CVertIter(const uint32_t *rgdwAdjacency)
     : m_rgdwAdjacency(rgdwAdjacency),
-      m_dwCurrentFaceID(0),
-      m_dwCurrentVertIdx(0),
-      m_dwPrevFaceID(0),
-      m_dwPrevVertIdx(0),
-      m_dwBeginFaceID(0),
-      m_dwBeginVertID(0),
-      m_bclockwise(false)
-{
-}
+    m_dwCurrentFaceID(0),
+    m_dwCurrentVertIdx(0),
+    m_dwPrevFaceID(0),
+    m_dwPrevVertIdx(0),
+    m_dwBeginFaceID(0),
+    m_dwBeginVertID(0),
+    m_bclockwise(false)
+{}
 
 bool CVertIter::Init(
     uint32_t dwFaceID, uint32_t dwVertIdx, size_t dwTotoalFaceCount)

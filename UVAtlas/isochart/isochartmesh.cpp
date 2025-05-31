@@ -92,31 +92,30 @@ CIsochartMesh::CIsochartMesh(
     CCallbackSchemer &callbackSchemer,
     const CIsochartEngine &IsochartEngine)
     : m_callbackSchemer(callbackSchemer),
-      m_IsochartEngine(IsochartEngine),
-      m_baseInfo(baseInfo),
-      m_dwVertNumber(0),
-      m_pVerts(nullptr),
-      m_dwFaceNumber(0),
-      m_pFaces(nullptr),
-      m_dwEdgeNumber(0),
-      m_pFather(nullptr),
-      m_fBoxDiagLen(0),
-      m_fParamStretchL2(0),
-      m_fParamStretchLn(0),
-      m_fBaseL2Stretch(0),
-      m_fGeoL2Stretch(0),
-      m_bVertImportanceDone(false),
-      m_bIsSubChart(false),
-      m_bIsInitChart(false),
-      m_fChart2DArea(0),
-      m_fChart3DArea(0),
-      m_pPackingInfo(nullptr),
-      m_bIsParameterized(false),
-      m_bOptimizedL2Stretch(false),
-      m_bOrderedLandmark(false),
-      m_bNeedToClean(false)
-{
-}
+    m_IsochartEngine(IsochartEngine),
+    m_baseInfo(baseInfo),
+    m_dwVertNumber(0),
+    m_pVerts(nullptr),
+    m_dwFaceNumber(0),
+    m_pFaces(nullptr),
+    m_dwEdgeNumber(0),
+    m_pFather(nullptr),
+    m_fBoxDiagLen(0),
+    m_fParamStretchL2(0),
+    m_fParamStretchLn(0),
+    m_fBaseL2Stretch(0),
+    m_fGeoL2Stretch(0),
+    m_bVertImportanceDone(false),
+    m_bIsSubChart(false),
+    m_bIsInitChart(false),
+    m_fChart2DArea(0),
+    m_fChart3DArea(0),
+    m_pPackingInfo(nullptr),
+    m_bIsParameterized(false),
+    m_bOptimizedL2Stretch(false),
+    m_bOrderedLandmark(false),
+    m_bNeedToClean(false)
+{}
 
 CIsochartMesh::~CIsochartMesh()
 {
@@ -135,9 +134,9 @@ void CIsochartMesh::DeleteChildren()
 void CIsochartMesh::Free()
 {
     SAFE_DELETE_ARRAY(m_pVerts)
-    SAFE_DELETE_ARRAY(m_pFaces)
+        SAFE_DELETE_ARRAY(m_pFaces)
 
-    DestroyPakingInfoBuffer();
+        DestroyPakingInfoBuffer();
     DeleteChildren();
 }
 
@@ -280,7 +279,7 @@ HRESULT CIsochartMesh::BuildRootChart(
     if (!pChart->m_pVerts)
     {
         SAFE_DELETE_ARRAY(pChart->m_pFaces)
-        return E_OUTOFMEMORY;
+            return E_OUTOFMEMORY;
     }
 
     // 2. fill in the basic information of the mesh.
@@ -354,9 +353,9 @@ namespace
         uint32_t dwFace2)
     {
         uint32_t *p1 = rgdwAdjacency + 3 * dwFace1;
-#ifndef NDEBUG
+    #ifndef NDEBUG
         uint32_t *p2 = rgdwAdjacency + 3 * dwFace2;
-#endif
+    #endif
 
         bool bResult =
             ((p1[0] == dwFace2) || (p1[1] == dwFace2) || (p1[2] == dwFace2));
@@ -405,7 +404,7 @@ namespace
                     return true;
                 }
                 if (!IsFacesShareEdge(
-                        rgdwAdjacency, et.dwFaceID[0], dwCurrentFaceID))
+                    rgdwAdjacency, et.dwFaceID[0], dwCurrentFaceID))
                 {
                     return true;
                 }
@@ -489,11 +488,11 @@ namespace
 
                 EdgeInfoItem *pEdge = nullptr;
                 if (IsNeedToSplit(
-                        pVertEdgeList[v1],
-                        v2,
-                        static_cast<uint32_t>(iFace),
-                        rgdwAdjacency,
-                        &pEdge))
+                    pVertEdgeList[v1],
+                    v2,
+                    static_cast<uint32_t>(iFace),
+                    rgdwAdjacency,
+                    &pEdge))
                 {
                     HRESULT hr = AddConnectedFalseEdges(&splitFaceList, rgdwAdjacency, rgdwFalseEdges, static_cast<uint32_t>(iFace));
                     if (FAILED(hr))
@@ -526,7 +525,7 @@ namespace
             uint32_t dwFaceID = splitFaceList[i];
             pIdx = rgdwFaceIdx + 3 * dwFaceID;
             uint32_t *pAdjacency = rgdwAdjacency + 3 * dwFaceID;
-            const uint32_t dummy[3] = {uint32_t(-1), uint32_t(-1), uint32_t(-1)};
+            const uint32_t dummy[3] = { uint32_t(-1), uint32_t(-1), uint32_t(-1) };
             const uint32_t *pFalseEdge = rgdwFalseEdges ? (rgdwFalseEdges + 3 * dwFaceID) : dummy;
             for (size_t iVert = 0; iVert < 3; iVert++)
             {
@@ -584,7 +583,8 @@ namespace
 
                     FACE_ARRAY_ITME(
                         rgdwNewFaceIdx, dwCurFaceID, dwCurVertIdx) = dwCenterVertID;
-                } while (vertIter.HasNextFace() && vertIter.NextFace());
+                }
+                while (vertIter.HasNextFace() && vertIter.NextFace());
             }
         }
 
@@ -619,21 +619,22 @@ HRESULT CIsochartMesh::ReBuildRootChartByAdjacence()
 
         bChangedVertex = false;
         if (FAILED(hr = SplitSharedEdges(
-                       m_baseInfo.pdwSplitHint,
-                       m_baseInfo.pdwFaceAdjacentArray,
-                       rgdwNewFaceIdx.get(),
-                       m_dwFaceNumber,
-                       dwNewVertCount,
-                       bChangedVertex)))
+            m_baseInfo.pdwSplitHint,
+            m_baseInfo.pdwFaceAdjacentArray,
+            rgdwNewFaceIdx.get(),
+            m_dwFaceNumber,
+            dwNewVertCount,
+            bChangedVertex)))
         {
             return hr;
         }
-    } while (bChangedVertex);
+    }
+    while (bChangedVertex);
 
     if (dwNewVertCount != m_dwVertNumber)
     {
         SAFE_DELETE_ARRAY(m_pVerts)
-        m_dwVertNumber = dwNewVertCount;
+            m_dwVertNumber = dwNewVertCount;
         m_pVerts = new (std::nothrow) ISOCHARTVERTEX[m_dwVertNumber];
         if (!m_pVerts)
         {
@@ -738,9 +739,9 @@ HRESULT CIsochartMesh::Partition()
 
     // 1. Prepare simple chart
     if (FAILED(hr = PrepareSimpleChart(
-                   true,
-                   dwBoundaryNumber,
-                   bIsSimpleChart)) ||
+        true,
+        dwBoundaryNumber,
+        bIsSimpleChart)) ||
         !bIsSimpleChart)
     {
         // bIsSimpleChart == false is not an error and need no error code
@@ -768,12 +769,12 @@ HRESULT CIsochartMesh::Partition()
     size_t dwMaxEigenDimension;
     bool bIsLikePlane = false;
     if (FAILED(hr = IsomapParameterlization(
-                   bIsLikePlane,
-                   dwPrimaryEigenDimension,
-                   dwMaxEigenDimension,
-                   &pfVertGeodesicDistance,
-                   &pfVertCombineDistance,
-                   &pfVertMappingCoord)) ||
+        bIsLikePlane,
+        dwPrimaryEigenDimension,
+        dwMaxEigenDimension,
+        &pfVertGeodesicDistance,
+        &pfVertCombineDistance,
+        &pfVertMappingCoord)) ||
         bIsLikePlane)
     {
         goto LEnd;
@@ -784,8 +785,8 @@ HRESULT CIsochartMesh::Partition()
     //  a. chart with only one face
     //  b. chart been degenerated to a point
     if (FAILED(hr = ProcessTrivialShape(
-                   dwPrimaryEigenDimension,
-                   bTrivialShape)) ||
+        dwPrimaryEigenDimension,
+        bTrivialShape)) ||
         bTrivialShape)
     {
         goto LEnd;
@@ -828,10 +829,10 @@ LEnd:
     else
     {
         SAFE_DELETE_ARRAY(pfVertGeodesicDistance)
-        SAFE_DELETE_ARRAY(pfVertCombineDistance)
+            SAFE_DELETE_ARRAY(pfVertCombineDistance)
     }
     SAFE_DELETE_ARRAY(pfVertMappingCoord)
-    return hr;
+        return hr;
 }
 
 HRESULT CIsochartMesh::ComputeBiParitionLandmark()
@@ -972,9 +973,9 @@ HRESULT CIsochartMesh::Bipartition3D()
     }
 
     if (FAILED(hr = CalculateGeodesicDistance(
-                   representativeVertsIdx,
-                   pfVertCombineDistance,
-                   pfVertGeoDistance)))
+        representativeVertsIdx,
+        pfVertCombineDistance,
+        pfVertGeoDistance)))
     {
         goto LEnd;
     }
@@ -1019,7 +1020,7 @@ LEnd:
     else
     {
         SAFE_DELETE_ARRAY(pfVertCombineDistance)
-        SAFE_DELETE_ARRAY(pfVertGeoDistance)
+            SAFE_DELETE_ARRAY(pfVertGeoDistance)
     }
 
     return hr;
@@ -1113,7 +1114,7 @@ LEnd:
     else
     {
         SAFE_DELETE_ARRAY(pfVertCombineDistance)
-        SAFE_DELETE_ARRAY(pfVertGeoDistance)
+            SAFE_DELETE_ARRAY(pfVertGeoDistance)
     }
     return hr;
 }
@@ -1206,8 +1207,8 @@ HRESULT CIsochartMesh::IsomapParameterlization(
 
     // 1. Calculate the landmark vertices
     if (FAILED(hr = CalculateLandmarkVertices(
-                   MIN_LANDMARK_NUMBER,
-                   dwLandmarkNumber)))
+        MIN_LANDMARK_NUMBER,
+        dwLandmarkNumber)))
     {
         goto LEnd;
     }
@@ -1231,9 +1232,9 @@ HRESULT CIsochartMesh::IsomapParameterlization(
     }
 
     if (FAILED(hr = CalculateGeodesicDistance(
-                   m_landmarkVerts,
-                   pfVertCombinedDistance,
-                   pfVertGeodesicDistance)))
+        m_landmarkVerts,
+        pfVertCombinedDistance,
+        pfVertGeodesicDistance)))
     {
         goto LEnd;
     }
@@ -1261,27 +1262,27 @@ HRESULT CIsochartMesh::IsomapParameterlization(
         dwMaxEigenDimension = std::min(ORIGINAL_CHART_EIGEN_DIMENSION, dwLandmarkNumber);
     }
     if (FAILED(hr = m_isoMap.Init(
-                   dwLandmarkNumber,
-                   pfGeodesicMatrix)))
+        dwLandmarkNumber,
+        pfGeodesicMatrix)))
     {
         goto LEnd;
     }
 
     if (FAILED(hr = m_isoMap.ComputeLargestEigen(
-                   dwMaxEigenDimension,
-                   dwCalculatedDimension)))
+        dwMaxEigenDimension,
+        dwCalculatedDimension)))
     {
         goto LEnd;
     }
     SAFE_DELETE_ARRAY(pfGeodesicMatrix)
 
-    assert(dwMaxEigenDimension >= dwCalculatedDimension);
+        assert(dwMaxEigenDimension >= dwCalculatedDimension);
 
     dwMaxEigenDimension = dwCalculatedDimension;
     dwPrimaryEigenDimension = 0;
     if (FAILED(hr = m_isoMap.GetPrimaryEnergyDimension(
-                   PRIMARY_EIGEN_ENERGY_PERCENT,
-                   dwPrimaryEigenDimension)))
+        PRIMARY_EIGEN_ENERGY_PERCENT,
+        dwPrimaryEigenDimension)))
     {
         goto LEnd;
     }
@@ -1294,9 +1295,9 @@ HRESULT CIsochartMesh::IsomapParameterlization(
     }
 
     if (FAILED(hr = ProcessPlaneLikeShape(
-                   dwCalculatedDimension,
-                   dwPrimaryEigenDimension,
-                   bIsLikePlane)) ||
+        dwCalculatedDimension,
+        dwPrimaryEigenDimension,
+        bIsLikePlane)) ||
         bIsLikePlane)
     {
         goto LEnd;
@@ -1321,19 +1322,19 @@ HRESULT CIsochartMesh::IsomapParameterlization(
 
 #if USING_COMBINED_DISTANCE_TO_PARAMETERIZE
     if (FAILED(hr = CalculateVertMappingCoord(
-                   pfVertCombinedDistance,
-                   dwLandmarkNumber,
-                   dwPrimaryEigenDimension,
-                   pfVertMappingCoord)))
+        pfVertCombinedDistance,
+        dwLandmarkNumber,
+        dwPrimaryEigenDimension,
+        pfVertMappingCoord)))
     {
         goto LEnd;
     }
 #else
     if (FAILED(hr = CalculateVertMappingCoord(
-                   pfVertGeodesicDistance,
-                   dwLandmarkNumber,
-                   dwPrimaryEigenDimension,
-                   pfVertMappingCoord)))
+        pfVertGeodesicDistance,
+        dwLandmarkNumber,
+        dwPrimaryEigenDimension,
+        pfVertMappingCoord)))
     {
         goto LEnd;
     }
@@ -1343,21 +1344,21 @@ HRESULT CIsochartMesh::IsomapParameterlization(
     m_bIsParameterized = true;
 LEnd:
     SAFE_DELETE_ARRAY(pfGeodesicMatrix)
-    if (FAILED(hr))
-    {
-        SAFE_DELETE_ARRAY(pfVertGeodesicDistance)
-        if (bIsSignalSpecialized)
+        if (FAILED(hr))
         {
-            SAFE_DELETE_ARRAY(pfVertCombinedDistance)
+            SAFE_DELETE_ARRAY(pfVertGeodesicDistance)
+                if (bIsSignalSpecialized)
+                {
+                    SAFE_DELETE_ARRAY(pfVertCombinedDistance)
+                }
+            SAFE_DELETE_ARRAY(pfVertMappingCoord)
         }
-        SAFE_DELETE_ARRAY(pfVertMappingCoord)
-    }
-    else
-    {
-        *ppfVertCombineDistance = pfVertCombinedDistance;
-        *ppfVertGeodesicDistance = pfVertGeodesicDistance;
-        *ppfVertMappingCoord = pfVertMappingCoord;
-    }
+        else
+        {
+            *ppfVertCombineDistance = pfVertCombinedDistance;
+            *ppfVertGeodesicDistance = pfVertGeodesicDistance;
+            *ppfVertMappingCoord = pfVertMappingCoord;
+        }
 
     return hr;
 }
@@ -1586,10 +1587,10 @@ public:
         uint32_t mainVertID, uint32_t currEdge, uint32_t currFace,
         ISOCHARTFACE *pFaces,
         std::vector<ISOCHARTEDGE> &edges) : m_dwMainVertID(mainVertID),
-                                            m_dwCurEdge(currEdge),
-                                            m_dwCurFace(currFace),
-                                            m_pFaces(pFaces),
-                                            m_edges(edges)
+        m_dwCurEdge(currEdge),
+        m_dwCurFace(currFace),
+        m_pFaces(pFaces),
+        m_edges(edges)
     {
         m_dwBeginFace = currFace;
     }
@@ -1687,7 +1688,8 @@ HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool &bCleaned)
                         {
                             vertexFaceList.push_back(iter.GetCurrFace());
                         }
-                    } while (iter.Next());
+                    }
+                    while (iter.Next());
                     bProcessedEdge[iter.GetCurrEdge()] = true;
 
                     if (iter.IsBackToBegin()) // Scaned all faces.
@@ -2655,7 +2657,7 @@ HRESULT CIsochartMesh::CalMinPathToOtherBoundary(
 
         if (pCurrentVertex->bIsBoundary &&
             pdwVertBoundaryID[pCurrentVertex->dwID] !=
-                dwCurrentBoundaryID)
+            dwCurrentBoundaryID)
         {
             dwPeerVertID = pCurrentVertex->dwID;
             fDistance = pCurrentVertex->fGeodesicDistance;
@@ -2717,7 +2719,7 @@ HRESULT CIsochartMesh::CalMinPathToOtherBoundary(
             if (pHeapItem[dwAdjacentVertID].isItemInHeap())
             {
                 heap.update(pHeapItem + dwAdjacentVertID,
-                            -pAdjacentVertex->fGeodesicDistance);
+                    -pAdjacentVertex->fGeodesicDistance);
             }
             else
             {
@@ -2754,7 +2756,8 @@ HRESULT CIsochartMesh::RetreiveVertDijkstraPathToSource(
         do
         {
             dijkstraPath.push_back(p->dwID);
-        } while ((p->dwNextVertIDOnPath != INVALID_VERT_ID) && (p = m_pVerts + p->dwNextVertIDOnPath));
+        }
+        while ((p->dwNextVertIDOnPath != INVALID_VERT_ID) && (p = m_pVerts + p->dwNextVertIDOnPath));
     }
     catch (std::bad_alloc &)
     {
@@ -2894,9 +2897,9 @@ HRESULT CIsochartMesh::CutChartAlongPath(std::vector<uint32_t> &dijkstraPath)
     std::vector<uint32_t> changeFaceList;
     std::vector<uint32_t> corresVertList;
     if (FAILED(hr = FindFacesAffectedBySplit(
-                   splitPath,
-                   changeFaceList,
-                   corresVertList)))
+        splitPath,
+        changeFaceList,
+        corresVertList)))
     {
         return hr;
     }
@@ -3012,10 +3015,10 @@ HRESULT CIsochartMesh::FindFacesAffectedBySplit(
 }
 
 HRESULT CIsochartMesh::
-    CalSplitInfoOfFirstSplitVert(
-        const std::vector<uint32_t> &splitPath,
-        std::vector<uint32_t> &changeFaceList,
-        std::vector<uint32_t> &corresVertList)
+CalSplitInfoOfFirstSplitVert(
+    const std::vector<uint32_t> &splitPath,
+    std::vector<uint32_t> &changeFaceList,
+    std::vector<uint32_t> &corresVertList)
 {
     assert(m_pVerts[splitPath[0]].bIsBoundary);
     assert(splitPath.size() > 1);
@@ -3053,10 +3056,10 @@ HRESULT CIsochartMesh::
 }
 
 HRESULT CIsochartMesh::
-    CalSplitInfoOfMiddleSplitVerts(
-        const std::vector<uint32_t> &splitPath,
-        std::vector<uint32_t> &changeFaceList,
-        std::vector<uint32_t> &corresVertList)
+CalSplitInfoOfMiddleSplitVerts(
+    const std::vector<uint32_t> &splitPath,
+    std::vector<uint32_t> &changeFaceList,
+    std::vector<uint32_t> &corresVertList)
 {
     assert(splitPath.size() > 1);
 
@@ -3107,11 +3110,11 @@ HRESULT CIsochartMesh::
                 {
                     ISOCHARTFACE *pFace = m_pFaces + pCurrVertex->faceAdjacent[j];
                     if ((pFace->dwVertexID[0] == pPrevVertex->dwID ||
-                         pFace->dwVertexID[1] == pPrevVertex->dwID ||
-                         pFace->dwVertexID[2] == pPrevVertex->dwID) &&
+                        pFace->dwVertexID[1] == pPrevVertex->dwID ||
+                        pFace->dwVertexID[2] == pPrevVertex->dwID) &&
                         (pFace->dwVertexID[0] == pNextVertex->dwID ||
-                         pFace->dwVertexID[1] == pNextVertex->dwID ||
-                         pFace->dwVertexID[2] == pNextVertex->dwID))
+                            pFace->dwVertexID[1] == pNextVertex->dwID ||
+                            pFace->dwVertexID[2] == pNextVertex->dwID))
                     {
                         assert(pFace->dwID == pCurrVertex->faceAdjacent[j]);
                         changeFaceList.push_back(pFace->dwID);
@@ -3413,7 +3416,7 @@ HRESULT CIsochartMesh::CalculateDijkstraPathToVertex(
             if (pHeapItem[dwAdjacentVertID].isItemInHeap())
             {
                 heap.update(pHeapItem + dwAdjacentVertID,
-                            -pAdjacentVertex->fGeodesicDistance);
+                    -pAdjacentVertex->fGeodesicDistance);
             }
             else
             {

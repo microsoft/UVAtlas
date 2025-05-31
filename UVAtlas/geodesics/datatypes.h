@@ -122,30 +122,29 @@ namespace GeodesicDist
 
         double ksi; // the accumulated error used in approximate algorithm
 
-#ifdef _PREFAST_
-#pragma warning(push)
-#pragma warning(disable : 26495)
-#endif
+    #ifdef _PREFAST_
+    #pragma warning(push)
+    #pragma warning(disable : 26495)
+    #endif
 
         EdgeWindow() : dwTag(0),
-                       dwEdgeIdx(0),
-                       pEdge(nullptr),
-                       dwMarkFromEdgeVertexIdx(0),
-                       pMarkFromEdgeVertex(nullptr),
-                       dwPseuSrcVertexIdx(0),
-                       pPseuSrcVertex(nullptr),
-                       b0(0.0),
-                       b1(0.0),
-                       d0(0.0),
-                       d1(0.0),
-                       dv2Src{},
-                       dPseuSrcToSrcDistance(0.0),
-                       dwFaceIdxPropagatedFrom(0),
-                       pFacePropagatedFrom(nullptr),
-                       pEdgePropagatedFrom(nullptr),
-                       ksi(0.0)
-        {
-        }
+            dwEdgeIdx(0),
+            pEdge(nullptr),
+            dwMarkFromEdgeVertexIdx(0),
+            pMarkFromEdgeVertex(nullptr),
+            dwPseuSrcVertexIdx(0),
+            pPseuSrcVertex(nullptr),
+            b0(0.0),
+            b1(0.0),
+            d0(0.0),
+            d1(0.0),
+            dv2Src{},
+            dPseuSrcToSrcDistance(0.0),
+            dwFaceIdxPropagatedFrom(0),
+            pFacePropagatedFrom(nullptr),
+            pEdgePropagatedFrom(nullptr),
+            ksi(0.0)
+        {}
         // trick constructor
         EdgeWindow(const uint32_t R)
         {
@@ -161,11 +160,11 @@ namespace GeodesicDist
         EdgeWindow(EdgeWindow &&) noexcept = default;
         EdgeWindow &operator=(EdgeWindow &&) noexcept = default;
 
-#ifdef _PREFAST_
-#pragma warning(pop)
-#endif
+    #ifdef _PREFAST_
+    #pragma warning(pop)
+    #endif
 
-        // setting an index also assigns appropriate pointer to the corresponding pointer field
+            // setting an index also assigns appropriate pointer to the corresponding pointer field
         void SetEdgeIdx(TypeEdgeList &EdgeList, const uint32_t index)
         {
             this->dwEdgeIdx = index;
@@ -205,16 +204,15 @@ namespace GeodesicDist
         double dEdgeLength; // the length of this edge
 
         Edge() : dwVertexIdx0(0),
-                 pVertex0(nullptr),
-                 dwVertexIdx1(0),
-                 pVertex1(nullptr),
-                 dwAdjFaceIdx0(0),
-                 pAdjFace0(nullptr),
-                 dwAdjFaceIdx1(0),
-                 pAdjFace1(nullptr),
-                 dEdgeLength(0.0)
-        {
-        }
+            pVertex0(nullptr),
+            dwVertexIdx1(0),
+            pVertex1(nullptr),
+            dwAdjFaceIdx0(0),
+            pAdjFace0(nullptr),
+            dwAdjFaceIdx1(0),
+            pAdjFace1(nullptr),
+            dEdgeLength(0.0)
+        {}
 
         Edge(const Edge &) = default;
         Edge &operator=(const Edge &) = default;
@@ -421,19 +419,18 @@ namespace GeodesicDist
         }
 
         Face() : dwEdgeIdx0(FLAG_INVALIDDWORD),
-                 pEdge0(nullptr),
-                 dwEdgeIdx1(FLAG_INVALIDDWORD),
-                 pEdge1(nullptr),
-                 dwEdgeIdx2(FLAG_INVALIDDWORD),
-                 pEdge2(nullptr),
-                 dwVertexIdx0(FLAG_INVALIDDWORD),
-                 pVertex0(nullptr),
-                 dwVertexIdx1(FLAG_INVALIDDWORD),
-                 pVertex1(nullptr),
-                 dwVertexIdx2(FLAG_INVALIDDWORD),
-                 pVertex2(nullptr)
-        {
-        }
+            pEdge0(nullptr),
+            dwEdgeIdx1(FLAG_INVALIDDWORD),
+            pEdge1(nullptr),
+            dwEdgeIdx2(FLAG_INVALIDDWORD),
+            pEdge2(nullptr),
+            dwVertexIdx0(FLAG_INVALIDDWORD),
+            pVertex0(nullptr),
+            dwVertexIdx1(FLAG_INVALIDDWORD),
+            pVertex1(nullptr),
+            dwVertexIdx2(FLAG_INVALIDDWORD),
+            pVertex2(nullptr)
+        {}
 
         Edge *GetEdge(const uint32_t idx) const
         {
@@ -532,14 +529,13 @@ namespace GeodesicDist
         std::vector<Edge *> edgesAdj; // edges that have this vertex
 
         Vertex() : bBoundary(false),
-                   dAngle(0.0),
-                   dLengthOfWindowEdgeToThisVertex(DBL_MAX),
-                   dGeoDistanceToSrc(DBL_MAX),
-                   pEdgeReportedGeoDist(nullptr),
-                   bUsed(false),
-                   bShadowBoundary(false)
-        {
-        }
+            dAngle(0.0),
+            dLengthOfWindowEdgeToThisVertex(DBL_MAX),
+            dGeoDistanceToSrc(DBL_MAX),
+            pEdgeReportedGeoDist(nullptr),
+            bUsed(false),
+            bShadowBoundary(false)
+        {}
 
         // get the index in the vertex array
         size_t GetIdx(TypeVertexList &VertexList) const

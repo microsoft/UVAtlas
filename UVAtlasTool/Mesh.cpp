@@ -46,21 +46,13 @@ using namespace DirectX;
 
 namespace
 {
-    struct handle_closer
-    {
-        void operator()(HANDLE h) noexcept
-        {
-            if (h)
-                CloseHandle(h);
-        }
-    };
+    struct handle_closer { void operator()(HANDLE h) noexcept { if (h) CloseHandle(h); } };
 
     using ScopedHandle = std::unique_ptr<void, handle_closer>;
 
     inline HANDLE safe_handle(HANDLE h) noexcept { return (h == INVALID_HANDLE_VALUE) ? nullptr : h; }
 
-    template <typename T>
-    inline HRESULT write_file(HANDLE hFile, const T &value)
+    template<typename T> inline HRESULT write_file(HANDLE hFile, const T& value)
     {
         DWORD bytesWritten;
         if (!WriteFile(hFile, &value, static_cast<DWORD>(sizeof(T)), &bytesWritten, nullptr))
@@ -167,8 +159,7 @@ void Mesh::Clear() noexcept
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT
-    Mesh::SetIndexData(size_t nFaces, const uint16_t *indices, const uint32_t *attributes) noexcept
+HRESULT Mesh::SetIndexData(size_t nFaces, const uint16_t *indices, const uint32_t *attributes) noexcept
 {
     if (!nFaces || !indices)
         return E_INVALIDARG;
@@ -215,8 +206,7 @@ _Use_decl_annotations_
 }
 
 _Use_decl_annotations_
-    HRESULT
-    Mesh::SetIndexData(size_t nFaces, const uint32_t *indices, const uint32_t *attributes) noexcept
+HRESULT Mesh::SetIndexData(size_t nFaces, const uint32_t *indices, const uint32_t *attributes) noexcept
 {
     if (!nFaces || !indices)
         return E_INVALIDARG;
@@ -406,8 +396,7 @@ HRESULT Mesh::SetVertexData(const DirectX::VBReader &reader, _In_ size_t nVerts)
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT
-    Mesh::Validate(DirectX::VALIDATE_FLAGS flags, std::wstring *msgs) const noexcept
+HRESULT Mesh::Validate(DirectX::VALIDATE_FLAGS flags, std::wstring *msgs) const noexcept
 {
     if (!mnFaces || !mIndices || !mnVerts)
         return E_UNEXPECTED;
@@ -632,7 +621,7 @@ HRESULT Mesh::ComputeTangentFrame(_In_ bool bitangents) noexcept
             return E_OUTOFMEMORY;
 
         HRESULT hr = DirectX::ComputeTangentFrame(mIndices.get(), mnFaces, mPositions.get(), mNormals.get(), mTexCoords.get(), mnVerts,
-                                                  tan1.get(), tan2.get());
+            tan1.get(), tan2.get());
         if (FAILED(hr))
             return hr;
     }
@@ -641,7 +630,7 @@ HRESULT Mesh::ComputeTangentFrame(_In_ bool bitangents) noexcept
         mBiTangents.reset();
 
         HRESULT hr = DirectX::ComputeTangentFrame(mIndices.get(), mnFaces, mPositions.get(), mNormals.get(), mTexCoords.get(), mnVerts,
-                                                  tan1.get());
+            tan1.get());
         if (FAILED(hr))
             return hr;
     }
@@ -654,8 +643,7 @@ HRESULT Mesh::ComputeTangentFrame(_In_ bool bitangents) noexcept
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT
-    Mesh::UpdateFaces(size_t nFaces, const uint32_t *indices) noexcept
+HRESULT Mesh::UpdateFaces(size_t nFaces, const uint32_t *indices) noexcept
 {
     if (!nFaces || !indices)
         return E_INVALIDARG;
@@ -676,8 +664,7 @@ _Use_decl_annotations_
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT
-    Mesh::UpdateAttributes(size_t nFaces, const uint32_t *attributes) noexcept
+HRESULT Mesh::UpdateAttributes(size_t nFaces, const uint32_t *attributes) noexcept
 {
     if (!nFaces || !attributes)
         return E_INVALIDARG;
@@ -727,8 +714,7 @@ _Use_decl_annotations_
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT
-    Mesh::UpdateUVs(size_t nVerts, const XMFLOAT2 *uvs, bool keepOriginal) noexcept
+HRESULT Mesh::UpdateUVs(size_t nVerts, const XMFLOAT2 *uvs, bool keepOriginal) noexcept
 {
     if (!nVerts || !uvs)
         return E_INVALIDARG;
@@ -771,8 +757,7 @@ _Use_decl_annotations_
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT
-    Mesh::VertexRemap(const uint32_t *remap, size_t nNewVerts) noexcept
+HRESULT Mesh::VertexRemap(const uint32_t *remap, size_t nNewVerts) noexcept
 {
     if (!remap || !nNewVerts)
         return E_INVALIDARG;
@@ -1067,7 +1052,8 @@ bool Mesh::Is16BitIndexBuffer() const noexcept
     for (size_t j = 0; j < (mnFaces * 3); ++j)
     {
         const uint32_t index = *(iptr++);
-        if (index != uint32_t(-1) && (index >= UINT16_MAX))
+        if (index != uint32_t(-1)
+            && (index >= UINT16_MAX))
         {
             return false;
         }
@@ -1225,8 +1211,7 @@ HRESULT Mesh::GetVertexBuffer(const DirectX::VBWriter &writer) const noexcept
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT
-    Mesh::ExportToVBO(const wchar_t *szFileName) const noexcept
+HRESULT Mesh::ExportToVBO(const wchar_t *szFileName) const noexcept
 {
     using namespace VBO;
 
@@ -1316,8 +1301,7 @@ _Use_decl_annotations_
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT
-    Mesh::CreateFromVBO(const wchar_t *szFileName, std::unique_ptr<Mesh> &result) noexcept
+HRESULT Mesh::CreateFromVBO(const wchar_t *szFileName, std::unique_ptr<Mesh> &result) noexcept
 {
     using namespace VBO;
 
@@ -1453,8 +1437,7 @@ _Use_decl_annotations_
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT
-    Mesh::ExportToCMO(const wchar_t *szFileName, size_t nMaterials, const Material *materials) const noexcept
+HRESULT Mesh::ExportToCMO(const wchar_t *szFileName, size_t nMaterials, const Material *materials) const noexcept
 {
     using namespace VSD3DStarter;
 
@@ -1569,9 +1552,9 @@ _Use_decl_annotations_
     }
 
     // Write materials
-    static const Mesh::Material s_defCMOMaterial = {L"default", false, 1.f, 1.f,
+    static const Mesh::Material s_defCMOMaterial = { L"default", false, 1.f, 1.f,
                                                     XMFLOAT3(0.2f, 0.2f, 0.2f), XMFLOAT3(0.8f, 0.8f, 0.8f),
-                                                    XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f), L""};
+                                                    XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f), L"" };
 
     UINT materialCount = 1;
     if (nMaterials > 0)
@@ -1824,14 +1807,13 @@ _Use_decl_annotations_
 //======================================================================================
 
 _Use_decl_annotations_
-    HRESULT
-    Mesh::ExportToSDKMESH(const wchar_t *szFileName,
-                          size_t nMaterials, const Material *materials,
-                          bool force32bit,
-                          bool version2,
-                          DXGI_FORMAT normalFormat,
-                          DXGI_FORMAT uvFormat,
-                          DXGI_FORMAT colorFormat) const noexcept
+HRESULT Mesh::ExportToSDKMESH(const wchar_t *szFileName,
+    size_t nMaterials, const Material *materials,
+    bool force32bit,
+    bool version2,
+    DXGI_FORMAT normalFormat,
+    DXGI_FORMAT uvFormat,
+    DXGI_FORMAT colorFormat) const noexcept
 {
     using namespace DXUT;
 
@@ -1849,29 +1831,29 @@ _Use_decl_annotations_
 
     // Build input layout/vertex decalaration
     static const D3D11_INPUT_ELEMENT_DESC s_elements[] =
-        {
-            {"SV_Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}, // 0
-            {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},      // 1
-            {"COLOR", 0, DXGI_FORMAT_B8G8R8A8_UNORM, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},        // 2
-            {"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},     // 3
-            {"BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},    // 4
-            {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},       // 5
-            {"BLENDINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},  // 6
-            {"BLENDWEIGHT", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},  // 7
-        };
+    {
+        {"SV_Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}, // 0
+        {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},      // 1
+        {"COLOR", 0, DXGI_FORMAT_B8G8R8A8_UNORM, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},        // 2
+        {"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},     // 3
+        {"BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},    // 4
+        {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},       // 5
+        {"BLENDINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},  // 6
+        {"BLENDWEIGHT", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},  // 7
+    };
 
     static const D3DVERTEXELEMENT9 s_decls[] =
-        {
-            {0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_POSITION, 0},     // 0
-            {0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_NORMAL, 0},       // 1
-            {0, 0, D3DDECLTYPE_D3DCOLOR, 0, D3DDECLUSAGE_COLOR, 0},      // 2
-            {0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_TANGENT, 0},      // 3
-            {0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_BINORMAL, 0},     // 4
-            {0, 0, D3DDECLTYPE_FLOAT2, 0, D3DDECLUSAGE_TEXCOORD, 0},     // 5
-            {0, 0, D3DDECLTYPE_UBYTE4, 0, D3DDECLUSAGE_BLENDINDICES, 0}, // 6
-            {0, 0, D3DDECLTYPE_UBYTE4N, 0, D3DDECLUSAGE_BLENDWEIGHT, 0}, // 7
-            {0xFF, 0, D3DDECLTYPE_UNUSED, 0, 0, 0},
-        };
+    {
+        {0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_POSITION, 0},     // 0
+        {0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_NORMAL, 0},       // 1
+        {0, 0, D3DDECLTYPE_D3DCOLOR, 0, D3DDECLUSAGE_COLOR, 0},      // 2
+        {0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_TANGENT, 0},      // 3
+        {0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_BINORMAL, 0},     // 4
+        {0, 0, D3DDECLTYPE_FLOAT2, 0, D3DDECLUSAGE_TEXCOORD, 0},     // 5
+        {0, 0, D3DDECLTYPE_UBYTE4, 0, D3DDECLUSAGE_BLENDINDICES, 0}, // 6
+        {0, 0, D3DDECLTYPE_UBYTE4N, 0, D3DDECLUSAGE_BLENDWEIGHT, 0}, // 7
+        {0xFF, 0, D3DDECLTYPE_UNUSED, 0, 0, 0},
+    };
 
     static_assert((std::size(s_elements) + 1) == std::size(s_decls), "InputLayouts and Vertex Decls disagree");
 
@@ -1880,19 +1862,15 @@ _Use_decl_annotations_
     switch (normalFormat)
     {
     case DXGI_FORMAT_R16G16B16A16_FLOAT:
-        normalType = D3DDECLTYPE_FLOAT16_4;
-        normalStride = sizeof(PackedVector::XMHALF4);
+        normalType = D3DDECLTYPE_FLOAT16_4; normalStride = sizeof(PackedVector::XMHALF4);
         break;
 
     case DXGI_FORMAT_R11G11B10_FLOAT: // Biased in GetVertexBuffer
-        normalType = D3DDECLTYPE_DXGI_R11G11B10_FLOAT;
-        normalStride = sizeof(UINT);
+        normalType = D3DDECLTYPE_DXGI_R11G11B10_FLOAT; normalStride = sizeof(UINT);
         break;
 
     default:
-        normalFormat = DXGI_FORMAT_R32G32B32_FLOAT;
-        normalType = D3DDECLTYPE_FLOAT3;
-        normalStride = sizeof(XMFLOAT3);
+        normalFormat = DXGI_FORMAT_R32G32B32_FLOAT; normalType = D3DDECLTYPE_FLOAT3; normalStride = sizeof(XMFLOAT3);
         break;
     }
 
@@ -1901,14 +1879,11 @@ _Use_decl_annotations_
     switch (uvFormat)
     {
     case DXGI_FORMAT_R16G16_FLOAT:
-        uvType = D3DDECLTYPE_FLOAT16_2;
-        uvStride = sizeof(PackedVector::XMHALF2);
+        uvType = D3DDECLTYPE_FLOAT16_2; uvStride = sizeof(PackedVector::XMHALF2);
         break;
 
     default:
-        uvFormat = DXGI_FORMAT_R32G32_FLOAT;
-        uvType = D3DDECLTYPE_FLOAT2;
-        uvStride = sizeof(XMFLOAT2);
+        uvFormat = DXGI_FORMAT_R32G32_FLOAT; uvType = D3DDECLTYPE_FLOAT2; uvStride = sizeof(XMFLOAT2);
         break;
     }
 
@@ -1917,34 +1892,27 @@ _Use_decl_annotations_
     switch (colorFormat)
     {
     case DXGI_FORMAT_R32G32B32A32_FLOAT:
-        colorType = D3DDECLTYPE_FLOAT4;
-        colorStride = sizeof(XMFLOAT4);
+        colorType = D3DDECLTYPE_FLOAT4; colorStride = sizeof(XMFLOAT4);
         break;
 
     case DXGI_FORMAT_R16G16B16A16_FLOAT:
-        colorType = D3DDECLTYPE_FLOAT16_4;
-        colorStride = sizeof(PackedVector::XMHALF4);
+        colorType = D3DDECLTYPE_FLOAT16_4; colorStride = sizeof(PackedVector::XMHALF4);
         break;
 
     case DXGI_FORMAT_R11G11B10_FLOAT:
-        colorType = D3DDECLTYPE_DXGI_R11G11B10_FLOAT;
-        colorStride = sizeof(UINT);
+        colorType = D3DDECLTYPE_DXGI_R11G11B10_FLOAT; colorStride = sizeof(UINT);
         break;
 
     case DXGI_FORMAT_R10G10B10A2_UNORM:
-        colorType = D3DDECLTYPE_DXGI_R10G10B10A2_UNORM;
-        colorStride = sizeof(UINT);
+        colorType = D3DDECLTYPE_DXGI_R10G10B10A2_UNORM; colorStride = sizeof(UINT);
         break;
 
     case DXGI_FORMAT_R8G8B8A8_UNORM:
-        colorType = D3DDECLTYPE_UBYTE4N;
-        colorStride = sizeof(UINT);
+        colorType = D3DDECLTYPE_UBYTE4N; colorStride = sizeof(UINT);
         break;
 
     default:
-        colorFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
-        colorType = D3DDECLTYPE_D3DCOLOR;
-        colorStride = sizeof(UINT);
+        colorFormat = DXGI_FORMAT_B8G8R8A8_UNORM; colorType = D3DDECLTYPE_D3DCOLOR; colorStride = sizeof(UINT);
         break;
     }
 
@@ -2122,8 +2090,8 @@ _Use_decl_annotations_
                 if (!m0->name.empty())
                 {
                     const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                                                           m0->name.c_str(), -1,
-                                                           m2->Name, MAX_MATERIAL_NAME, nullptr, FALSE);
+                        m0->name.c_str(), -1,
+                        m2->Name, MAX_MATERIAL_NAME, nullptr, FALSE);
                     if (!result)
                     {
                         *m2->Name = 0;
@@ -2135,8 +2103,8 @@ _Use_decl_annotations_
                 if (!m0->texture.empty())
                 {
                     const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                                                           m0->texture.c_str(), -1,
-                                                           m2->AlbedoTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                        m0->texture.c_str(), -1,
+                        m2->AlbedoTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                     if (!result)
                     {
                         *m2->AlbedoTexture = 0;
@@ -2181,8 +2149,8 @@ _Use_decl_annotations_
                 if (!m0->normalTexture.empty())
                 {
                     const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                                                           m0->normalTexture.c_str(), -1,
-                                                           m2->NormalTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                        m0->normalTexture.c_str(), -1,
+                        m2->NormalTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                     if (!result)
                     {
                         *m2->NormalTexture = 0;
@@ -2193,8 +2161,8 @@ _Use_decl_annotations_
                 if (!m0->emissiveTexture.empty())
                 {
                     const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                                                           m0->emissiveTexture.c_str(), -1,
-                                                           m2->EmissiveTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                        m0->emissiveTexture.c_str(), -1,
+                        m2->EmissiveTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                     if (!result)
                     {
                         *m2->EmissiveTexture = 0;
@@ -2205,8 +2173,8 @@ _Use_decl_annotations_
                 if (!m0->rmaTexture.empty())
                 {
                     const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                                                           m0->rmaTexture.c_str(), -1,
-                                                           m2->RMATexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                        m0->rmaTexture.c_str(), -1,
+                        m2->RMATexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                     if (!result)
                     {
                         *m2->RMATexture = 0;
@@ -2244,8 +2212,8 @@ _Use_decl_annotations_
             if (!m0->name.empty())
             {
                 const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                                                       m0->name.c_str(), -1,
-                                                       m->Name, MAX_MATERIAL_NAME, nullptr, FALSE);
+                    m0->name.c_str(), -1,
+                    m->Name, MAX_MATERIAL_NAME, nullptr, FALSE);
                 if (!result)
                 {
                     *m->Name = 0;
@@ -2255,8 +2223,8 @@ _Use_decl_annotations_
             if (!m0->texture.empty())
             {
                 const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                                                       m0->texture.c_str(), -1,
-                                                       m->DiffuseTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                    m0->texture.c_str(), -1,
+                    m->DiffuseTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                 if (!result)
                 {
                     *m->DiffuseTexture = 0;
@@ -2266,8 +2234,8 @@ _Use_decl_annotations_
             if (!m0->normalTexture.empty())
             {
                 const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                                                       m0->normalTexture.c_str(), -1,
-                                                       m->NormalTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                    m0->normalTexture.c_str(), -1,
+                    m->NormalTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                 if (!result)
                 {
                     *m->NormalTexture = 0;
@@ -2277,8 +2245,8 @@ _Use_decl_annotations_
             if (!m0->specularTexture.empty())
             {
                 const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                                                       m0->specularTexture.c_str(), -1,
-                                                       m->SpecularTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                    m0->specularTexture.c_str(), -1,
+                    m->SpecularTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                 if (!result)
                 {
                     *m->SpecularTexture = 0;
@@ -2374,7 +2342,10 @@ _Use_decl_annotations_
 
     header.HeaderSize = sizeof(SDKMESH_HEADER) + sizeof(SDKMESH_VERTEX_BUFFER_HEADER) + sizeof(SDKMESH_INDEX_BUFFER_HEADER);
 
-    const size_t staticDataSize = sizeof(SDKMESH_MESH) + header.NumTotalSubsets * sizeof(SDKMESH_SUBSET) + sizeof(SDKMESH_FRAME) + header.NumMaterials * sizeof(SDKMESH_MATERIAL);
+    const size_t staticDataSize = sizeof(SDKMESH_MESH)
+        + header.NumTotalSubsets * sizeof(SDKMESH_SUBSET)
+        + sizeof(SDKMESH_FRAME)
+        + header.NumMaterials * sizeof(SDKMESH_MATERIAL);
 
     header.NonBufferDataSize = uint64_t(staticDataSize) + uint64_t(subsetArray.size()) * sizeof(UINT) + sizeof(UINT);
 
@@ -2501,7 +2472,7 @@ _Use_decl_annotations_
     // Write IB data
     bytesToWrite = static_cast<DWORD>(ibHeader.SizeBytes);
     if (!WriteFile(hFile.get(), (ib16) ? static_cast<void *>(ib16.get()) : static_cast<void *>(mIndices.get()),
-                   bytesToWrite, &bytesWritten, nullptr))
+        bytesToWrite, &bytesWritten, nullptr))
         return HRESULT_FROM_WIN32(GetLastError());
 
     if (bytesWritten != bytesToWrite)

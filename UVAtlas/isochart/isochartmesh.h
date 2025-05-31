@@ -908,15 +908,15 @@ namespace Isochart
             float *pfFaceStretch) const;
 
         void
-        ParameterizeOneFace(
-            bool bForSignal,
-            ISOCHARTFACE *pFace);
+            ParameterizeOneFace(
+                bool bForSignal,
+                ISOCHARTFACE *pFace);
 
-        /////////////////////////////////////////////////////////////
-        //////////////Optimizing boundary Methods////////////////////
-        /////////////////////////////////////////////////////////////
+            /////////////////////////////////////////////////////////////
+            //////////////Optimizing boundary Methods////////////////////
+            /////////////////////////////////////////////////////////////
 
-        // Optimize boundary by graph-cut
+            // Optimize boundary by graph-cut
         HRESULT OptimizeBoundaryByAngle(
             uint32_t *pdwFaceChartID,
             size_t dwMaxSubchartCount,
@@ -1173,11 +1173,11 @@ namespace Isochart
             bool &bCanDecide);
 
         HRESULT
-        ScanAlongBoundayEdges(
-            ISOCHARTVERTEX *pStartVertex,
-            ISOCHARTVERTEX *pEndVertex,
-            ISOCHARTEDGE *pStartEdge,
-            VERTEX_ARRAY &scanVertexList);
+            ScanAlongBoundayEdges(
+                ISOCHARTVERTEX *pStartVertex,
+                ISOCHARTVERTEX *pEndVertex,
+                ISOCHARTEDGE *pStartEdge,
+                VERTEX_ARRAY &scanVertexList);
 
         void RotateChartAroundCenter(
             size_t dwRotationId,
@@ -1191,8 +1191,8 @@ namespace Isochart
             size_t dwRotationId);
 
         static void
-        OptimizeAtlasSignalStretch(
-            ISOCHARTMESH_ARRAY &chartList);
+            OptimizeAtlasSignalStretch(
+                ISOCHARTMESH_ARRAY &chartList);
 
         void ScaleChart(float fScale);
 
@@ -1319,11 +1319,11 @@ namespace Isochart
 
         bool m_bNeedToClean;
 
-#ifdef _USE_EXACT_ALGORITHM
+    #ifdef _USE_EXACT_ALGORITHM
         GeodesicDist::CExactOneToAll m_ExactOneToAllEngine;
-#else
+    #else
         GeodesicDist::CApproximateOneToAll m_ApproximateOneToAllEngine;
-#endif
+    #endif
     };
 
 }

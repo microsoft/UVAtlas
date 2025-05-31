@@ -20,28 +20,27 @@ namespace
 }
 
 CBaseMeshInfo::CBaseMeshInfo() : pVertexArray(nullptr),
-                                 dwVertexCount(0),
-                                 dwVertexStride(0),
-                                 dwFaceCount(0),
-                                 IndexFormat(DXGI_FORMAT_R16_UINT),
-                                 pfIMTArray(nullptr),
-                                 pdwOriginalFaceAdjacentArray(nullptr),
-                                 pVertPosition(nullptr),
-                                 pFaceNormalArray(nullptr),
-                                 pFaceCanonicalUVCoordinate(nullptr),
-                                 pFaceCanonicalParamAxis(nullptr),
-                                 pfFaceAreaArray(nullptr),
-                                 pdwFaceAdjacentArray(nullptr),
-                                 fMeshArea(0),
-                                 fBoxDiagLen(0),
-                                 fOverturnTolerance(0),
-                                 fExpectAvgL2SquaredStretch(0),
-                                 fExpectMinAvgL2SquaredStretch(FACE_MIN_L2_STRETCH),
-                                 fRatioOfSigToGeo(0),
-                                 bIsFaceAdjacenctArrayReady(false),
-                                 pdwSplitHint(nullptr)
-{
-}
+dwVertexCount(0),
+dwVertexStride(0),
+dwFaceCount(0),
+IndexFormat(DXGI_FORMAT_R16_UINT),
+pfIMTArray(nullptr),
+pdwOriginalFaceAdjacentArray(nullptr),
+pVertPosition(nullptr),
+pFaceNormalArray(nullptr),
+pFaceCanonicalUVCoordinate(nullptr),
+pFaceCanonicalParamAxis(nullptr),
+pfFaceAreaArray(nullptr),
+pdwFaceAdjacentArray(nullptr),
+fMeshArea(0),
+fBoxDiagLen(0),
+fOverturnTolerance(0),
+fExpectAvgL2SquaredStretch(0),
+fExpectMinAvgL2SquaredStretch(FACE_MIN_L2_STRETCH),
+fRatioOfSigToGeo(0),
+bIsFaceAdjacenctArrayReady(false),
+pdwSplitHint(nullptr)
+{}
 
 CBaseMeshInfo::~CBaseMeshInfo()
 {
@@ -146,13 +145,13 @@ HRESULT CBaseMeshInfo::Initialize(
 void CBaseMeshInfo::Free()
 {
     SAFE_DELETE_ARRAY(pVertPosition)
-    SAFE_DELETE_ARRAY(pFaceNormalArray)
-    SAFE_DELETE_ARRAY(pfFaceAreaArray)
-    SAFE_DELETE_ARRAY(pdwFaceAdjacentArray)
-    SAFE_DELETE_ARRAY(pFaceCanonicalUVCoordinate)
-    SAFE_DELETE_ARRAY(pFaceCanonicalParamAxis)
+        SAFE_DELETE_ARRAY(pFaceNormalArray)
+        SAFE_DELETE_ARRAY(pfFaceAreaArray)
+        SAFE_DELETE_ARRAY(pdwFaceAdjacentArray)
+        SAFE_DELETE_ARRAY(pFaceCanonicalUVCoordinate)
+        SAFE_DELETE_ARRAY(pFaceCanonicalParamAxis)
 
-    pfIMTArray = nullptr;
+        pfIMTArray = nullptr;
 
     dwVertexCount = 0;
     dwFaceCount = 0;
@@ -212,10 +211,10 @@ HRESULT CBaseMeshInfo::CopyAndScaleInputVertices()
     float scale = 1.0f;
 
     scale = std::max(vMaxCoords.x - vMinCoords.x,
-                     std::max(vMaxCoords.y - vMinCoords.y, vMaxCoords.z - vMinCoords.z));
+        std::max(vMaxCoords.y - vMinCoords.y, vMaxCoords.z - vMinCoords.z));
 
-    // either all vertices are the same or there are NaN's involved, just keep
-    // the same scale in this case
+// either all vertices are the same or there are NaN's involved, just keep
+// the same scale in this case
     if (scale <= 0.0f)
         scale = 1.0f;
 

@@ -268,13 +268,13 @@ HRESULT CIsochartMesh::PerformMerging(
 
         bool bMerged = false;
         if (FAILED(hr =
-                       MergeAdjacentChart(
-                           children,
-                           index,
-                           dwFaceNumber,
-                           pbMergeFlag.get(),
-                           pChartNormal.get(),
-                           bMerged)))
+            MergeAdjacentChart(
+                children,
+                index,
+                dwFaceNumber,
+                pbMergeFlag.get(),
+                pChartNormal.get(),
+                bMerged)))
         {
             return hr;
         }
@@ -353,7 +353,7 @@ HRESULT CIsochartMesh::MergeAdjacentChart(
     CIsochartMesh *pMergedChart = nullptr;
     CIsochartMesh *pAddjacentChart = nullptr;
     size_t dwMaxFaceNumAfterMerging = std::max<size_t>(size_t(float(dwTotalFaceNumber) * MAX_MERGE_RATIO),
-                                                       size_t(MAX_MERGE_FACE_NUMBER));
+        size_t(MAX_MERGE_FACE_NUMBER));
 
     for (size_t i = 0; i < dwAdjacentChartNumber; i++)
     {
@@ -408,11 +408,11 @@ HRESULT CIsochartMesh::MergeAdjacentChart(
         // 2.5 Check if the meraged chart also satisfied the stretch
         bool bCanMerge = true;
         if (FAILED(hr = CheckMergeResult(
-                       children,
-                       pMainChart,
-                       pAddjacentChart,
-                       pMergedChart,
-                       bCanMerge)))
+            children,
+            pMainChart,
+            pAddjacentChart,
+            pMergedChart,
+            bCanMerge)))
         {
             delete pMergedChart;
             pMergedChart = nullptr;
@@ -447,7 +447,7 @@ HRESULT CIsochartMesh::MergeAdjacentChart(
         }
         removeItem(pAddjacentChart->m_adjacentChart, dwAdditionalChartID);
         if (!addNoduplicateItem(pAddjacentChart->m_adjacentChart,
-                                dwMainChartID))
+            dwMainChartID))
         {
             delete pMergedChart;
             return E_OUTOFMEMORY;
@@ -601,7 +601,7 @@ HRESULT CIsochartMesh::CalculateIsoParameterization()
 
     // 4. Parameterization...
     if (FAILED(hr = CalculateVertMappingCoord(
-                   pfVertGeodesicDistance, dwLandmarkNumber, 2, nullptr)))
+        pfVertGeodesicDistance, dwLandmarkNumber, 2, nullptr)))
     {
         goto LEnd;
     }
@@ -811,8 +811,8 @@ CIsochartMesh *CIsochartMesh::MergeTwoCharts(
         pNewFace->dwID = i;
         pNewFace->dwIDInRootMesh = pChart2->m_pFaces[i].dwIDInRootMesh;
         memcpy(pNewFace->dwVertexID,
-               pChart2->m_pFaces[i].dwVertexID,
-               sizeof(uint32_t) * 3);
+            pChart2->m_pFaces[i].dwVertexID,
+            sizeof(uint32_t) * 3);
     }
     size_t dwFaceCount = pChart2->m_dwFaceNumber;
     for (uint32_t i = 0; i < pChart1->m_dwFaceNumber; i++)
@@ -943,9 +943,10 @@ HRESULT CIsochartMesh::TryMergeChart(
             delete pMainChart;
             pMainChart = pChild;
         }
-    } while (!bSimpleChart);
+    }
+    while (!bSimpleChart);
 
-    // 6. Ccompute the adjacent sub-charts of new sub-chart.
+ // 6. Ccompute the adjacent sub-charts of new sub-chart.
     auto &adjacentChartList = pMainChart->m_adjacentChart;
     try
     {
@@ -968,7 +969,7 @@ HRESULT CIsochartMesh::TryMergeChart(
         if (children[pChart1->m_adjacentChart[i]] != pChart2)
         {
             if (!addNoduplicateItem(adjacentChartList,
-                                    pChart1->m_adjacentChart[i]))
+                pChart1->m_adjacentChart[i]))
             {
                 delete pMainChart;
                 return E_OUTOFMEMORY;
@@ -1006,7 +1007,7 @@ HRESULT CIsochartMesh::CalculateBoundaryNumber(
         while (dwVertIndex < m_dwVertNumber)
         {
             while (dwVertIndex < m_dwVertNumber &&
-                   (!m_pVerts[dwVertIndex].bIsBoundary || pbVertMark[dwVertIndex]))
+                (!m_pVerts[dwVertIndex].bIsBoundary || pbVertMark[dwVertIndex]))
             {
                 dwVertIndex++;
             }
@@ -1068,7 +1069,7 @@ void CIsochartMesh::CalculateAveragNormal(
     for (size_t i = 0; i < m_dwFaceNumber; i++)
     {
         normal = XMVectorAdd(normal,
-                             XMVectorScale(XMLoadFloat3(m_baseInfo.pFaceNormalArray + pFace->dwIDInRootMesh), m_baseInfo.pfFaceAreaArray[pFace->dwIDInRootMesh]));
+            XMVectorScale(XMLoadFloat3(m_baseInfo.pFaceNormalArray + pFace->dwIDInRootMesh), m_baseInfo.pfFaceAreaArray[pFace->dwIDInRootMesh]));
         pFace++;
     }
 
@@ -1095,7 +1096,7 @@ HRESULT CIsochartMesh::CalculateAdjacentChart(
 
             uint32_t dwChartID =
                 pdwFaceChartRootID[pRootFaceAdjacentArray
-                                       [3 * pFace->dwIDInRootMesh + k]];
+                [3 * pFace->dwIDInRootMesh + k]];
 
             if (dwChartID != dwCurrentChartID)
             {

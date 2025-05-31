@@ -138,15 +138,15 @@ namespace
     };
 
     const XMFLOAT3 g_ColorList[8] =
-        {
-            XMFLOAT3(1.0f, 0.5f, 0.5f),
-            XMFLOAT3(0.5f, 1.0f, 0.5f),
-            XMFLOAT3(1.0f, 1.0f, 0.5f),
-            XMFLOAT3(0.5f, 1.0f, 1.0f),
-            XMFLOAT3(1.0f, 0.5f, 0.75f),
-            XMFLOAT3(0.0f, 0.5f, 0.75f),
-            XMFLOAT3(0.5f, 0.5f, 0.75f),
-            XMFLOAT3(0.5f, 0.5f, 1.0f),
+    {
+        XMFLOAT3(1.0f, 0.5f, 0.5f),
+        XMFLOAT3(0.5f, 1.0f, 0.5f),
+        XMFLOAT3(1.0f, 1.0f, 0.5f),
+        XMFLOAT3(0.5f, 1.0f, 1.0f),
+        XMFLOAT3(1.0f, 0.5f, 0.75f),
+        XMFLOAT3(0.0f, 0.5f, 0.75f),
+        XMFLOAT3(0.5f, 0.5f, 0.75f),
+        XMFLOAT3(0.5f, 0.5f, 1.0f),
     };
 
     //////////////////////////////////////////////////////////////////////////////
@@ -154,119 +154,119 @@ namespace
     //////////////////////////////////////////////////////////////////////////////
 
     const SValue<uint64_t> g_pOptions[] =
-        {
-            {L"r", OPT_RECURSIVE},
-            {L"q", OPT_QUALITY},
-            {L"n", OPT_MAXCHARTS},
-            {L"st", OPT_MAXSTRETCH},
-            {L"lms", OPT_LIMIT_MERGE_STRETCH},
-            {L"lfs", OPT_LIMIT_FACE_STRETCH},
-            {L"g", OPT_GUTTER},
-            {L"w", OPT_WIDTH},
-            {L"h", OPT_HEIGHT},
-            {L"ta", OPT_TOPOLOGICAL_ADJ},
-            {L"ga", OPT_GEOMETRIC_ADJ},
-            {L"nn", OPT_NORMALS},
-            {L"na", OPT_WEIGHT_BY_AREA},
-            {L"ne", OPT_WEIGHT_BY_EQUAL},
-            {L"tt", OPT_TANGENTS},
-            {L"tb", OPT_CTF},
-            {L"c", OPT_COLOR_MESH},
-            {L"t", OPT_UV_MESH},
-            {L"it", OPT_IMT_TEXFILE},
-            {L"iv", OPT_IMT_VERTEX},
-            {L"o", OPT_OUTPUTFILE},
-            {L"l", OPT_TOLOWER},
-            {L"cw", OPT_CLOCKWISE},
-            {L"ib32", OPT_FORCE_32BIT_IB},
-            {L"y", OPT_OVERWRITE},
-            {L"ft", OPT_FILETYPE},
-            {L"nodds", OPT_NODDS},
-            {L"flip", OPT_FLIP},
-            {L"fn", OPT_VERT_NORMAL_FORMAT},
-            {L"fuv", OPT_VERT_UV_FORMAT},
-            {L"fc", OPT_VERT_COLOR_FORMAT},
-            {L"uv2", OPT_SECOND_UV},
-            {L"vn", OPT_VIZ_NORMALS},
-            {L"m", OPT_OUTPUT_REMAPPING},
-            {L"nologo", OPT_NOLOGO},
-            {L"flist", OPT_FILELIST},
+    {
+        {L"r", OPT_RECURSIVE},
+        {L"q", OPT_QUALITY},
+        {L"n", OPT_MAXCHARTS},
+        {L"st", OPT_MAXSTRETCH},
+        {L"lms", OPT_LIMIT_MERGE_STRETCH},
+        {L"lfs", OPT_LIMIT_FACE_STRETCH},
+        {L"g", OPT_GUTTER},
+        {L"w", OPT_WIDTH},
+        {L"h", OPT_HEIGHT},
+        {L"ta", OPT_TOPOLOGICAL_ADJ},
+        {L"ga", OPT_GEOMETRIC_ADJ},
+        {L"nn", OPT_NORMALS},
+        {L"na", OPT_WEIGHT_BY_AREA},
+        {L"ne", OPT_WEIGHT_BY_EQUAL},
+        {L"tt", OPT_TANGENTS},
+        {L"tb", OPT_CTF},
+        {L"c", OPT_COLOR_MESH},
+        {L"t", OPT_UV_MESH},
+        {L"it", OPT_IMT_TEXFILE},
+        {L"iv", OPT_IMT_VERTEX},
+        {L"o", OPT_OUTPUTFILE},
+        {L"l", OPT_TOLOWER},
+        {L"cw", OPT_CLOCKWISE},
+        {L"ib32", OPT_FORCE_32BIT_IB},
+        {L"y", OPT_OVERWRITE},
+        {L"ft", OPT_FILETYPE},
+        {L"nodds", OPT_NODDS},
+        {L"flip", OPT_FLIP},
+        {L"fn", OPT_VERT_NORMAL_FORMAT},
+        {L"fuv", OPT_VERT_UV_FORMAT},
+        {L"fc", OPT_VERT_COLOR_FORMAT},
+        {L"uv2", OPT_SECOND_UV},
+        {L"vn", OPT_VIZ_NORMALS},
+        {L"m", OPT_OUTPUT_REMAPPING},
+        {L"nologo", OPT_NOLOGO},
+        {L"flist", OPT_FILELIST},
 
-            // Legacy selection switches for file type (use -ft instead)
-            {L"sdkmesh", OPT_SDKMESH},
-            {L"sdkmesh2", OPT_SDKMESH_V2},
-            {L"cmo", OPT_CMO},
-            {L"vbo", OPT_VBO},
-            {L"wf", OPT_WAVEFRONT_OBJ},
+        // Legacy selection switches for file type (use -ft instead)
+        {L"sdkmesh", OPT_SDKMESH},
+        {L"sdkmesh2", OPT_SDKMESH_V2},
+        {L"cmo", OPT_CMO},
+        {L"vbo", OPT_VBO},
+        {L"wf", OPT_WAVEFRONT_OBJ},
 
-            // Deprecated options (recommend using new -- alternatives)
-            {L"flipu", OPT_FLIPU},
-            {L"flipv", OPT_FLIPV},
-            {L"flipz", OPT_FLIPZ},
-            {nullptr, 0}};
+        // Deprecated options (recommend using new -- alternatives)
+        {L"flipu", OPT_FLIPU},
+        {L"flipv", OPT_FLIPV},
+        {L"flipz", OPT_FLIPZ},
+        {nullptr, 0} };
 
     const SValue<uint64_t> g_pOptionsLong[] =
-        {
-            {L"clockwise", OPT_CLOCKWISE},
-            {L"color-format", OPT_VERT_COLOR_FORMAT},
-            {L"color-mesh", OPT_COLOR_MESH},
-            {L"file-list", OPT_FILELIST},
-            {L"file-type", OPT_FILETYPE},
-            {L"flip-face-winding", OPT_FLIP},
-            {L"flip-u", OPT_FLIPU},
-            {L"flip-v", OPT_FLIPV},
-            {L"flip-z", OPT_FLIPZ},
-            {L"geometric-adjacency", OPT_GEOMETRIC_ADJ},
-            {L"gutter-width", OPT_GUTTER},
-            {L"height", OPT_HEIGHT},
-            {L"help", OPT_HELP},
-            {L"imt-tex-file", OPT_IMT_TEXFILE},
-            {L"imt-vertex", OPT_IMT_VERTEX},
-            {L"index-buffer-32-bit", OPT_FORCE_32BIT_IB},
-            {L"limit-face-stretch", OPT_LIMIT_FACE_STRETCH},
-            {L"limit-merge-stretch", OPT_LIMIT_MERGE_STRETCH},
-            {L"max-charts", OPT_MAXCHARTS},
-            {L"max-stretch", OPT_MAXSTRETCH},
-            {L"normal-format", OPT_VERT_NORMAL_FORMAT},
-            {L"normals-by-angle", OPT_NORMALS},
-            {L"normals-by-area", OPT_WEIGHT_BY_AREA},
-            {L"normals-by-equal", OPT_WEIGHT_BY_EQUAL},
-            {L"output-remap", OPT_OUTPUT_REMAPPING},
-            {L"overwrite", OPT_OVERWRITE},
-            {L"quality", OPT_QUALITY},
-            {L"tangent-frame", OPT_CTF},
-            {L"tangents", OPT_TANGENTS},
-            {L"to-lowercase", OPT_TOLOWER},
-            {L"topological-adjacency", OPT_TOPOLOGICAL_ADJ},
-            {L"uv-format", OPT_VERT_UV_FORMAT},
-            {L"uv-mesh", OPT_UV_MESH},
-            {L"version", OPT_VERSION},
-            {L"visualize-normals", OPT_VIZ_NORMALS},
-            {L"width", OPT_WIDTH},
-            {nullptr, 0}};
+    {
+        {L"clockwise", OPT_CLOCKWISE},
+        {L"color-format", OPT_VERT_COLOR_FORMAT},
+        {L"color-mesh", OPT_COLOR_MESH},
+        {L"file-list", OPT_FILELIST},
+        {L"file-type", OPT_FILETYPE},
+        {L"flip-face-winding", OPT_FLIP},
+        {L"flip-u", OPT_FLIPU},
+        {L"flip-v", OPT_FLIPV},
+        {L"flip-z", OPT_FLIPZ},
+        {L"geometric-adjacency", OPT_GEOMETRIC_ADJ},
+        {L"gutter-width", OPT_GUTTER},
+        {L"height", OPT_HEIGHT},
+        {L"help", OPT_HELP},
+        {L"imt-tex-file", OPT_IMT_TEXFILE},
+        {L"imt-vertex", OPT_IMT_VERTEX},
+        {L"index-buffer-32-bit", OPT_FORCE_32BIT_IB},
+        {L"limit-face-stretch", OPT_LIMIT_FACE_STRETCH},
+        {L"limit-merge-stretch", OPT_LIMIT_MERGE_STRETCH},
+        {L"max-charts", OPT_MAXCHARTS},
+        {L"max-stretch", OPT_MAXSTRETCH},
+        {L"normal-format", OPT_VERT_NORMAL_FORMAT},
+        {L"normals-by-angle", OPT_NORMALS},
+        {L"normals-by-area", OPT_WEIGHT_BY_AREA},
+        {L"normals-by-equal", OPT_WEIGHT_BY_EQUAL},
+        {L"output-remap", OPT_OUTPUT_REMAPPING},
+        {L"overwrite", OPT_OVERWRITE},
+        {L"quality", OPT_QUALITY},
+        {L"tangent-frame", OPT_CTF},
+        {L"tangents", OPT_TANGENTS},
+        {L"to-lowercase", OPT_TOLOWER},
+        {L"topological-adjacency", OPT_TOPOLOGICAL_ADJ},
+        {L"uv-format", OPT_VERT_UV_FORMAT},
+        {L"uv-mesh", OPT_UV_MESH},
+        {L"version", OPT_VERSION},
+        {L"visualize-normals", OPT_VIZ_NORMALS},
+        {L"width", OPT_WIDTH},
+        {nullptr, 0} };
 
     const SValue<uint32_t> g_vertexNormalFormats[] =
-        {
-            {L"float3", DXGI_FORMAT_R32G32B32_FLOAT},
-            {L"float16_4", DXGI_FORMAT_R16G16B16A16_FLOAT},
-            {L"r11g11b10", DXGI_FORMAT_R11G11B10_FLOAT},
-            {nullptr, 0}};
+    {
+        {L"float3", DXGI_FORMAT_R32G32B32_FLOAT},
+        {L"float16_4", DXGI_FORMAT_R16G16B16A16_FLOAT},
+        {L"r11g11b10", DXGI_FORMAT_R11G11B10_FLOAT},
+        {nullptr, 0} };
 
     const SValue<uint32_t> g_vertexUVFormats[] =
-        {
-            {L"float2", DXGI_FORMAT_R32G32_FLOAT},
-            {L"float16_2", DXGI_FORMAT_R16G16_FLOAT},
-            {nullptr, 0}};
+    {
+        {L"float2", DXGI_FORMAT_R32G32_FLOAT},
+        {L"float16_2", DXGI_FORMAT_R16G16_FLOAT},
+        {nullptr, 0} };
 
     const SValue<uint32_t> g_vertexColorFormats[] =
-        {
-            {L"bgra", DXGI_FORMAT_B8G8R8A8_UNORM},
-            {L"rgba", DXGI_FORMAT_R8G8B8A8_UNORM},
-            {L"float4", DXGI_FORMAT_R32G32B32A32_FLOAT},
-            {L"float16_4", DXGI_FORMAT_R16G16B16A16_FLOAT},
-            {L"rgba_10", DXGI_FORMAT_R10G10B10A2_UNORM},
-            {L"r11g11b10", DXGI_FORMAT_R11G11B10_FLOAT},
-            {nullptr, 0}};
+    {
+        {L"bgra", DXGI_FORMAT_B8G8R8A8_UNORM},
+        {L"rgba", DXGI_FORMAT_R8G8B8A8_UNORM},
+        {L"float4", DXGI_FORMAT_R32G32B32A32_FLOAT},
+        {L"float16_4", DXGI_FORMAT_R16G16B16A16_FLOAT},
+        {L"rgba_10", DXGI_FORMAT_R10G10B10A2_UNORM},
+        {L"r11g11b10", DXGI_FORMAT_R11G11B10_FLOAT},
+        {nullptr, 0} };
 
     enum MESH_CODEC : uint32_t
     {
@@ -278,14 +278,14 @@ namespace
     };
 
     const SValue<uint32_t> g_pMeshFileTypes[] = // valid formats to write to
-        {
-            {L"sdkmesh", CODEC_SDKMESH},
-            {L"sdkmesh2", CODEC_SDKMESH_V2},
-            {L"cmo", CODEC_CMO},
-            {L"vbo", CODEC_VBO},
-            {L"obj", CODEC_WAVEFRONT_OBJ},
-            {L"_obj", CODEC_WAVEFRONT_OBJ},
-            {nullptr, 0}};
+    {
+        {L"sdkmesh", CODEC_SDKMESH},
+        {L"sdkmesh2", CODEC_SDKMESH_V2},
+        {L"cmo", CODEC_CMO},
+        {L"vbo", CODEC_VBO},
+        {L"obj", CODEC_WAVEFRONT_OBJ},
+        {L"_obj", CODEC_WAVEFRONT_OBJ},
+        {nullptr, 0} };
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -293,8 +293,8 @@ namespace
 //////////////////////////////////////////////////////////////////////////////
 
 HRESULT LoadFromOBJ(const wchar_t *szFilename,
-                    std::unique_ptr<Mesh> &inMesh, std::vector<Mesh::Material> &inMaterial,
-                    bool ccw, bool dds);
+    std::unique_ptr<Mesh> &inMesh, std::vector<Mesh::Material> &inMaterial,
+    bool ccw, bool dds);
 
 //////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////
@@ -715,11 +715,11 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
                 break;
 
             case OPT_OUTPUTFILE:
-            {
-                std::filesystem::path path(pValue);
-                outputFile = path.make_preferred().native();
-            }
-            break;
+                {
+                    std::filesystem::path path(pValue);
+                    outputFile = path.make_preferred().native();
+                }
+                break;
 
             case OPT_FILETYPE:
                 fileType = LookupByName(pValue, g_pMeshFileTypes);
@@ -834,20 +834,20 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
                 break;
 
             case OPT_FILELIST:
-            {
-                std::filesystem::path path(pValue);
-                std::wifstream inFile(path.make_preferred().c_str());
-                if (!inFile)
                 {
-                    wprintf(L"Error opening -flist file %ls\n", pValue);
-                    return 1;
+                    std::filesystem::path path(pValue);
+                    std::wifstream inFile(path.make_preferred().c_str());
+                    if (!inFile)
+                    {
+                        wprintf(L"Error opening -flist file %ls\n", pValue);
+                        return 1;
+                    }
+
+                    inFile.imbue(std::locale::classic());
+
+                    ProcessFileList(inFile, conversion);
                 }
-
-                inFile.imbue(std::locale::classic());
-
-                ProcessFileList(inFile, conversion);
-            }
-            break;
+                break;
 
             default:
                 break;
@@ -933,8 +933,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
         else
         {
             hr = LoadFromOBJ(curpath.c_str(), inMesh, inMaterial,
-                             (dwOptions & (UINT64_C(1) << OPT_CLOCKWISE)) ? false : true,
-                             (dwOptions & (UINT64_C(1) << OPT_NODDS)) ? false : true);
+                (dwOptions & (UINT64_C(1) << OPT_CLOCKWISE)) ? false : true,
+                (dwOptions & (UINT64_C(1) << OPT_NODDS)) ? false : true);
         }
         if (FAILED(hr))
         {
@@ -962,7 +962,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed inverting u texcoord (%08X%ls)\n",
-                        static_cast<unsigned int>(hr), GetErrorDesc(hr));
+                    static_cast<unsigned int>(hr), GetErrorDesc(hr));
                 return 1;
             }
         }
@@ -973,7 +973,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed inverting v texcoord (%08X%ls)\n",
-                        static_cast<unsigned int>(hr), GetErrorDesc(hr));
+                    static_cast<unsigned int>(hr), GetErrorDesc(hr));
                 return 1;
             }
         }
@@ -984,7 +984,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed reversing handedness (%08X%ls)\n",
-                        static_cast<unsigned int>(hr), GetErrorDesc(hr));
+                    static_cast<unsigned int>(hr), GetErrorDesc(hr));
                 return 1;
             }
         }
@@ -1000,7 +1000,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed generating adjacency (%08X%ls)\n",
-                        static_cast<unsigned int>(hr), GetErrorDesc(hr));
+                    static_cast<unsigned int>(hr), GetErrorDesc(hr));
                 return 1;
             }
 
@@ -1018,7 +1018,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed mesh clean (%08X%ls)\n",
-                        static_cast<unsigned int>(hr), GetErrorDesc(hr));
+                    static_cast<unsigned int>(hr), GetErrorDesc(hr));
                 return 1;
             }
             else
@@ -1064,7 +1064,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed computing normals (flags:%X, %08X%ls)\n", static_cast<unsigned int>(flags),
-                        static_cast<unsigned int>(hr), GetErrorDesc(hr));
+                    static_cast<unsigned int>(hr), GetErrorDesc(hr));
                 return 1;
             }
         }
@@ -1082,7 +1082,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed computing tangent frame (%08X%ls)\n",
-                        static_cast<unsigned int>(hr), GetErrorDesc(hr));
+                    static_cast<unsigned int>(hr), GetErrorDesc(hr));
                 return 1;
             }
         }
@@ -1116,12 +1116,12 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
                 {
                     hr = LoadFromHDRFile(texFile.c_str(), nullptr, iimage);
                 }
-#ifdef USE_OPENEXR
+            #ifdef USE_OPENEXR
                 else if (_wcsicmp(ext.c_str(), L".exr") == 0)
                 {
                     hr = LoadFromEXRFile(texFile.c_str(), nullptr, iimage);
                 }
-#endif
+            #endif
                 else
                 {
                     hr = LoadFromWICFile(texFile.c_str(), WIC_FLAGS_NONE, nullptr, iimage);
@@ -1129,7 +1129,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
                 if (FAILED(hr))
                 {
                     wprintf(L"\nWARNING: Failed to load texture for IMT (%08X%ls):\n%ls\n",
-                            static_cast<unsigned int>(hr), GetErrorDesc(hr), texFile.c_str());
+                        static_cast<unsigned int>(hr), GetErrorDesc(hr), texFile.c_str());
                 }
                 else
                 {
@@ -1139,12 +1139,12 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
                     if (img->format != DXGI_FORMAT_R32G32B32A32_FLOAT)
                     {
                         hr = Convert(*iimage.GetImage(0, 0, 0), DXGI_FORMAT_R32G32B32A32_FLOAT, TEX_FILTER_DEFAULT,
-                                     TEX_THRESHOLD_DEFAULT, floatImage);
+                            TEX_THRESHOLD_DEFAULT, floatImage);
                         if (FAILED(hr))
                         {
                             img = nullptr;
                             wprintf(L"\nWARNING: Failed converting texture for IMT (%08X%ls):\n%ls\n",
-                                    static_cast<unsigned int>(hr), GetErrorDesc(hr), texFile.c_str());
+                                static_cast<unsigned int>(hr), GetErrorDesc(hr), texFile.c_str());
                         }
                         else
                         {
@@ -1163,14 +1163,14 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
                         }
 
                         hr = UVAtlasComputeIMTFromTexture(inMesh->GetPositionBuffer(), inMesh->GetTexCoordBuffer(), nVerts,
-                                                          inMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, nFaces,
-                                                          reinterpret_cast<const float *>(img->pixels), img->width, img->height,
-                                                          UVATLAS_IMT_DEFAULT, UVAtlasCallback, IMTData.get());
+                            inMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, nFaces,
+                            reinterpret_cast<const float *>(img->pixels), img->width, img->height,
+                            UVATLAS_IMT_DEFAULT, UVAtlasCallback, IMTData.get());
                         if (FAILED(hr))
                         {
                             IMTData.reset();
                             wprintf(L"WARNING: Failed to compute IMT from texture (%08X%ls):\n%ls\n",
-                                    static_cast<unsigned int>(hr), GetErrorDesc(hr), texFile.c_str());
+                                static_cast<unsigned int>(hr), GetErrorDesc(hr), texFile.c_str());
                         }
                     }
                 }
@@ -1233,14 +1233,14 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
                     }
 
                     hr = UVAtlasComputeIMTFromPerVertexSignal(inMesh->GetPositionBuffer(), nVerts,
-                                                              inMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, nFaces,
-                                                              pSignal, signalDim, signalStride, UVAtlasCallback, IMTData.get());
+                        inMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, nFaces,
+                        pSignal, signalDim, signalStride, UVAtlasCallback, IMTData.get());
 
                     if (FAILED(hr))
                     {
                         IMTData.reset();
                         wprintf(L"WARNING: Failed to compute IMT from channel %ls (%08X%ls)\n",
-                                szChannel, static_cast<unsigned int>(hr), GetErrorDesc(hr));
+                            szChannel, static_cast<unsigned int>(hr), GetErrorDesc(hr));
                     }
                 }
             }
@@ -1260,15 +1260,15 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
         std::vector<uint32_t> facePartitioning;
         std::vector<uint32_t> vertexRemapArray;
         hr = UVAtlasCreate(inMesh->GetPositionBuffer(), nVerts,
-                           inMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, nFaces,
-                           maxCharts, maxStretch, width, height, gutter,
-                           inMesh->GetAdjacencyBuffer(), nullptr,
-                           IMTData.get(),
-                           UVAtlasCallback, UVATLAS_DEFAULT_CALLBACK_FREQUENCY,
-                           uvOptions | uvOptionsEx, vb, ib,
-                           &facePartitioning,
-                           &vertexRemapArray,
-                           &outStretch, &outCharts);
+            inMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, nFaces,
+            maxCharts, maxStretch, width, height, gutter,
+            inMesh->GetAdjacencyBuffer(), nullptr,
+            IMTData.get(),
+            UVAtlasCallback, UVATLAS_DEFAULT_CALLBACK_FREQUENCY,
+            uvOptions | uvOptionsEx, vb, ib,
+            &facePartitioning,
+            &vertexRemapArray,
+            &outStretch, &outCharts);
         if (FAILED(hr))
         {
             if (hr == HRESULT_FROM_WIN32(ERROR_INVALID_DATA))
@@ -1305,16 +1305,16 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
 
         nVerts = vb.size();
 
-#ifdef _DEBUG
+    #ifdef _DEBUG
         std::wstring msgs;
         hr = inMesh->Validate(VALIDATE_DEFAULT, &msgs);
         if (!msgs.empty())
         {
             wprintf(L"\nWARNING: \n%ls\n", msgs.c_str());
         }
-#endif
+    #endif
 
-        // Copy isochart UVs into mesh
+            // Copy isochart UVs into mesh
         {
             std::unique_ptr<XMFLOAT2[]> texcoord(new (std::nothrow) XMFLOAT2[nVerts]);
             if (!texcoord)
@@ -1379,7 +1379,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed applying atlas attributes (%08X%ls)\n",
-                        static_cast<unsigned int>(hr), GetErrorDesc(hr));
+                    static_cast<unsigned int>(hr), GetErrorDesc(hr));
                 return 1;
             }
         }
@@ -1537,7 +1537,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
                     os << L"illum 1" << std::endl;
                     os << L"Ka " << mtl.ambientColor.x << L" " << mtl.ambientColor.y << L" " << mtl.ambientColor.z << std::endl;
                     os << L"Kd " << mtl.diffuseColor.x << L" " << mtl.diffuseColor.y << L" " << mtl.diffuseColor.z << std::endl
-                       << std::endl;
+                        << std::endl;
                 }
 
                 os.close();
@@ -1563,7 +1563,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
         if (FAILED(hr))
         {
             wprintf(L"\nERROR: Failed write (%08X%ls):-> '%ls'\n",
-                    static_cast<unsigned int>(hr), GetErrorDesc(hr), outputFile.c_str());
+                static_cast<unsigned int>(hr), GetErrorDesc(hr), outputFile.c_str());
             return 1;
         }
 
@@ -1699,7 +1699,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t *argv[])
             if (FAILED(hr))
             {
                 wprintf(L"\nERROR: Failed uv mesh write (%08X%ls):-> '%ls'\n",
-                        static_cast<unsigned int>(hr), GetErrorDesc(hr), uvOutputPath.c_str());
+                    static_cast<unsigned int>(hr), GetErrorDesc(hr), uvOutputPath.c_str());
                 return 1;
             }
             wprintf(L"uv mesh visualization '%ls'\n", uvOutputPath.c_str());

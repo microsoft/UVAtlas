@@ -127,15 +127,15 @@ namespace Isochart
             size_t &ChartNumberOut,
             float &MaxChartStretchOut,
             uint32_t *pFaceAttributeIDOut);
-#ifdef _OPENMP
+    #ifdef _OPENMP
         HRESULT ParameterizeChartsInHeapParallelized(
             bool bFirstTime,
             size_t MaxChartNumber);
-#else
+    #else
         HRESULT ParameterizeChartsInHeap(
             bool bFirstTime,
             size_t MaxChartNumber);
-#endif
+    #endif
         HRESULT GenerateNewChartsToParameterize();
 
         HRESULT OptimizeParameterizedCharts(
@@ -245,11 +245,11 @@ namespace Isochart
 
         EngineState m_state; // Indicate internal state.
 
-#ifdef _WIN32
+    #ifdef _WIN32
         HANDLE m_hMutex;
-#else
+    #else
         std::mutex m_mutex;
-#endif
+    #endif
 
         unsigned int m_dwOptions;
 

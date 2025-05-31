@@ -113,10 +113,10 @@ namespace
             }
         }
 
-#ifdef _MSC_VER
-#pragma warning(push)
-#pragma warning(disable : 4127)
-#endif
+    #ifdef _MSC_VER
+    #pragma warning(push)
+    #pragma warning(disable : 4127)
+    #endif
         if ((sizeof(IndexType) == sizeof(uint16_t)) && (*nNewVerts > 0x0fffe))
         {
             DPF(0, "Resulting mesh is too large to fit in 16-bit mesh.");
@@ -140,9 +140,9 @@ namespace
                 pReverseRemapArray[i] = static_cast<uint32_t>(i);
             }
         }
-#ifdef _MSC_VER
-#pragma warning(pop)
-#endif
+    #ifdef _MSC_VER
+    #pragma warning(pop)
+    #endif
 
         memcpy(vOutVertexRemapBuffer.data(), pReverseRemapArray, (*nNewVerts) * sizeof(uint32_t));
         memcpy(pOutIndexData, pNewIndexData, 3 * nFaces * sizeof(IndexType));
@@ -254,7 +254,7 @@ namespace
         _In_reads_(nVerts) const XMFLOAT3 *positions,
         _In_ size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
-            _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
         _In_ DXGI_FORMAT indexFormat,
         _In_ size_t nFaces,
         _In_ size_t maxChartNumber,
@@ -343,27 +343,27 @@ namespace
         float maxChartingStretch = 0.f;
 
         hr = isochartpartition(positions,
-                nVerts,
-                sizeof(XMFLOAT3),
-                indexFormat,
-                indices,
-                nFaces,
-                reinterpret_cast<const FLOAT3 *>(pIMTArray),
-                maxChartNumber,
-                maxStretch,
-                adjacency,
-                &vOutVertexBuffer,
-                &vOutIndexBuffer,
-                &vOutVertexRemapArray,
-                &vOutFacePartitioning,
-                &vOutAdjacency,
-                &numCharts,
-                &maxChartingStretch,
-                uStageInfo,
-                statusCallBack,
-                callbackFrequency,
-                falseEdgeAdjacency,
-                options);
+            nVerts,
+            sizeof(XMFLOAT3),
+            indexFormat,
+            indices,
+            nFaces,
+            reinterpret_cast<const FLOAT3 *>(pIMTArray),
+            maxChartNumber,
+            maxStretch,
+            adjacency,
+            &vOutVertexBuffer,
+            &vOutIndexBuffer,
+            &vOutVertexRemapArray,
+            &vOutFacePartitioning,
+            &vOutAdjacency,
+            &numCharts,
+            &maxChartingStretch,
+            uStageInfo,
+            statusCallBack,
+            callbackFrequency,
+            falseEdgeAdjacency,
+            options);
         if (FAILED(hr))
             return hr;
 
@@ -385,12 +385,12 @@ namespace
         if (DXGI_FORMAT_R16_UINT == indexFormat)
         {
             hr = UVAtlasGetRealVertexRemap<uint16_t>(nFaces, nVerts, reinterpret_cast<const uint16_t *>(indices), reinterpret_cast<uint16_t *>(vOutIndexBuffer.data()),
-                                                     &outMeshNumVertices, vOutVertexRemapArray, forwardRemapArray);
+                &outMeshNumVertices, vOutVertexRemapArray, forwardRemapArray);
         }
         else
         {
             hr = UVAtlasGetRealVertexRemap<uint32_t>(nFaces, nVerts, reinterpret_cast<const uint32_t *>(indices), reinterpret_cast<uint32_t *>(vOutIndexBuffer.data()),
-                                                     &outMeshNumVertices, vOutVertexRemapArray, forwardRemapArray);
+                &outMeshNumVertices, vOutVertexRemapArray, forwardRemapArray);
         }
         if (FAILED(hr))
             return hr;
@@ -545,16 +545,16 @@ namespace
         memcpy(vTempIndexBuffer.data(), vMeshIndexBuffer.data(), vTempIndexBuffer.size());
 
         hr = IsochartRepacker::isochartpack2(&vTempVertexBuffer,
-                nVerts,
-                &vTempIndexBuffer,
-                nFaces,
-                vPartitionResultAdjacency.data(),
-                width,
-                height,
-                gutter,
-                uStageInfo,
-                statusCallback,
-                callbackFrequency);
+            nVerts,
+            &vTempIndexBuffer,
+            nFaces,
+            vPartitionResultAdjacency.data(),
+            width,
+            height,
+            gutter,
+            uStageInfo,
+            statusCallback,
+            callbackFrequency);
         if (FAILED(hr))
             return hr;
 
@@ -575,139 +575,139 @@ namespace
 
 //-------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT __cdecl DirectX::UVAtlasPartition(
-        const XMFLOAT3 *positions,
-        size_t nVerts,
-        const void *indices,
-        DXGI_FORMAT indexFormat,
-        size_t nFaces,
-        size_t maxChartNumber,
-        float maxStretch,
-        const uint32_t *adjacency,
-        const uint32_t *falseEdgeAdjacency,
-        const float *pIMTArray,
-        std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        float callbackFrequency,
-        UVATLAS options,
-        std::vector<UVAtlasVertex> &vMeshOutVertexBuffer,
-        std::vector<uint8_t> &vMeshOutIndexBuffer,
-        std::vector<uint32_t> *pvFacePartitioning,
-        std::vector<uint32_t> *pvVertexRemapArray,
-        std::vector<uint32_t> &vPartitionResultAdjacency,
-        float *maxStretchOut,
-        size_t *numChartsOut)
+HRESULT __cdecl DirectX::UVAtlasPartition(
+    const XMFLOAT3 *positions,
+    size_t nVerts,
+    const void *indices,
+    DXGI_FORMAT indexFormat,
+    size_t nFaces,
+    size_t maxChartNumber,
+    float maxStretch,
+    const uint32_t *adjacency,
+    const uint32_t *falseEdgeAdjacency,
+    const float *pIMTArray,
+    std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
+    float callbackFrequency,
+    UVATLAS options,
+    std::vector<UVAtlasVertex> &vMeshOutVertexBuffer,
+    std::vector<uint8_t> &vMeshOutIndexBuffer,
+    std::vector<uint32_t> *pvFacePartitioning,
+    std::vector<uint32_t> *pvVertexRemapArray,
+    std::vector<uint32_t> &vPartitionResultAdjacency,
+    float *maxStretchOut,
+    size_t *numChartsOut)
 {
     return UVAtlasPartitionInt(positions,
-                nVerts,
-                indices,
-                indexFormat,
-                nFaces,
-                maxChartNumber,
-                maxStretch,
-                adjacency,
-                falseEdgeAdjacency,
-                pIMTArray,
-                statusCallBack,
-                callbackFrequency,
-                options,
-                vMeshOutVertexBuffer,
-                vMeshOutIndexBuffer,
-                pvFacePartitioning,
-                pvVertexRemapArray,
-                vPartitionResultAdjacency,
-                maxStretchOut,
-                numChartsOut,
-                (maxChartNumber == 0) ? MAKE_STAGE(2U, 0U, 2U) : MAKE_STAGE(3U, 0U, 3U));
+        nVerts,
+        indices,
+        indexFormat,
+        nFaces,
+        maxChartNumber,
+        maxStretch,
+        adjacency,
+        falseEdgeAdjacency,
+        pIMTArray,
+        statusCallBack,
+        callbackFrequency,
+        options,
+        vMeshOutVertexBuffer,
+        vMeshOutIndexBuffer,
+        pvFacePartitioning,
+        pvVertexRemapArray,
+        vPartitionResultAdjacency,
+        maxStretchOut,
+        numChartsOut,
+        (maxChartNumber == 0) ? MAKE_STAGE(2U, 0U, 2U) : MAKE_STAGE(3U, 0U, 3U));
 }
 
 //-------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT __cdecl DirectX::UVAtlasPack(
-        std::vector<UVAtlasVertex> &vMeshVertexBuffer,
-        std::vector<uint8_t> &vMeshIndexBuffer,
-        DXGI_FORMAT indexFormat,
-        size_t width,
-        size_t height,
-        float gutter,
-        const std::vector<uint32_t> &vPartitionResultAdjacency,
-        std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        float callbackFrequency)
+HRESULT __cdecl DirectX::UVAtlasPack(
+    std::vector<UVAtlasVertex> &vMeshVertexBuffer,
+    std::vector<uint8_t> &vMeshIndexBuffer,
+    DXGI_FORMAT indexFormat,
+    size_t width,
+    size_t height,
+    float gutter,
+    const std::vector<uint32_t> &vPartitionResultAdjacency,
+    std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
+    float callbackFrequency)
 {
     return UVAtlasPackInt(vMeshVertexBuffer,
-                vMeshIndexBuffer,
-                indexFormat,
-                width,
-                height,
-                gutter,
-                vPartitionResultAdjacency,
-                statusCallBack,
-                callbackFrequency,
-                MAKE_STAGE(1, 0, 1));
+        vMeshIndexBuffer,
+        indexFormat,
+        width,
+        height,
+        gutter,
+        vPartitionResultAdjacency,
+        statusCallBack,
+        callbackFrequency,
+        MAKE_STAGE(1, 0, 1));
 }
 
 //-------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT __cdecl DirectX::UVAtlasCreate(
-        const XMFLOAT3 *positions,
-        size_t nVerts,
-        const void *indices,
-        DXGI_FORMAT indexFormat,
-        size_t nFaces,
-        size_t maxChartNumber,
-        float maxStretch,
-        size_t width,
-        size_t height,
-        float gutter,
-        const uint32_t *adjacency,
-        const uint32_t *falseEdgeAdjacency,
-        const float *pIMTArray,
-        std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        float callbackFrequency,
-        UVATLAS options,
-        std::vector<UVAtlasVertex> &vMeshOutVertexBuffer,
-        std::vector<uint8_t> &vMeshOutIndexBuffer,
-        std::vector<uint32_t> *pvFacePartitioning,
-        std::vector<uint32_t> *pvVertexRemapArray,
-        float *maxStretchOut,
-        size_t *numChartsOut)
+HRESULT __cdecl DirectX::UVAtlasCreate(
+    const XMFLOAT3 *positions,
+    size_t nVerts,
+    const void *indices,
+    DXGI_FORMAT indexFormat,
+    size_t nFaces,
+    size_t maxChartNumber,
+    float maxStretch,
+    size_t width,
+    size_t height,
+    float gutter,
+    const uint32_t *adjacency,
+    const uint32_t *falseEdgeAdjacency,
+    const float *pIMTArray,
+    std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
+    float callbackFrequency,
+    UVATLAS options,
+    std::vector<UVAtlasVertex> &vMeshOutVertexBuffer,
+    std::vector<uint8_t> &vMeshOutIndexBuffer,
+    std::vector<uint32_t> *pvFacePartitioning,
+    std::vector<uint32_t> *pvVertexRemapArray,
+    float *maxStretchOut,
+    size_t *numChartsOut)
 {
     std::vector<uint32_t> vFacePartitioning;
     std::vector<uint32_t> vAdjacencyOut;
 
     HRESULT hr = UVAtlasPartitionInt(positions,
-                    nVerts,
-                    indices,
-                    indexFormat,
-                    nFaces,
-                    maxChartNumber,
-                    maxStretch,
-                    adjacency,
-                    falseEdgeAdjacency,
-                    pIMTArray,
-                    statusCallBack,
-                    callbackFrequency,
-                    options,
-                    vMeshOutVertexBuffer,
-                    vMeshOutIndexBuffer,
-                    &vFacePartitioning,
-                    pvVertexRemapArray,
-                    vAdjacencyOut,
-                    maxStretchOut,
-                    numChartsOut,
-                    (maxChartNumber == 0) ? MAKE_STAGE(3U, 0U, 2U) : MAKE_STAGE(4U, 0U, 3U));
+        nVerts,
+        indices,
+        indexFormat,
+        nFaces,
+        maxChartNumber,
+        maxStretch,
+        adjacency,
+        falseEdgeAdjacency,
+        pIMTArray,
+        statusCallBack,
+        callbackFrequency,
+        options,
+        vMeshOutVertexBuffer,
+        vMeshOutIndexBuffer,
+        &vFacePartitioning,
+        pvVertexRemapArray,
+        vAdjacencyOut,
+        maxStretchOut,
+        numChartsOut,
+        (maxChartNumber == 0) ? MAKE_STAGE(3U, 0U, 2U) : MAKE_STAGE(4U, 0U, 3U));
     if (FAILED(hr))
         return hr;
 
     hr = UVAtlasPackInt(vMeshOutVertexBuffer,
-            vMeshOutIndexBuffer,
-            indexFormat,
-            width,
-            height,
-            gutter,
-            vAdjacencyOut,
-            statusCallBack,
-            callbackFrequency,
-            (maxChartNumber == 0) ? MAKE_STAGE(3U, 2U, 1U) : MAKE_STAGE(4U, 3U, 1U));
+        vMeshOutIndexBuffer,
+        indexFormat,
+        width,
+        height,
+        gutter,
+        vAdjacencyOut,
+        statusCallBack,
+        callbackFrequency,
+        (maxChartNumber == 0) ? MAKE_STAGE(3U, 2U, 1U) : MAKE_STAGE(4U, 3U, 1U));
     if (FAILED(hr))
         return hr;
 
@@ -721,17 +721,17 @@ _Use_decl_annotations_
 
 //-------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerVertexSignal(
-        const XMFLOAT3 *positions,
-        size_t nVerts,
-        const void *indices,
-        DXGI_FORMAT indexFormat,
-        size_t nFaces,
-        const float *pVertexSignal,
-        size_t signalDimension,
-        size_t signalStride,
-        std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        float *pIMTArray)
+HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerVertexSignal(
+    const XMFLOAT3 *positions,
+    size_t nVerts,
+    const void *indices,
+    DXGI_FORMAT indexFormat,
+    size_t nFaces,
+    const float *pVertexSignal,
+    size_t signalDimension,
+    size_t signalStride,
+    std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
+    float *pIMTArray)
 {
     if (!positions || !nVerts || !indices || !nFaces || !pVertexSignal || !pIMTArray)
         return E_INVALIDARG;
@@ -818,9 +818,9 @@ _Use_decl_annotations_
         }
 
         hr = IMTFromPerVertexSignal(pos,
-                                    pfSignalData,
-                                    signalDimension,
-                                    reinterpret_cast<FLOAT3 *>(pfIMTData + 3 * i));
+            pfSignalData,
+            signalDimension,
+            reinterpret_cast<FLOAT3 *>(pfIMTData + 3 * i));
         if (FAILED(hr))
         {
             DPF(0, "UVAtlasComputeIMT: IMT data calculation failed.");
@@ -840,19 +840,19 @@ _Use_decl_annotations_
 
 //-------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT __cdecl DirectX::UVAtlasComputeIMTFromSignal(
-        const XMFLOAT3 *positions,
-        const XMFLOAT2 *texcoords,
-        size_t nVerts,
-        const void *indices,
-        DXGI_FORMAT indexFormat,
-        size_t nFaces,
-        size_t signalDimension,
-        float maxUVDistance,
-        std::function<HRESULT __cdecl(const DirectX::XMFLOAT2 *uv, size_t primitiveID, size_t signalDimension, void *userData, float *signalOut)> signalCallback,
-        void *userData,
-        std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        float *pIMTArray)
+HRESULT __cdecl DirectX::UVAtlasComputeIMTFromSignal(
+    const XMFLOAT3 *positions,
+    const XMFLOAT2 *texcoords,
+    size_t nVerts,
+    const void *indices,
+    DXGI_FORMAT indexFormat,
+    size_t nFaces,
+    size_t signalDimension,
+    float maxUVDistance,
+    std::function<HRESULT __cdecl(const DirectX::XMFLOAT2 *uv, size_t primitiveID, size_t signalDimension, void *userData, float *signalOut)> signalCallback,
+    void *userData,
+    std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
+    float *pIMTArray)
 {
     if (!positions || !texcoords || !nVerts || !indices || !nFaces || !pIMTArray)
         return E_INVALIDARG;
@@ -927,13 +927,13 @@ _Use_decl_annotations_
         }
 
         hr = IMTFromTextureMap(pos, uv,
-                8, // max 64k subtesselations
-                maxUVDistance,
-                i,
-                signalDimension,
-                signalCallback,
-                userData,
-                reinterpret_cast<FLOAT3 *>(pfIMTData + 3 * i));
+            8, // max 64k subtesselations
+            maxUVDistance,
+            i,
+            signalDimension,
+            signalCallback,
+            userData,
+            reinterpret_cast<FLOAT3 *>(pfIMTData + 3 * i));
         if (FAILED(hr))
         {
             DPF(0, "UVAtlasComputeIMT: IMT data calculation failed.");
@@ -1233,19 +1233,19 @@ namespace
 }
 
 _Use_decl_annotations_
-    HRESULT __cdecl DirectX::UVAtlasComputeIMTFromTexture(
-        const XMFLOAT3 *positions,
-        const XMFLOAT2 *texcoords,
-        size_t nVerts,
-        const void *indices,
-        DXGI_FORMAT indexFormat,
-        size_t nFaces,
-        const float *pTexture,
-        size_t width,
-        size_t height,
-        UVATLAS_IMT options,
-        std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        float *pIMTArray)
+HRESULT __cdecl DirectX::UVAtlasComputeIMTFromTexture(
+    const XMFLOAT3 *positions,
+    const XMFLOAT2 *texcoords,
+    size_t nVerts,
+    const void *indices,
+    DXGI_FORMAT indexFormat,
+    size_t nFaces,
+    const float *pTexture,
+    size_t width,
+    size_t height,
+    UVATLAS_IMT options,
+    std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
+    float *pIMTArray)
 {
     if (!positions || !texcoords || !nVerts || !indices || !nFaces || !pTexture || !pIMTArray)
         return E_INVALIDARG;
@@ -1340,12 +1340,12 @@ _Use_decl_annotations_
         }
 
         hr = IMTFromTextureMapEx(pos,
-                                 uv,
-                                 i,
-                                 4, // dimension 4, rgba, can be zeroes if less than 4
-                                 pSignalCallback,
-                                 &TextureDesc,
-                                 reinterpret_cast<FLOAT3 *>(pfIMTData + 3 * i));
+            uv,
+            i,
+            4, // dimension 4, rgba, can be zeroes if less than 4
+            pSignalCallback,
+            &TextureDesc,
+            reinterpret_cast<FLOAT3 *>(pfIMTData + 3 * i));
         if (FAILED(hr))
         {
             DPF(0, "UVAtlasComputeIMT: IMT data calculation failed.");
@@ -1428,7 +1428,7 @@ namespace
         for (size_t k = 0; k < uSignalDimension; k++)
         {
             pfSignalOut[k] = (C1[k] * (1.f - du) + C2[k] * du) * (1.f - dv) +
-                             (C3[k] * (1.f - du) + C4[k] * du) * dv;
+                (C3[k] * (1.f - du) + C4[k] * du) * dv;
         }
 
         return S_OK;
@@ -1494,7 +1494,7 @@ namespace
         for (size_t k = 0; k < uSignalDimension; k++)
         {
             pfSignalOut[k] = (C1[k] * (1.f - du) + C2[k] * du) * (1.f - dv) +
-                             (C3[k] * (1.f - du) + C4[k] * du) * dv;
+                (C3[k] * (1.f - du) + C4[k] * du) * dv;
         }
 
         return S_OK;
@@ -1560,7 +1560,7 @@ namespace
         for (size_t k = 0; k < uSignalDimension; k++)
         {
             pfSignalOut[k] = (C1[k] * (1.f - du) + C2[k] * du) * (1.f - dv) +
-                             (C3[k] * (1.f - du) + C4[k] * du) * dv;
+                (C3[k] * (1.f - du) + C4[k] * du) * dv;
         }
 
         return S_OK;
@@ -1629,7 +1629,7 @@ namespace
         for (size_t k = 0; k < uSignalDimension; k++)
         {
             pfSignalOut[k] = (C1[k] * (1.f - du) + C2[k] * du) * (1.f - dv) +
-                             (C3[k] * (1.f - du) + C4[k] * du) * dv;
+                (C3[k] * (1.f - du) + C4[k] * du) * dv;
         }
 
         return S_OK;
@@ -1637,21 +1637,21 @@ namespace
 }
 
 _Use_decl_annotations_
-    HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerTexelSignal(
-        const XMFLOAT3 *positions,
-        const XMFLOAT2 *texcoords,
-        size_t nVerts,
-        const void *indices,
-        DXGI_FORMAT indexFormat,
-        size_t nFaces,
-        const float *pTexelSignal,
-        size_t width,
-        size_t height,
-        size_t signalDimension,
-        size_t nComponents,
-        UVATLAS_IMT options,
-        std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        float *pIMTArray)
+HRESULT __cdecl DirectX::UVAtlasComputeIMTFromPerTexelSignal(
+    const XMFLOAT3 *positions,
+    const XMFLOAT2 *texcoords,
+    size_t nVerts,
+    const void *indices,
+    DXGI_FORMAT indexFormat,
+    size_t nFaces,
+    const float *pTexelSignal,
+    size_t width,
+    size_t height,
+    size_t signalDimension,
+    size_t nComponents,
+    UVATLAS_IMT options,
+    std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
+    float *pIMTArray)
 {
     if (!positions || !texcoords || !nVerts || !indices || !nFaces || !pTexelSignal || !pIMTArray)
         return E_INVALIDARG;
@@ -1755,12 +1755,12 @@ _Use_decl_annotations_
         }
 
         hr = IMTFromTextureMapEx(pos,
-                                 uv,
-                                 i,
-                                 signalDimension,
-                                 pSignalCallback,
-                                 &FloatArrayDesc,
-                                 reinterpret_cast<FLOAT3 *>(pfIMTData + 3 * i));
+            uv,
+            i,
+            signalDimension,
+            pSignalCallback,
+            &FloatArrayDesc,
+            reinterpret_cast<FLOAT3 *>(pfIMTData + 3 * i));
         if (FAILED(hr))
         {
             DPF(0, "UVAtlasComputeIMT: IMT data calculation failed.");
@@ -1780,13 +1780,13 @@ _Use_decl_annotations_
 
 //-------------------------------------------------------------------------------------
 _Use_decl_annotations_
-    HRESULT __cdecl DirectX::UVAtlasApplyRemap(
-        const void *vbin,
-        size_t stride,
-        size_t nVerts,
-        size_t nNewVerts,
-        const uint32_t *vertexRemap,
-        void *vbout) noexcept
+HRESULT __cdecl DirectX::UVAtlasApplyRemap(
+    const void *vbin,
+    size_t stride,
+    size_t nVerts,
+    size_t nNewVerts,
+    const uint32_t *vertexRemap,
+    void *vbout) noexcept
 {
     if (!vbin || !stride || !nVerts || !nNewVerts || !vertexRemap || !vbout)
         return E_INVALIDARG;

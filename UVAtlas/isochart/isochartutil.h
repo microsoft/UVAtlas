@@ -218,7 +218,7 @@ namespace Isochart
 
         tempVector = XMVectorSubtract(v3D2, v3D0);
         v2D2 = XMVectorSet(XMVectorGetX(XMVector3Dot(tempVector, axisX)),
-                           XMVectorGetX(XMVector3Dot(tempVector, axisY)), 0, 0);
+            XMVectorGetX(XMVector3Dot(tempVector, axisY)), 0, 0);
 
         if (XMVector3Equal(v3D1, v3D2))
         {
@@ -267,14 +267,14 @@ namespace Isochart
             if (!IsInZeroRange2(fNew2DArea))
             {
                 Ss[ii] = (q[0] * (pv2D1->y - pv2D2->y) +
-                          q[1] * (pv2D2->y - pv2D0->y) +
-                          q[2] * (pv2D0->y - pv2D1->y)) /
-                         (fNew2DArea * 2);
+                    q[1] * (pv2D2->y - pv2D0->y) +
+                    q[2] * (pv2D0->y - pv2D1->y)) /
+                    (fNew2DArea * 2);
 
                 St[ii] = (q[0] * (pv2D2->x - pv2D1->x) +
-                          q[1] * (pv2D0->x - pv2D2->x) +
-                          q[2] * (pv2D1->x - pv2D0->x)) /
-                         (fNew2DArea * 2);
+                    q[1] * (pv2D0->x - pv2D2->x) +
+                    q[2] * (pv2D1->x - pv2D0->x)) /
+                    (fNew2DArea * 2);
             }
             else
             {
@@ -340,15 +340,15 @@ namespace Isochart
         float oldIMT[IMT_DIM];
         memcpy(oldIMT, pOldIMT, IMT_DIM * sizeof(float));
 
-#if PIECEWISE_CONSTANT_IMT
+    #if PIECEWISE_CONSTANT_IMT
         pNewIMT[0] =
             Ss.x * Ss.x * oldIMT[0] + Ss.y * Ss.y * oldIMT[2] + 2 * Ss.x * Ss.y * oldIMT[1];
         pNewIMT[2] =
             St.x * St.x * oldIMT[0] + St.y * St.y * oldIMT[2] + 2 * St.x * St.y * oldIMT[1];
         pNewIMT[1] =
             Ss.x * St.x * oldIMT[0] + Ss.y * St.y * oldIMT[2] + (Ss.x * St.y + Ss.y * St.x) * oldIMT[1];
-#else
-#endif
+    #else
+    #endif
 
         return;
     }

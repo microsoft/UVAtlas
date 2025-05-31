@@ -137,17 +137,16 @@ namespace Isochart
         VERTEX_ARRAY rightBorder[CHART_ROTATION_NUMBER];  // Right border vertices
 
         PACKINGINFO() : pVertUV(nullptr),
-                        pStandardUV(nullptr),
-                        pStandardVirtualCorner(nullptr),
-                        fUVWidth{},
-                        fUVHeight{}
-        {
-        }
+            pStandardUV(nullptr),
+            pStandardVirtualCorner(nullptr),
+            fUVWidth{},
+            fUVHeight{}
+        {}
         ~PACKINGINFO()
         {
             SAFE_DELETE_ARRAY(pVertUV)
-            SAFE_DELETE_ARRAY(pStandardUV)
-            SAFE_DELETE_ARRAY(pStandardVirtualCorner)
+                SAFE_DELETE_ARRAY(pStandardUV)
+                SAFE_DELETE_ARRAY(pStandardVirtualCorner)
         }
     };
 
@@ -222,7 +221,7 @@ namespace
     {
         for (size_t ii = 0; ii < atlasInfo.virtualCornerVertices.size(); ii++)
         {
-            delete[] (atlasInfo.virtualCornerVertices[ii]);
+            delete[](atlasInfo.virtualCornerVertices[ii]);
         }
 
         atlasInfo.virtualCornerVertices.clear();
@@ -348,11 +347,11 @@ namespace
     // The length is in pixel. SEARCH_STEP_COUNT is also considered.
     inline size_t GetSearchStepLength(size_t dwPixelCount)
     {
-#if CONTROL_SEARCH_BY_STEP_COUNT
+    #if CONTROL_SEARCH_BY_STEP_COUNT
         return std::max(SEARCH_STEP_LENGTH, dwPixelCount / SEARCH_STEP_COUNT);
-#else
+    #else
         return SEARCH_STEP_LENGTH;
-#endif
+    #endif
     }
 
     // Create two extreme vertices
@@ -440,7 +439,7 @@ namespace
             if (VECTOR_ITEM(&aBorder[dwBorderStart]->uv, TangentAxis) == target)
             {
                 while (dwBorderStart > 0 &&
-                       VECTOR_ITEM(&aBorder[dwBorderStart - 1]->uv, TangentAxis) == target)
+                    VECTOR_ITEM(&aBorder[dwBorderStart - 1]->uv, TangentAxis) == target)
                 {
                     dwBorderStart--;
                 }
@@ -459,7 +458,8 @@ namespace
                 }
                 hi = dwBorderStart - 1;
             }
-        } while (low <= hi);
+        }
+        while (low <= hi);
 
         if (low > hi)
         {
@@ -484,7 +484,7 @@ namespace
         size_t dwBorderSize = aBorder.size();
 
         while (dwBorderEnd < dwBorderSize &&
-               VECTOR_ITEM(&aBorder[dwBorderEnd]->uv, TangentAxis) <= target)
+            VECTOR_ITEM(&aBorder[dwBorderEnd]->uv, TangentAxis) <= target)
         {
             dwBorderEnd++;
         }
@@ -518,7 +518,7 @@ namespace
 
         // 1.  If 2 Borders have no correspond segments, return directly.
         if (VECTOR_ITEM(&aBorder1[0]->uv, TangentAxis) >
-                VECTOR_ITEM(&aBorder2[BorderSize2 - 1]->uv, TangentAxis) ||
+            VECTOR_ITEM(&aBorder2[BorderSize2 - 1]->uv, TangentAxis) ||
             VECTOR_ITEM(&aBorder1[BorderSize1 - 1]->uv, TangentAxis) < VECTOR_ITEM(&aBorder2[0]->uv, TangentAxis))
         {
             return false;
@@ -630,8 +630,8 @@ namespace
             for (size_t j = 0; j <= dwBorderEnd; j++)
             {
                 if (IsInZeroRange(
-                        VECTOR_ITEM(&point, TangentAxis) -
-                        VECTOR_ITEM(&aBorder[j]->uv, TangentAxis)))
+                    VECTOR_ITEM(&point, TangentAxis) -
+                    VECTOR_ITEM(&aBorder[j]->uv, TangentAxis)))
                 {
                     if (fMax < VECTOR_ITEM(&aBorder[j]->uv, RadialAxis))
                     {
@@ -870,7 +870,8 @@ namespace
             {
                 break;
             }
-        } while (i < border1.size() && j < border2.size());
+        }
+        while (i < border1.size() && j < border2.size());
 
         if (fZ > ISOCHART_ZERO_EPS)
         {
@@ -894,7 +895,7 @@ namespace
         float &fDotValue)
     {
         assert(border1[border1.size() - 1] ==
-               border2[border2.size() - 1]);
+            border2[border2.size() - 1]);
 
         assert(border1.size() > 1);
         assert(border2.size() > 1);
@@ -1169,12 +1170,12 @@ namespace
                 +,
                 fTangentDelta)
 
-            VECTOR_CHANGE_ITEM(
-                &newChartBorder[k]->uv,
-                &pOrigUV[newChartBorder[k]->dwID],
-                RadialAxis,
-                +,
-                fRadialDelta)
+                VECTOR_CHANGE_ITEM(
+                    &newChartBorder[k]->uv,
+                    &pOrigUV[newChartBorder[k]->dwID],
+                    RadialAxis,
+                    +,
+                    fRadialDelta)
         }
 
         // Two additional vertices on each end of the border. These vertices used to guarantee
@@ -1189,12 +1190,12 @@ namespace
             -,
             fGutter)
 
-        VECTOR_CHANGE_ITEM(
-            &newChartBorder[dwNewChartBorderSize - 1]->uv,
-            &newChartBorder[dwNewChartBorderSize - 2]->uv,
-            TangentAxis,
-            +,
-            fGutter)
+            VECTOR_CHANGE_ITEM(
+                &newChartBorder[dwNewChartBorderSize - 1]->uv,
+                &newChartBorder[dwNewChartBorderSize - 2]->uv,
+                TangentAxis,
+                +,
+                fGutter)
     }
 
     inline static bool CalMinDistanceBetweenAtlasAndChart(
@@ -1569,13 +1570,13 @@ namespace
             size_t atlasBorderStart, atlasBorderEnd;
             size_t newChartBorderStart, newChartBorderEnd;
             if (!FindCorrespondSegmentsOfBorders(
-                    atlasBorder,
-                    newChartBorder,
-                    atlasBorderStart,
-                    atlasBorderEnd,
-                    newChartBorderStart,
-                    newChartBorderEnd,
-                    TangentAxis))
+                atlasBorder,
+                newChartBorder,
+                atlasBorderStart,
+                atlasBorderEnd,
+                newChartBorderStart,
+                newChartBorderEnd,
+                TangentAxis))
             {
                 continue;
             }
@@ -1583,20 +1584,20 @@ namespace
             // Calculate the minimal distance between chart and atlas
             float fMinDistance = FLT_MAX;
             if (!CalMinDistanceBetweenAtlasAndChart(
-                    invalidatlasLocationAgainstChart,
-                    invalidChartLocationAgainstAtlas,
-                    bPackingFromLowerPlace,
-                    newChartBorder,
-                    newChartBorderStart,
-                    newChartBorderEnd,
-                    atlasBorder,
-                    atlasBorderStart,
-                    atlasBorderEnd,
-                    TangentAxis,
-                    RadialAxis,
-                    atlasInfo.fGutter,
-                    fMinDistance,
-                    fBetweenArea))
+                invalidatlasLocationAgainstChart,
+                invalidChartLocationAgainstAtlas,
+                bPackingFromLowerPlace,
+                newChartBorder,
+                newChartBorderStart,
+                newChartBorderEnd,
+                atlasBorder,
+                atlasBorderStart,
+                atlasBorderEnd,
+                TangentAxis,
+                RadialAxis,
+                atlasInfo.fGutter,
+                fMinDistance,
+                fBetweenArea))
             {
                 continue;
             }
@@ -1666,16 +1667,16 @@ namespace
         try
         {
             atlasInfo.currentTopBorder.insert(atlasInfo.currentTopBorder.end(),
-                                              packingInfo.topBorder[dwMinRotationId].cbegin(), packingInfo.topBorder[dwMinRotationId].cend());
+                packingInfo.topBorder[dwMinRotationId].cbegin(), packingInfo.topBorder[dwMinRotationId].cend());
 
             atlasInfo.currentBottomBorder.insert(atlasInfo.currentBottomBorder.end(),
-                                                 packingInfo.bottomBorder[dwMinRotationId].cbegin(), packingInfo.bottomBorder[dwMinRotationId].cend());
+                packingInfo.bottomBorder[dwMinRotationId].cbegin(), packingInfo.bottomBorder[dwMinRotationId].cend());
 
             atlasInfo.currentLeftBorder.insert(atlasInfo.currentLeftBorder.end(),
-                                               packingInfo.leftBorder[dwMinRotationId].cbegin(), packingInfo.leftBorder[dwMinRotationId].cend());
+                packingInfo.leftBorder[dwMinRotationId].cbegin(), packingInfo.leftBorder[dwMinRotationId].cend());
 
             atlasInfo.currentRightBorder.insert(atlasInfo.currentRightBorder.end(),
-                                                packingInfo.rightBorder[dwMinRotationId].cbegin(), packingInfo.rightBorder[dwMinRotationId].cend());
+                packingInfo.rightBorder[dwMinRotationId].cbegin(), packingInfo.rightBorder[dwMinRotationId].cend());
         }
         catch (std::bad_alloc &)
         {
@@ -1710,37 +1711,37 @@ namespace
         switch (direction)
         {
         case FromRight:
-        {
-            discardLocation = LeftToBorder;
-            TangentAxis = YAxis; // y
-            RadialAxis = XAxis;  // x
-            bPackingFromLowerPlace = false;
-            break;
-        }
+            {
+                discardLocation = LeftToBorder;
+                TangentAxis = YAxis; // y
+                RadialAxis = XAxis;  // x
+                bPackingFromLowerPlace = false;
+                break;
+            }
         case FromLeft:
-        {
-            discardLocation = RightToBorder;
-            TangentAxis = YAxis; // y
-            RadialAxis = XAxis;  // x
-            bPackingFromLowerPlace = true;
-            break;
-        }
+            {
+                discardLocation = RightToBorder;
+                TangentAxis = YAxis; // y
+                RadialAxis = XAxis;  // x
+                bPackingFromLowerPlace = true;
+                break;
+            }
         case FromTop:
-        {
-            discardLocation = BelowBorder;
-            TangentAxis = XAxis; // x
-            RadialAxis = YAxis;  // y
-            bPackingFromLowerPlace = false;
-            break;
-        }
+            {
+                discardLocation = BelowBorder;
+                TangentAxis = XAxis; // x
+                RadialAxis = YAxis;  // y
+                bPackingFromLowerPlace = false;
+                break;
+            }
         case FromBottom:
-        {
-            discardLocation = AboveBorder;
-            TangentAxis = XAxis; // x
-            RadialAxis = YAxis;  // y
-            bPackingFromLowerPlace = true;
-            break;
-        }
+            {
+                discardLocation = AboveBorder;
+                TangentAxis = XAxis; // x
+                RadialAxis = YAxis;  // y
+                bPackingFromLowerPlace = true;
+                break;
+            }
         default:
             assert(false);
             break;
@@ -1763,13 +1764,13 @@ namespace
             size_t dwChartBorderStart, dwChartBorderEnd;
 
             if (!FindCorrespondSegmentsOfBorders(
-                    atlasBorder,
-                    chartBorder,
-                    dwAtlasBorderStart,
-                    dwAtlasBorderEnd,
-                    dwChartBorderStart,
-                    dwChartBorderEnd,
-                    TangentAxis))
+                atlasBorder,
+                chartBorder,
+                dwAtlasBorderStart,
+                dwAtlasBorderEnd,
+                dwChartBorderStart,
+                dwChartBorderEnd,
+                TangentAxis))
             {
                 // if 2 borders have no correspond segments, just merge them according to
                 // the increasing order of coordinate in tangent direction
@@ -1779,7 +1780,7 @@ namespace
                     atlasBorder.insert(atlasBorder.end(), chartBorder.cbegin(), chartBorder.cend());
                 }
                 else if (VECTOR_ITEM(&atlasBorder[0]->uv, TangentAxis) >
-                         VECTOR_ITEM(&chartBorder[dwChartBorderSize - 1]->uv, TangentAxis))
+                    VECTOR_ITEM(&chartBorder[dwChartBorderSize - 1]->uv, TangentAxis))
                 {
                     tempBorder.insert(tempBorder.end(), atlasBorder.cbegin(), atlasBorder.cend());
                     atlasBorder.clear();
@@ -2164,10 +2165,10 @@ HRESULT CIsochartMesh::PackingCharts(
     // 1. Prepare packing information.
     ATLASINFO atlasInfo;
     if (FAILED(hr = PreparePacking(
-                   chartList,
-                   dwWidth, dwHeight,
-                   gutter,
-                   atlasInfo)))
+        chartList,
+        dwWidth, dwHeight,
+        gutter,
+        atlasInfo)))
     {
         goto LEnd;
     }
@@ -2535,7 +2536,7 @@ HRESULT CIsochartMesh::PackingOneChart(
         {
             fAreaLost =
                 1.0f - atlasInfo.fPackedChartArea /
-                           (pPackingInfo->fUVWidth[i] * pPackingInfo->fUVHeight[i]);
+                (pPackingInfo->fUVWidth[i] * pPackingInfo->fUVHeight[i]);
 
             if (fAreaLost < fMinAreaLost)
             {
@@ -2791,8 +2792,8 @@ HRESULT CIsochartMesh::CalculateChartBordersOfAllDirection(
     VERTEX_ARRAY border2;
 
     for (size_t dwRotationCount = 0;
-         dwRotationCount < CHART_ROTATION_NUMBER;
-         dwRotationCount++)
+        dwRotationCount < CHART_ROTATION_NUMBER;
+        dwRotationCount++)
     {
         // 1. Rotate the Chart by a special angle
         ISOCHARTVERTEX *pLeftVertex = nullptr;   // Left most vertex
@@ -2852,7 +2853,7 @@ HRESULT CIsochartMesh::CalculateChartBordersOfAllDirection(
         }
 
         // 4. Check if the horizon and the vertical is valid.
-#ifdef _DEBUG
+    #ifdef _DEBUG
         VERTEX_ARRAY &topBorder = m_pPackingInfo->topBorder[dwRotationCount];
         VERTEX_ARRAY &bottomBorder = m_pPackingInfo->bottomBorder[dwRotationCount];
         VERTEX_ARRAY &leftBorder = m_pPackingInfo->leftBorder[dwRotationCount];
@@ -2879,7 +2880,7 @@ HRESULT CIsochartMesh::CalculateChartBordersOfAllDirection(
         {
             assert(rightBorder[i]->uv.y <= rightBorder[i + 1]->uv.y);
         }
-#endif
+    #endif
     }
     return S_OK;
 }
@@ -3447,8 +3448,8 @@ void CIsochartMesh::OptimizeAtlasSignalStretch(
         else
         {
             fScale = IsochartSqrtf(
-                         (pChart->m_fParamStretchL2 + ShiftError) / pChart->m_fChart2DArea) /
-                     fTotal;
+                (pChart->m_fParamStretchL2 + ShiftError) / pChart->m_fChart2DArea) /
+                fTotal;
             fScale *= fTotal2DArea;
             fScale = IsochartSqrtf(fScale);
         }

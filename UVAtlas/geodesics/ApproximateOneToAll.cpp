@@ -43,7 +43,7 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow &EdgeWindowOut)
 
             if ((pWindowLeft->b0 == pWindowRight->b1 || pWindowLeft->b1 == pWindowRight->b0) /*&&
                 (pWindowLeft->dwFaceIdxPropagatedFrom == pWindowRight->dwFaceIdxPropagatedFrom)*/
-            )
+                )
             {
                 // found an adjacent window
 
@@ -178,106 +178,106 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow &EdgeWindowOut)
                         break;
 
                     case 4:
-                    {
-                        double A0 = SQR(spie.y) - SQR(pWindowLeft->dv2Src.y);
-                        double B0 = 2 * (spie.x * SQR(pWindowLeft->dv2Src.y) - pWindowLeft->dv2Src.x * SQR(spie.y));
-                        double C0 = SQR(pWindowLeft->dv2Src.x) * SQR(spie.y) - SQR(spie.x) * SQR(pWindowLeft->dv2Src.y);
-
-                        if (A0 > double(FLT_EPSILON) || A0 < double(-FLT_EPSILON))
                         {
-                            double discriminant = SQR(B0) - 4 * A0 * C0;
+                            double A0 = SQR(spie.y) - SQR(pWindowLeft->dv2Src.y);
+                            double B0 = 2 * (spie.x * SQR(pWindowLeft->dv2Src.y) - pWindowLeft->dv2Src.x * SQR(spie.y));
+                            double C0 = SQR(pWindowLeft->dv2Src.x) * SQR(spie.y) - SQR(spie.x) * SQR(pWindowLeft->dv2Src.y);
 
-                            if (discriminant > 0)
+                            if (A0 > double(FLT_EPSILON) || A0 < double(-FLT_EPSILON))
                             {
-                                tmpp.x = (-B0 + SqrtMin0(discriminant)) / (2 * A0);
+                                double discriminant = SQR(B0) - 4 * A0 * C0;
 
-                                if (tmpp.x < pWindowLeft->b0 || tmpp.x > pWindowLeft->b1)
+                                if (discriminant > 0)
                                 {
-                                    tmpp.x = (-B0 - SqrtMin0(discriminant)) / (2 * A0);
+                                    tmpp.x = (-B0 + SqrtMin0(discriminant)) / (2 * A0);
+
+                                    if (tmpp.x < pWindowLeft->b0 || tmpp.x > pWindowLeft->b1)
+                                    {
+                                        tmpp.x = (-B0 - SqrtMin0(discriminant)) / (2 * A0);
+
+                                        if (tmpp.x < pWindowLeft->b0 || tmpp.x > pWindowLeft->b1)
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                if (B0 != 0)
+                                {
+                                    tmpp.x = -C0 / B0;
 
                                     if (tmpp.x < pWindowLeft->b0 || tmpp.x > pWindowLeft->b1)
                                     {
                                         continue;
                                     }
                                 }
+                                else
+                                {
+                                    continue;
+                                }
                             }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-                        else
-                        {
-                            if (B0 != 0)
-                            {
-                                tmpp.x = -C0 / B0;
 
-                                if (tmpp.x < pWindowLeft->b0 || tmpp.x > pWindowLeft->b1)
+                            tmpDp = pWindowLeft->dPseuSrcToSrcDistance + SqrtMin0(SquredD2Dist(pWindowLeft->dv2Src, tmpp));
+                            tmpdif = fabs(sigma + SqrtMin0(SquredD2Dist(spie, tmpp)) - tmpDp);
+                        }
+                        break;
+
+                    case 5:
+                        {
+                            double A0 = SQR(spie.y) - SQR(pWindowRight->dv2Src.y);
+                            double B0 = 2 * (spie.x * SQR(pWindowRight->dv2Src.y) - pWindowRight->dv2Src.x * SQR(spie.y));
+                            double C0 = SQR(pWindowRight->dv2Src.x) * SQR(spie.y) - SQR(spie.x) * SQR(pWindowRight->dv2Src.y);
+
+                            if (A0 > double(FLT_EPSILON) || A0 < double(-FLT_EPSILON))
+                            {
+                                double discriminant = SQR(B0) - 4 * A0 * C0;
+
+                                if (discriminant > 0)
+                                {
+                                    tmpp.x = (-B0 + SqrtMin0(discriminant)) / (2 * A0);
+
+                                    if (tmpp.x < pWindowRight->b0 || tmpp.x > pWindowRight->b1)
+                                    {
+                                        tmpp.x = (-B0 - SqrtMin0(discriminant)) / (2 * A0);
+
+                                        if (tmpp.x < pWindowRight->b0 || tmpp.x > pWindowRight->b1)
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                }
+                                else
                                 {
                                     continue;
                                 }
                             }
                             else
                             {
-                                continue;
-                            }
-                        }
-
-                        tmpDp = pWindowLeft->dPseuSrcToSrcDistance + SqrtMin0(SquredD2Dist(pWindowLeft->dv2Src, tmpp));
-                        tmpdif = fabs(sigma + SqrtMin0(SquredD2Dist(spie, tmpp)) - tmpDp);
-                    }
-                    break;
-
-                    case 5:
-                    {
-                        double A0 = SQR(spie.y) - SQR(pWindowRight->dv2Src.y);
-                        double B0 = 2 * (spie.x * SQR(pWindowRight->dv2Src.y) - pWindowRight->dv2Src.x * SQR(spie.y));
-                        double C0 = SQR(pWindowRight->dv2Src.x) * SQR(spie.y) - SQR(spie.x) * SQR(pWindowRight->dv2Src.y);
-
-                        if (A0 > double(FLT_EPSILON) || A0 < double(-FLT_EPSILON))
-                        {
-                            double discriminant = SQR(B0) - 4 * A0 * C0;
-
-                            if (discriminant > 0)
-                            {
-                                tmpp.x = (-B0 + SqrtMin0(discriminant)) / (2 * A0);
-
-                                if (tmpp.x < pWindowRight->b0 || tmpp.x > pWindowRight->b1)
+                                if (B0 != 0)
                                 {
-                                    tmpp.x = (-B0 - SqrtMin0(discriminant)) / (2 * A0);
+                                    tmpp.x = -C0 / B0;
 
                                     if (tmpp.x < pWindowRight->b0 || tmpp.x > pWindowRight->b1)
                                     {
                                         continue;
                                     }
                                 }
-                            }
-                            else
-                            {
-                                continue;
-                            }
-                        }
-                        else
-                        {
-                            if (B0 != 0)
-                            {
-                                tmpp.x = -C0 / B0;
-
-                                if (tmpp.x < pWindowRight->b0 || tmpp.x > pWindowRight->b1)
+                                else
                                 {
                                     continue;
                                 }
                             }
-                            else
-                            {
-                                continue;
-                            }
-                        }
 
-                        tmpDp = pWindowRight->dPseuSrcToSrcDistance + SqrtMin0(SquredD2Dist(pWindowRight->dv2Src, tmpp));
-                        tmpdif = fabs(sigma + SqrtMin0(SquredD2Dist(spie, tmpp)) - tmpDp);
-                    }
-                    break;
+                            tmpDp = pWindowRight->dPseuSrcToSrcDistance + SqrtMin0(SquredD2Dist(pWindowRight->dv2Src, tmpp));
+                            tmpdif = fabs(sigma + SqrtMin0(SquredD2Dist(spie, tmpp)) - tmpDp);
+                        }
+                        break;
 
                     default:
                         break;

@@ -130,13 +130,13 @@ namespace
                     q[0] * (pv2D1->y - pv2D2->y) +
                     q[1] * (pv2D2->y - pv2D0->y) +
                     q[2] * (pv2D0->y - pv2D1->y)
-                ) / f2D;
+                    ) / f2D;
 
                 St[ii] = (
                     q[0] * (pv2D2->x - pv2D1->x) +
                     q[1] * (pv2D0->x - pv2D2->x) +
                     q[2] * (pv2D1->x - pv2D0->x)
-                ) / f2D;
+                    ) / f2D;
             }
 
             (*pfIMTArray)[0] = IsochartVectorDot(Ss, Ss, dwSignalDimension);
@@ -203,7 +203,7 @@ namespace
 
         uint32_t dwNewIdx = static_cast<uint32_t>(vertList.size());
 
-        SUBFACE *pNewFace[4] = {nullptr, nullptr, nullptr, nullptr};
+        SUBFACE *pNewFace[4] = { nullptr, nullptr, nullptr, nullptr };
 
         // 1. Compute new vertices that split the original triangle into 4-sub triangles.
         try
@@ -301,10 +301,10 @@ HRESULT Isochart::IMTFromPerVertexSignal(
     HRESULT hr = S_OK;
 
     if (!CheckIMTFromPerVertexSignalInput(
-            pV3d,
-            pfSignalArray,
-            dwSignalDimension,
-            pfIMTArray))
+        pV3d,
+        pfSignalArray,
+        dwSignalDimension,
+        pfIMTArray))
     {
         return E_INVALIDARG;
     }
@@ -370,10 +370,10 @@ Isochart::IMTFromTextureMap(
     HRESULT hr = S_OK;
 
     if (!CheckIMTFromTextureMapInput(
-            pV3d,
-            pUV,
-            pfnGetSignal,
-            pfIMTArray))
+        pV3d,
+        pUV,
+        pfnGetSignal,
+        pfIMTArray))
     {
         return E_INVALIDARG;
     }
@@ -456,18 +456,18 @@ Isochart::IMTFromTextureMap(
 
         // Need to split current face again?
         if (IsContinueSplit(
-                d2dArea,
-                d3dArea,
-                dwMaxSplitLevel,
-                fMinVertexUvIDistance,
-                pCurrFace,
-                vertList))
+            d2dArea,
+            d3dArea,
+            dwMaxSplitLevel,
+            fMinVertexUvIDistance,
+            pCurrFace,
+            vertList))
         {
             // Split current face
             if (FAILED(hr = SplitFace(
-                    pCurrFace,
-                    subFaceIdxList,
-                    vertList)))
+                pCurrFace,
+                subFaceIdxList,
+                vertList)))
             {
                 delete pCurrFace;
                 goto LEnd;
@@ -487,9 +487,10 @@ Isochart::IMTFromTextureMap(
                 goto LEnd;
             }
         }
-    } while (!subFaceIdxList.empty());
+    }
+    while (!subFaceIdxList.empty());
 
-    // 4. Get signal on all vertex.
+ // 4. Get signal on all vertex.
     pfSignalBase.reset(new (std::nothrow) float[vertList.size() * dwSignalDimension]);
     if (!pfSignalBase)
     {
@@ -667,8 +668,8 @@ namespace
         uint32_t &dwRowLineCount,
         uint32_t &dwColLineCount)
     {
-        DOUBLEVECTOR2 minV = {DBL_MAX, DBL_MAX};
-        DOUBLEVECTOR2 maxV = {-DBL_MAX, -DBL_MAX};
+        DOUBLEVECTOR2 minV = { DBL_MAX, DBL_MAX };
+        DOUBLEVECTOR2 maxV = { -DBL_MAX, -DBL_MAX };
 
         for (size_t ii = 0; ii < 3; ii++)
         {
@@ -779,7 +780,8 @@ namespace
 
                 p += 3;
                 dwStart++;
-            } while (fx <= v1.x);
+            }
+            while (fx <= v1.x);
             assert(dwStart <= dwColCount);
         }
 
@@ -827,7 +829,8 @@ namespace
                 fy += fTexelLengthH;
                 p += 3;
                 dwStart++;
-            } while (fy <= v1.y);
+            }
+            while (fy <= v1.y);
             assert(dwStart <= dwRowCount);
         }
 
@@ -878,8 +881,8 @@ namespace
         }
 
         // 1. Find the left most point
-        DOUBLEVECTOR2 leftMost = {DBL_MAX, DBL_MAX};
-        DOUBLEVECTOR2 rightMost = {-DBL_MAX, -DBL_MAX};
+        DOUBLEVECTOR2 leftMost = { DBL_MAX, DBL_MAX };
+        DOUBLEVECTOR2 rightMost = { -DBL_MAX, -DBL_MAX };
         DOUBLEVECTOR2 tempV;
         double fTemp;
 
@@ -961,7 +964,8 @@ namespace
             {
                 below.push_back(keyPointList[dwCur]);
                 dwCur++;
-            } while (dwCur < keyPointList.size() && keyPointList[dwCur - 1].x < keyPointList[dwCur].x);
+            }
+            while (dwCur < keyPointList.size() && keyPointList[dwCur - 1].x < keyPointList[dwCur].x);
 
             assert(keyPointList[dwCur - 1].x == rightMost.x);
             assert(keyPointList[dwCur - 1].y == rightMost.y);
@@ -1324,7 +1328,7 @@ namespace
             for (size_t jj = 0; jj < 3; jj++)
             {
                 if (IsPointInSquare(
-                        corner[0], fTexelLengthW, fTexelLengthH, pUV[jj]))
+                    corner[0], fTexelLengthW, fTexelLengthH, pUV[jj]))
                 {
                     keyPointList.push_back(pUV[jj]);
                 }
@@ -1431,7 +1435,7 @@ Isochart::IMTFromTextureMapEx(
     }
 
     auto pTexDesc = reinterpret_cast<IMTFloatArrayDescIn *>(lpTextureData);
-    DOUBLEVECTOR2 leftBottom = {0.0, 0.0};
+    DOUBLEVECTOR2 leftBottom = { 0.0, 0.0 };
 
     double fTexelLengthW = (1.0 / double(pTexDesc->uWidth));
     double fTexelLengthH = (1.0 / double(pTexDesc->uHeight));
@@ -1460,14 +1464,14 @@ Isochart::IMTFromTextureMapEx(
     }
 
     if (FAILED(hr = ComputeAllIntersection(
-                        uv,
-                        fTexelLengthW,
-                        fTexelLengthH,
-                        leftBottom,
-                        dwRowLineCount,
-                        dwColLineCount,
-                        rgvVerticalIntersection.get(),
-                        rgvHorizonIntersection.get())))
+        uv,
+        fTexelLengthW,
+        fTexelLengthH,
+        leftBottom,
+        dwRowLineCount,
+        dwColLineCount,
+        rgvVerticalIntersection.get(),
+        rgvHorizonIntersection.get())))
     {
         return hr;
     }
@@ -1484,20 +1488,20 @@ Isochart::IMTFromTextureMapEx(
         for (size_t jj = 0; jj < dwColLineCount - 1; jj++)
         {
             if (FAILED(hr = ComputeIMTOnPixel(
-                                tempIMT,
-                                uv,
-                                fTexelLengthW,
-                                fTexelLengthH,
-                                ii,
-                                rgvHorizonIntersection.get(),
-                                jj,
-                                rgvVerticalIntersection.get(),
-                                leftBottom,
-                                uPrimitiveId,
-                                dwSignalDimension,
-                                pfnGetSignal,
-                                lpTextureData,
-                                dPieceArea)))
+                tempIMT,
+                uv,
+                fTexelLengthW,
+                fTexelLengthH,
+                ii,
+                rgvHorizonIntersection.get(),
+                jj,
+                rgvVerticalIntersection.get(),
+                leftBottom,
+                uPrimitiveId,
+                dwSignalDimension,
+                pfnGetSignal,
+                lpTextureData,
+                dPieceArea)))
             {
                 return hr;
             }

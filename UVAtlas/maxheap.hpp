@@ -42,20 +42,17 @@ namespace Isochart
     public:
         CMaxHeapItem()
             : m_weight(0), m_data{}, m_position(NOT_IN_HEAP)
-        {
-        }
+        {}
 
         CMaxHeapItem(weight_type weight, data_type data)
             : m_weight(weight), m_data(data), m_position(NOT_IN_HEAP)
-        {
-        }
+        {}
 
         CMaxHeapItem(const CMaxHeapItem &item)
             : m_weight(item.m_weight), m_data(item.m_data) // Shallow copy here!
-              ,
-              m_position(item.m_position)
-        {
-        }
+            ,
+            m_position(item.m_position)
+        {}
 
         pos_type getPos() const
         {
@@ -77,8 +74,7 @@ namespace Isochart
         typedef CMaxHeapItem<weight_type, data_type> item_type;
 
         CMaxHeap() : m_bAutoMangeMemory(false), m_size(0)
-        {
-        }
+        {}
         CMaxHeap(size_t size) : m_bAutoMangeMemory(false), m_size(0)
         {
             m_items.reserve(size);
@@ -160,14 +156,14 @@ namespace Isochart
             item_type *pTop = removeAt(0);
             if (!pTop)
             {
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
-#endif
+            #ifdef __clang__
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+            #endif
                 return 0;
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
+            #ifdef __clang__
+            #pragma clang diagnostic pop
+            #endif
             }
 
             data_type data = pTop->m_data;

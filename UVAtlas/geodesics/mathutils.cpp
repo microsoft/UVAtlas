@@ -38,9 +38,9 @@ double GeodesicDist::ComputeVertexAngleOnFace(const Face &face, const uint32_t d
 }
 
 void GeodesicDist::ParameterizePt3ToPt2(const DVector3 &v3Origin,
-                                        const DVector3 &v3OnePositivePt,
-                                        const DVector3 &v3Pt,
-                                        DVector2 &ptRes)
+    const DVector3 &v3OnePositivePt,
+    const DVector3 &v3Pt,
+    DVector2 &ptRes)
 {
     DVector3 P;
     DVector3Minus(v3Pt, v3Origin, P);
@@ -58,9 +58,9 @@ void GeodesicDist::ParameterizePt3ToPt2(const DVector3 &v3Origin,
 }
 
 void GeodesicDist::ParameterizePt2ToPt2(const DVector2 &v2Origin,
-                                        const DVector2 &v2OnePositivePt,
-                                        const DVector2 &v2Pt,
-                                        DVector2 &ptRes)
+    const DVector2 &v2OnePositivePt,
+    const DVector2 &v2Pt,
+    DVector2 &ptRes)
 {
     DVector2 P;
     DVector2Minus(v2Pt, v2Origin, P);
@@ -75,11 +75,11 @@ void GeodesicDist::ParameterizePt2ToPt2(const DVector2 &v2Origin,
 }
 
 void GeodesicDist::GetCommonPointOf2Lines(const DVector2 &pt1Line1,
-                                          const DVector2 &pt2Line1,
-                                          const DVector2 &pt1Line2,
-                                          const DVector2 &pt2Line2,
-                                          DVector2 &ptResult,
-                                          bool &bResultPtWithinLineSeg1)
+    const DVector2 &pt2Line1,
+    const DVector2 &pt1Line2,
+    const DVector2 &pt2Line2,
+    DVector2 &ptResult,
+    bool &bResultPtWithinLineSeg1)
 {
     double d = (pt1Line1.y - pt2Line1.y) * (pt1Line2.x - pt2Line2.x) - (pt1Line1.x - pt2Line1.x) * (pt1Line2.y - pt2Line2.y);
 
@@ -103,9 +103,9 @@ void GeodesicDist::GetCommonPointOf2Lines(const DVector2 &pt1Line1,
 }
 
 void GeodesicDist::ComputePtOnLineWithDistance(const DVector3 &v3Pt1,
-                                               const DVector3 &v3Pt2,
-                                               const double &dDistanceAwayFromPt1,
-                                               DVector3 &v3Result)
+    const DVector3 &v3Pt2,
+    const double &dDistanceAwayFromPt1,
+    DVector3 &v3Result)
 {
     DVector3 tmp;
 
@@ -115,8 +115,8 @@ void GeodesicDist::ComputePtOnLineWithDistance(const DVector3 &v3Pt1,
 }
 
 double GeodesicDist::ComputeAngleBetween2Lines(const DVector3 &v3PtCommon,
-                                               const DVector3 &v3Pt1,
-                                               const DVector3 &v3Pt2)
+    const DVector3 &v3Pt1,
+    const DVector3 &v3Pt2)
 {
     DVector3 P;
     DVector3 Q;

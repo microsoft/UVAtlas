@@ -39,44 +39,44 @@ namespace
         unsigned int dwOptions)
     {
         if (!CheckInitializeParameters(
-                pVertexArray,
-                VertexCount,
-                VertexStride,
-                IndexFormat,
-                pFaceIndexArray,
-                FaceCount,
-                pIMTArray,
-                dwOptions))
+            pVertexArray,
+            VertexCount,
+            VertexStride,
+            IndexFormat,
+            pFaceIndexArray,
+            FaceCount,
+            pIMTArray,
+            dwOptions))
         {
             return false;
         }
 
         if (!CheckPartitionParameters(
-                MaxChartNumber,
-                FaceCount,
-                Stretch,
-                pChartNumberOut,
-                pMaxStretchOut,
-                nullptr))
+            MaxChartNumber,
+            FaceCount,
+            Stretch,
+            pChartNumberOut,
+            pMaxStretchOut,
+            nullptr))
         {
             return false;
         }
 
         if (!CheckPackParameters(
-                Width,
-                Height,
-                Gutter,
-                pvVertexArrayOut,
-                pvFaceIndexArrayOut,
-                pvVertexRemapArrayOut,
-                nullptr))
+            Width,
+            Height,
+            Gutter,
+            pvVertexArrayOut,
+            pvFaceIndexArrayOut,
+            pvVertexRemapArrayOut,
+            nullptr))
         {
             return false;
         }
 
         if (!CheckSetCallbackParameters(
-                pCallback,
-                Frequency))
+            pCallback,
+            Frequency))
         {
             return false;
         }
@@ -177,26 +177,26 @@ HRESULT Isochart::isochart(
 {
     // 1. Check input parameter
     if (!CheckIsochartInput(
-            pVertexArray,
-            VertexCount,
-            VertexStride,
-            IndexFormat,
-            pFaceIndexArray,
-            FaceCount,
-            pIMTArray,
-            MaxChartNumber,
-            Stretch,
-            Width,
-            Height,
-            Gutter,
-            pvVertexArrayOut,
-            pvFaceIndexArrayOut,
-            pvVertexRemapArrayOut,
-            pChartNumberOut,
-            pMaxStretchOut,
-            pCallback,
-            Frequency,
-            dwOptions))
+        pVertexArray,
+        VertexCount,
+        VertexStride,
+        IndexFormat,
+        pFaceIndexArray,
+        FaceCount,
+        pIMTArray,
+        MaxChartNumber,
+        Stretch,
+        Width,
+        Height,
+        Gutter,
+        pvVertexArrayOut,
+        pvFaceIndexArrayOut,
+        pvVertexRemapArrayOut,
+        pChartNumberOut,
+        pMaxStretchOut,
+        pCallback,
+        Frequency,
+        dwOptions))
     {
         return E_INVALIDARG;
     }
@@ -218,8 +218,8 @@ HRESULT Isochart::isochart(
     if (pCallback)
     {
         if (FAILED(hr = pEngine->SetCallback(
-                       pCallback,
-                       Frequency)))
+            pCallback,
+            Frequency)))
         {
             goto LEnd;
         }
@@ -227,16 +227,16 @@ HRESULT Isochart::isochart(
 
     // 4. Initialize isochart engine
     if (FAILED(hr = pEngine->Initialize(
-                   pVertexArray,
-                   VertexCount,
-                   VertexStride,
-                   IndexFormat,
-                   pFaceIndexArray,
-                   FaceCount,
-                   pIMTArray,
-                   pOriginalAjacency,
-                   nullptr,
-                   dwOptions)))
+        pVertexArray,
+        VertexCount,
+        VertexStride,
+        IndexFormat,
+        pFaceIndexArray,
+        FaceCount,
+        pIMTArray,
+        pOriginalAjacency,
+        nullptr,
+        dwOptions)))
     {
         goto LEnd;
     }
@@ -244,25 +244,25 @@ HRESULT Isochart::isochart(
     // 5. Partition
     dwChartNumberOut = 0;
     if (FAILED(hr = pEngine->Partition(
-                   MaxChartNumber,
-                   Stretch,
-                   dwChartNumberOut,
-                   fMaxChartStretchOut,
-                   nullptr)))
+        MaxChartNumber,
+        Stretch,
+        dwChartNumberOut,
+        fMaxChartStretchOut,
+        nullptr)))
     {
         goto LEnd;
     }
 
     // 6. Pack charts to UV-atlas
     if (FAILED(hr = pEngine->Pack(
-                   Width,
-                   Height,
-                   Gutter,
-                   pFaceIndexArray,
-                   pvVertexArrayOut,
-                   pvFaceIndexArrayOut,
-                   pvVertexRemapArrayOut,
-                   nullptr)))
+        Width,
+        Height,
+        Gutter,
+        pFaceIndexArray,
+        pvVertexArrayOut,
+        pvFaceIndexArrayOut,
+        pvVertexRemapArrayOut,
+        nullptr)))
     {
         goto LEnd;
     }
@@ -287,30 +287,30 @@ LEnd:
 }
 
 _Use_decl_annotations_
-    HRESULT
-    Isochart::isochartpartition(
-        const void *pVertexArray,
-        size_t VertexCount,
-        size_t VertexStride,
-        DXGI_FORMAT IndexFormat,
-        const void *pFaceIndexArray,
-        size_t FaceCount,
-        const FLOAT3 *pIMTArray,
-        size_t MaxChartNumber,
-        float Stretch,
-        const uint32_t *pOriginalAjacency,
-        std::vector<UVAtlasVertex> *pvVertexArrayOut,
-        std::vector<uint8_t> *pvFaceIndexArrayOut,
-        std::vector<uint32_t> *pvVertexRemapArrayOut,
-        std::vector<uint32_t> *pvAttributeIDOut,
-        std::vector<uint32_t> *pvAdjacencyOut,
-        size_t *pChartNumberOut,
-        float *pMaxStretchOut,
-        unsigned int Stage,
-        LPISOCHARTCALLBACK pCallback,
-        float Frequency,
-        const uint32_t *pSplitHint,
-        unsigned int dwOptions)
+HRESULT
+Isochart::isochartpartition(
+    const void *pVertexArray,
+    size_t VertexCount,
+    size_t VertexStride,
+    DXGI_FORMAT IndexFormat,
+    const void *pFaceIndexArray,
+    size_t FaceCount,
+    const FLOAT3 *pIMTArray,
+    size_t MaxChartNumber,
+    float Stretch,
+    const uint32_t *pOriginalAjacency,
+    std::vector<UVAtlasVertex> *pvVertexArrayOut,
+    std::vector<uint8_t> *pvFaceIndexArrayOut,
+    std::vector<uint32_t> *pvVertexRemapArrayOut,
+    std::vector<uint32_t> *pvAttributeIDOut,
+    std::vector<uint32_t> *pvAdjacencyOut,
+    size_t *pChartNumberOut,
+    float *pMaxStretchOut,
+    unsigned int Stage,
+    LPISOCHARTCALLBACK pCallback,
+    float Frequency,
+    const uint32_t *pSplitHint,
+    unsigned int dwOptions)
 {
     unsigned int dwTotalStage = STAGE_TOTAL(Stage);
     unsigned int dwDoneStage = STAGE_DONE(Stage);
@@ -335,8 +335,8 @@ _Use_decl_annotations_
     if (pCallback)
     {
         if (FAILED(hr = pEngine->SetCallback(
-                       pCallback,
-                       Frequency)))
+            pCallback,
+            Frequency)))
         {
             goto LEnd;
         }
@@ -345,16 +345,16 @@ _Use_decl_annotations_
 
     // 4. Initialize isochart engine
     if (FAILED(hr = pEngine->Initialize(
-                   pVertexArray,
-                   VertexCount,
-                   VertexStride,
-                   IndexFormat,
-                   pFaceIndexArray,
-                   FaceCount,
-                   pIMTArray,
-                   pOriginalAjacency,
-                   pSplitHint,
-                   dwOptions)))
+        pVertexArray,
+        VertexCount,
+        VertexStride,
+        IndexFormat,
+        pFaceIndexArray,
+        FaceCount,
+        pIMTArray,
+        pOriginalAjacency,
+        pSplitHint,
+        dwOptions)))
     {
         goto LEnd;
     }
@@ -362,11 +362,11 @@ _Use_decl_annotations_
 
     // 5. Partition
     if (FAILED(hr = pEngine->Partition(
-                   MaxChartNumber,
-                   Stretch,
-                   dwChartNumberOut,
-                   fMaxChartStretchOut,
-                   nullptr)))
+        MaxChartNumber,
+        Stretch,
+        dwChartNumberOut,
+        fMaxChartStretchOut,
+        nullptr)))
     {
         goto LEnd;
     }

@@ -27,30 +27,16 @@
 #error Define TOOL_VERSION before including this header
 #endif
 
+
 namespace Helpers
 {
-    struct handle_closer
-    {
-        void operator()(HANDLE h)
-        {
-            if (h)
-                CloseHandle(h);
-        }
-    };
+    struct handle_closer { void operator()(HANDLE h) { if (h) CloseHandle(h); } };
 
     using ScopedHandle = std::unique_ptr<void, handle_closer>;
 
     inline HANDLE safe_handle(HANDLE h) noexcept { return (h == INVALID_HANDLE_VALUE) ? nullptr : h; }
 
-    struct find_closer
-    {
-        void operator()(HANDLE h) noexcept
-        {
-            assert(h != INVALID_HANDLE_VALUE);
-            if (h)
-                FindClose(h);
-        }
-    };
+    struct find_closer { void operator()(HANDLE h) noexcept { assert(h != INVALID_HANDLE_VALUE); if (h) FindClose(h); } };
 
     using ScopedFindHandle = std::unique_ptr<void, find_closer>;
 
@@ -64,14 +50,14 @@ namespace Helpers
         std::wstring szFolder;
     };
 
-    template <typename T>
+    template<typename T>
     struct SValue
     {
-        const wchar_t *name;
-        T value;
+        const wchar_t*  name;
+        T               value;
     };
 
-    template <typename T>
+    template<typename T>
     T LookupByName(const wchar_t _In_z_ *pName, const SValue<T> *pArray)
     {
         while (pArray->name)
@@ -85,8 +71,8 @@ namespace Helpers
         return static_cast<T>(0);
     }
 
-    template <typename T>
-    const wchar_t *LookupByValue(T value, const SValue<T> *pArray)
+    template<typename T>
+    const wchar_t* LookupByValue(T value, const SValue<T> *pArray)
     {
         while (pArray->name)
         {
@@ -99,7 +85,7 @@ namespace Helpers
         return L"";
     }
 
-    void PrintFormat(DXGI_FORMAT Format, const SValue<DXGI_FORMAT> *pFormatList)
+    void PrintFormat(DXGI_FORMAT Format, const SValue<DXGI_FORMAT>* pFormatList)
     {
         for (auto pFormat = pFormatList; pFormat->name; pFormat++)
         {
@@ -113,7 +99,7 @@ namespace Helpers
         wprintf(L"*UNKNOWN*");
     }
 
-    void PrintFormat(DXGI_FORMAT Format, const SValue<DXGI_FORMAT> *pFormatList1, const SValue<DXGI_FORMAT> *pFormatList2)
+    void PrintFormat(DXGI_FORMAT Format, const SValue<DXGI_FORMAT>* pFormatList1, const SValue<DXGI_FORMAT>* pFormatList2)
     {
         for (auto pFormat = pFormatList1; pFormat->name; pFormat++)
         {
@@ -136,7 +122,7 @@ namespace Helpers
         wprintf(L"*UNKNOWN*");
     }
 
-    template <typename T>
+    template<typename T>
     void PrintList(size_t cch, const SValue<T> *pValue)
     {
         while (pValue->name)
@@ -157,7 +143,7 @@ namespace Helpers
         wprintf(L"\n");
     }
 
-    void PrintLogo(bool versionOnly, _In_z_ const wchar_t *name, _In_z_ const wchar_t *desc)
+    void PrintLogo(bool versionOnly, _In_z_ const wchar_t* name, _In_z_ const wchar_t* desc)
     {
         wchar_t version[32] = {};
 
@@ -174,7 +160,7 @@ namespace Helpers
                     UINT strLen = 0;
                     if (VerQueryValueW(verInfo.get(), L"\\StringFileInfo\\040904B0\\ProductVersion", &lpstr, &strLen))
                     {
-                        wcsncpy_s(version, reinterpret_cast<const wchar_t *>(lpstr), strLen);
+                        wcsncpy_s(version, reinterpret_cast<const wchar_t*>(lpstr), strLen);
                     }
                 }
             }
@@ -193,21 +179,21 @@ namespace Helpers
         {
             wprintf(L"%ls Version %ls\n", desc, version);
             wprintf(L"Copyright (C) Microsoft Corp.\n");
-#ifdef _DEBUG
+        #ifdef _DEBUG
             wprintf(L"*** Debug build ***\n");
-#endif
+        #endif
             wprintf(L"\n");
         }
     }
 
-    void SearchForFiles(const std::filesystem::path &path, std::list<SConversion> &files, bool recursive, _In_opt_z_ const wchar_t *folder)
+    void SearchForFiles(const std::filesystem::path& path, std::list<SConversion>& files, bool recursive, _In_opt_z_ const wchar_t* folder)
     {
         // Process files
         WIN32_FIND_DATAW findData = {};
         ScopedFindHandle hFile(safe_handle(FindFirstFileExW(path.c_str(),
-                                                            FindExInfoBasic, &findData,
-                                                            FindExSearchNameMatch, nullptr,
-                                                            FIND_FIRST_EX_LARGE_FETCH)));
+            FindExInfoBasic, &findData,
+            FindExSearchNameMatch, nullptr,
+            FIND_FIRST_EX_LARGE_FETCH)));
         if (hFile)
         {
             for (;;)
@@ -234,9 +220,9 @@ namespace Helpers
             auto searchDir = path.parent_path().append(L"*");
 
             hFile.reset(safe_handle(FindFirstFileExW(searchDir.c_str(),
-                                                     FindExInfoBasic, &findData,
-                                                     FindExSearchLimitToDirectories, nullptr,
-                                                     FIND_FIRST_EX_LARGE_FETCH)));
+                FindExInfoBasic, &findData,
+                FindExSearchLimitToDirectories, nullptr,
+                FIND_FIRST_EX_LARGE_FETCH)));
             if (!hFile)
                 return;
 
@@ -247,8 +233,8 @@ namespace Helpers
                     if (findData.cFileName[0] != L'.')
                     {
                         auto subfolder = (folder)
-                                             ? (std::wstring(folder) + std::wstring(findData.cFileName) + std::filesystem::path::preferred_separator)
-                                             : (std::wstring(findData.cFileName) + std::filesystem::path::preferred_separator);
+                            ? (std::wstring(folder) + std::wstring(findData.cFileName) + std::filesystem::path::preferred_separator)
+                            : (std::wstring(findData.cFileName) + std::filesystem::path::preferred_separator);
 
                         auto subdir = path.parent_path().append(findData.cFileName).append(path.filename().c_str());
 
@@ -262,7 +248,7 @@ namespace Helpers
         }
     }
 
-    void ProcessFileList(std::wifstream &inFile, std::list<SConversion> &files)
+    void ProcessFileList(std::wifstream& inFile, std::list<SConversion>& files)
     {
         std::list<SConversion> flist;
         std::set<std::wstring> excludes;
@@ -287,13 +273,13 @@ namespace Helpers
                 else
                 {
                     std::filesystem::path path(fname.c_str() + 1);
-                    auto &npath = path.make_preferred();
+                    auto& npath = path.make_preferred();
                     if (wcspbrk(fname.c_str(), L"?*") != nullptr)
                     {
                         std::list<SConversion> removeFiles;
                         SearchForFiles(npath, removeFiles, false, nullptr);
 
-                        for (auto &it : removeFiles)
+                        for (auto& it : removeFiles)
                         {
                             std::wstring name = it.szSrc;
                             std::transform(name.begin(), name.end(), name.begin(), towlower);
@@ -350,15 +336,15 @@ namespace Helpers
         }
     }
 
-    const wchar_t *GetErrorDesc(HRESULT hr)
+    const wchar_t* GetErrorDesc(HRESULT hr)
     {
         static wchar_t desc[1024] = {};
 
         LPWSTR errorText = nullptr;
 
         const DWORD result = FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS | FORMAT_MESSAGE_ALLOCATE_BUFFER,
-                                            nullptr, static_cast<DWORD>(hr),
-                                            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPWSTR>(&errorText), 0, nullptr);
+            nullptr, static_cast<DWORD>(hr),
+            MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPWSTR>(&errorText), 0, nullptr);
 
         *desc = 0;
 
@@ -375,7 +361,7 @@ namespace Helpers
             if (errorText)
                 LocalFree(errorText);
 
-            for (wchar_t *ptr = desc; *ptr != 0; ++ptr)
+            for (wchar_t* ptr = desc; *ptr != 0; ++ptr)
             {
                 if (*ptr == L'\r' || *ptr == L'\n')
                 {

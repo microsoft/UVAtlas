@@ -274,8 +274,8 @@ HRESULT CIsochartMesh::CalculateGeodesicDistance(
     for (size_t i = 0; i < dwVertLandNumber; i++)
     {
         if (FAILED(hr = CalculateGeodesicDistanceToVertex(
-                       vertList[i],
-                       bIsSignalDistance)))
+            vertList[i],
+            bIsSignalDistance)))
         {
             if (pfVertGeodesicDistance != pfTempGeodesicDistance)
             {
@@ -494,7 +494,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexNewGeoDist(
     {
         m_pVerts[i].fGeodesicDistance = m_pVerts[i].fSignalDistance =
             std::min(m_pVerts[i].fGeodesicDistance,
-                     float(ONE_TO_ALL_ENGINE.m_VertexList[i].dGeoDistanceToSrc));
+                float(ONE_TO_ALL_ENGINE.m_VertexList[i].dGeoDistanceToSrc));
 
         if (double(m_pVerts[i].fGeodesicDistance) > dGeoFarest)
         {
@@ -617,7 +617,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexKS98(
             if (pHeapItem[dwAdjacentID].isItemInHeap())
             {
                 heap.update(pHeapItem + dwAdjacentID,
-                            -pAdjacentVertex->fGeodesicDistance);
+                    -pAdjacentVertex->fGeodesicDistance);
             }
             else
             {
@@ -648,10 +648,10 @@ void CIsochartMesh::CalculateGeodesicDistanceABC(
     XMVECTOR v[3];
     float u = pVertexB->fGeodesicDistance - pVertexA->fGeodesicDistance;
     v[0] = XMVectorSubtract(XMLoadFloat3(m_baseInfo.pVertPosition + pVertexB->dwIDInRootMesh),
-                            XMLoadFloat3(m_baseInfo.pVertPosition + pVertexC->dwIDInRootMesh));
+        XMLoadFloat3(m_baseInfo.pVertPosition + pVertexC->dwIDInRootMesh));
 
     v[1] = XMVectorSubtract(XMLoadFloat3(m_baseInfo.pVertPosition + pVertexA->dwIDInRootMesh),
-                            XMLoadFloat3(m_baseInfo.pVertPosition + pVertexC->dwIDInRootMesh));
+        XMLoadFloat3(m_baseInfo.pVertPosition + pVertexC->dwIDInRootMesh));
 
     float a = XMVectorGetX(XMVector3Length(v[0]));
     float b = XMVectorGetX(XMVector3Length(v[1]));
@@ -848,12 +848,12 @@ HRESULT CIsochartMesh::CalculateVertMappingCoord(
     for (size_t i = 0; i < m_dwFaceNumber; i++)
     {
         XMFLOAT3 vec1(m_pVerts[pFace->dwVertexID[1]].uv.x - m_pVerts[pFace->dwVertexID[0]].uv.x,
-                      m_pVerts[pFace->dwVertexID[1]].uv.y - m_pVerts[pFace->dwVertexID[0]].uv.y,
-                      0);
+            m_pVerts[pFace->dwVertexID[1]].uv.y - m_pVerts[pFace->dwVertexID[0]].uv.y,
+            0);
 
         XMFLOAT3 vec2(m_pVerts[pFace->dwVertexID[2]].uv.x - m_pVerts[pFace->dwVertexID[0]].uv.x,
-                      m_pVerts[pFace->dwVertexID[2]].uv.y - m_pVerts[pFace->dwVertexID[0]].uv.y,
-                      0);
+            m_pVerts[pFace->dwVertexID[2]].uv.y - m_pVerts[pFace->dwVertexID[0]].uv.y,
+            0);
 
         if (CalculateZOfVec3Cross(&vec1, &vec2) >= 0)
         {

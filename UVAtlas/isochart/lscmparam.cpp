@@ -141,12 +141,12 @@ HRESULT CIsochartMesh::AddFaceWeight(
         size_t dwCol2;
 
         if (IN_CONSTANT == GetPosInMatrix(
-                               vert.dwID,
-                               m_dwVertNumber,
-                               dwBaseVertId1,
-                               dwBaseVertId2,
-                               dwCol1,
-                               dwCol2))
+            vert.dwID,
+            m_dwVertNumber,
+            dwBaseVertId1,
+            dwBaseVertId2,
+            dwCol1,
+            dwCol2))
         {
             pA = &M;
         }
@@ -210,12 +210,12 @@ HRESULT CIsochartMesh::AssignLSCMResult(
     {
         size_t dwCol1, dwCol2;
         if (IN_CONSTANT == GetPosInMatrix(
-                               ii,
-                               m_dwVertNumber,
-                               dwBaseVertId1,
-                               dwBaseVertId2,
-                               dwCol1,
-                               dwCol2))
+            ii,
+            m_dwVertNumber,
+            dwBaseVertId1,
+            dwBaseVertId2,
+            dwCol1,
+            dwCol2))
         {
             pV = &U;
         }
@@ -349,14 +349,14 @@ HRESULT CIsochartMesh::LSCMParameterization(
     // 3. Solve the linear equation set
     FAILURE_GOTO_END(
         (false != CSparseMatrix<double>::ConjugateGradient(
-                      X,
-                      A,
-                      B,
-                      LSCM_MAX_ITERATION,
-                      1e-8,
-                      nIterCount)
-             ? S_OK
-             : E_FAIL));
+            X,
+            A,
+            B,
+            LSCM_MAX_ITERATION,
+            1e-8,
+            nIterCount)
+            ? S_OK
+            : E_FAIL));
     if (nIterCount >= LSCM_MAX_ITERATION)
     {
         goto LEnd;

@@ -55,21 +55,20 @@ namespace Isochart
     {
     public:
         CCallbackSchemer() : m_pCallback(nullptr),
-                             m_fCallbackFrequency(0.f),
-                             m_dwTotalWork(0),
-                             m_dwWorkDone(0),
-                             m_dwNextCallback(0),
-                             m_dwCallbackDelta(0),
-                             m_dwWaitPoint(0),
-                             m_dwWaitCount(0),
-                             m_bIsWaitToFinish(false),
-                             m_fPercentScale(0.f),
-                             m_fBase(0.f),
-                             m_dwTotalStage(0),
-                             m_dwDoneStage(0),
-                             m_fPercentOfAllTasks(0.f)
-        {
-        }
+            m_fCallbackFrequency(0.f),
+            m_dwTotalWork(0),
+            m_dwWorkDone(0),
+            m_dwNextCallback(0),
+            m_dwCallbackDelta(0),
+            m_dwWaitPoint(0),
+            m_dwWaitCount(0),
+            m_bIsWaitToFinish(false),
+            m_fPercentScale(0.f),
+            m_fBase(0.f),
+            m_dwTotalStage(0),
+            m_dwDoneStage(0),
+            m_fPercentOfAllTasks(0.f)
+        {}
 
         void SetCallback(
             LPISOCHARTCALLBACK pCallback,

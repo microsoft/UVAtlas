@@ -71,17 +71,16 @@ CProgressiveMesh::CProgressiveMesh(
     const CBaseMeshInfo &baseInfo,
     CCallbackSchemer &callbackSchemer)
     : m_pVertArray(nullptr),
-      m_pFaceArray(nullptr),
-      m_pEdgeArray(nullptr),
-      m_pQuadricArray(nullptr),
-      m_dwVertNumber(0),
-      m_dwFaceNumber(0),
-      m_dwEdgeNumber(0),
-      m_fBoxDiagLen(0),
-      m_baseInfo(baseInfo),
-      m_callbackSchemer(callbackSchemer)
-{
-}
+    m_pFaceArray(nullptr),
+    m_pEdgeArray(nullptr),
+    m_pQuadricArray(nullptr),
+    m_dwVertNumber(0),
+    m_dwFaceNumber(0),
+    m_dwEdgeNumber(0),
+    m_fBoxDiagLen(0),
+    m_baseInfo(baseInfo),
+    m_callbackSchemer(callbackSchemer)
+{}
 
 CProgressiveMesh::~CProgressiveMesh()
 {
@@ -92,11 +91,11 @@ CProgressiveMesh::~CProgressiveMesh()
 void CProgressiveMesh::Clear()
 {
     SAFE_DELETE_ARRAY(m_pVertArray)
-    SAFE_DELETE_ARRAY(m_pFaceArray)
-    SAFE_DELETE_ARRAY(m_pEdgeArray)
-    SAFE_DELETE_ARRAY(m_pQuadricArray)
+        SAFE_DELETE_ARRAY(m_pFaceArray)
+        SAFE_DELETE_ARRAY(m_pEdgeArray)
+        SAFE_DELETE_ARRAY(m_pQuadricArray)
 
-    m_dwVertNumber = 0;
+        m_dwVertNumber = 0;
     m_dwFaceNumber = 0;
     m_dwEdgeNumber = 0;
 }
@@ -222,7 +221,7 @@ HRESULT CProgressiveMesh::Simplify()
         bool bIsGeodesicValid;
 
         if (!PrepareDeletingEdge(
-                pCurrentEdge, &pReserveVertex, &pDeleteVertex, bIsGeodesicValid))
+            pCurrentEdge, &pReserveVertex, &pDeleteVertex, bIsGeodesicValid))
         {
             dwRepeat = 0;
             dwEdgeCount++;
@@ -282,7 +281,7 @@ HRESULT CProgressiveMesh::Simplify()
         bool bIsGeodesicValid;
 
         if (!PrepareDeletingEdge(
-                pCurrentEdge, &pReserveVertex, &pDeleteVertex, bIsGeodesicValid))
+            pCurrentEdge, &pReserveVertex, &pDeleteVertex, bIsGeodesicValid))
         {
             continue;
         }
@@ -359,7 +358,7 @@ bool CProgressiveMesh::PrepareDeletingEdge(
     // 5. Check if toplogic is valid after deleting current edge.
     // Logic invalid is not acceptable. See detail in the function
     if (!IsProgressiveMeshToplogicValid(
-            pCurrentEdge, *ppReserveVertex, *ppDeleteVertex))
+        pCurrentEdge, *ppReserveVertex, *ppDeleteVertex))
     {
         return false;
     }
@@ -505,7 +504,7 @@ bool CProgressiveMesh::IsProgressiveMeshGeometricValid(
 }
 
 bool CProgressiveMesh::IsEdgeOppositeToVertex(PMISOCHARTEDGE *pEdge,
-                                              PMISOCHARTVERTEX *pVertex) const
+    PMISOCHARTVERTEX *pVertex) const
 {
     return (pEdge->dwOppositVertID[0] == pVertex->dwID || pEdge->dwOppositVertID[1] == pVertex->dwID);
 }
@@ -957,7 +956,7 @@ void CProgressiveMesh::UpdateReservedVertsAttrib(
     for (size_t j = 0; j < pDeleteVertex->quadricList.size(); j++)
     {
         addNoduplicateItem(pReserveVertex->quadricList,
-                           pDeleteVertex->quadricList[j]);
+            pDeleteVertex->quadricList[j]);
     }
 
     pDeleteVertex->quadricList.clear();
@@ -1034,11 +1033,11 @@ HRESULT CProgressiveMesh::CreateProgressiveMesh(CIsochartMesh &mesh)
             m_pVertArray[i].nImportanceOrder = MUST_RESERVE;
 
             m_pVertArray[i].vertAdjacent.insert(m_pVertArray[i].vertAdjacent.end(),
-                                                pOrgVerts[i].vertAdjacent.cbegin(), pOrgVerts[i].vertAdjacent.cend());
+                pOrgVerts[i].vertAdjacent.cbegin(), pOrgVerts[i].vertAdjacent.cend());
             m_pVertArray[i].faceAdjacent.insert(m_pVertArray[i].faceAdjacent.end(),
-                                                pOrgVerts[i].faceAdjacent.cbegin(), pOrgVerts[i].faceAdjacent.cend());
+                pOrgVerts[i].faceAdjacent.cbegin(), pOrgVerts[i].faceAdjacent.cend());
             m_pVertArray[i].edgeAdjacent.insert(m_pVertArray[i].edgeAdjacent.end(),
-                                                pOrgVerts[i].edgeAdjacent.cbegin(), pOrgVerts[i].edgeAdjacent.cend());
+                pOrgVerts[i].edgeAdjacent.cbegin(), pOrgVerts[i].edgeAdjacent.cend());
         }
     }
     catch (std::bad_alloc &)

@@ -126,10 +126,10 @@ namespace Isochart
                 // If two edges doesn't connect together, but have
                 // intersection, overlapping occurs.
                 if (IsochartIsSegmentsIntersect(
-                        pMesh->m_pVerts[pEdge1->dwVertexID[0]].uv,
-                        pMesh->m_pVerts[pEdge1->dwVertexID[1]].uv,
-                        pMesh->m_pVerts[pEdge2->dwVertexID[0]].uv,
-                        pMesh->m_pVerts[pEdge2->dwVertexID[1]].uv))
+                    pMesh->m_pVerts[pEdge1->dwVertexID[0]].uv,
+                    pMesh->m_pVerts[pEdge1->dwVertexID[1]].uv,
+                    pMesh->m_pVerts[pEdge2->dwVertexID[0]].uv,
+                    pMesh->m_pVerts[pEdge2->dwVertexID[1]].uv))
                 {
                     bIsOverlapping = true;
                     return S_OK;

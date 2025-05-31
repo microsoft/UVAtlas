@@ -13,8 +13,7 @@
 using namespace Isochart;
 
 CGraphcut::CGraphcut()
-{
-}
+{}
 
 CGraphcut::~CGraphcut()
 {

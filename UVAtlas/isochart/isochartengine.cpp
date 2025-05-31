@@ -35,12 +35,12 @@ void IIsochartEngine::ReleaseIsochartEngine(
 }
 
 CIsochartEngine::CIsochartEngine() : fExpectAvgL2SquaredStretch(0.f),
-                                     dwExpectChartCount(0),
-                                     m_state(ISOCHART_ST_UNINITILAIZED),
+dwExpectChartCount(0),
+m_state(ISOCHART_ST_UNINITILAIZED),
 #ifdef _WIN32
-                                     m_hMutex(nullptr),
+m_hMutex(nullptr),
 #endif
-                                     m_dwOptions(ISOCHARTOPTION::DEFAULT)
+m_dwOptions(ISOCHARTOPTION::DEFAULT)
 {
     std::random_device randomDevice;
     m_randomEngine.seed(randomDevice());
@@ -52,11 +52,11 @@ CIsochartEngine::~CIsochartEngine()
     // Free will return with "busy". So loop until free successfully.
     while (FAILED(Free()))
     {
-#ifdef _WIN32
+    #ifdef _WIN32
         SwitchToThread();
-#else
+    #else
         std::this_thread::yield();
-#endif
+    #endif
     }
 
 #ifdef _WIN32
@@ -104,14 +104,14 @@ HRESULT CIsochartEngine::Initialize(
 
     // 1. Check arguments and current state
     if (!CheckInitializeParameters(
-            pVertexArray,
-            VertexCount,
-            VertexStride,
-            IndexFormat,
-            pFaceIndexArray,
-            FaceCount,
-            pIMTArray,
-            dwOptions))
+        pVertexArray,
+        VertexCount,
+        VertexStride,
+        IndexFormat,
+        pFaceIndexArray,
+        FaceCount,
+        pIMTArray,
+        dwOptions))
     {
         return E_INVALIDARG;
     }
@@ -136,25 +136,25 @@ HRESULT CIsochartEngine::Initialize(
 
     // 4. Prepare global basic information table.
     if (FAILED(hr = InitializeBaseInfo(
-                   pVertexArray,
-                   VertexCount,
-                   VertexStride,
-                   IndexFormat,
-                   pFaceIndexArray,
-                   FaceCount,
-                   pIMTArray,
-                   pOriginalAjacency,
-                   pSplitHint)))
+        pVertexArray,
+        VertexCount,
+        VertexStride,
+        IndexFormat,
+        pFaceIndexArray,
+        FaceCount,
+        pIMTArray,
+        pOriginalAjacency,
+        pSplitHint)))
     {
         goto LEnd;
     }
 
     // 5. Internal initialization. Prepare the initial charts to be partitioned.
     if (FAILED(hr = ApplyInitEngine(
-                   m_baseInfo,
-                   IndexFormat,
-                   pFaceIndexArray,
-                   true)))
+        m_baseInfo,
+        IndexFormat,
+        pFaceIndexArray,
+        true)))
     {
         goto LEnd;
     }
@@ -251,7 +251,7 @@ bool CIsochartEngine::IsMaxChartNumberValid(
 {
     if (MaxChartNumber != 0 &&
         (MaxChartNumber < m_initChartList.size() ||
-         MaxChartNumber > m_baseInfo.dwFaceCount))
+            MaxChartNumber > m_baseInfo.dwFaceCount))
     {
         return false;
     }
@@ -303,11 +303,11 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeapParallelized(
     while (!parent.empty() && !FAILED(hrOut))
     {
         std::vector<CIsochartMesh *> children;
-#pragma omp parallel
+    #pragma omp parallel
         {
 
             std::vector<CIsochartMesh *> children_thrd;
-#pragma omp for
+        #pragma omp for
             for (int n = 0; n < static_cast<int>(parent.size()); ++n)
             {
                 if (FAILED(hrOut)) // for the other threads
@@ -351,7 +351,7 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeapParallelized(
                 {
                     try
                     {
-#pragma omp critical
+                    #pragma omp critical
                         m_finalChartList.push_back(pChart);
                     }
                     catch (std::bad_alloc &)
@@ -360,7 +360,7 @@ HRESULT CIsochartEngine::ParameterizeChartsInHeapParallelized(
                     }
                 }
             }
-#pragma omp critical
+        #pragma omp critical
             {
                 children.insert(children.end(), children_thrd.begin(), children_thrd.end());
                 // std::move(children_thrd.begin(), children_thrd.end(), std::back_inserter(children)); // Might be faster if the objects in vector have move constructor. Needs testing
@@ -514,7 +514,7 @@ HRESULT CIsochartEngine::GenerateNewChartsToParameterize()
         if (pChartWithMaxL2Stretch->HasChildren())
         {
             if (FAILED(
-                    hr = AddChildrenToCurrentChartHeap(pChartWithMaxL2Stretch)))
+                hr = AddChildrenToCurrentChartHeap(pChartWithMaxL2Stretch)))
             {
                 delete pChartWithMaxL2Stretch;
                 return hr;
@@ -630,12 +630,12 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
     }
 
     if (!CheckPartitionParameters(
-            MaxChartNumber,
-            m_baseInfo.dwFaceCount,
-            Stretch,
-            nullptr,
-            nullptr,
-            pFaceAttributeIDOut))
+        MaxChartNumber,
+        m_baseInfo.dwFaceCount,
+        Stretch,
+        nullptr,
+        nullptr,
+        pFaceAttributeIDOut))
     {
         return E_INVALIDARG;
     }
@@ -666,11 +666,11 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
     do
     {
         // 3.1. Generate initial parameterization for charts in current chart heap
-#ifdef _OPENMP
+    #ifdef _OPENMP
         hr = ParameterizeChartsInHeapParallelized(bCountParition, MaxChartNumber);
-#else
+    #else
         hr = ParameterizeChartsInHeap(bCountParition, MaxChartNumber);
-#endif
+    #endif
         if (FAILED(hr))
             return hr;
 
@@ -715,8 +715,8 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
         // 3.6 If we don't reach the expected stretch criteria,
         // Selete a canidate to parition and parameterize the children.
         if (!CIsochartMesh::IsReachExpectedTotalAvgL2SqrStretch(
-                fCurrAvgL2SquaredStretch,
-                fExpectAvgL2SquaredStretch) ||
+            fCurrAvgL2SquaredStretch,
+            fExpectAvgL2SquaredStretch) ||
             m_finalChartList.size() < dwExpectChartCount)
         {
             FAILURE_RETURN(
@@ -735,7 +735,8 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
             hr = m_callbackSchemer.UpdateCallbackDirectly(fExpectAvgL2SquaredStretch / fCurrAvgL2SquaredStretch);
         }
         FAILURE_RETURN(hr);
-    } while (!m_currentChartHeap.empty());
+    }
+    while (!m_currentChartHeap.empty());
 
     hr = m_callbackSchemer.FinishWorkAdapt();
     if (FAILED(hr))
@@ -749,11 +750,11 @@ HRESULT CIsochartEngine::PartitionByGlobalAvgL2Stretch(
         m_callbackSchemer.InitCallBackAdapt((2 + m_finalChartList.size()), 0.20f, 0.80f);
 
         if (FAILED(
-                hr = CIsochartMesh::MergeSmallCharts(
-                    m_finalChartList,
-                    dwExpectChartCount,
-                    m_baseInfo,
-                    m_callbackSchemer)))
+            hr = CIsochartMesh::MergeSmallCharts(
+                m_finalChartList,
+                dwExpectChartCount,
+                m_baseInfo,
+                m_callbackSchemer)))
         {
             return hr;
         }
@@ -840,11 +841,11 @@ HRESULT CIsochartEngine::Pack(
 {
     DPF(1, "Packing Charts...");
     if (!CheckPackParameters(
-            Width, Height, Gutter,
-            pvVertexArrayOut,
-            pvFaceIndexArrayOut,
-            pvVertexRemapArrayOut,
-            pvAttributeID))
+        Width, Height, Gutter,
+        pvVertexArrayOut,
+        pvFaceIndexArrayOut,
+        pvVertexRemapArrayOut,
+        pvAttributeID))
     {
         return E_INVALIDARG;
     }
@@ -871,11 +872,11 @@ HRESULT CIsochartEngine::Pack(
     m_callbackSchemer.InitCallBackAdapt(m_finalChartList.size() + 1, 0.95f, 0);
 
     if (FAILED(hr = CIsochartMesh::PackingCharts(
-                   m_finalChartList,
-                   Width,
-                   Height,
-                   Gutter,
-                   m_callbackSchemer)))
+        m_finalChartList,
+        Width,
+        Height,
+        Gutter,
+        m_callbackSchemer)))
     {
         goto LEnd;
     }
@@ -968,8 +969,8 @@ HRESULT CIsochartEngine::SetCallback(
     float Frequency) noexcept
 {
     if (!CheckSetCallbackParameters(
-            pCallback,
-            Frequency))
+        pCallback,
+        Frequency))
     {
         return E_INVALIDARG;
     }
@@ -1026,9 +1027,9 @@ HRESULT CIsochartEngine::ExportPartitionResult(
 {
 
     if (!CheckExportPartitionResultParameters(
-            pvVertexArrayOut,
-            pvFaceIndexArrayOut,
-            pvVertexRemapArrayOut, pvAttributeIDOut, pvAdjacencyOut))
+        pvVertexArrayOut,
+        pvFaceIndexArrayOut,
+        pvVertexRemapArrayOut, pvAttributeIDOut, pvAdjacencyOut))
     {
         return E_INVALIDARG;
     }
@@ -1062,11 +1063,11 @@ HRESULT CIsochartEngine::InitializePacking(
     const uint32_t *pdwFaceAdjacentArrayIn) noexcept
 {
     if (!CheckInitializePackingParameters(
-            pvVertexBuffer,
-            VertexCount,
-            pvFaceIndexBuffer,
-            FaceCount,
-            pdwFaceAdjacentArrayIn))
+        pvVertexBuffer,
+        VertexCount,
+        pvFaceIndexBuffer,
+        FaceCount,
+        pdwFaceAdjacentArrayIn))
     {
         return E_INVALIDARG;
     }
@@ -1085,11 +1086,11 @@ HRESULT CIsochartEngine::InitializePacking(
         (pvFaceIndexBuffer->size() / FaceCount == sizeof(uint32_t) * 3) ? DXGI_FORMAT_R32_UINT : DXGI_FORMAT_R16_UINT;
 
     if (FAILED(hr = m_baseInfo.Initialize(
-                   pvVertexBuffer->data(),
-                   VertexCount,
-                   dwVertexStride,
-                   FaceCount,
-                   pdwFaceAdjacentArrayIn)))
+        pvVertexBuffer->data(),
+        VertexCount,
+        dwVertexStride,
+        FaceCount,
+        pdwFaceAdjacentArrayIn)))
     {
         goto LEnd;
     }
@@ -1097,10 +1098,10 @@ HRESULT CIsochartEngine::InitializePacking(
     m_baseInfo.IndexFormat = IndexFormat;
 
     if (FAILED(hr = ApplyInitEngine(
-                   m_baseInfo,
-                   IndexFormat,
-                   pvFaceIndexBuffer->data(),
-                   false)))
+        m_baseInfo,
+        IndexFormat,
+        pvFaceIndexBuffer->data(),
+        false)))
     {
         goto LEnd;
     }
@@ -1168,15 +1169,15 @@ HRESULT CIsochartEngine::InitializeBaseInfo(
     m_callbackSchemer.InitCallBackAdapt(1, 0.05f, 0);
 
     if (FAILED(hr = m_baseInfo.Initialize(
-                   pfVertexArray,
-                   dwVertexCount,
-                   dwVertexStride,
-                   IndexFormat,
-                   pdwFaceIndexArray,
-                   dwFaceCount,
-                   pfIMTArray,
-                   pdwOriginalAjacency,
-                   pSplitHint)))
+        pfVertexArray,
+        dwVertexCount,
+        dwVertexStride,
+        IndexFormat,
+        pdwFaceIndexArray,
+        dwFaceCount,
+        pfIMTArray,
+        pdwOriginalAjacency,
+        pSplitHint)))
     {
         return hr;
     }
@@ -1492,8 +1493,8 @@ HRESULT CIsochartEngine::ExportIsochartResult(
     if (pvAttributeIDOut)
     {
         if (FAILED(hr = FillExportFaceAttributeBuffer(
-                       finalChartList,
-                       pvAttributeIDOut)))
+            finalChartList,
+            pvAttributeIDOut)))
         {
             goto LFail;
         }
@@ -1502,8 +1503,8 @@ HRESULT CIsochartEngine::ExportIsochartResult(
     if (pvAdjacencyOut)
     {
         if (FAILED(hr = FillExportFaceAdjacencyBuffer(
-                       finalChartList,
-                       pvAdjacencyOut)))
+            finalChartList,
+            pvAdjacencyOut)))
         {
             goto LFail;
         }

@@ -439,7 +439,7 @@ HRESULT CIsochartMesh::AdjustToSameChartID(
     for (size_t ii = 0; ii < dwCongFaceCount; ii++)
     {
         if (!addNoduplicateItem(allDiffSubChartIDList,
-                                pdwFaceChartID[pdwCongFaceID[ii]]))
+            pdwFaceChartID[pdwCongFaceID[ii]]))
         {
             return E_OUTOFMEMORY;
         }
@@ -586,7 +586,8 @@ HRESULT CIsochartMesh::FindCongenerFaces(
                     bProcessedFace[dwAdjFace] = true;
                 }
                 dwCur++;
-            } while (dwCur < congenerFaceCategories.size());
+            }
+            while (dwCur < congenerFaceCategories.size());
 
             uint32_t dwCongEdgeCount = static_cast<uint32_t>(dwCur - dwBegin);
             congenerFaceCategoryLen.push_back(dwCongEdgeCount);
@@ -732,12 +733,13 @@ HRESULT CIsochartMesh::SatifyManifoldRule(
 
         bIsModifiedPartition = (bIsModifiedPartition | bIsModifiedCurPass);
         // if there are still some non-manifold topology, check and fix again
-    } while (bIsModifiedCurPass && dwIteration <= dwMaxSubchartCount);
+    }
+    while (bIsModifiedCurPass && dwIteration <= dwMaxSubchartCount);
 
-    // if found and fixed some non-manifold topology, check all vetices
-    // again. This algorithm can not gurantee convergence. If current
-    // partition method still causes non-manifold topology after dwMaxSubchartCount
-    // times iteration, it's not a valid partition.
+ // if found and fixed some non-manifold topology, check all vetices
+ // again. This algorithm can not gurantee convergence. If current
+ // partition method still causes non-manifold topology after dwMaxSubchartCount
+ // times iteration, it's not a valid partition.
     if (dwIteration > dwMaxSubchartCount)
     {
         bIsManifold = false;
@@ -775,10 +777,10 @@ HRESULT CIsochartMesh::MakePartitionValid(
         bModifiedForUserRule = false;
 
         if (FAILED(hr = SatifyUserSpecifiedRule(
-                       pdwFaceChartID,
-                       bHasFalseEdge,
-                       bModifiedForUserRule,
-                       bIsSatifiedUserRule)))
+            pdwFaceChartID,
+            bHasFalseEdge,
+            bModifiedForUserRule,
+            bIsSatifiedUserRule)))
         {
             return hr;
         }
@@ -798,10 +800,10 @@ HRESULT CIsochartMesh::MakePartitionValid(
         if (bModifiedForUserRule || !bIsManifold)
         {
             if (FAILED(hr = SatifyManifoldRule(
-                           dwMaxSubchartCount,
-                           pdwFaceChartID,
-                           bModifiedForManifold,
-                           bIsManifold)))
+                dwMaxSubchartCount,
+                pdwFaceChartID,
+                bModifiedForManifold,
+                bIsManifold)))
             {
                 return hr;
             }
@@ -816,10 +818,11 @@ HRESULT CIsochartMesh::MakePartitionValid(
 
         m_bNeedToClean = true;
         dwIterationCount++;
-    } while (bModifiedForManifold &&
-             dwIterationCount < (dwMaxSubchartCount)); // avoid dead lock
+    }
+    while (bModifiedForManifold &&
+        dwIterationCount < (dwMaxSubchartCount)); // avoid dead lock
 
-    // Now, always set it to true. clean mesh later..
+// Now, always set it to true. clean mesh later..
     bIsPartitionValid = true;
 
     return hr;
@@ -865,10 +868,10 @@ CIsochartMesh::MakeValidationAroundVertex(
     // store two different chart ID in dwCandidateChartID1
     // and dwCandidateChartID2
     if (IsAdjacentFacesInOneChart(
-            pVertex,
-            pdwFaceChartID,
-            dwCandidateChartID1,
-            dwCandidateChartID2))
+        pVertex,
+        pdwFaceChartID,
+        dwCandidateChartID1,
+        dwCandidateChartID2))
     {
         return S_OK;
     }
@@ -1034,13 +1037,13 @@ HRESULT CIsochartMesh::TryConnectAllFacesInSameChart(
 // Change face's chart ID in unconnectedFaceList or in
 // connectedFaceList.
 void CIsochartMesh::
-    AdjustChartIDToAvoidNonmanifold(
-        uint32_t *pdwFaceChartID,
-        FACE_ARRAY &unconnectedFaceList,
-        FACE_ARRAY &connectedFaceList,
-        uint32_t dwOriginalChartID,
-        uint32_t dwCandidateChartID1,
-        uint32_t dwCandidateChartID2)
+AdjustChartIDToAvoidNonmanifold(
+    uint32_t *pdwFaceChartID,
+    FACE_ARRAY &unconnectedFaceList,
+    FACE_ARRAY &connectedFaceList,
+    uint32_t dwOriginalChartID,
+    uint32_t dwCandidateChartID1,
+    uint32_t dwCandidateChartID2)
 {
     uint32_t dwFaceNewChartID =
         (dwCandidateChartID1 == dwOriginalChartID) ? dwCandidateChartID2 : dwCandidateChartID1;
@@ -1100,12 +1103,12 @@ HRESULT CIsochartMesh::ProcessPlaneShape(
                 XMLoadFloat3(&m_baseInfo.pFaceNormalArray[m_pFaces[dwStandardFaceID].dwIDInRootMesh]));
 
         if (!IsInZeroRange(XMVectorGetX(XMVector3Dot(
-                normalDelta,
-                normalDelta))))
+            normalDelta,
+            normalDelta))))
         {
             if (IsInZeroRange(XMVectorGetX(XMVector3Length(
-                    XMLoadFloat3(m_baseInfo.pFaceNormalArray +
-                                 m_pFaces[i].dwIDInRootMesh)))))
+                XMLoadFloat3(m_baseInfo.pFaceNormalArray +
+                    m_pFaces[i].dwIDInRootMesh)))))
             {
                 continue;
             }
@@ -1460,7 +1463,7 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
 
                     XMFLOAT2 v2D;
                     XMStoreFloat2(&v2D, XMVector2Normalize(
-                                            XMVectorSubtract(XMLoadFloat2(&m_pVerts[vId1].uv), XMLoadFloat2(&m_pVerts[vId0].uv))));
+                        XMVectorSubtract(XMLoadFloat2(&m_pVerts[vId1].uv), XMLoadFloat2(&m_pVerts[vId0].uv))));
 
                     float x = v2D.x * cosB - v2D.y * sinB;
                     float y = v2D.y * cosB + v2D.x * sinB;
@@ -1485,7 +1488,7 @@ HRESULT CIsochartMesh::ProcessPlaneLikeShape(
                     m_pVerts[vId2].uv.y = fLen2 * y + m_pVerts[vId0].uv.y;
 
                     assert(std::isfinite(double(m_pVerts[vId2].uv.x)) &&
-                           std::isfinite(double(m_pVerts[vId2].uv.y)));
+                        std::isfinite(double(m_pVerts[vId2].uv.y)));
 
                     if (!std::isfinite(double(m_pVerts[vId2].uv.x)) ||
                         !std::isfinite(double(m_pVerts[vId2].uv.y)))
@@ -1599,7 +1602,7 @@ HRESULT CIsochartMesh::ProcessSpecialShape(
         SMALL_STRETCH_TO_TURNON_BARY, fSmallStretch, false);
 
     if (m_baseInfo.fExpectAvgL2SquaredStretch >=
-            fSmallStretch &&
+        fSmallStretch &&
         dwBoundaryNumber == 1)
     {
         return 0;
@@ -1739,7 +1742,7 @@ HRESULT CIsochartMesh::CheckCylinderLonghornShape(
 }
 
 uint32_t CIsochartMesh::
-    CaculateExtremeVertex() const
+CaculateExtremeVertex() const
 {
     float fMinDistance;
     uint32_t dwVertexID = INVALID_VERT_ID;
@@ -1805,11 +1808,11 @@ uint32_t CIsochartMesh::
 }
 
 HRESULT CIsochartMesh::
-    CaculateDistanceToExtremeVertex(
-        uint32_t dwVertexID,
-        float &fAverageDistance,
-        float &fMinDistance,
-        float &fMaxDistance) const
+CaculateDistanceToExtremeVertex(
+    uint32_t dwVertexID,
+    float &fAverageDistance,
+    float &fMinDistance,
+    float &fMaxDistance) const
 {
     HRESULT hr = S_OK;
     if (FAILED(hr = CalculateDijkstraPathToVertex(dwVertexID)))
@@ -1895,9 +1898,9 @@ HRESULT CIsochartMesh::PartitionCylindricalShape(
 
         // 3.1 Smooth partition result
         if (FAILED(hr = SmoothPartitionResult(
-                       dwMaxSubchartCount,
-                       pdwFaceChartID.get(),
-                       bIsPartitionSucceed)) ||
+            dwMaxSubchartCount,
+            pdwFaceChartID.get(),
+            bIsPartitionSucceed)) ||
             !bIsPartitionSucceed)
         {
             return hr;
@@ -1905,9 +1908,9 @@ HRESULT CIsochartMesh::PartitionCylindricalShape(
 
         // 3.2 Create all sub-charts according to result of partition
         if (FAILED(hr = GenerateAllSubCharts(
-                       pdwFaceChartID.get(),
-                       dwMaxSubchartCount,
-                       bIsPartitionSucceed)) ||
+            pdwFaceChartID.get(),
+            dwMaxSubchartCount,
+            bIsPartitionSucceed)) ||
             !bIsPartitionSucceed)
         {
             return hr;
@@ -1916,30 +1919,30 @@ HRESULT CIsochartMesh::PartitionCylindricalShape(
         // 3.3 Using graph cut to optimize boundary
         bool bOptimized = false;
 
-#if USING_COMBINED_DISTANCE_TO_PARAMETERIZE
+    #if USING_COMBINED_DISTANCE_TO_PARAMETERIZE
         if (FAILED(hr = OptimizeBoundaryByStretch(
-                       pfVertCombineDistance,
-                       pdwFaceChartID.get(),
-                       dwMaxSubchartCount,
-                       bOptimized)) ||
+            pfVertCombineDistance,
+            pdwFaceChartID.get(),
+            dwMaxSubchartCount,
+            bOptimized)) ||
             !bOptimized)
         {
             return hr;
         }
 
-#else
+    #else
         if (FAILED(hr = OptimizeBoundaryByStretch(
-                       pfVertGeodesicDistance,
-                       pdwFaceChartID.get(),
-                       dwMaxSubchartCount,
-                       bOptimized)) ||
+            pfVertGeodesicDistance,
+            pdwFaceChartID.get(),
+            dwMaxSubchartCount,
+            bOptimized)) ||
             !bOptimized)
         {
             return hr;
         }
-#endif
+    #endif
 
-        // 3.4 Using the result of boundary optimization to Genearte sub-charts again
+            // 3.4 Using the result of boundary optimization to Genearte sub-charts again
         hr = GenerateAllSubCharts(
             pdwFaceChartID.get(),
             dwMaxSubchartCount,
@@ -1952,13 +1955,13 @@ HRESULT CIsochartMesh::PartitionCylindricalShape(
 // Compute the sum of face vertices' dwComputeDimension
 // coordinates. classify the faces by sign of the sum.
 void CIsochartMesh::
-    GroupByFaceSign(
-        const float *pfVertMapCoord,
-        size_t dwMapDimension,
-        size_t dwComputeDimension,
-        size_t &dwPossitiveFaceCount,
-        size_t &dwNegativeFaceCount,
-        uint32_t *pdwFaceChartID)
+GroupByFaceSign(
+    const float *pfVertMapCoord,
+    size_t dwMapDimension,
+    size_t dwComputeDimension,
+    size_t &dwPossitiveFaceCount,
+    size_t &dwNegativeFaceCount,
+    uint32_t *pdwFaceChartID)
 {
     dwPossitiveFaceCount = 0;
     dwNegativeFaceCount = 0;
@@ -2028,9 +2031,9 @@ HRESULT CIsochartMesh::PartitionLonghornShape(
 
     // 3. Create all sub-charts according to result of partition
     if (FAILED(hr = GenerateAllSubCharts(
-                   pdwFaceChartID.get(),
-                   dwMaxSubchartCount,
-                   bIsPartitionSucceed)) ||
+        pdwFaceChartID.get(),
+        dwMaxSubchartCount,
+        bIsPartitionSucceed)) ||
         !bIsPartitionSucceed)
     {
         return hr;
@@ -2041,20 +2044,20 @@ HRESULT CIsochartMesh::PartitionLonghornShape(
 
 #if USING_COMBINED_DISTANCE_TO_PARAMETERIZE
     if (FAILED(hr = OptimizeBoundaryByStretch(
-                   pfVertCombineDistance,
-                   pdwFaceChartID.get(),
-                   dwMaxSubchartCount,
-                   bOptimized)) ||
+        pfVertCombineDistance,
+        pdwFaceChartID.get(),
+        dwMaxSubchartCount,
+        bOptimized)) ||
         !bOptimized)
     {
         return hr;
     }
 #else
     if (FAILED(hr = OptimizeBoundaryByStretch(
-                   pfVertGeodesicDistance,
-                   pdwFaceChartID.get(),
-                   dwMaxSubchartCount,
-                   bOptimized)) ||
+        pfVertGeodesicDistance,
+        pdwFaceChartID.get(),
+        dwMaxSubchartCount,
+        bOptimized)) ||
         !bOptimized)
     {
         return hr;
@@ -2094,10 +2097,10 @@ HRESULT CIsochartMesh::ProcessGeneralShape(
     {
         bool bIsOverlapping = false;
 
-#if CHECK_OVER_LAPPING_BEFORE_OPT_INFINIT
+    #if CHECK_OVER_LAPPING_BEFORE_OPT_INFINIT
         FAILURE_RETURN(
             IsParameterizationOverlapping(this, bIsOverlapping));
-#endif
+    #endif
 
         if (!bIsOverlapping)
         {
@@ -2201,8 +2204,8 @@ HRESULT CIsochartMesh::CalculateRepresentiveVertices(
     representativeVertsIdx.clear();
 #ifdef BIPARTITION
     for (size_t dwDimIndex = 0;
-         dwDimIndex < dwPrimaryEigenDimension;
-         dwDimIndex++)
+        dwDimIndex < dwPrimaryEigenDimension;
+        dwDimIndex++)
     {
         float fMaxDist, fMinDist;
         fMaxDist = -FLT_MAX;
@@ -2248,8 +2251,8 @@ HRESULT CIsochartMesh::CalculateRepresentiveVertices(
 
 #else
     for (size_t dwDimIndex = 0;
-         dwDimIndex < dwPrimaryEigenDimension;
-         dwDimIndex++)
+        dwDimIndex < dwPrimaryEigenDimension;
+        dwDimIndex++)
     {
         float fMaxDist, fMinDist;
         fMaxDist = -FLT_MAX;
@@ -2454,9 +2457,9 @@ HRESULT CIsochartMesh::PartitionGeneralShape(
 
     // 3. boundary optimization
     if (FAILED(hr = GenerateAllSubCharts(
-                   pdwFaceChartID.get(),
-                   dwMaxSubchartCount,
-                   bIsPartitionSucceed)) ||
+        pdwFaceChartID.get(),
+        dwMaxSubchartCount,
+        bIsPartitionSucceed)) ||
         !bIsPartitionSucceed)
     {
         return hr;
@@ -2473,19 +2476,19 @@ HRESULT CIsochartMesh::PartitionGeneralShape(
     }
     else
     {
-#if USING_COMBINED_DISTANCE_TO_PARAMETERIZE
+    #if USING_COMBINED_DISTANCE_TO_PARAMETERIZE
         hr = OptimizeBoundaryByStretch(
             pfVertCombineDistance,
             pdwFaceChartID.get(),
             dwMaxSubchartCount,
             bIsOptimized);
-#else
+    #else
         hr = OptimizeBoundaryByStretch(
             pfVertGeodesicDistance,
             pdwFaceChartID.get(),
             dwMaxSubchartCount,
             bIsOptimized);
-#endif
+    #endif
     }
 
     if (FAILED(hr) || !bIsOptimized)
@@ -2598,18 +2601,18 @@ HRESULT CIsochartMesh::BiPartitionParameterlizeShape(
     }
 
     if (FAILED(hr = GenerateAllSubCharts(
-                   pdwFaceChartID.get(),
-                   dwMaxSubchartCount,
-                   bIsOptimized)) ||
+        pdwFaceChartID.get(),
+        dwMaxSubchartCount,
+        bIsOptimized)) ||
         !bIsOptimized || m_children.size() < 2)
     {
         return hr;
     }
 
     if (FAILED(hr = OptimizeBoundaryByAngle(
-                   pdwFaceChartID.get(),
-                   dwMaxSubchartCount,
-                   bIsOptimized)))
+        pdwFaceChartID.get(),
+        dwMaxSubchartCount,
+        bIsOptimized)))
     {
         return hr;
     }
@@ -2639,9 +2642,9 @@ HRESULT CIsochartMesh::BiPartitionParameterlizeShape(
 
     // 4. Generate all sub charts
     if (FAILED(hr = GenerateAllSubCharts(
-                   pdwFaceChartID.get(),
-                   dwMaxSubchartCount,
-                   bIsOptimized)))
+        pdwFaceChartID.get(),
+        dwMaxSubchartCount,
+        bIsOptimized)))
     {
         return hr;
     }

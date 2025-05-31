@@ -17,15 +17,14 @@ using namespace Isochart;
 
 CIsoMap::CIsoMap()
     : m_dwMatrixDimension(0),
-      m_dwCalculatedDimension(0),
-      m_dwPrimaryDimension(0),
-      m_pfMatrixB(nullptr),
-      m_pfEigenValue(nullptr),
-      m_pfEigenVector(nullptr),
-      m_pfAvgSquaredDstColumn(nullptr),
-      m_fSumOfEigenValue(0)
-{
-}
+    m_dwCalculatedDimension(0),
+    m_dwPrimaryDimension(0),
+    m_pfMatrixB(nullptr),
+    m_pfEigenValue(nullptr),
+    m_pfEigenVector(nullptr),
+    m_pfAvgSquaredDstColumn(nullptr),
+    m_fSumOfEigenValue(0)
+{}
 
 CIsoMap::~CIsoMap()
 {
@@ -152,9 +151,9 @@ HRESULT CIsoMap::ComputeLargestEigen(
     }
 
     if (!CSymmetricMatrix<float>::GetEigen(
-            m_dwMatrixDimension, m_pfMatrixB,
-            pfEigenValue.get(), pfEigenVector.get(),
-            dwSelectedDimension))
+        m_dwMatrixDimension, m_pfMatrixB,
+        pfEigenValue.get(), pfEigenVector.get(),
+        dwSelectedDimension))
     {
         return E_OUTOFMEMORY;
     }
@@ -301,10 +300,10 @@ bool CIsoMap::GetDestineVectors(size_t dwPrimaryEigenDimension, float *pfDestCoo
 void CIsoMap::Clear()
 {
     SAFE_DELETE_ARRAY(m_pfEigenValue)
-    SAFE_DELETE_ARRAY(m_pfEigenVector)
-    SAFE_DELETE_ARRAY(m_pfAvgSquaredDstColumn)
+        SAFE_DELETE_ARRAY(m_pfEigenVector)
+        SAFE_DELETE_ARRAY(m_pfAvgSquaredDstColumn)
 
-    m_dwMatrixDimension = 0;
+        m_dwMatrixDimension = 0;
     m_dwCalculatedDimension = 0;
     m_dwPrimaryDimension = 0;
     m_pfMatrixB = nullptr;

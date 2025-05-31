@@ -117,7 +117,7 @@ namespace
                 {
                     intersection.x = x0;
                     if (!CalculateOverlappedSegmentsIntersection(
-                            y0, y1, y3, y4, intersection.y))
+                        y0, y1, y3, y4, intersection.y))
                     {
                         return;
                     }
@@ -158,7 +158,7 @@ namespace
                 {
                     intersection.y = y0;
                     if (!CalculateOverlappedSegmentsIntersection(
-                            x0, x1, x3, x4, intersection.x))
+                        x0, x1, x3, x4, intersection.x))
                     {
                         return;
                     }
@@ -258,7 +258,7 @@ namespace
                 else // Calculate intersection of overlapped lines
                 {
                     if (!CalculateOverlappedSegmentsIntersection(
-                            x0, x1, x3, x4, intersection.x))
+                        x0, x1, x3, x4, intersection.x))
                     {
                         return;
                     }

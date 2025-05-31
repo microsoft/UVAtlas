@@ -403,9 +403,9 @@ namespace Isochart
                     {
                         const RowItem &item2 = row[kk];
                         if (!destMat.increase(
-                                item1.colIdx,
-                                item2.colIdx,
-                                item1.value * item2.value))
+                            item1.colIdx,
+                            item2.colIdx,
+                            item1.value * item2.value))
                         {
                             return false;
                         }

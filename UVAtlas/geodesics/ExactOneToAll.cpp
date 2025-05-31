@@ -16,12 +16,12 @@ using namespace GeodesicDist;
 
 CExactOneToAll::CExactOneToAll()
     : m_pVertices(nullptr),
-      m_pIndices(nullptr),
-      m_pAdj(nullptr),
-      m_dwNumBytesPerVertex(0),
-      m_dwNumFaces(0),
-      m_dwNumVertices(0),
-      m_dwSrcVertexIdx(0)
+    m_pIndices(nullptr),
+    m_pAdj(nullptr),
+    m_dwNumBytesPerVertex(0),
+    m_dwNumFaces(0),
+    m_dwNumVertices(0),
+    m_dwSrcVertexIdx(0)
 {
     m_EdgeWindowsHeap.SetManageMode(Isochart::AUTOMATIC);
 }
@@ -51,7 +51,7 @@ void CExactOneToAll::SetSrcVertexIdx(const uint32_t dwSrcVertexIdx)
 
         if (!thisEdge.HasVertexIdx(dwSrcVertexIdx) &&
             ((thisEdge.pAdjFace0 && thisEdge.pAdjFace0->HasVertexIdx(dwSrcVertexIdx)) ||
-             (thisEdge.pAdjFace1 && thisEdge.pAdjFace1->HasVertexIdx(dwSrcVertexIdx))))
+                (thisEdge.pAdjFace1 && thisEdge.pAdjFace1->HasVertexIdx(dwSrcVertexIdx))))
         {
             EdgeWindow tmpEdgeWindow;
 
@@ -192,8 +192,8 @@ void CExactOneToAll::InternalRun()
             w1.x = e1.x;
         }
         ParameterizePt3ToPt2(*WindowToBePropagated.pMarkFromEdgeVertex,
-                             *pPtE1,
-                             *pThridPtOnFacePropagateTo, e2);
+            *pPtE1,
+            *pThridPtOnFacePropagateTo, e2);
         e2.y = -e2.y;
 
         GetCommonPointOf2Lines(e0, e2, w2, w0, w0_to_e0_e2, bW2W0OnE0E2);
@@ -361,7 +361,7 @@ void CExactOneToAll::InternalRun()
                         if (pNextShadowVertex == pThridPtOnFacePropagateTo ||
                             pNextShadowVertex->bShadowBoundary /*||
                             pBridgeEdge->IsBoundary()*/
-                        )
+                            )
                             break;
 
                         pBridgeEdge = pShadowFace->GetOpposingEdge(dwThisShadowVertex);
@@ -486,7 +486,7 @@ void CExactOneToAll::InternalRun()
                         if (pNextShadowVertex == pThridPtOnFacePropagateTo ||
                             pNextShadowVertex->bShadowBoundary /*||
                             pBridgeEdge->IsBoundary()*/
-                        )
+                            )
                             break;
 
                         pBridgeEdge = pShadowFace->GetOpposingEdge(dwThisShadowVertex);
@@ -623,7 +623,7 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow *pNewEdgeWindow)
             // the copy of current window on edge is then tested with the new window for intersection
             // after this test, the copy is possibly changed
             IntersectWindow(&pExistingWindowItem->m_data,
-                            pNewEdgeWindow, &bExistingWindowChanged, &bNewWindowChanged, &bExistingWindowNotAvailable, &bNewWindowNotAvailable);
+                pNewEdgeWindow, &bExistingWindowChanged, &bNewWindowChanged, &bExistingWindowNotAvailable, &bNewWindowNotAvailable);
 
             if (m_NewExistingWindow.b1 - m_NewExistingWindow.b0 > 0) // m_NewExistingWindow is modified in IntersectWindow
                 WindowToBeInserted = m_NewExistingWindow;
@@ -770,11 +770,11 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow *pNewEdgeWindow)
 
 // [see "intersection of overlapping windows" of the paper]
 void CExactOneToAll::IntersectWindow(_In_ EdgeWindow *pExistingWindow,
-                                     _In_ EdgeWindow *pNewWindow,
-                                     bool *pExistingWindowChanged,
-                                     bool *pNewWindowChanged,
-                                     bool *pExistingWindowNotAvailable,
-                                     bool *pNewWindowNotAvailable)
+    _In_ EdgeWindow *pNewWindow,
+    bool *pExistingWindowChanged,
+    bool *pNewWindowChanged,
+    bool *pExistingWindowNotAvailable,
+    bool *pNewWindowNotAvailable)
 {
     memset(&m_NewExistingWindow, 0, sizeof(EdgeWindow));
     memset(&m_AnotherNewWindow, 0, sizeof(EdgeWindow));
@@ -1072,8 +1072,8 @@ void CExactOneToAll::IntersectWindow(_In_ EdgeWindow *pExistingWindow,
 }
 
 void CExactOneToAll::GenerateWindowsAroundSaddleOrBoundaryVertex(const EdgeWindow &iwindow,
-                                                                 const uint32_t dwSaddleOrBoundaryVertexId,
-                                                                 std::vector<EdgeWindow> &WindowsOut)
+    const uint32_t dwSaddleOrBoundaryVertexId,
+    std::vector<EdgeWindow> &WindowsOut)
 {
     WindowsOut.clear();
 
