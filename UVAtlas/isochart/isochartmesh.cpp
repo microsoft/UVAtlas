@@ -54,7 +54,7 @@
 using namespace Isochart;
 using namespace DirectX;
 
-#define FACE_ARRAY_ITME(addr, idx, item) addr[idx*3+item]
+#define FACE_ARRAY_ITME(addr, idx, item) addr[idx * 3 + item]
 
 namespace
 {
@@ -88,33 +88,33 @@ namespace
 /////////////////////////////////////////////////////////////
 
 CIsochartMesh::CIsochartMesh(
-    const CBaseMeshInfo& baseInfo,
-    CCallbackSchemer& callbackSchemer,
-    const CIsochartEngine& IsochartEngine)
+    const CBaseMeshInfo &baseInfo,
+    CCallbackSchemer &callbackSchemer,
+    const CIsochartEngine &IsochartEngine)
     : m_callbackSchemer(callbackSchemer),
-    m_IsochartEngine(IsochartEngine),
-    m_baseInfo(baseInfo),
-    m_dwVertNumber(0),
-    m_pVerts(nullptr),
-    m_dwFaceNumber(0),
-    m_pFaces(nullptr),
-    m_dwEdgeNumber(0),
-    m_pFather(nullptr),
-    m_fBoxDiagLen(0),
-    m_fParamStretchL2(0),
-    m_fParamStretchLn(0),
-    m_fBaseL2Stretch(0),
-    m_fGeoL2Stretch(0),
-    m_bVertImportanceDone(false),
-    m_bIsSubChart(false),
-    m_bIsInitChart(false),
-    m_fChart2DArea(0),
-    m_fChart3DArea(0),
-    m_pPackingInfo(nullptr),
-    m_bIsParameterized(false),
-    m_bOptimizedL2Stretch(false),
-    m_bOrderedLandmark(false),
-    m_bNeedToClean(false)
+      m_IsochartEngine(IsochartEngine),
+      m_baseInfo(baseInfo),
+      m_dwVertNumber(0),
+      m_pVerts(nullptr),
+      m_dwFaceNumber(0),
+      m_pFaces(nullptr),
+      m_dwEdgeNumber(0),
+      m_pFather(nullptr),
+      m_fBoxDiagLen(0),
+      m_fParamStretchL2(0),
+      m_fParamStretchLn(0),
+      m_fBaseL2Stretch(0),
+      m_fGeoL2Stretch(0),
+      m_bVertImportanceDone(false),
+      m_bIsSubChart(false),
+      m_bIsInitChart(false),
+      m_fChart2DArea(0),
+      m_fChart3DArea(0),
+      m_pPackingInfo(nullptr),
+      m_bIsParameterized(false),
+      m_bOptimizedL2Stretch(false),
+      m_bOrderedLandmark(false),
+      m_bNeedToClean(false)
 {
 }
 
@@ -135,9 +135,9 @@ void CIsochartMesh::DeleteChildren()
 void CIsochartMesh::Free()
 {
     SAFE_DELETE_ARRAY(m_pVerts)
-        SAFE_DELETE_ARRAY(m_pFaces)
+    SAFE_DELETE_ARRAY(m_pFaces)
 
-        DestroyPakingInfoBuffer();
+    DestroyPakingInfoBuffer();
     DeleteChildren();
 }
 
@@ -162,7 +162,7 @@ bool CIsochartMesh::HasBoundaryVertex() const
 // See more details in [SSGH01] page 2-3:
 void CIsochartMesh::ConvertToInternalCriterion(
     float fStretch,
-    float& fCriterion,
+    float &fCriterion,
     bool bIsSignalSpecialized)
 {
     assert(fStretch >= 0.0f && fStretch <= 1.0f);
@@ -228,15 +228,15 @@ namespace
     // according to input face index type
     template <class INDEXTYPE>
     static void FillRootChartFaceBuffer(
-        const void* pFaceIndexArray,
-        ISOCHARTFACE* pFaceBuffer,
+        const void *pFaceIndexArray,
+        ISOCHARTFACE *pFaceBuffer,
         size_t dwFaceCount)
     {
-        const INDEXTYPE* pFacesInBase =
-            static_cast<INDEXTYPE*>(const_cast<void*>(pFaceIndexArray));
+        const INDEXTYPE *pFacesInBase =
+            static_cast<INDEXTYPE *>(const_cast<void *>(pFaceIndexArray));
 
-        ISOCHARTFACE* pFace = pFaceBuffer;
-        const INDEXTYPE* pFacesIn = pFacesInBase;
+        ISOCHARTFACE *pFace = pFaceBuffer;
+        const INDEXTYPE *pFacesIn = pFacesInBase;
 
         for (size_t i = 0; i < dwFaceCount; i++)
         {
@@ -252,10 +252,10 @@ namespace
 
 // Root chart is built directly from the input mesh.
 HRESULT CIsochartMesh::BuildRootChart(
-    CBaseMeshInfo& baseInfo,
-    const void* pFaceIndexArray,
+    CBaseMeshInfo &baseInfo,
+    const void *pFaceIndexArray,
     DXGI_FORMAT IndexFormat,
-    CIsochartMesh* pChart,
+    CIsochartMesh *pChart,
     bool bIsForPartition)
 {
     assert(pFaceIndexArray != nullptr);
@@ -280,7 +280,7 @@ HRESULT CIsochartMesh::BuildRootChart(
     if (!pChart->m_pVerts)
     {
         SAFE_DELETE_ARRAY(pChart->m_pFaces)
-            return E_OUTOFMEMORY;
+        return E_OUTOFMEMORY;
     }
 
     // 2. fill in the basic information of the mesh.
@@ -349,13 +349,13 @@ HRESULT CIsochartMesh::BuildRootChart(
 namespace
 {
     static bool IsFacesShareEdge(
-        uint32_t* rgdwAdjacency,
+        uint32_t *rgdwAdjacency,
         uint32_t dwFace1,
         uint32_t dwFace2)
     {
-        uint32_t* p1 = rgdwAdjacency + 3 * dwFace1;
+        uint32_t *p1 = rgdwAdjacency + 3 * dwFace1;
 #ifndef NDEBUG
-        uint32_t* p2 = rgdwAdjacency + 3 * dwFace2;
+        uint32_t *p2 = rgdwAdjacency + 3 * dwFace2;
 #endif
 
         bool bResult =
@@ -383,15 +383,15 @@ namespace
     };
 
     static bool IsNeedToSplit(
-        std::vector<EdgeInfoItem>& edgeList,
+        std::vector<EdgeInfoItem> &edgeList,
         uint32_t dwPeerVertID,
         uint32_t dwCurrentFaceID,
-        uint32_t* rgdwAdjacency,
-        EdgeInfoItem** ppEdge)
+        uint32_t *rgdwAdjacency,
+        EdgeInfoItem **ppEdge)
     {
         for (size_t i = 0; i < edgeList.size(); i++)
         {
-            EdgeInfoItem& et = edgeList[i];
+            EdgeInfoItem &et = edgeList[i];
             if (dwPeerVertID == et.dwPeerVertID)
             {
                 assert(et.dwFaceID[0] != INVALID_FACE_ID);
@@ -405,7 +405,7 @@ namespace
                     return true;
                 }
                 if (!IsFacesShareEdge(
-                    rgdwAdjacency, et.dwFaceID[0], dwCurrentFaceID))
+                        rgdwAdjacency, et.dwFaceID[0], dwCurrentFaceID))
                 {
                     return true;
                 }
@@ -423,7 +423,7 @@ namespace
         return false;
     }
 
-    static HRESULT AddConnectedFalseEdges(std::vector<uint32_t>* pList, const uint32_t* pdwAdj, const uint32_t* pdwFalseEdges, uint32_t uFace)
+    static HRESULT AddConnectedFalseEdges(std::vector<uint32_t> *pList, const uint32_t *pdwAdj, const uint32_t *pdwFalseEdges, uint32_t uFace)
     {
         if (isInArray(*pList, uFace))
             return S_OK;
@@ -432,7 +432,7 @@ namespace
         {
             pList->push_back(uFace);
         }
-        catch (std::bad_alloc&)
+        catch (std::bad_alloc &)
         {
             return E_OUTOFMEMORY;
         }
@@ -456,12 +456,12 @@ namespace
     }
 
     static HRESULT SplitSharedEdges(
-        const uint32_t* rgdwFalseEdges,
-        uint32_t* rgdwAdjacency,
-        uint32_t* rgdwFaceIdx,
+        const uint32_t *rgdwFalseEdges,
+        uint32_t *rgdwAdjacency,
+        uint32_t *rgdwFaceIdx,
         size_t dwFaceCount,
-        size_t& dwNewVertCount,
-        bool& bChangedVertex)
+        size_t &dwNewVertCount,
+        bool &bChangedVertex)
     {
         bChangedVertex = false;
 
@@ -474,7 +474,7 @@ namespace
 
         std::vector<uint32_t> splitEdgePos;
 
-        uint32_t* pIdx = rgdwFaceIdx;
+        uint32_t *pIdx = rgdwFaceIdx;
         for (size_t iFace = 0; iFace < dwFaceCount; iFace++)
         {
             for (size_t iVert = 0; iVert < 3; iVert++)
@@ -487,13 +487,13 @@ namespace
                     std::swap(v1, v2);
                 }
 
-                EdgeInfoItem* pEdge = nullptr;
+                EdgeInfoItem *pEdge = nullptr;
                 if (IsNeedToSplit(
-                    pVertEdgeList[v1],
-                    v2,
-                    static_cast<uint32_t>(iFace),
-                    rgdwAdjacency,
-                    &pEdge))
+                        pVertEdgeList[v1],
+                        v2,
+                        static_cast<uint32_t>(iFace),
+                        rgdwAdjacency,
+                        &pEdge))
                 {
                     HRESULT hr = AddConnectedFalseEdges(&splitFaceList, rgdwAdjacency, rgdwFalseEdges, static_cast<uint32_t>(iFace));
                     if (FAILED(hr))
@@ -525,9 +525,9 @@ namespace
         {
             uint32_t dwFaceID = splitFaceList[i];
             pIdx = rgdwFaceIdx + 3 * dwFaceID;
-            uint32_t* pAdjacency = rgdwAdjacency + 3 * dwFaceID;
-            const uint32_t dummy[3] = { uint32_t(-1), uint32_t(-1), uint32_t(-1) };
-            const uint32_t* pFalseEdge = rgdwFalseEdges ? (rgdwFalseEdges + 3 * dwFaceID) : dummy;
+            uint32_t *pAdjacency = rgdwAdjacency + 3 * dwFaceID;
+            const uint32_t dummy[3] = {uint32_t(-1), uint32_t(-1), uint32_t(-1)};
+            const uint32_t *pFalseEdge = rgdwFalseEdges ? (rgdwFalseEdges + 3 * dwFaceID) : dummy;
             for (size_t iVert = 0; iVert < 3; iVert++)
             {
                 pIdx[iVert] = static_cast<uint32_t>(dwNewVertCount++);
@@ -536,7 +536,7 @@ namespace
                 {
                     continue;
                 }
-                uint32_t* pPeerAdjacency = rgdwAdjacency + 3 * pAdjacency[iVert];
+                uint32_t *pPeerAdjacency = rgdwAdjacency + 3 * pAdjacency[iVert];
                 pAdjacency[iVert] = INVALID_FACE_ID;
                 for (size_t j = 0; j < 3; j++)
                 {
@@ -552,10 +552,10 @@ namespace
     }
 
     static HRESULT ReorderVertices(
-        const  uint32_t* rgdwAdjacency,
-        uint32_t* rgdwNewFaceIdx,
+        const uint32_t *rgdwAdjacency,
+        uint32_t *rgdwNewFaceIdx,
         size_t dwFaceCount,
-        size_t& dwNewVertCount)
+        size_t &dwNewVertCount)
     {
         CVertIter vertIter(rgdwAdjacency);
         memset(rgdwNewFaceIdx, 0xff, dwFaceCount * 3 * sizeof(uint32_t));
@@ -584,8 +584,7 @@ namespace
 
                     FACE_ARRAY_ITME(
                         rgdwNewFaceIdx, dwCurFaceID, dwCurVertIdx) = dwCenterVertID;
-                } while (vertIter.HasNextFace()
-                    && vertIter.NextFace());
+                } while (vertIter.HasNextFace() && vertIter.NextFace());
             }
         }
 
@@ -620,12 +619,12 @@ HRESULT CIsochartMesh::ReBuildRootChartByAdjacence()
 
         bChangedVertex = false;
         if (FAILED(hr = SplitSharedEdges(
-            m_baseInfo.pdwSplitHint,
-            m_baseInfo.pdwFaceAdjacentArray,
-            rgdwNewFaceIdx.get(),
-            m_dwFaceNumber,
-            dwNewVertCount,
-            bChangedVertex)))
+                       m_baseInfo.pdwSplitHint,
+                       m_baseInfo.pdwFaceAdjacentArray,
+                       rgdwNewFaceIdx.get(),
+                       m_dwFaceNumber,
+                       dwNewVertCount,
+                       bChangedVertex)))
         {
             return hr;
         }
@@ -634,7 +633,7 @@ HRESULT CIsochartMesh::ReBuildRootChartByAdjacence()
     if (dwNewVertCount != m_dwVertNumber)
     {
         SAFE_DELETE_ARRAY(m_pVerts)
-            m_dwVertNumber = dwNewVertCount;
+        m_dwVertNumber = dwNewVertCount;
         m_pVerts = new (std::nothrow) ISOCHARTVERTEX[m_dwVertNumber];
         if (!m_pVerts)
         {
@@ -650,7 +649,7 @@ HRESULT CIsochartMesh::ReBuildRootChartByAdjacence()
 
     for (size_t i = 0; i < m_dwFaceNumber; i++)
     {
-        ISOCHARTFACE& face = m_pFaces[i];
+        ISOCHARTFACE &face = m_pFaces[i];
         for (size_t j = 0; j < 3; j++)
         {
             uint32_t dwNewID = FACE_ARRAY_ITME(rgdwNewFaceIdx.get(), i, j);
@@ -728,9 +727,9 @@ HRESULT CIsochartMesh::Partition()
     // With IMT, pfVertParameterDistance combines geodesic & signal distance,
     // Without IMT, pfVertParameterDistance just equals to pfVertGeodesicDistance
 
-    float* pfVertGeodesicDistance = nullptr;
-    float* pfVertCombineDistance = nullptr;
-    float* pfVertMappingCoord = nullptr;
+    float *pfVertGeodesicDistance = nullptr;
+    float *pfVertCombineDistance = nullptr;
+    float *pfVertMappingCoord = nullptr;
 
     size_t dwBoundaryNumber = 0;
     bool bIsSimpleChart = false;
@@ -739,9 +738,10 @@ HRESULT CIsochartMesh::Partition()
 
     // 1. Prepare simple chart
     if (FAILED(hr = PrepareSimpleChart(
-        true,
-        dwBoundaryNumber,
-        bIsSimpleChart)) || !bIsSimpleChart)
+                   true,
+                   dwBoundaryNumber,
+                   bIsSimpleChart)) ||
+        !bIsSimpleChart)
     {
         // bIsSimpleChart == false is not an error and need no error code
         // under this condition, current chart has already been changed to
@@ -768,12 +768,13 @@ HRESULT CIsochartMesh::Partition()
     size_t dwMaxEigenDimension;
     bool bIsLikePlane = false;
     if (FAILED(hr = IsomapParameterlization(
-        bIsLikePlane,
-        dwPrimaryEigenDimension,
-        dwMaxEigenDimension,
-        &pfVertGeodesicDistance,
-        &pfVertCombineDistance,
-        &pfVertMappingCoord)) || bIsLikePlane)
+                   bIsLikePlane,
+                   dwPrimaryEigenDimension,
+                   dwMaxEigenDimension,
+                   &pfVertGeodesicDistance,
+                   &pfVertCombineDistance,
+                   &pfVertMappingCoord)) ||
+        bIsLikePlane)
     {
         goto LEnd;
     }
@@ -783,8 +784,9 @@ HRESULT CIsochartMesh::Partition()
     //  a. chart with only one face
     //  b. chart been degenerated to a point
     if (FAILED(hr = ProcessTrivialShape(
-        dwPrimaryEigenDimension,
-        bTrivialShape)) || bTrivialShape)
+                   dwPrimaryEigenDimension,
+                   bTrivialShape)) ||
+        bTrivialShape)
     {
         goto LEnd;
     }
@@ -826,10 +828,10 @@ LEnd:
     else
     {
         SAFE_DELETE_ARRAY(pfVertGeodesicDistance)
-            SAFE_DELETE_ARRAY(pfVertCombineDistance)
+        SAFE_DELETE_ARRAY(pfVertCombineDistance)
     }
     SAFE_DELETE_ARRAY(pfVertMappingCoord)
-        return hr;
+    return hr;
 }
 
 HRESULT CIsochartMesh::ComputeBiParitionLandmark()
@@ -853,7 +855,7 @@ HRESULT CIsochartMesh::ComputeBiParitionLandmark()
             {
                 float fDeltaX = (m_pVerts[ii].uv.x - m_pVerts[jj].uv.x);
                 float fDeltaY = (m_pVerts[ii].uv.y - m_pVerts[jj].uv.y);
-                //fDeltaX and fDeltaY has been scaled in 0~500, no overflow here
+                // fDeltaX and fDeltaY has been scaled in 0~500, no overflow here
                 float fTempDistance = fDeltaX * fDeltaX + fDeltaY * fDeltaY;
                 if (fMaxDistance < fTempDistance)
                 {
@@ -869,11 +871,10 @@ HRESULT CIsochartMesh::ComputeBiParitionLandmark()
             m_landmarkVerts.push_back(dwIdx1);
             m_landmarkVerts.push_back(dwIdx2);
         }
-        catch (std::bad_alloc&)
+        catch (std::bad_alloc &)
         {
             return E_OUTOFMEMORY;
         }
-
     }
     else
     {
@@ -888,7 +889,7 @@ HRESULT CIsochartMesh::ComputeBiParitionLandmark()
                 uint32_t id2 = m_landmarkVerts[jj];
                 float fDeltaX = (m_pVerts[id1].uv.x - m_pVerts[id2].uv.x);
                 float fDeltaY = (m_pVerts[id1].uv.y - m_pVerts[id2].uv.y);
-                //fDeltaX and fDeltaY has been scaled in 0~500, no overflow here
+                // fDeltaX and fDeltaY has been scaled in 0~500, no overflow here
                 float fTempDistance = fDeltaX * fDeltaX + fDeltaY * fDeltaY;
                 if (fMaxDistance < fTempDistance)
                 {
@@ -904,7 +905,6 @@ HRESULT CIsochartMesh::ComputeBiParitionLandmark()
     }
 
     return S_OK;
-
 }
 
 HRESULT CIsochartMesh::Bipartition3D()
@@ -931,11 +931,11 @@ HRESULT CIsochartMesh::Bipartition3D()
 #endif
 
     std::vector<uint32_t> representativeVertsIdx;
-    float* pfVertCombineDistance = nullptr;
+    float *pfVertCombineDistance = nullptr;
     bool bIsPartitionSucceed = false;
 
     // 1. Calculate Distance (Geodesic & Siganl)  between vertices and landmarks.
-    float* pfVertGeoDistance = new (std::nothrow) float[dwLandCount * m_dwVertNumber];
+    float *pfVertGeoDistance = new (std::nothrow) float[dwLandCount * m_dwVertNumber];
     if (!pfVertGeoDistance)
     {
         hr = E_OUTOFMEMORY;
@@ -960,7 +960,7 @@ HRESULT CIsochartMesh::Bipartition3D()
     {
         representativeVertsIdx.resize(dwLandCount);
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         hr = E_OUTOFMEMORY;
         goto LEnd;
@@ -972,9 +972,9 @@ HRESULT CIsochartMesh::Bipartition3D()
     }
 
     if (FAILED(hr = CalculateGeodesicDistance(
-        representativeVertsIdx,
-        pfVertCombineDistance,
-        pfVertGeoDistance)))
+                   representativeVertsIdx,
+                   pfVertCombineDistance,
+                   pfVertGeoDistance)))
     {
         goto LEnd;
     }
@@ -1009,7 +1009,7 @@ HRESULT CIsochartMesh::Bipartition3D()
         hr = PartitionEachFace();
     }
 
-    //assert(m_children.size() == 2);
+    // assert(m_children.size() == 2);
 LEnd:
     if (!IsIMTSpecified())
     {
@@ -1019,7 +1019,7 @@ LEnd:
     else
     {
         SAFE_DELETE_ARRAY(pfVertCombineDistance)
-            SAFE_DELETE_ARRAY(pfVertGeoDistance)
+        SAFE_DELETE_ARRAY(pfVertGeoDistance)
     }
 
     return hr;
@@ -1038,13 +1038,13 @@ HRESULT CIsochartMesh::Bipartition2D()
     float fMaxDistance = -FLT_MAX;
 
     std::vector<uint32_t> keyVerts;
-    float* pfVertCombineDistance = nullptr;
+    float *pfVertCombineDistance = nullptr;
 
     try
     {
         keyVerts.resize(2);
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -1054,7 +1054,7 @@ HRESULT CIsochartMesh::Bipartition2D()
         {
             float fDeltaX = (m_pVerts[ii].uv.x - m_pVerts[jj].uv.x);
             float fDeltaY = (m_pVerts[ii].uv.y - m_pVerts[jj].uv.y);
-            //fDeltaX and fDeltaY has been scaled in 0~500, no overflow here
+            // fDeltaX and fDeltaY has been scaled in 0~500, no overflow here
             float fTempDistance = fDeltaX * fDeltaX + fDeltaY * fDeltaY;
             if (fMaxDistance < fTempDistance)
             {
@@ -1067,7 +1067,7 @@ HRESULT CIsochartMesh::Bipartition2D()
 
     // 3. Calculate the goedesic distance from other vertices to these 2
     // vertices
-    float* pfVertGeoDistance = new (std::nothrow) float[2 * m_dwVertNumber];
+    float *pfVertGeoDistance = new (std::nothrow) float[2 * m_dwVertNumber];
     if (!pfVertGeoDistance)
     {
         hr = E_OUTOFMEMORY;
@@ -1113,7 +1113,7 @@ LEnd:
     else
     {
         SAFE_DELETE_ARRAY(pfVertCombineDistance)
-            SAFE_DELETE_ARRAY(pfVertGeoDistance)
+        SAFE_DELETE_ARRAY(pfVertGeoDistance)
     }
     return hr;
 }
@@ -1124,8 +1124,8 @@ LEnd:
 // simplifed to simple chart before applying isomap on it
 HRESULT CIsochartMesh::PrepareSimpleChart(
     bool bIsForPartition,
-    size_t& dwBoundaryNumber,
-    bool& bIsSimpleChart)
+    size_t &dwBoundaryNumber,
+    bool &bIsSimpleChart)
 {
     HRESULT hr = S_OK;
 
@@ -1182,12 +1182,12 @@ HRESULT CIsochartMesh::PrepareSimpleChart(
 
 // Parameterize simple chart by isomap :[Kun04]
 HRESULT CIsochartMesh::IsomapParameterlization(
-    bool& bIsLikePlane,
-    size_t& dwPrimaryEigenDimension,
-    size_t& dwMaxEigenDimension,
-    float** ppfVertGeodesicDistance,
-    float** ppfVertCombineDistance,
-    float** ppfVertMappingCoord)
+    bool &bIsLikePlane,
+    size_t &dwPrimaryEigenDimension,
+    size_t &dwMaxEigenDimension,
+    float **ppfVertGeodesicDistance,
+    float **ppfVertCombineDistance,
+    float **ppfVertMappingCoord)
 {
     assert(ppfVertGeodesicDistance != nullptr);
     assert(ppfVertCombineDistance != nullptr);
@@ -1197,17 +1197,17 @@ HRESULT CIsochartMesh::IsomapParameterlization(
     bIsLikePlane = false;
 
     bool bIsSignalSpecialized = IsIMTSpecified();
-    float* pfVertGeodesicDistance = nullptr;
-    float* pfVertCombinedDistance = nullptr;
-    float* pfGeodesicMatrix = nullptr;
-    float* pfVertMappingCoord = nullptr;
+    float *pfVertGeodesicDistance = nullptr;
+    float *pfVertCombinedDistance = nullptr;
+    float *pfGeodesicMatrix = nullptr;
+    float *pfVertMappingCoord = nullptr;
     size_t dwLandmarkNumber = 0;
     size_t dwCalculatedDimension = 0;
 
     // 1. Calculate the landmark vertices
     if (FAILED(hr = CalculateLandmarkVertices(
-        MIN_LANDMARK_NUMBER,
-        dwLandmarkNumber)))
+                   MIN_LANDMARK_NUMBER,
+                   dwLandmarkNumber)))
     {
         goto LEnd;
     }
@@ -1231,9 +1231,9 @@ HRESULT CIsochartMesh::IsomapParameterlization(
     }
 
     if (FAILED(hr = CalculateGeodesicDistance(
-        m_landmarkVerts,
-        pfVertCombinedDistance,
-        pfVertGeodesicDistance)))
+                   m_landmarkVerts,
+                   pfVertCombinedDistance,
+                   pfVertGeodesicDistance)))
     {
         goto LEnd;
     }
@@ -1261,27 +1261,27 @@ HRESULT CIsochartMesh::IsomapParameterlization(
         dwMaxEigenDimension = std::min(ORIGINAL_CHART_EIGEN_DIMENSION, dwLandmarkNumber);
     }
     if (FAILED(hr = m_isoMap.Init(
-        dwLandmarkNumber,
-        pfGeodesicMatrix)))
+                   dwLandmarkNumber,
+                   pfGeodesicMatrix)))
     {
         goto LEnd;
     }
 
     if (FAILED(hr = m_isoMap.ComputeLargestEigen(
-        dwMaxEigenDimension,
-        dwCalculatedDimension)))
+                   dwMaxEigenDimension,
+                   dwCalculatedDimension)))
     {
         goto LEnd;
     }
     SAFE_DELETE_ARRAY(pfGeodesicMatrix)
 
-        assert(dwMaxEigenDimension >= dwCalculatedDimension);
+    assert(dwMaxEigenDimension >= dwCalculatedDimension);
 
     dwMaxEigenDimension = dwCalculatedDimension;
     dwPrimaryEigenDimension = 0;
     if (FAILED(hr = m_isoMap.GetPrimaryEnergyDimension(
-        PRIMARY_EIGEN_ENERGY_PERCENT,
-        dwPrimaryEigenDimension)))
+                   PRIMARY_EIGEN_ENERGY_PERCENT,
+                   dwPrimaryEigenDimension)))
     {
         goto LEnd;
     }
@@ -1294,9 +1294,10 @@ HRESULT CIsochartMesh::IsomapParameterlization(
     }
 
     if (FAILED(hr = ProcessPlaneLikeShape(
-        dwCalculatedDimension,
-        dwPrimaryEigenDimension,
-        bIsLikePlane)) || bIsLikePlane)
+                   dwCalculatedDimension,
+                   dwPrimaryEigenDimension,
+                   bIsLikePlane)) ||
+        bIsLikePlane)
     {
         goto LEnd;
     }
@@ -1304,14 +1305,13 @@ HRESULT CIsochartMesh::IsomapParameterlization(
     // if CIsomap::GetPrimaryEnergyDimension discard too many vector
     // demensions which are needed by special-shape detecting, just
     // set it back to DIMENSION_TO_CHECK_SPECIAL_SHAPE
-    if (dwPrimaryEigenDimension < DIMENSION_TO_CHECK_SPECIAL_SHAPE
-        && dwCalculatedDimension >= DIMENSION_TO_CHECK_SPECIAL_SHAPE)
+    if (dwPrimaryEigenDimension < DIMENSION_TO_CHECK_SPECIAL_SHAPE && dwCalculatedDimension >= DIMENSION_TO_CHECK_SPECIAL_SHAPE)
     {
         dwPrimaryEigenDimension = DIMENSION_TO_CHECK_SPECIAL_SHAPE;
     }
 
-    //5. Compute n-dimensional embedding coordinates of each vertex
-    //   here, n = dwPrimaryEigenDimension
+    // 5. Compute n-dimensional embedding coordinates of each vertex
+    //    here, n = dwPrimaryEigenDimension
     pfVertMappingCoord = new (std::nothrow) float[m_dwVertNumber * dwPrimaryEigenDimension];
     if (!pfVertMappingCoord)
     {
@@ -1321,19 +1321,19 @@ HRESULT CIsochartMesh::IsomapParameterlization(
 
 #if USING_COMBINED_DISTANCE_TO_PARAMETERIZE
     if (FAILED(hr = CalculateVertMappingCoord(
-        pfVertCombinedDistance,
-        dwLandmarkNumber,
-        dwPrimaryEigenDimension,
-        pfVertMappingCoord)))
+                   pfVertCombinedDistance,
+                   dwLandmarkNumber,
+                   dwPrimaryEigenDimension,
+                   pfVertMappingCoord)))
     {
         goto LEnd;
     }
 #else
     if (FAILED(hr = CalculateVertMappingCoord(
-        pfVertGeodesicDistance,
-        dwLandmarkNumber,
-        dwPrimaryEigenDimension,
-        pfVertMappingCoord)))
+                   pfVertGeodesicDistance,
+                   dwLandmarkNumber,
+                   dwPrimaryEigenDimension,
+                   pfVertMappingCoord)))
     {
         goto LEnd;
     }
@@ -1343,21 +1343,21 @@ HRESULT CIsochartMesh::IsomapParameterlization(
     m_bIsParameterized = true;
 LEnd:
     SAFE_DELETE_ARRAY(pfGeodesicMatrix)
-        if (FAILED(hr))
+    if (FAILED(hr))
+    {
+        SAFE_DELETE_ARRAY(pfVertGeodesicDistance)
+        if (bIsSignalSpecialized)
         {
-            SAFE_DELETE_ARRAY(pfVertGeodesicDistance)
-                if (bIsSignalSpecialized)
-                {
-                    SAFE_DELETE_ARRAY(pfVertCombinedDistance)
-                }
-            SAFE_DELETE_ARRAY(pfVertMappingCoord)
+            SAFE_DELETE_ARRAY(pfVertCombinedDistance)
         }
-        else
-        {
-            *ppfVertCombineDistance = pfVertCombinedDistance;
-            *ppfVertGeodesicDistance = pfVertGeodesicDistance;
-            *ppfVertMappingCoord = pfVertMappingCoord;
-        }
+        SAFE_DELETE_ARRAY(pfVertMappingCoord)
+    }
+    else
+    {
+        *ppfVertCombineDistance = pfVertCombinedDistance;
+        *ppfVertGeodesicDistance = pfVertGeodesicDistance;
+        *ppfVertMappingCoord = pfVertMappingCoord;
+    }
 
     return hr;
 }
@@ -1366,10 +1366,10 @@ LEnd:
 /////////////////////Build Full Connection Methods///////////
 /////////////////////////////////////////////////////////////
 
-//Build Full connection means:
-// 1. Scan all edges, get adjacent face for each edge.
-// 2. Scan all vertices, get adjacent vertices and faces for each vertex.
-HRESULT CIsochartMesh::BuildFullConnection(bool& bIsManifold)
+// Build Full connection means:
+//  1. Scan all edges, get adjacent face for each edge.
+//  2. Scan all vertices, get adjacent vertices and faces for each vertex.
+HRESULT CIsochartMesh::BuildFullConnection(bool &bIsManifold)
 {
     HRESULT hr = S_OK;
 
@@ -1436,7 +1436,7 @@ HRESULT CIsochartMesh::BuildFullConnection(bool& bIsManifold)
 
 void CIsochartMesh::ClearVerticesAdjacence()
 {
-    ISOCHARTVERTEX* pVertex = m_pVerts;
+    ISOCHARTVERTEX *pVertex = m_pVerts;
     for (size_t i = 0; i < m_dwVertNumber; i++)
     {
         pVertex->vertAdjacent.clear();
@@ -1457,7 +1457,7 @@ namespace
     };
 }
 
-//1. Find All Edges, specify the 3 edges of each face
+// 1. Find All Edges, specify the 3 edges of each face
 //.Algorithm:
 //(1) scan each face, check the 3 edges of each face
 //(2) if the edge is not in the edge table, create new edges and put it into edge table.
@@ -1465,9 +1465,9 @@ namespace
 
 // Note if  More than 2 faces share the same edge, it's a non-manifold mesh
 HRESULT CIsochartMesh::FindAllEdges(
-    bool& bIsManifold)
+    bool &bIsManifold)
 {
-    ISOCHARTEDGE* pEdge;
+    ISOCHARTEDGE *pEdge;
     ISOCHARTEDGE tempEdge;
     EdgeTableItem tempEdgeTableItem;
 
@@ -1484,7 +1484,7 @@ HRESULT CIsochartMesh::FindAllEdges(
 
     try
     {
-        ISOCHARTFACE* pTriangle = m_pFaces;
+        ISOCHARTFACE *pTriangle = m_pFaces;
         for (uint32_t i = 0; i < m_dwFaceNumber; i++)
         {
             uint32_t v1, v2;
@@ -1501,7 +1501,7 @@ HRESULT CIsochartMesh::FindAllEdges(
                     std::swap(v1, v2);
                 }
 
-                auto& et = pVertEdges[v1];
+                auto &et = pVertEdges[v1];
                 size_t k;
                 for (k = 0; k < et.size(); k++)
                 {
@@ -1532,10 +1532,9 @@ HRESULT CIsochartMesh::FindAllEdges(
                     m_dwEdgeNumber++;
                     assert(m_dwEdgeNumber == m_edges.size());
                     edgeId = tempEdge.dwID;
-
                 }
                 else
-                {	// at least 3 faces have the same edge, non-manifold
+                { // at least 3 faces have the same edge, non-manifold
                     if (pEdge->dwFaceID[1] != INVALID_FACE_ID)
                     {
                         DPF(3, "Non-manifold: More than 2 faces have the same edge...\n");
@@ -1551,19 +1550,18 @@ HRESULT CIsochartMesh::FindAllEdges(
                     edgeId = pEdge->dwID;
                 }
                 pTriangle->dwEdgeID[j] = edgeId;
-
             }
             pTriangle++;
         }
 
         for (size_t i = 0; i < m_dwEdgeNumber; i++)
         {
-            ISOCHARTEDGE& edge = m_edges[i];
+            ISOCHARTEDGE &edge = m_edges[i];
             m_pVerts[edge.dwVertexID[0]].edgeAdjacent.push_back(static_cast<uint32_t>(i));
             m_pVerts[edge.dwVertexID[1]].edgeAdjacent.push_back(static_cast<uint32_t>(i));
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -1580,25 +1578,24 @@ private:
     uint32_t m_dwCurEdge;
     uint32_t m_dwCurFace;
 
-    ISOCHARTFACE* m_pFaces;
-    std::vector<ISOCHARTEDGE>& m_edges;
+    ISOCHARTFACE *m_pFaces;
+    std::vector<ISOCHARTEDGE> &m_edges;
 
 public:
     VertFaceIter(
         uint32_t mainVertID, uint32_t currEdge, uint32_t currFace,
-        ISOCHARTFACE* pFaces,
-        std::vector<ISOCHARTEDGE>& edges) :
-        m_dwMainVertID(mainVertID),
-        m_dwCurEdge(currEdge),
-        m_dwCurFace(currFace),
-        m_pFaces(pFaces),
-        m_edges(edges)
+        ISOCHARTFACE *pFaces,
+        std::vector<ISOCHARTEDGE> &edges) : m_dwMainVertID(mainVertID),
+                                            m_dwCurEdge(currEdge),
+                                            m_dwCurFace(currFace),
+                                            m_pFaces(pFaces),
+                                            m_edges(edges)
     {
         m_dwBeginFace = currFace;
     }
 
-    VertFaceIter(VertFaceIter const&) = delete;
-    VertFaceIter& operator=(VertFaceIter const&) = delete;
+    VertFaceIter(VertFaceIter const &) = delete;
+    VertFaceIter &operator=(VertFaceIter const &) = delete;
 
     bool Next()
     {
@@ -1607,20 +1604,17 @@ public:
             return false;
         }
 
-        ISOCHARTFACE& face = m_pFaces[m_dwCurFace];
+        ISOCHARTFACE &face = m_pFaces[m_dwCurFace];
         for (size_t ii = 0; ii < 3; ii++)
         {
             if (face.dwEdgeID[ii] != m_dwCurEdge)
             {
-                ISOCHARTEDGE& edge = m_edges[face.dwEdgeID[ii]];
-                if (edge.dwVertexID[0] == m_dwMainVertID
-                    || edge.dwVertexID[1] == m_dwMainVertID)
+                ISOCHARTEDGE &edge = m_edges[face.dwEdgeID[ii]];
+                if (edge.dwVertexID[0] == m_dwMainVertID || edge.dwVertexID[1] == m_dwMainVertID)
                 {
                     m_dwCurEdge = face.dwEdgeID[ii];
                     m_dwCurFace =
-                        (edge.dwFaceID[0] == m_dwCurFace) ?
-                        edge.dwFaceID[1] :
-                        edge.dwFaceID[0];
+                        (edge.dwFaceID[0] == m_dwCurFace) ? edge.dwFaceID[1] : edge.dwFaceID[0];
 
                     break;
                 }
@@ -1633,7 +1627,7 @@ public:
     bool IsBackToBegin() { return m_dwCurFace == m_dwBeginFace; }
 };
 
-HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool& bCleaned)
+HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool &bCleaned)
 {
     HRESULT hr = S_OK;
     std::vector<uint32_t> vertexFaceList;
@@ -1654,11 +1648,12 @@ HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool& bCleaned)
         // 1. Find all vertices need to be splitted
         for (uint32_t ii = 0; ii < m_dwVertNumber; ii++)
         {
-            ISOCHARTVERTEX& vert = m_pVerts[ii];
+            ISOCHARTVERTEX &vert = m_pVerts[ii];
 
             uint32_t dwAdjEdgeCount = static_cast<uint32_t>(vert.edgeAdjacent.size());
 
-            if (dwAdjEdgeCount <= 2) continue;
+            if (dwAdjEdgeCount <= 2)
+                continue;
 
             memset(bProcessedEdge.get(), 0, sizeof(bool) * m_dwEdgeNumber);
 
@@ -1667,9 +1662,10 @@ HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool& bCleaned)
             for (size_t jj = 0; jj < dwAdjEdgeCount; jj++)
             {
                 uint32_t dwMainEdge = vert.edgeAdjacent[jj];
-                if (bProcessedEdge[dwMainEdge]) continue;
+                if (bProcessedEdge[dwMainEdge])
+                    continue;
 
-                ISOCHARTEDGE& edge = m_edges[dwMainEdge];
+                ISOCHARTEDGE &edge = m_edges[dwMainEdge];
 
                 // Find One face culster
                 vertexFaceList.clear();
@@ -1694,19 +1690,20 @@ HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool& bCleaned)
                     } while (iter.Next());
                     bProcessedEdge[iter.GetCurrEdge()] = true;
 
-                    if (iter.IsBackToBegin()) //Scaned all faces.
+                    if (iter.IsBackToBegin()) // Scaned all faces.
                     {
                         bIsRing = true;
                         break;
                     }
                 }
 
-                if (bIsRing) break;
+                if (bIsRing)
+                    break;
 
                 // If we have ever seen a cluster, then bowtie found, break vertex.
                 for (size_t kk = 0; kk < vertexFaceList.size(); kk++)
                 {
-                    ISOCHARTFACE& face = m_pFaces[vertexFaceList[kk]];
+                    ISOCHARTFACE &face = m_pFaces[vertexFaceList[kk]];
 
                     if (face.dwVertexID[0] == ii)
                         face.dwVertexID[0] = dwNewVertID;
@@ -1727,7 +1724,7 @@ HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool& bCleaned)
             }
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -1747,8 +1744,8 @@ HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool& bCleaned)
         return E_OUTOFMEMORY;
     }
 
-    ISOCHARTVERTEX* pNewVertex = pNewVertList;
-    ISOCHARTVERTEX* pOldVertex = m_pVerts;
+    ISOCHARTVERTEX *pNewVertex = pNewVertList;
+    ISOCHARTVERTEX *pOldVertex = m_pVerts;
 
     for (uint32_t ii = 0; ii < m_dwVertNumber; ii++)
     {
@@ -1772,7 +1769,7 @@ HRESULT CIsochartMesh::CleanNonmanifoldMesh(bool& bCleaned)
         pNewVertex++;
     }
 
-    delete[]m_pVerts;
+    delete[] m_pVerts;
 
     m_pVerts = pNewVertList;
     m_dwVertNumber = dwNewVertID;
@@ -1789,8 +1786,8 @@ HRESULT CIsochartMesh::SetEdgeSplitAttribute()
 
     for (size_t ii = 0; ii < m_dwFaceNumber; ii++)
     {
-        ISOCHARTFACE& face = m_pFaces[ii];
-        const uint32_t* pSplitInfo = m_baseInfo.pdwSplitHint + face.dwIDInRootMesh * 3;
+        ISOCHARTFACE &face = m_pFaces[ii];
+        const uint32_t *pSplitInfo = m_baseInfo.pdwSplitHint + face.dwIDInRootMesh * 3;
 
         for (size_t jj = 0; jj < 3; jj++)
         {
@@ -1809,7 +1806,6 @@ HRESULT CIsochartMesh::SetEdgeSplitAttribute()
     return hr;
 }
 
-
 // Check the index order of each face. In a manifold mesh, each internal edge
 // has 2 faces on different sides. If 2 faces on same side of a edge, the chart
 // is nonmainfold
@@ -1820,14 +1816,14 @@ bool CIsochartMesh::IsAllFaceVertexOrderValid()
     // are sit in different side of it.
     for (size_t i = 0; i < m_dwEdgeNumber; i++)
     {
-        ISOCHARTEDGE& edge = m_edges[i];
+        ISOCHARTEDGE &edge = m_edges[i];
         if (edge.bIsBoundary)
         {
             continue;
         }
 
-        ISOCHARTFACE* pTri1 = m_pFaces + edge.dwFaceID[0];
-        ISOCHARTFACE* pTri2 = m_pFaces + edge.dwFaceID[1];
+        ISOCHARTFACE *pTri1 = m_pFaces + edge.dwFaceID[0];
+        ISOCHARTFACE *pTri2 = m_pFaces + edge.dwFaceID[1];
 
         // Get the "third vertex" of the face
         size_t j, k;
@@ -1861,25 +1857,25 @@ bool CIsochartMesh::IsAllFaceVertexOrderValid()
     return true;
 }
 
-//Build Adjacent vertices array of each vertex. sort them in the same order.
+// Build Adjacent vertices array of each vertex. sort them in the same order.
 //.Algorithm ( for internal vertex A )
 //.(1) Fetch the first edge B adjacent A
 //.(2) To edge B, fetch the first face C having edge B
 //.(3) In face C, the vertex D not belonging to edge B is the next vertex adjacent A
 HRESULT CIsochartMesh::SortAdjacentVertices(
-    bool& bIsManifold)
+    bool &bIsManifold)
 {
     bIsManifold = false;
 
     try
     {
-        ISOCHARTVERTEX* pVertex = m_pVerts;
+        ISOCHARTVERTEX *pVertex = m_pVerts;
         for (size_t i = 0; i < m_dwVertNumber; i++)
         {
             uint32_t dwEdgeNum = static_cast<uint32_t>(pVertex->edgeAdjacent.size());
             uint32_t dwFaceNum = static_cast<uint32_t>(pVertex->faceAdjacent.size());
 
-            if (0 == dwEdgeNum) //Isolated vertex
+            if (0 == dwEdgeNum) // Isolated vertex
             {
                 pVertex++;
                 continue;
@@ -1887,7 +1883,7 @@ HRESULT CIsochartMesh::SortAdjacentVertices(
 
             pVertex->vertAdjacent.reserve(dwEdgeNum);
 
-            if (dwEdgeNum == dwFaceNum)// internal vertex
+            if (dwEdgeNum == dwFaceNum) // internal vertex
             {
                 bIsManifold =
                     SortAdjacentVerticesOfInternalVertex(pVertex);
@@ -1912,7 +1908,7 @@ HRESULT CIsochartMesh::SortAdjacentVertices(
                 uint32_t dwAdjacentVertID = pVertex->vertAdjacent[j];
                 for (size_t k = j; k < pVertex->edgeAdjacent.size(); k++)
                 {
-                    ISOCHARTEDGE& edge = m_edges[pVertex->edgeAdjacent[k]];
+                    ISOCHARTEDGE &edge = m_edges[pVertex->edgeAdjacent[k]];
                     if (edge.dwVertexID[0] == dwAdjacentVertID ||
                         edge.dwVertexID[1] == dwAdjacentVertID)
                     {
@@ -1925,7 +1921,7 @@ HRESULT CIsochartMesh::SortAdjacentVertices(
             pVertex++;
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -1938,17 +1934,16 @@ HRESULT CIsochartMesh::SortAdjacentVertices(
 // Algorithm:
 // Begin from a adjacent boundary edge scan all adjacent edges
 // by the same direction to reach another adjacent boundary edge.
-bool
-CIsochartMesh::SortAdjacentVerticesOfBoundaryVertex(
-    ISOCHARTVERTEX* pVertex)
+bool CIsochartMesh::SortAdjacentVerticesOfBoundaryVertex(
+    ISOCHARTVERTEX *pVertex)
 {
     uint32_t dwEdgeNum = static_cast<uint32_t>(pVertex->edgeAdjacent.size());
 
     pVertex->bIsBoundary = true;
 
     uint32_t dwNextV;
-    ISOCHARTEDGE* pPreEdge = nullptr;
-    ISOCHARTEDGE* pCurrentEdge = nullptr;
+    ISOCHARTEDGE *pPreEdge = nullptr;
+    ISOCHARTEDGE *pCurrentEdge = nullptr;
 
     uint32_t dwLastIndex = 0;
     for (uint32_t j = 0; j < dwEdgeNum; j++)
@@ -1978,7 +1973,7 @@ CIsochartMesh::SortAdjacentVerticesOfBoundaryVertex(
         dwNextV = pCurrentEdge->dwVertexID[0];
     }
 
-    ISOCHARTFACE* pTriangle = m_pFaces + pCurrentEdge->dwFaceID[0];
+    ISOCHARTFACE *pTriangle = m_pFaces + pCurrentEdge->dwFaceID[0];
 
     size_t k;
     for (k = 0; k < 3; k++)
@@ -2057,8 +2052,7 @@ CIsochartMesh::SortAdjacentVerticesOfBoundaryVertex(
                     continue;
                 }
 
-                if (pCurrentEdge->dwOppositVertID[0] == pPreEdge->dwVertexID[0]
-                    || pCurrentEdge->dwOppositVertID[0] == pPreEdge->dwVertexID[1])
+                if (pCurrentEdge->dwOppositVertID[0] == pPreEdge->dwVertexID[0] || pCurrentEdge->dwOppositVertID[0] == pPreEdge->dwVertexID[1])
                 {
                     dwNextV = pCurrentEdge->dwOppositVertID[1];
                 }
@@ -2078,8 +2072,7 @@ CIsochartMesh::SortAdjacentVerticesOfBoundaryVertex(
             for (size_t m = 0; m < dwEdgeNum; m++)
             {
                 pCurrentEdge = &(m_edges[pVertex->edgeAdjacent[m]]);
-                if (pCurrentEdge->dwVertexID[0] == dwNextV
-                    || pCurrentEdge->dwVertexID[1] == dwNextV)
+                if (pCurrentEdge->dwVertexID[0] == dwNextV || pCurrentEdge->dwVertexID[1] == dwNextV)
                 {
                     break;
                 }
@@ -2093,7 +2086,7 @@ CIsochartMesh::SortAdjacentVerticesOfBoundaryVertex(
             }
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return false;
     }
@@ -2104,9 +2097,8 @@ CIsochartMesh::SortAdjacentVerticesOfBoundaryVertex(
 // Sort Adjacent vertices of a internal vertex
 // Algorithm:
 //  From one of adjacent edge, scan all edges in the same direction
-bool
-CIsochartMesh::SortAdjacentVerticesOfInternalVertex(
-    ISOCHARTVERTEX* pVertex)
+bool CIsochartMesh::SortAdjacentVerticesOfInternalVertex(
+    ISOCHARTVERTEX *pVertex)
 {
     uint32_t dwEdgeNum = static_cast<uint32_t>(pVertex->edgeAdjacent.size());
 
@@ -2114,8 +2106,8 @@ CIsochartMesh::SortAdjacentVerticesOfInternalVertex(
 
     uint32_t dwNextV;
 
-    ISOCHARTEDGE* pPreEdge = nullptr;
-    ISOCHARTEDGE* pCurrentEdge = &(m_edges[pVertex->edgeAdjacent[0]]);
+    ISOCHARTEDGE *pPreEdge = nullptr;
+    ISOCHARTEDGE *pCurrentEdge = &(m_edges[pVertex->edgeAdjacent[0]]);
 
     // 1. Find the first adjacent vertex
     if (pCurrentEdge->dwVertexID[0] == pVertex->dwID)
@@ -2135,8 +2127,7 @@ CIsochartMesh::SortAdjacentVerticesOfInternalVertex(
         {
             if (pPreEdge)
             {
-                if (pCurrentEdge->dwOppositVertID[0] == pPreEdge->dwVertexID[0]
-                    || pCurrentEdge->dwOppositVertID[0] == pPreEdge->dwVertexID[1])
+                if (pCurrentEdge->dwOppositVertID[0] == pPreEdge->dwVertexID[0] || pCurrentEdge->dwOppositVertID[0] == pPreEdge->dwVertexID[1])
                 {
                     dwNextV = pCurrentEdge->dwOppositVertID[1];
                 }
@@ -2147,7 +2138,7 @@ CIsochartMesh::SortAdjacentVerticesOfInternalVertex(
             }
             else
             {
-                ISOCHARTFACE* pTriangle = m_pFaces + pCurrentEdge->dwFaceID[0];
+                ISOCHARTFACE *pTriangle = m_pFaces + pCurrentEdge->dwFaceID[0];
                 size_t k;
                 for (k = 0; k < 3; k++)
                 {
@@ -2188,9 +2179,8 @@ CIsochartMesh::SortAdjacentVerticesOfInternalVertex(
 
             for (k = 0; k < dwEdgeNum; k++)
             {
-                ISOCHARTEDGE* pEdge = &(m_edges[pVertex->edgeAdjacent[k]]);
-                if (pEdge->dwVertexID[0] == dwNextV
-                    || pEdge->dwVertexID[1] == dwNextV)
+                ISOCHARTEDGE *pEdge = &(m_edges[pVertex->edgeAdjacent[k]]);
+                if (pEdge->dwVertexID[0] == dwNextV || pEdge->dwVertexID[1] == dwNextV)
                 {
                     pCurrentEdge = pEdge;
                     break;
@@ -2206,7 +2196,7 @@ CIsochartMesh::SortAdjacentVerticesOfInternalVertex(
             pVertex->vertAdjacent.push_back(dwNextV);
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return false;
     }
@@ -2220,16 +2210,16 @@ CIsochartMesh::SortAdjacentVerticesOfInternalVertex(
 // For each face in mesh, get adjacent faces using the edge adjacent faces information
 // gotten by BuildFullConnection.
 void CIsochartMesh::GetFaceAdjacentArray(
-    uint32_t* pdwFaceAdjacentArray) const
+    uint32_t *pdwFaceAdjacentArray) const
 {
     assert(pdwFaceAdjacentArray != nullptr);
 
-    uint32_t* pFaceAjacence = pdwFaceAdjacentArray;
+    uint32_t *pFaceAjacence = pdwFaceAdjacentArray;
     for (size_t i = 0; i < m_dwFaceNumber; i++)
     {
         for (size_t j = 0; j < 3; j++)
         {
-            const ISOCHARTEDGE& edge = m_edges[m_pFaces[i].dwEdgeID[j]];
+            const ISOCHARTEDGE &edge = m_edges[m_pFaces[i].dwEdgeID[j]];
             if (edge.bIsBoundary)
             {
                 pFaceAjacence[j] = INVALID_FACE_ID;
@@ -2254,17 +2244,17 @@ void CIsochartMesh::GetFaceAdjacentArray(
 ///////////////////Simplify Chart Methods////////////////////
 /////////////////////////////////////////////////////////////
 
-//Check if the original mesh have independent sub-meshes.
-// if true creat new meshes
-// Algorithm:
-// Keep a vertex queue Q and vertex array.A
-// (1) Push an unprocessed vertex into Q.Clear A.
-// (2) Try to pop out a vertex V from Q.If the Q is empty, export
-//     all vertices in A as an new chart and goto (1)
-// (3) Push all adjacent vertices of V into Q. goto (2)
+// Check if the original mesh have independent sub-meshes.
+//  if true creat new meshes
+//  Algorithm:
+//  Keep a vertex queue Q and vertex array.A
+//  (1) Push an unprocessed vertex into Q.Clear A.
+//  (2) Try to pop out a vertex V from Q.If the Q is empty, export
+//      all vertices in A as an new chart and goto (1)
+//  (3) Push all adjacent vertices of V into Q. goto (2)
 
 HRESULT CIsochartMesh::CheckAndDivideMultipleObjects(
-    bool& bHasMultiObjects)
+    bool &bHasMultiObjects)
 {
 
     assert(m_dwVertNumber != 0 || m_dwFaceNumber != 0);
@@ -2277,7 +2267,7 @@ HRESULT CIsochartMesh::CheckAndDivideMultipleObjects(
         return E_OUTOFMEMORY;
     }
 
-    bool* pbVertMark = vertMark.get();
+    bool *pbVertMark = vertMark.get();
 
     memset(pbVertMark, 0, m_dwVertNumber * sizeof(bool));
 
@@ -2291,7 +2281,7 @@ HRESULT CIsochartMesh::CheckAndDivideMultipleObjects(
             }
             pbVertMark[i] = true;
 
-            ISOCHARTVERTEX* pVertex = m_pVerts + i;
+            ISOCHARTVERTEX *pVertex = m_pVerts + i;
             if (pVertex->vertAdjacent.size() == 0)
             {
                 continue;
@@ -2333,8 +2323,8 @@ HRESULT CIsochartMesh::CheckAndDivideMultipleObjects(
             else if (vertList.size() > 0)
             {
                 bHasMultiObjects = true;
-                CIsochartMesh* pChart = nullptr;
-                //Creat new chart
+                CIsochartMesh *pChart = nullptr;
+                // Creat new chart
                 HRESULT hr = ExtractIndependentObject(vertList, &pChart);
                 if (FAILED(hr))
                 {
@@ -2350,7 +2340,7 @@ HRESULT CIsochartMesh::CheckAndDivideMultipleObjects(
         }
         DPF(3, "....Divide into %zu sub-meshes...\n", m_children.size());
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -2360,8 +2350,8 @@ HRESULT CIsochartMesh::CheckAndDivideMultipleObjects(
 
 // Use vertex list to creat new chart and build full connection for new chart
 HRESULT CIsochartMesh::ExtractIndependentObject(
-    VERTEX_ARRAY& vertList,
-    CIsochartMesh** ppChart) const
+    VERTEX_ARRAY &vertList,
+    CIsochartMesh **ppChart) const
 {
     assert(ppChart != nullptr);
     if (vertList.empty())
@@ -2382,7 +2372,7 @@ HRESULT CIsochartMesh::ExtractIndependentObject(
     // 1. Find all faces in new chart
     try
     {
-        ISOCHARTVERTEX* pOldVertex = nullptr;
+        ISOCHARTVERTEX *pOldVertex = nullptr;
         for (size_t i = 0; i < vertList.size(); i++)
         {
             pOldVertex = vertList[i];
@@ -2397,7 +2387,7 @@ HRESULT CIsochartMesh::ExtractIndependentObject(
             }
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -2434,12 +2424,11 @@ HRESULT CIsochartMesh::ExtractIndependentObject(
     return S_OK;
 }
 
-
 // If the chart  has 2 or more boundaries, cut the chart along edge paths
 // to connect these boundaies. Each call for this function can decrease one
 // boundary.
 HRESULT CIsochartMesh::CheckAndCutMultipleBoundaries(
-    size_t& dwBoundaryNumber)
+    size_t &dwBoundaryNumber)
 {
     assert(m_dwVertNumber != 0);
     DPF(3, "Check and cut multi boundary...\n");
@@ -2497,17 +2486,16 @@ HRESULT CIsochartMesh::CheckAndCutMultipleBoundaries(
     return hr;
 }
 
-
 // Clustering the boundaies edges in chart
 // Algorithm:
 // Scan each boundary vertex, if one has not been put into an existent boundary set,
 // create a new boundary set and put this vertex and all the bounday vertices which
 // have connection path to this vertex into the new boundary set.
 HRESULT CIsochartMesh::FindAllBoundaries(
-    size_t& dwBoundaryNumber,
-    VERTEX_ARRAY& allBoundaryList,
-    std::vector<uint32_t>& boundaryRecord,
-    uint32_t* pdwVertBoundaryID)
+    size_t &dwBoundaryNumber,
+    VERTEX_ARRAY &allBoundaryList,
+    std::vector<uint32_t> &boundaryRecord,
+    uint32_t *pdwVertBoundaryID)
 {
     assert(pdwVertBoundaryID != nullptr);
 
@@ -2526,8 +2514,7 @@ HRESULT CIsochartMesh::FindAllBoundaries(
             // 1.find boundary vertex which has not be assigned a boundary ID
             while (dwVertIndex < m_dwVertNumber)
             {
-                if (m_pVerts[dwVertIndex].bIsBoundary
-                    && 0 == pdwVertBoundaryID[dwVertIndex])
+                if (m_pVerts[dwVertIndex].bIsBoundary && 0 == pdwVertBoundaryID[dwVertIndex])
                 {
                     break;
                 }
@@ -2555,8 +2542,8 @@ HRESULT CIsochartMesh::FindAllBoundaries(
                 if (FAILED(hr))
                     return hr;
 
-                ISOCHARTVERTEX* pCurrentVertex = allBoundaryList[dwHead];
-                auto& adjacentVertList = pCurrentVertex->vertAdjacent;
+                ISOCHARTVERTEX *pCurrentVertex = allBoundaryList[dwHead];
+                auto &adjacentVertList = pCurrentVertex->vertAdjacent;
 
                 // When building full connection, adjacent boundary vertex always
                 // been put at head or end of adjacence list. So, need only check
@@ -2585,9 +2572,9 @@ HRESULT CIsochartMesh::FindAllBoundaries(
             boundaryRecord.push_back(dwEnd);
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
-        return  E_OUTOFMEMORY;
+        return E_OUTOFMEMORY;
     }
 
     dwBoundaryNumber = dwBoundaryID;
@@ -2597,12 +2584,12 @@ HRESULT CIsochartMesh::FindAllBoundaries(
 }
 
 HRESULT CIsochartMesh::CalMinPathToOtherBoundary(
-    VERTEX_ARRAY& allBoundaryList,
+    VERTEX_ARRAY &allBoundaryList,
     uint32_t dwStartIdx,
     uint32_t dwEndIdx,
-    uint32_t* pdwVertBoundaryID,
-    uint32_t& dwPeerVertID,
-    float& fDistance)
+    uint32_t *pdwVertBoundaryID,
+    uint32_t &dwPeerVertID,
+    float &fDistance)
 {
     std::unique_ptr<bool[]> vertProcessed(new (std::nothrow) bool[m_dwVertNumber]);
     std::unique_ptr<CMaxHeapItem<float, uint32_t>[]> heapItem(new (std::nothrow) CMaxHeapItem<float, uint32_t>[m_dwVertNumber]);
@@ -2611,7 +2598,7 @@ HRESULT CIsochartMesh::CalMinPathToOtherBoundary(
         return E_OUTOFMEMORY;
     }
 
-    bool* pbVertProcessed = vertProcessed.get();
+    bool *pbVertProcessed = vertProcessed.get();
     memset(pbVertProcessed, 0, sizeof(bool) * m_dwVertNumber);
 
     auto pHeapItem = heapItem.get();
@@ -2623,7 +2610,7 @@ HRESULT CIsochartMesh::CalMinPathToOtherBoundary(
     }
 
     // 1. Init the distance to souce of each vertice
-    ISOCHARTVERTEX* pCurrentVertex = m_pVerts;
+    ISOCHARTVERTEX *pCurrentVertex = m_pVerts;
     for (size_t i = 0; i < m_dwVertNumber; i++)
     {
         pCurrentVertex->fGeodesicDistance = FLT_MAX;
@@ -2655,7 +2642,7 @@ HRESULT CIsochartMesh::CalMinPathToOtherBoundary(
 
     for (size_t i = 0; i < m_dwVertNumber; i++)
     {
-        CMaxHeapItem<float, uint32_t>* pTop = heap.cutTop();
+        CMaxHeapItem<float, uint32_t> *pTop = heap.cutTop();
         if (!pTop)
         {
             break;
@@ -2668,7 +2655,7 @@ HRESULT CIsochartMesh::CalMinPathToOtherBoundary(
 
         if (pCurrentVertex->bIsBoundary &&
             pdwVertBoundaryID[pCurrentVertex->dwID] !=
-            dwCurrentBoundaryID)
+                dwCurrentBoundaryID)
         {
             dwPeerVertID = pCurrentVertex->dwID;
             fDistance = pCurrentVertex->fGeodesicDistance;
@@ -2676,13 +2663,12 @@ HRESULT CIsochartMesh::CalMinPathToOtherBoundary(
             return S_OK;
         }
 
-
         // 3.2 Computing the distance of the vertices adjacent to current vertices
         for (size_t j = 0; j < pCurrentVertex->edgeAdjacent.size(); j++)
         {
             uint32_t dwAdjacentVertID;
 
-            const ISOCHARTEDGE& edge = m_edges[pCurrentVertex->edgeAdjacent[j]];
+            const ISOCHARTEDGE &edge = m_edges[pCurrentVertex->edgeAdjacent[j]];
 
             if (m_baseInfo.pdwSplitHint && !edge.bCanBeSplit)
             {
@@ -2703,12 +2689,10 @@ HRESULT CIsochartMesh::CalMinPathToOtherBoundary(
                 continue;
             }
 
-            ISOCHARTVERTEX* pAdjacentVertex = m_pVerts + dwAdjacentVertID;
-            if (pAdjacentVertex->fGeodesicDistance
-        > pCurrentVertex->fGeodesicDistance + edge.fLength)
+            ISOCHARTVERTEX *pAdjacentVertex = m_pVerts + dwAdjacentVertID;
+            if (pAdjacentVertex->fGeodesicDistance > pCurrentVertex->fGeodesicDistance + edge.fLength)
             {
-                pAdjacentVertex->fGeodesicDistance
-                    = pCurrentVertex->fGeodesicDistance + edge.fLength;
+                pAdjacentVertex->fGeodesicDistance = pCurrentVertex->fGeodesicDistance + edge.fLength;
                 pAdjacentVertex->dwNextVertIDOnPath = pCurrentVertex->dwID;
             }
         }
@@ -2729,17 +2713,16 @@ HRESULT CIsochartMesh::CalMinPathToOtherBoundary(
                 continue;
             }
 
-            ISOCHARTVERTEX* pAdjacentVertex = m_pVerts + dwAdjacentVertID;
+            ISOCHARTVERTEX *pAdjacentVertex = m_pVerts + dwAdjacentVertID;
             if (pHeapItem[dwAdjacentVertID].isItemInHeap())
             {
                 heap.update(pHeapItem + dwAdjacentVertID,
-                    -pAdjacentVertex->fGeodesicDistance);
+                            -pAdjacentVertex->fGeodesicDistance);
             }
             else
             {
                 pHeapItem[dwAdjacentVertID].m_data = dwAdjacentVertID;
-                pHeapItem[dwAdjacentVertID].m_weight
-                    = -pAdjacentVertex->fGeodesicDistance;
+                pHeapItem[dwAdjacentVertID].m_weight = -pAdjacentVertex->fGeodesicDistance;
                 if (!heap.insert(pHeapItem + dwAdjacentVertID))
                 {
                     return E_OUTOFMEMORY;
@@ -2749,23 +2732,22 @@ HRESULT CIsochartMesh::CalMinPathToOtherBoundary(
     }
 
     return S_OK;
-
 }
 
 #ifdef _MSC_VER
 #pragma warning(push)
-#pragma warning( disable : 4706 )
+#pragma warning(disable : 4706)
 #endif
 
 HRESULT CIsochartMesh::RetreiveVertDijkstraPathToSource(
     uint32_t dwVertexID,
-    std::vector<uint32_t>& dijkstraPath)
+    std::vector<uint32_t> &dijkstraPath)
 {
     HRESULT hr = S_OK;
 
     assert(dwVertexID < m_dwVertNumber);
     dijkstraPath.clear();
-    ISOCHARTVERTEX* p = m_pVerts + dwVertexID;
+    ISOCHARTVERTEX *p = m_pVerts + dwVertexID;
 
     try
     {
@@ -2774,7 +2756,7 @@ HRESULT CIsochartMesh::RetreiveVertDijkstraPathToSource(
             dijkstraPath.push_back(p->dwID);
         } while ((p->dwNextVertIDOnPath != INVALID_VERT_ID) && (p = m_pVerts + p->dwNextVertIDOnPath));
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -2794,10 +2776,10 @@ HRESULT CIsochartMesh::RetreiveVertDijkstraPathToSource(
 #endif
 
 HRESULT CIsochartMesh::CalMinPathBetweenBoundaries(
-    VERTEX_ARRAY& allBoundaryList,
-    std::vector<uint32_t>& boundaryRecord,
-    uint32_t* pdwVertBoundaryID,
-    std::vector<uint32_t>& minDijkstraPath)
+    VERTEX_ARRAY &allBoundaryList,
+    std::vector<uint32_t> &boundaryRecord,
+    uint32_t *pdwVertBoundaryID,
+    std::vector<uint32_t> &minDijkstraPath)
 {
     HRESULT hr = S_OK;
     float fMinDistance = FLT_MAX;
@@ -2824,12 +2806,12 @@ HRESULT CIsochartMesh::CalMinPathBetweenBoundaries(
     return hr;
 }
 
-//Cut along an edge path to merge 2 boundary of chart
+// Cut along an edge path to merge 2 boundary of chart
 HRESULT CIsochartMesh::DecreaseBoundary(
-    size_t& dwBoundaryNumber,
-    VERTEX_ARRAY& allBoundaryList,
-    std::vector<uint32_t>& boundaryRecord,
-    uint32_t* pdwVertBoundaryID)
+    size_t &dwBoundaryNumber,
+    VERTEX_ARRAY &allBoundaryList,
+    std::vector<uint32_t> &boundaryRecord,
+    uint32_t *pdwVertBoundaryID)
 {
     assert(pdwVertBoundaryID != nullptr);
     assert(!allBoundaryList.empty());
@@ -2862,8 +2844,8 @@ HRESULT CIsochartMesh::DecreaseBoundary(
 HRESULT
 CIsochartMesh::CalVertWithMinDijkstraDistanceToSrc(
     uint32_t dwSourceVertID,
-    uint32_t& dwPeerVertID,
-    uint32_t* pdwVertBoundaryID)
+    uint32_t &dwPeerVertID,
+    uint32_t *pdwVertBoundaryID)
 {
     assert(pdwVertBoundaryID != nullptr);
 
@@ -2894,7 +2876,7 @@ CIsochartMesh::CalVertWithMinDijkstraDistanceToSrc(
 }
 
 // Cut current chart along a path presented by vertex list.
-HRESULT CIsochartMesh::CutChartAlongPath(std::vector<uint32_t>& dijkstraPath)
+HRESULT CIsochartMesh::CutChartAlongPath(std::vector<uint32_t> &dijkstraPath)
 {
     HRESULT hr = S_OK;
     std::vector<uint32_t> splitPath;
@@ -2905,7 +2887,6 @@ HRESULT CIsochartMesh::CutChartAlongPath(std::vector<uint32_t>& dijkstraPath)
         return hr;
     }
 
-
     assert(splitPath.size() >= 2);
 
     // 2. Find the faces affected by vertex split and the correspond
@@ -2913,9 +2894,9 @@ HRESULT CIsochartMesh::CutChartAlongPath(std::vector<uint32_t>& dijkstraPath)
     std::vector<uint32_t> changeFaceList;
     std::vector<uint32_t> corresVertList;
     if (FAILED(hr = FindFacesAffectedBySplit(
-        splitPath,
-        changeFaceList,
-        corresVertList)))
+                   splitPath,
+                   changeFaceList,
+                   corresVertList)))
     {
         return hr;
     }
@@ -2942,7 +2923,7 @@ HRESULT CIsochartMesh::CutChartAlongPath(std::vector<uint32_t>& dijkstraPath)
         {
             m_children.push_back(pChart);
         }
-        catch (std::bad_alloc&)
+        catch (std::bad_alloc &)
         {
             hr = E_OUTOFMEMORY;
             goto LEnd;
@@ -2957,13 +2938,12 @@ LEnd:
     return hr;
 }
 
-
 // Scan the dijkstraPath to find the vertices that need to
 // split. (Remove all boundary edges from dijkstraPath, only
 // reserve internal edges.
 HRESULT CIsochartMesh::FindSplitPath(
-    const std::vector<uint32_t>& dijkstraPath,
-    std::vector<uint32_t>& splitPath)
+    const std::vector<uint32_t> &dijkstraPath,
+    std::vector<uint32_t> &splitPath)
 {
     assert(!dijkstraPath.empty());
 
@@ -2971,8 +2951,7 @@ HRESULT CIsochartMesh::FindSplitPath(
     size_t dwStartCutID = 0;
 
     // Find the first vertex need to be splited
-    while (dwStartCutID < dijkstraPath.size() - 1
-        && m_pVerts[dijkstraPath[dwStartCutID]].bIsBoundary)
+    while (dwStartCutID < dijkstraPath.size() - 1 && m_pVerts[dijkstraPath[dwStartCutID]].bIsBoundary)
     {
         dwStartCutID++;
     }
@@ -2989,14 +2968,14 @@ HRESULT CIsochartMesh::FindSplitPath(
 
             splitPath.push_back(dijkstraPath[i]);
 
-            ISOCHARTVERTEX* pVertex = m_pVerts + dijkstraPath[i];
+            ISOCHARTVERTEX *pVertex = m_pVerts + dijkstraPath[i];
             if (i != dwStartCutID && pVertex->bIsBoundary)
             {
                 break;
             }
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -3008,9 +2987,9 @@ HRESULT CIsochartMesh::FindSplitPath(
 // may change. This function finds all suffered faces, and correspond
 // vertex.
 HRESULT CIsochartMesh::FindFacesAffectedBySplit(
-    const std::vector<uint32_t>& splitPath,
-    std::vector<uint32_t>& changeFaceList,
-    std::vector<uint32_t>& corresVertList)
+    const std::vector<uint32_t> &splitPath,
+    std::vector<uint32_t> &changeFaceList,
+    std::vector<uint32_t> &corresVertList)
 {
     HRESULT hr = S_OK;
 
@@ -3033,18 +3012,18 @@ HRESULT CIsochartMesh::FindFacesAffectedBySplit(
 }
 
 HRESULT CIsochartMesh::
-CalSplitInfoOfFirstSplitVert(
-    const std::vector<uint32_t>& splitPath,
-    std::vector<uint32_t>& changeFaceList,
-    std::vector<uint32_t>& corresVertList)
+    CalSplitInfoOfFirstSplitVert(
+        const std::vector<uint32_t> &splitPath,
+        std::vector<uint32_t> &changeFaceList,
+        std::vector<uint32_t> &corresVertList)
 {
     assert(m_pVerts[splitPath[0]].bIsBoundary);
     assert(splitPath.size() > 1);
 
     std::vector<uint32_t> vertListOnOneSide;
 
-    ISOCHARTVERTEX* pCurrVertex = m_pVerts + splitPath[0];
-    ISOCHARTVERTEX* pNextVertex = m_pVerts + splitPath[1];
+    ISOCHARTVERTEX *pCurrVertex = m_pVerts + splitPath[0];
+    ISOCHARTVERTEX *pNextVertex = m_pVerts + splitPath[1];
 
     size_t ringSize = pCurrVertex->vertAdjacent.size();
 
@@ -3074,10 +3053,10 @@ CalSplitInfoOfFirstSplitVert(
 }
 
 HRESULT CIsochartMesh::
-CalSplitInfoOfMiddleSplitVerts(
-    const std::vector<uint32_t>& splitPath,
-    std::vector<uint32_t>& changeFaceList,
-    std::vector<uint32_t>& corresVertList)
+    CalSplitInfoOfMiddleSplitVerts(
+        const std::vector<uint32_t> &splitPath,
+        std::vector<uint32_t> &changeFaceList,
+        std::vector<uint32_t> &corresVertList)
 {
     assert(splitPath.size() > 1);
 
@@ -3089,9 +3068,9 @@ CalSplitInfoOfMiddleSplitVerts(
     {
         for (size_t i = 1; i < dwPathLength - 1; i++)
         {
-            ISOCHARTVERTEX* pCurrVertex = m_pVerts + splitPath[i];
-            ISOCHARTVERTEX* pPrevVertex = m_pVerts + splitPath[i - 1];
-            ISOCHARTVERTEX* pNextVertex = m_pVerts + splitPath[i + 1];
+            ISOCHARTVERTEX *pCurrVertex = m_pVerts + splitPath[i];
+            ISOCHARTVERTEX *pPrevVertex = m_pVerts + splitPath[i - 1];
+            ISOCHARTVERTEX *pNextVertex = m_pVerts + splitPath[i + 1];
 
             uint32_t dwPrevIndex = INVALID_INDEX;
             uint32_t dwNextIndex = INVALID_INDEX;
@@ -3122,17 +3101,17 @@ CalSplitInfoOfMiddleSplitVerts(
             //                / |
             //        current \ |
             //                 \|next
-            if (vertListOnOneSide.empty()) //k=1
+            if (vertListOnOneSide.empty()) // k=1
             {
                 for (size_t j = 0; j < pCurrVertex->faceAdjacent.size(); j++)
                 {
-                    ISOCHARTFACE* pFace = m_pFaces + pCurrVertex->faceAdjacent[j];
+                    ISOCHARTFACE *pFace = m_pFaces + pCurrVertex->faceAdjacent[j];
                     if ((pFace->dwVertexID[0] == pPrevVertex->dwID ||
-                        pFace->dwVertexID[1] == pPrevVertex->dwID ||
-                        pFace->dwVertexID[2] == pPrevVertex->dwID) &&
+                         pFace->dwVertexID[1] == pPrevVertex->dwID ||
+                         pFace->dwVertexID[2] == pPrevVertex->dwID) &&
                         (pFace->dwVertexID[0] == pNextVertex->dwID ||
-                            pFace->dwVertexID[1] == pNextVertex->dwID ||
-                            pFace->dwVertexID[2] == pNextVertex->dwID))
+                         pFace->dwVertexID[1] == pNextVertex->dwID ||
+                         pFace->dwVertexID[2] == pNextVertex->dwID))
                     {
                         assert(pFace->dwID == pCurrVertex->faceAdjacent[j]);
                         changeFaceList.push_back(pFace->dwID);
@@ -3150,7 +3129,7 @@ CalSplitInfoOfMiddleSplitVerts(
                     corresVertList));
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -3160,9 +3139,9 @@ CalSplitInfoOfMiddleSplitVerts(
 
 HRESULT
 CIsochartMesh::CalSplitInfoOfLastSplitVert(
-    const std::vector<uint32_t>& splitPath,
-    std::vector<uint32_t>& changeFaceList,
-    std::vector<uint32_t>& corresVertList)
+    const std::vector<uint32_t> &splitPath,
+    std::vector<uint32_t> &changeFaceList,
+    std::vector<uint32_t> &corresVertList)
 {
     assert(splitPath.size() > 1);
     assert(m_pVerts[splitPath[splitPath.size() - 1]].bIsBoundary);
@@ -3170,8 +3149,8 @@ CIsochartMesh::CalSplitInfoOfLastSplitVert(
     std::vector<uint32_t> vertListOnOneSide;
     size_t dwPathLength = splitPath.size();
 
-    ISOCHARTVERTEX* pCurrVertex = m_pVerts + splitPath[dwPathLength - 1];
-    ISOCHARTVERTEX* pPrevVertex = m_pVerts + splitPath[dwPathLength - 2];
+    ISOCHARTVERTEX *pCurrVertex = m_pVerts + splitPath[dwPathLength - 1];
+    ISOCHARTVERTEX *pPrevVertex = m_pVerts + splitPath[dwPathLength - 2];
 
     size_t dwRingSize = pCurrVertex->vertAdjacent.size();
     uint32_t dwPrevIndex = INVALID_INDEX;
@@ -3192,7 +3171,7 @@ CIsochartMesh::CalSplitInfoOfLastSplitVert(
             vertListOnOneSide.push_back(pCurrVertex->vertAdjacent[i]);
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -3207,26 +3186,24 @@ CIsochartMesh::CalSplitInfoOfLastSplitVert(
 }
 
 HRESULT CIsochartMesh::AddToChangedFaceList(
-    ISOCHARTVERTEX* pCurrVertex,
-    std::vector<uint32_t>& vertListOnOneSide,
-    std::vector<uint32_t>& changeFaceList,
-    std::vector<uint32_t>& corresVertList)
+    ISOCHARTVERTEX *pCurrVertex,
+    std::vector<uint32_t> &vertListOnOneSide,
+    std::vector<uint32_t> &changeFaceList,
+    std::vector<uint32_t> &corresVertList)
 {
     try
     {
         for (size_t j = 0; j < vertListOnOneSide.size(); j++)
         {
-            ISOCHARTVERTEX* pAdjacentVertex =
+            ISOCHARTVERTEX *pAdjacentVertex =
                 m_pVerts + vertListOnOneSide[j];
 
             for (size_t k = 0; k < pAdjacentVertex->faceAdjacent.size(); k++)
             {
-                ISOCHARTFACE* pFace =
+                ISOCHARTFACE *pFace =
                     m_pFaces + pAdjacentVertex->faceAdjacent[k];
 
-                if (pFace->dwVertexID[0] == pCurrVertex->dwID
-                    || pFace->dwVertexID[1] == pCurrVertex->dwID
-                    || pFace->dwVertexID[2] == pCurrVertex->dwID)
+                if (pFace->dwVertexID[0] == pCurrVertex->dwID || pFace->dwVertexID[1] == pCurrVertex->dwID || pFace->dwVertexID[2] == pCurrVertex->dwID)
                 {
                     assert(pFace->dwID == pAdjacentVertex->faceAdjacent[k]);
                     changeFaceList.push_back(pFace->dwID);
@@ -3235,7 +3212,7 @@ HRESULT CIsochartMesh::AddToChangedFaceList(
             }
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -3244,10 +3221,10 @@ HRESULT CIsochartMesh::AddToChangedFaceList(
 }
 
 // Split vertices on splitPath, create new chart
-CIsochartMesh* CIsochartMesh::SplitVertices(
-    const std::vector<uint32_t>& splitPath,
-    std::vector<uint32_t>& changeFaceList,
-    std::vector<uint32_t>& corresVertList)
+CIsochartMesh *CIsochartMesh::SplitVertices(
+    const std::vector<uint32_t> &splitPath,
+    std::vector<uint32_t> &changeFaceList,
+    std::vector<uint32_t> &corresVertList)
 {
     auto pChart = new (std::nothrow) CIsochartMesh(m_baseInfo, m_callbackSchemer, m_IsochartEngine);
     if (!pChart)
@@ -3274,11 +3251,10 @@ CIsochartMesh* CIsochartMesh::SplitVertices(
                 continue;
             }
 
-            ISOCHARTFACE* pFace = pChart->m_pFaces + changeFaceList[j];
+            ISOCHARTFACE *pFace = pChart->m_pFaces + changeFaceList[j];
             for (size_t k = 0; k < 3; k++)
             {
-                if (pFace->dwVertexID[k] == splitPath[i]
-                    && corresVertList[j] == splitPath[i])
+                if (pFace->dwVertexID[k] == splitPath[i] && corresVertList[j] == splitPath[i])
                 {
                     pFace->dwVertexID[k] = static_cast<uint32_t>(dwNewVertNumber);
                     changeFaceList[j] = INVALID_FACE_ID;
@@ -3332,10 +3308,10 @@ CIsochartMesh* CIsochartMesh::SplitVertices(
 
 // Calculate the geodesic distance from all other vertices to the source vertice,
 // using dijkstra algorithm. using heap algorithm to get the min-distance at each
-//step.
+// step.
 HRESULT CIsochartMesh::CalculateDijkstraPathToVertex(
     uint32_t dwSourceVertID,
-    uint32_t* pdwFarestPeerVertID) const
+    uint32_t *pdwFarestPeerVertID) const
 {
     uint32_t dwFarestPeerVertID = INVALID_VERT_ID;
 
@@ -3346,7 +3322,7 @@ HRESULT CIsochartMesh::CalculateDijkstraPathToVertex(
         return E_OUTOFMEMORY;
     }
 
-    bool* pbVertProcessed = vertProcessed.get();
+    bool *pbVertProcessed = vertProcessed.get();
     memset(pbVertProcessed, 0, sizeof(bool) * m_dwVertNumber);
 
     auto pHeapItem = heapItem.get();
@@ -3358,7 +3334,7 @@ HRESULT CIsochartMesh::CalculateDijkstraPathToVertex(
     }
 
     // 1. Init the distance to souce of each vertice
-    ISOCHARTVERTEX* pCurrentVertex = m_pVerts;
+    ISOCHARTVERTEX *pCurrentVertex = m_pVerts;
     for (size_t i = 0; i < m_dwVertNumber; i++)
     {
         pCurrentVertex->fGeodesicDistance = FLT_MAX;
@@ -3382,7 +3358,7 @@ HRESULT CIsochartMesh::CalculateDijkstraPathToVertex(
 
     for (size_t i = 0; i < m_dwVertNumber; i++)
     {
-        CMaxHeapItem<float, uint32_t>* pTop = heap.cutTop();
+        CMaxHeapItem<float, uint32_t> *pTop = heap.cutTop();
         if (!pTop)
         {
             break;
@@ -3399,7 +3375,7 @@ HRESULT CIsochartMesh::CalculateDijkstraPathToVertex(
         {
             uint32_t dwAdjacentVertID;
 
-            const ISOCHARTEDGE& edge = m_edges[pCurrentVertex->edgeAdjacent[j]];
+            const ISOCHARTEDGE &edge = m_edges[pCurrentVertex->edgeAdjacent[j]];
             if (edge.dwVertexID[0] == pCurrentVertex->dwID)
             {
                 dwAdjacentVertID = edge.dwVertexID[1];
@@ -3414,12 +3390,10 @@ HRESULT CIsochartMesh::CalculateDijkstraPathToVertex(
                 continue;
             }
 
-            ISOCHARTVERTEX* pAdjacentVertex = m_pVerts + dwAdjacentVertID;
-            if (pAdjacentVertex->fGeodesicDistance
-        > pCurrentVertex->fGeodesicDistance + edge.fLength)
+            ISOCHARTVERTEX *pAdjacentVertex = m_pVerts + dwAdjacentVertID;
+            if (pAdjacentVertex->fGeodesicDistance > pCurrentVertex->fGeodesicDistance + edge.fLength)
             {
-                pAdjacentVertex->fGeodesicDistance
-                    = pCurrentVertex->fGeodesicDistance + edge.fLength;
+                pAdjacentVertex->fGeodesicDistance = pCurrentVertex->fGeodesicDistance + edge.fLength;
 
                 pAdjacentVertex->dwNextVertIDOnPath = pCurrentVertex->dwID;
             }
@@ -3434,18 +3408,17 @@ HRESULT CIsochartMesh::CalculateDijkstraPathToVertex(
                 continue;
             }
 
-            ISOCHARTVERTEX* pAdjacentVertex = m_pVerts + dwAdjacentVertID;
+            ISOCHARTVERTEX *pAdjacentVertex = m_pVerts + dwAdjacentVertID;
 
             if (pHeapItem[dwAdjacentVertID].isItemInHeap())
             {
                 heap.update(pHeapItem + dwAdjacentVertID,
-                    -pAdjacentVertex->fGeodesicDistance);
+                            -pAdjacentVertex->fGeodesicDistance);
             }
             else
             {
                 pHeapItem[dwAdjacentVertID].m_data = dwAdjacentVertID;
-                pHeapItem[dwAdjacentVertID].m_weight
-                    = -pAdjacentVertex->fGeodesicDistance;
+                pHeapItem[dwAdjacentVertID].m_weight = -pAdjacentVertex->fGeodesicDistance;
                 if (!heap.insert(pHeapItem + dwAdjacentVertID))
                 {
                     return E_OUTOFMEMORY;
@@ -3462,11 +3435,9 @@ HRESULT CIsochartMesh::CalculateDijkstraPathToVertex(
     return S_OK;
 }
 
-
 /////////////////////////////////////////////////////////////
 ////////////////Calculate Vertex Importance methods//////////
 /////////////////////////////////////////////////////////////
-
 
 // Using Progressive Mesh Algorithm to simplify current chart to get weight of importance
 // of each vertex.

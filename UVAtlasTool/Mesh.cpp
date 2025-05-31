@@ -46,13 +46,21 @@ using namespace DirectX;
 
 namespace
 {
-    struct handle_closer { void operator()(HANDLE h) noexcept { if (h) CloseHandle(h); } };
+    struct handle_closer
+    {
+        void operator()(HANDLE h) noexcept
+        {
+            if (h)
+                CloseHandle(h);
+        }
+    };
 
     using ScopedHandle = std::unique_ptr<void, handle_closer>;
 
     inline HANDLE safe_handle(HANDLE h) noexcept { return (h == INVALID_HANDLE_VALUE) ? nullptr : h; }
 
-    template<typename T> inline HRESULT write_file(HANDLE hFile, const T& value)
+    template <typename T>
+    inline HRESULT write_file(HANDLE hFile, const T &value)
     {
         DWORD bytesWritten;
         if (!WriteFile(hFile, &value, static_cast<DWORD>(sizeof(T)), &bytesWritten, nullptr))
@@ -64,7 +72,7 @@ namespace
         return S_OK;
     }
 
-    inline HRESULT write_file_string(HANDLE hFile, const wchar_t* value)
+    inline HRESULT write_file_string(HANDLE hFile, const wchar_t *value)
     {
         const UINT length = (value) ? static_cast<UINT>(wcslen(value) + 1) : 1;
 
@@ -107,13 +115,13 @@ namespace
 }
 
 // Move constructor
-Mesh::Mesh(Mesh&& moveFrom) noexcept : mnFaces(0), mnVerts(0)
+Mesh::Mesh(Mesh &&moveFrom) noexcept : mnFaces(0), mnVerts(0)
 {
     *this = std::move(moveFrom);
 }
 
 // Move operator
-Mesh& Mesh::operator= (Mesh&& moveFrom) noexcept
+Mesh &Mesh::operator=(Mesh &&moveFrom) noexcept
 {
     if (this != &moveFrom)
     {
@@ -134,7 +142,6 @@ Mesh& Mesh::operator= (Mesh&& moveFrom) noexcept
     }
     return *this;
 }
-
 
 //--------------------------------------------------------------------------------------
 void Mesh::Clear() noexcept
@@ -158,10 +165,10 @@ void Mesh::Clear() noexcept
     mBlendWeights.reset();
 }
 
-
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-HRESULT Mesh::SetIndexData(size_t nFaces, const uint16_t* indices, const uint32_t* attributes) noexcept
+    HRESULT
+    Mesh::SetIndexData(size_t nFaces, const uint16_t *indices, const uint32_t *attributes) noexcept
 {
     if (!nFaces || !indices)
         return E_INVALIDARG;
@@ -208,7 +215,8 @@ HRESULT Mesh::SetIndexData(size_t nFaces, const uint16_t* indices, const uint32_
 }
 
 _Use_decl_annotations_
-HRESULT Mesh::SetIndexData(size_t nFaces, const uint32_t* indices, const uint32_t* attributes) noexcept
+    HRESULT
+    Mesh::SetIndexData(size_t nFaces, const uint32_t *indices, const uint32_t *attributes) noexcept
 {
     if (!nFaces || !indices)
         return E_INVALIDARG;
@@ -243,9 +251,8 @@ HRESULT Mesh::SetIndexData(size_t nFaces, const uint32_t* indices, const uint32_
     return S_OK;
 }
 
-
 //--------------------------------------------------------------------------------------
-HRESULT Mesh::SetVertexData(const DirectX::VBReader& reader, _In_ size_t nVerts) noexcept
+HRESULT Mesh::SetVertexData(const DirectX::VBReader &reader, _In_ size_t nVerts) noexcept
 {
     if (!nVerts)
         return E_INVALIDARG;
@@ -397,10 +404,10 @@ HRESULT Mesh::SetVertexData(const DirectX::VBReader& reader, _In_ size_t nVerts)
     return S_OK;
 }
 
-
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-HRESULT Mesh::Validate(DirectX::VALIDATE_FLAGS flags, std::wstring* msgs) const noexcept
+    HRESULT
+    Mesh::Validate(DirectX::VALIDATE_FLAGS flags, std::wstring *msgs) const noexcept
 {
     if (!mnFaces || !mIndices || !mnVerts)
         return E_UNEXPECTED;
@@ -408,9 +415,8 @@ HRESULT Mesh::Validate(DirectX::VALIDATE_FLAGS flags, std::wstring* msgs) const 
     return DirectX::Validate(mIndices.get(), mnFaces, mnVerts, mAdjacency.get(), flags, msgs);
 }
 
-
 //--------------------------------------------------------------------------------------
-HRESULT Mesh::Clean(std::vector<uint32_t>& dups, _In_ bool breakBowties) noexcept
+HRESULT Mesh::Clean(std::vector<uint32_t> &dups, _In_ bool breakBowties) noexcept
 {
     if (!mnFaces || !mIndices || !mnVerts || !mPositions)
         return E_UNEXPECTED;
@@ -576,7 +582,6 @@ HRESULT Mesh::Clean(std::vector<uint32_t>& dups, _In_ bool breakBowties) noexcep
     return S_OK;
 }
 
-
 //--------------------------------------------------------------------------------------
 HRESULT Mesh::GenerateAdjacency(_In_ float epsilon) noexcept
 {
@@ -593,7 +598,6 @@ HRESULT Mesh::GenerateAdjacency(_In_ float epsilon) noexcept
     return DirectX::GenerateAdjacencyAndPointReps(mIndices.get(), mnFaces, mPositions.get(), mnVerts, epsilon, nullptr, mAdjacency.get());
 }
 
-
 //--------------------------------------------------------------------------------------
 HRESULT Mesh::ComputeNormals(_In_ DirectX::CNORM_FLAGS flags) noexcept
 {
@@ -606,7 +610,6 @@ HRESULT Mesh::ComputeNormals(_In_ DirectX::CNORM_FLAGS flags) noexcept
 
     return DirectX::ComputeNormals(mIndices.get(), mnFaces, mPositions.get(), mnVerts, flags, mNormals.get());
 }
-
 
 //--------------------------------------------------------------------------------------
 HRESULT Mesh::ComputeTangentFrame(_In_ bool bitangents) noexcept
@@ -629,7 +632,7 @@ HRESULT Mesh::ComputeTangentFrame(_In_ bool bitangents) noexcept
             return E_OUTOFMEMORY;
 
         HRESULT hr = DirectX::ComputeTangentFrame(mIndices.get(), mnFaces, mPositions.get(), mNormals.get(), mTexCoords.get(), mnVerts,
-            tan1.get(), tan2.get());
+                                                  tan1.get(), tan2.get());
         if (FAILED(hr))
             return hr;
     }
@@ -638,7 +641,7 @@ HRESULT Mesh::ComputeTangentFrame(_In_ bool bitangents) noexcept
         mBiTangents.reset();
 
         HRESULT hr = DirectX::ComputeTangentFrame(mIndices.get(), mnFaces, mPositions.get(), mNormals.get(), mTexCoords.get(), mnVerts,
-            tan1.get());
+                                                  tan1.get());
         if (FAILED(hr))
             return hr;
     }
@@ -649,10 +652,10 @@ HRESULT Mesh::ComputeTangentFrame(_In_ bool bitangents) noexcept
     return S_OK;
 }
 
-
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-HRESULT Mesh::UpdateFaces(size_t nFaces, const uint32_t* indices) noexcept
+    HRESULT
+    Mesh::UpdateFaces(size_t nFaces, const uint32_t *indices) noexcept
 {
     if (!nFaces || !indices)
         return E_INVALIDARG;
@@ -671,10 +674,10 @@ HRESULT Mesh::UpdateFaces(size_t nFaces, const uint32_t* indices) noexcept
     return S_OK;
 }
 
-
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-HRESULT Mesh::UpdateAttributes(size_t nFaces, const uint32_t* attributes) noexcept
+    HRESULT
+    Mesh::UpdateAttributes(size_t nFaces, const uint32_t *attributes) noexcept
 {
     if (!nFaces || !attributes)
         return E_INVALIDARG;
@@ -722,10 +725,10 @@ HRESULT Mesh::UpdateAttributes(size_t nFaces, const uint32_t* attributes) noexce
     return S_OK;
 }
 
-
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-HRESULT Mesh::UpdateUVs(size_t nVerts, const XMFLOAT2* uvs, bool keepOriginal) noexcept
+    HRESULT
+    Mesh::UpdateUVs(size_t nVerts, const XMFLOAT2 *uvs, bool keepOriginal) noexcept
 {
     if (!nVerts || !uvs)
         return E_INVALIDARG;
@@ -766,10 +769,10 @@ HRESULT Mesh::UpdateUVs(size_t nVerts, const XMFLOAT2* uvs, bool keepOriginal) n
     return S_OK;
 }
 
-
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-HRESULT Mesh::VertexRemap(const uint32_t* remap, size_t nNewVerts) noexcept
+    HRESULT
+    Mesh::VertexRemap(const uint32_t *remap, size_t nNewVerts) noexcept
 {
     if (!remap || !nNewVerts)
         return E_INVALIDARG;
@@ -898,7 +901,6 @@ HRESULT Mesh::VertexRemap(const uint32_t* remap, size_t nNewVerts) noexcept
     return S_OK;
 }
 
-
 //--------------------------------------------------------------------------------------
 HRESULT Mesh::ReverseWinding() noexcept
 {
@@ -914,7 +916,6 @@ HRESULT Mesh::ReverseWinding() noexcept
 
     return S_OK;
 }
-
 
 //--------------------------------------------------------------------------------------
 HRESULT Mesh::InvertUTexCoord() noexcept
@@ -940,7 +941,6 @@ HRESULT Mesh::InvertUTexCoord() noexcept
     return S_OK;
 }
 
-
 //--------------------------------------------------------------------------------------
 HRESULT Mesh::InvertVTexCoord() noexcept
 {
@@ -964,7 +964,6 @@ HRESULT Mesh::InvertVTexCoord() noexcept
 
     return S_OK;
 }
-
 
 //--------------------------------------------------------------------------------------
 HRESULT Mesh::ReverseHandedness() noexcept
@@ -990,14 +989,13 @@ HRESULT Mesh::ReverseHandedness() noexcept
     return S_OK;
 }
 
-
 //--------------------------------------------------------------------------------------
 HRESULT Mesh::VisualizeUVs(bool useSecondUVs, bool vizNormals) noexcept
 {
     if (!mnVerts || !mPositions)
         return E_UNEXPECTED;
 
-    const XMFLOAT2* sptr = nullptr;
+    const XMFLOAT2 *sptr = nullptr;
     if (useSecondUVs && mTexCoords2)
     {
         sptr = mTexCoords2.get();
@@ -1010,7 +1008,7 @@ HRESULT Mesh::VisualizeUVs(bool useSecondUVs, bool vizNormals) noexcept
     if (!sptr)
         return E_UNEXPECTED;
 
-    XMFLOAT3* dptr = mPositions.get();
+    XMFLOAT3 *dptr = mPositions.get();
     for (size_t j = 0; j < mnVerts; ++j)
     {
         dptr->x = sptr->x;
@@ -1029,8 +1027,8 @@ HRESULT Mesh::VisualizeUVs(bool useSecondUVs, bool vizNormals) noexcept
             if (!colors)
                 return E_OUTOFMEMORY;
 
-            const XMFLOAT3* nptr = mNormals.get();
-            XMFLOAT4* cptr = colors.get();
+            const XMFLOAT3 *nptr = mNormals.get();
+            XMFLOAT4 *cptr = colors.get();
             for (size_t j = 0; j < mnVerts; ++j)
             {
                 // Remap -1..1 to 0..1
@@ -1045,7 +1043,7 @@ HRESULT Mesh::VisualizeUVs(bool useSecondUVs, bool vizNormals) noexcept
             mColors.swap(colors);
         }
 
-        XMFLOAT3* nptr = mNormals.get();
+        XMFLOAT3 *nptr = mNormals.get();
         for (size_t j = 0; j < mnVerts; ++j)
         {
             XMStoreFloat3(nptr, g_XMIdentityR2);
@@ -1056,7 +1054,6 @@ HRESULT Mesh::VisualizeUVs(bool useSecondUVs, bool vizNormals) noexcept
     return S_OK;
 }
 
-
 //--------------------------------------------------------------------------------------
 bool Mesh::Is16BitIndexBuffer() const noexcept
 {
@@ -1066,12 +1063,11 @@ bool Mesh::Is16BitIndexBuffer() const noexcept
     if ((uint64_t(mnFaces) * 3) >= UINT32_MAX)
         return false;
 
-    const uint32_t* iptr = mIndices.get();
+    const uint32_t *iptr = mIndices.get();
     for (size_t j = 0; j < (mnFaces * 3); ++j)
     {
         const uint32_t index = *(iptr++);
-        if (index != uint32_t(-1)
-            && (index >= UINT16_MAX))
+        if (index != uint32_t(-1) && (index >= UINT16_MAX))
         {
             return false;
         }
@@ -1079,7 +1075,6 @@ bool Mesh::Is16BitIndexBuffer() const noexcept
 
     return true;
 }
-
 
 //--------------------------------------------------------------------------------------
 std::unique_ptr<uint16_t[]> Mesh::GetIndexBuffer16() const noexcept
@@ -1098,7 +1093,7 @@ std::unique_ptr<uint16_t[]> Mesh::GetIndexBuffer16() const noexcept
     if (!ib)
         return ib;
 
-    const uint32_t* iptr = mIndices.get();
+    const uint32_t *iptr = mIndices.get();
     for (size_t j = 0; j < count; ++j)
     {
         uint32_t index = *(iptr++);
@@ -1120,9 +1115,8 @@ std::unique_ptr<uint16_t[]> Mesh::GetIndexBuffer16() const noexcept
     return ib;
 }
 
-
 //--------------------------------------------------------------------------------------
-HRESULT Mesh::GetVertexBuffer(const DirectX::VBWriter& writer) const noexcept
+HRESULT Mesh::GetVertexBuffer(const DirectX::VBWriter &writer) const noexcept
 {
     if (!mnVerts || !mPositions)
         return E_UNEXPECTED;
@@ -1225,14 +1219,14 @@ HRESULT Mesh::GetVertexBuffer(const DirectX::VBWriter& writer) const noexcept
     return S_OK;
 }
 
-
 //======================================================================================
 // VBO
 //======================================================================================
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-HRESULT Mesh::ExportToVBO(const wchar_t* szFileName) const noexcept
+    HRESULT
+    Mesh::ExportToVBO(const wchar_t *szFileName) const noexcept
 {
     using namespace VBO;
 
@@ -1320,10 +1314,10 @@ HRESULT Mesh::ExportToVBO(const wchar_t* szFileName) const noexcept
     return S_OK;
 }
 
-
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-HRESULT Mesh::CreateFromVBO(const wchar_t* szFileName, std::unique_ptr<Mesh>& result) noexcept
+    HRESULT
+    Mesh::CreateFromVBO(const wchar_t *szFileName, std::unique_ptr<Mesh> &result) noexcept
 {
     using namespace VBO;
 
@@ -1453,14 +1447,14 @@ HRESULT Mesh::CreateFromVBO(const wchar_t* szFileName, std::unique_ptr<Mesh>& re
     return S_OK;
 }
 
-
 //======================================================================================
 // Visual Studio CMO
 //======================================================================================
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Material* materials) const noexcept
+    HRESULT
+    Mesh::ExportToCMO(const wchar_t *szFileName, size_t nMaterials, const Material *materials) const noexcept
 {
     using namespace VSD3DStarter;
 
@@ -1522,9 +1516,9 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
         for (size_t j = 0; j < mnVerts; ++j, ++sptr)
         {
             const XMVECTOR v = XMLoadFloat4(&mBlendIndices[j]);
-            XMStoreUInt4(reinterpret_cast<XMUINT4*>(&sptr->boneIndex[0]), v);
+            XMStoreUInt4(reinterpret_cast<XMUINT4 *>(&sptr->boneIndex[0]), v);
 
-            const XMFLOAT4* w = &mBlendWeights[j];
+            const XMFLOAT4 *w = &mBlendWeights[j];
             sptr->boneWeight[0] = w->x;
             sptr->boneWeight[1] = w->y;
             sptr->boneWeight[2] = w->z;
@@ -1575,9 +1569,9 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
     }
 
     // Write materials
-    static const Mesh::Material s_defCMOMaterial = { L"default", false, 1.f, 1.f,
-        XMFLOAT3(0.2f, 0.2f, 0.2f), XMFLOAT3(0.8f, 0.8f, 0.8f),
-        XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f), L"" };
+    static const Mesh::Material s_defCMOMaterial = {L"default", false, 1.f, 1.f,
+                                                    XMFLOAT3(0.2f, 0.2f, 0.2f), XMFLOAT3(0.8f, 0.8f, 0.8f),
+                                                    XMFLOAT3(0.f, 0.f, 0.f), XMFLOAT3(0.f, 0.f, 0.f), L""};
 
     UINT materialCount = 1;
     if (nMaterials > 0)
@@ -1596,7 +1590,7 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
 
     for (UINT j = 0; j < materialCount; ++j)
     {
-        auto& m = materials[j];
+        auto &m = materials[j];
 
         if (!m.name.empty())
         {
@@ -1686,7 +1680,7 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
             return hr;
 
         size_t startIndex = 0;
-        for (const auto& it : subsets)
+        for (const auto &it : subsets)
         {
             SubMesh smesh;
             smesh.MaterialIndex = mAttributes[it.first];
@@ -1825,20 +1819,19 @@ HRESULT Mesh::ExportToCMO(const wchar_t* szFileName, size_t nMaterials, const Ma
     return S_OK;
 }
 
-
-
 //======================================================================================
 // SDKMESH
 //======================================================================================
 
 _Use_decl_annotations_
-HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
-    size_t nMaterials, const Material* materials,
-    bool force32bit,
-    bool version2,
-    DXGI_FORMAT normalFormat,
-    DXGI_FORMAT uvFormat,
-    DXGI_FORMAT colorFormat) const noexcept
+    HRESULT
+    Mesh::ExportToSDKMESH(const wchar_t *szFileName,
+                          size_t nMaterials, const Material *materials,
+                          bool force32bit,
+                          bool version2,
+                          DXGI_FORMAT normalFormat,
+                          DXGI_FORMAT uvFormat,
+                          DXGI_FORMAT colorFormat) const noexcept
 {
     using namespace DXUT;
 
@@ -1856,29 +1849,29 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
 
     // Build input layout/vertex decalaration
     static const D3D11_INPUT_ELEMENT_DESC s_elements[] =
-    {
-        { "SV_Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }, // 0
-        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }, // 1
-        { "COLOR", 0, DXGI_FORMAT_B8G8R8A8_UNORM, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }, // 2
-        { "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }, // 3
-        { "BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }, // 4
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }, // 5
-        { "BLENDINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }, // 6
-        { "BLENDWEIGHT", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }, // 7
-    };
+        {
+            {"SV_Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0}, // 0
+            {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},      // 1
+            {"COLOR", 0, DXGI_FORMAT_B8G8R8A8_UNORM, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},        // 2
+            {"TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},     // 3
+            {"BINORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},    // 4
+            {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},       // 5
+            {"BLENDINDICES", 0, DXGI_FORMAT_R8G8B8A8_UINT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},  // 6
+            {"BLENDWEIGHT", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0},  // 7
+        };
 
     static const D3DVERTEXELEMENT9 s_decls[] =
-    {
-        { 0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_POSITION, 0 }, // 0
-        { 0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_NORMAL, 0 }, // 1
-        { 0, 0, D3DDECLTYPE_D3DCOLOR, 0, D3DDECLUSAGE_COLOR, 0 }, // 2
-        { 0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_TANGENT, 0 }, // 3
-        { 0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_BINORMAL, 0 }, // 4
-        { 0, 0, D3DDECLTYPE_FLOAT2, 0, D3DDECLUSAGE_TEXCOORD, 0 }, // 5
-        { 0, 0, D3DDECLTYPE_UBYTE4, 0, D3DDECLUSAGE_BLENDINDICES, 0 }, // 6
-        { 0, 0, D3DDECLTYPE_UBYTE4N, 0, D3DDECLUSAGE_BLENDWEIGHT, 0 }, // 7
-        { 0xFF, 0, D3DDECLTYPE_UNUSED, 0, 0, 0 },
-    };
+        {
+            {0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_POSITION, 0},     // 0
+            {0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_NORMAL, 0},       // 1
+            {0, 0, D3DDECLTYPE_D3DCOLOR, 0, D3DDECLUSAGE_COLOR, 0},      // 2
+            {0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_TANGENT, 0},      // 3
+            {0, 0, D3DDECLTYPE_FLOAT3, 0, D3DDECLUSAGE_BINORMAL, 0},     // 4
+            {0, 0, D3DDECLTYPE_FLOAT2, 0, D3DDECLUSAGE_TEXCOORD, 0},     // 5
+            {0, 0, D3DDECLTYPE_UBYTE4, 0, D3DDECLUSAGE_BLENDINDICES, 0}, // 6
+            {0, 0, D3DDECLTYPE_UBYTE4N, 0, D3DDECLUSAGE_BLENDWEIGHT, 0}, // 7
+            {0xFF, 0, D3DDECLTYPE_UNUSED, 0, 0, 0},
+        };
 
     static_assert((std::size(s_elements) + 1) == std::size(s_decls), "InputLayouts and Vertex Decls disagree");
 
@@ -1887,15 +1880,19 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
     switch (normalFormat)
     {
     case DXGI_FORMAT_R16G16B16A16_FLOAT:
-        normalType = D3DDECLTYPE_FLOAT16_4; normalStride = sizeof(PackedVector::XMHALF4);
+        normalType = D3DDECLTYPE_FLOAT16_4;
+        normalStride = sizeof(PackedVector::XMHALF4);
         break;
 
     case DXGI_FORMAT_R11G11B10_FLOAT: // Biased in GetVertexBuffer
-        normalType = D3DDECLTYPE_DXGI_R11G11B10_FLOAT; normalStride = sizeof(UINT);
+        normalType = D3DDECLTYPE_DXGI_R11G11B10_FLOAT;
+        normalStride = sizeof(UINT);
         break;
 
     default:
-        normalFormat = DXGI_FORMAT_R32G32B32_FLOAT; normalType = D3DDECLTYPE_FLOAT3; normalStride = sizeof(XMFLOAT3);
+        normalFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+        normalType = D3DDECLTYPE_FLOAT3;
+        normalStride = sizeof(XMFLOAT3);
         break;
     }
 
@@ -1904,11 +1901,14 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
     switch (uvFormat)
     {
     case DXGI_FORMAT_R16G16_FLOAT:
-        uvType = D3DDECLTYPE_FLOAT16_2; uvStride = sizeof(PackedVector::XMHALF2);
+        uvType = D3DDECLTYPE_FLOAT16_2;
+        uvStride = sizeof(PackedVector::XMHALF2);
         break;
 
     default:
-        uvFormat = DXGI_FORMAT_R32G32_FLOAT; uvType = D3DDECLTYPE_FLOAT2; uvStride = sizeof(XMFLOAT2);
+        uvFormat = DXGI_FORMAT_R32G32_FLOAT;
+        uvType = D3DDECLTYPE_FLOAT2;
+        uvStride = sizeof(XMFLOAT2);
         break;
     }
 
@@ -1917,27 +1917,34 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
     switch (colorFormat)
     {
     case DXGI_FORMAT_R32G32B32A32_FLOAT:
-        colorType = D3DDECLTYPE_FLOAT4; colorStride = sizeof(XMFLOAT4);
+        colorType = D3DDECLTYPE_FLOAT4;
+        colorStride = sizeof(XMFLOAT4);
         break;
 
     case DXGI_FORMAT_R16G16B16A16_FLOAT:
-        colorType = D3DDECLTYPE_FLOAT16_4; colorStride = sizeof(PackedVector::XMHALF4);
+        colorType = D3DDECLTYPE_FLOAT16_4;
+        colorStride = sizeof(PackedVector::XMHALF4);
         break;
 
     case DXGI_FORMAT_R11G11B10_FLOAT:
-        colorType = D3DDECLTYPE_DXGI_R11G11B10_FLOAT; colorStride = sizeof(UINT);
+        colorType = D3DDECLTYPE_DXGI_R11G11B10_FLOAT;
+        colorStride = sizeof(UINT);
         break;
 
     case DXGI_FORMAT_R10G10B10A2_UNORM:
-        colorType = D3DDECLTYPE_DXGI_R10G10B10A2_UNORM; colorStride = sizeof(UINT);
+        colorType = D3DDECLTYPE_DXGI_R10G10B10A2_UNORM;
+        colorStride = sizeof(UINT);
         break;
 
     case DXGI_FORMAT_R8G8B8A8_UNORM:
-        colorType = D3DDECLTYPE_UBYTE4N; colorStride = sizeof(UINT);
+        colorType = D3DDECLTYPE_UBYTE4N;
+        colorStride = sizeof(UINT);
         break;
 
     default:
-        colorFormat = DXGI_FORMAT_B8G8R8A8_UNORM; colorType = D3DDECLTYPE_D3DCOLOR; colorStride = sizeof(UINT);
+        colorFormat = DXGI_FORMAT_B8G8R8A8_UNORM;
+        colorType = D3DDECLTYPE_D3DCOLOR;
+        colorStride = sizeof(UINT);
         break;
     }
 
@@ -2093,7 +2100,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
             if (!mats)
                 return E_OUTOFMEMORY;
 
-            auto mat2 = reinterpret_cast<SDKMESH_MATERIAL_V2*>(mats.get());
+            auto mat2 = reinterpret_cast<SDKMESH_MATERIAL_V2 *>(mats.get());
             memset(mat2, 0, sizeof(SDKMESH_MATERIAL_V2));
 
             strcpy_s(mat2->Name, "default");
@@ -2108,15 +2115,15 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
             for (size_t j = 0; j < nMaterials; ++j)
             {
                 auto m0 = &materials[j];
-                auto m2 = reinterpret_cast<SDKMESH_MATERIAL_V2*>(&mats[j]);
+                auto m2 = reinterpret_cast<SDKMESH_MATERIAL_V2 *>(&mats[j]);
 
                 memset(m2, 0, sizeof(SDKMESH_MATERIAL_V2));
 
                 if (!m0->name.empty())
                 {
                     const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                        m0->name.c_str(), -1,
-                        m2->Name, MAX_MATERIAL_NAME, nullptr, FALSE);
+                                                           m0->name.c_str(), -1,
+                                                           m2->Name, MAX_MATERIAL_NAME, nullptr, FALSE);
                     if (!result)
                     {
                         *m2->Name = 0;
@@ -2128,8 +2135,8 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
                 if (!m0->texture.empty())
                 {
                     const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                        m0->texture.c_str(), -1,
-                        m2->AlbedoTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                                                           m0->texture.c_str(), -1,
+                                                           m2->AlbedoTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                     if (!result)
                     {
                         *m2->AlbedoTexture = 0;
@@ -2174,8 +2181,8 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
                 if (!m0->normalTexture.empty())
                 {
                     const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                        m0->normalTexture.c_str(), -1,
-                        m2->NormalTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                                                           m0->normalTexture.c_str(), -1,
+                                                           m2->NormalTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                     if (!result)
                     {
                         *m2->NormalTexture = 0;
@@ -2186,8 +2193,8 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
                 if (!m0->emissiveTexture.empty())
                 {
                     const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                        m0->emissiveTexture.c_str(), -1,
-                        m2->EmissiveTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                                                           m0->emissiveTexture.c_str(), -1,
+                                                           m2->EmissiveTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                     if (!result)
                     {
                         *m2->EmissiveTexture = 0;
@@ -2198,8 +2205,8 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
                 if (!m0->rmaTexture.empty())
                 {
                     const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                        m0->rmaTexture.c_str(), -1,
-                        m2->RMATexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                                                           m0->rmaTexture.c_str(), -1,
+                                                           m2->RMATexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                     if (!result)
                     {
                         *m2->RMATexture = 0;
@@ -2237,8 +2244,8 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
             if (!m0->name.empty())
             {
                 const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                    m0->name.c_str(), -1,
-                    m->Name, MAX_MATERIAL_NAME, nullptr, FALSE);
+                                                       m0->name.c_str(), -1,
+                                                       m->Name, MAX_MATERIAL_NAME, nullptr, FALSE);
                 if (!result)
                 {
                     *m->Name = 0;
@@ -2248,8 +2255,8 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
             if (!m0->texture.empty())
             {
                 const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                    m0->texture.c_str(), -1,
-                    m->DiffuseTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                                                       m0->texture.c_str(), -1,
+                                                       m->DiffuseTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                 if (!result)
                 {
                     *m->DiffuseTexture = 0;
@@ -2259,8 +2266,8 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
             if (!m0->normalTexture.empty())
             {
                 const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                    m0->normalTexture.c_str(), -1,
-                    m->NormalTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                                                       m0->normalTexture.c_str(), -1,
+                                                       m->NormalTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                 if (!result)
                 {
                     *m->NormalTexture = 0;
@@ -2270,8 +2277,8 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
             if (!m0->specularTexture.empty())
             {
                 const int result = WideCharToMultiByte(CP_UTF8, WC_NO_BEST_FIT_CHARS,
-                    m0->specularTexture.c_str(), -1,
-                    m->SpecularTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
+                                                       m0->specularTexture.c_str(), -1,
+                                                       m->SpecularTexture, MAX_TEXTURE_NAME, nullptr, FALSE);
                 if (!result)
                 {
                     *m->SpecularTexture = 0;
@@ -2314,7 +2321,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
         auto subsets = ComputeSubsets(mAttributes.get(), mnFaces);
 
         UINT64 startIndex = 0;
-        for (const auto& it : subsets)
+        for (const auto &it : subsets)
         {
             subsetArray.push_back(static_cast<UINT>(submeshes.size()));
 
@@ -2367,10 +2374,7 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
 
     header.HeaderSize = sizeof(SDKMESH_HEADER) + sizeof(SDKMESH_VERTEX_BUFFER_HEADER) + sizeof(SDKMESH_INDEX_BUFFER_HEADER);
 
-    const size_t staticDataSize = sizeof(SDKMESH_MESH)
-        + header.NumTotalSubsets * sizeof(SDKMESH_SUBSET)
-        + sizeof(SDKMESH_FRAME)
-        + header.NumMaterials * sizeof(SDKMESH_MATERIAL);
+    const size_t staticDataSize = sizeof(SDKMESH_MESH) + header.NumTotalSubsets * sizeof(SDKMESH_SUBSET) + sizeof(SDKMESH_FRAME) + header.NumMaterials * sizeof(SDKMESH_MATERIAL);
 
     header.NonBufferDataSize = uint64_t(staticDataSize) + uint64_t(subsetArray.size()) * sizeof(UINT) + sizeof(UINT);
 
@@ -2496,8 +2500,8 @@ HRESULT Mesh::ExportToSDKMESH(const wchar_t* szFileName,
 
     // Write IB data
     bytesToWrite = static_cast<DWORD>(ibHeader.SizeBytes);
-    if (!WriteFile(hFile.get(), (ib16) ? static_cast<void*>(ib16.get()) : static_cast<void*>(mIndices.get()),
-        bytesToWrite, &bytesWritten, nullptr))
+    if (!WriteFile(hFile.get(), (ib16) ? static_cast<void *>(ib16.get()) : static_cast<void *>(mIndices.get()),
+                   bytesToWrite, &bytesWritten, nullptr))
         return HRESULT_FROM_WIN32(GetLastError());
 
     if (bytesWritten != bytesToWrite)

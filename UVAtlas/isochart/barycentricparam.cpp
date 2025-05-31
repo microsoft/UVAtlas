@@ -24,24 +24,25 @@ namespace
         uint32_t m_dwInit;
         uint32_t m_dwPrev;
         uint32_t m_dwCurr;
-        ISOCHARTVERTEX* m_pVerts;
-        const XMFLOAT3* m_pVert3dPos;
+        ISOCHARTVERTEX *m_pVerts;
+        const XMFLOAT3 *m_pVert3dPos;
+
     public:
         CBoundaryIter(
             uint32_t dwInit,
-            ISOCHARTVERTEX* pVerts,
-            const XMFLOAT3* pVert3dPos)
-            :m_dwInit(dwInit),
-            m_dwPrev(dwInit),
-            m_dwCurr(dwInit),
-            m_pVerts(pVerts),
-            m_pVert3dPos(pVert3dPos)
+            ISOCHARTVERTEX *pVerts,
+            const XMFLOAT3 *pVert3dPos)
+            : m_dwInit(dwInit),
+              m_dwPrev(dwInit),
+              m_dwCurr(dwInit),
+              m_pVerts(pVerts),
+              m_pVert3dPos(pVert3dPos)
         {
         }
 
         uint32_t Next()
         {
-            auto& vertAdjacent = m_pVerts[m_dwCurr].vertAdjacent;
+            auto &vertAdjacent = m_pVerts[m_dwCurr].vertAdjacent;
             uint32_t dwAdjacent0 = vertAdjacent[0];
             uint32_t dwAdjacent1 = vertAdjacent[vertAdjacent.size() - 1];
 
@@ -63,23 +64,23 @@ namespace
 
         float GetCurrentEdgeLength()
         {
-            const XMFLOAT3* p1 =
+            const XMFLOAT3 *p1 =
                 m_pVert3dPos + m_pVerts[m_dwCurr].dwIDInRootMesh;
 
-            const XMFLOAT3* p2 =
+            const XMFLOAT3 *p2 =
                 m_pVert3dPos + m_pVerts[m_dwPrev].dwIDInRootMesh;
 
             return IsochartSqrtf((p1->x - p2->x) * (p1->x - p2->x) +
-                (p1->y - p2->y) * (p1->y - p2->y) +
-                (p1->z - p2->z) * (p1->z - p2->z));
+                                 (p1->y - p2->y) * (p1->y - p2->y) +
+                                 (p1->z - p2->z) * (p1->z - p2->z));
         }
     };
 }
 
 HRESULT CIsochartMesh::GenerateVertexMap(
-    std::vector<uint32_t>& vertMap,
-    size_t& dwBoundaryCount,
-    size_t& dwInternalCount)
+    std::vector<uint32_t> &vertMap,
+    size_t &dwBoundaryCount,
+    size_t &dwInternalCount)
 {
     HRESULT hr = S_OK;
 
@@ -87,7 +88,7 @@ HRESULT CIsochartMesh::GenerateVertexMap(
     {
         vertMap.resize(m_dwVertNumber);
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -109,9 +110,9 @@ HRESULT CIsochartMesh::GenerateVertexMap(
 }
 
 HRESULT CIsochartMesh::GenerateBoundaryCoord(
-    std::vector<double>& boundTable,
+    std::vector<double> &boundTable,
     size_t dwBoundaryCount,
-    const std::vector<uint32_t>& vertMap)
+    const std::vector<uint32_t> &vertMap)
 {
     HRESULT hr = S_OK;
 
@@ -133,7 +134,7 @@ HRESULT CIsochartMesh::GenerateBoundaryCoord(
     {
         boundTable.resize(dwBoundaryCount * 2);
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -163,11 +164,11 @@ HRESULT CIsochartMesh::GenerateBoundaryCoord(
 }
 
 HRESULT CIsochartMesh::InitializeBarycentricEquation(
-    CSparseMatrix<double>& A,
-    CVector<double>& BU,
-    CVector<double>& BV,
-    const std::vector<double>& boundTable,
-    const std::vector<uint32_t>& vertMap)
+    CSparseMatrix<double> &A,
+    CVector<double> &BU,
+    CVector<double> &BV,
+    const std::vector<double> &boundTable,
+    const std::vector<uint32_t> &vertMap)
 {
     HRESULT hr = S_OK;
 
@@ -183,7 +184,7 @@ HRESULT CIsochartMesh::InitializeBarycentricEquation(
         orgBU.resize(dwOrgADim);
         orgBV.resize(dwOrgADim);
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -196,7 +197,7 @@ HRESULT CIsochartMesh::InitializeBarycentricEquation(
             continue;
         }
 
-        auto& adjacent = m_pVerts[ii].vertAdjacent;
+        auto &adjacent = m_pVerts[ii].vertAdjacent;
         double bu = 0, bv = 0;
 
         orgA.setItem(vertMap[ii], vertMap[ii], double(adjacent.size()));
@@ -240,10 +241,10 @@ HRESULT CIsochartMesh::InitializeBarycentricEquation(
 }
 
 HRESULT CIsochartMesh::AssignBarycentricResult(
-    CVector<double>& U,
-    CVector<double>& V,
-    const std::vector<double>& boundTable,
-    const std::vector<uint32_t>& vertMap)
+    CVector<double> &U,
+    CVector<double> &V,
+    const std::vector<double> &boundTable,
+    const std::vector<uint32_t> &vertMap)
 {
     HRESULT hr = S_OK;
     for (size_t ii = 0; ii < m_dwVertNumber; ii++)
@@ -263,17 +264,15 @@ HRESULT CIsochartMesh::AssignBarycentricResult(
     return hr;
 }
 
-
-
 HRESULT CIsochartMesh::BarycentricParameterization(
-    bool& bIsOverLap)
+    bool &bIsOverLap)
 {
     HRESULT hr = S_OK;
 
     bIsOverLap = true;
 
-    // 1. Generated Vertex Map for each vertex, indicating its location in 	
-    //COEFFICIENT or CONSTANT part
+    // 1. Generated Vertex Map for each vertex, indicating its location in
+    // COEFFICIENT or CONSTANT part
     std::vector<uint32_t> vertMap;
     size_t dwBoundaryCount = 0;
     size_t dwInternalCount = 0;
@@ -317,12 +316,14 @@ HRESULT CIsochartMesh::BarycentricParameterization(
     // 4. Solve the linear equation set
     FAILURE_GOTO_END(
         (false != CSparseMatrix<double>::ConjugateGradient(
-            U,
-            A,
-            BU,
-            BC_MAX_ITERATION,
-            1e-8,
-            nIterCount) ? S_OK : E_FAIL));
+                      U,
+                      A,
+                      BU,
+                      BC_MAX_ITERATION,
+                      1e-8,
+                      nIterCount)
+             ? S_OK
+             : E_FAIL));
     if (nIterCount >= BC_MAX_ITERATION)
     {
         goto LEnd;
@@ -331,12 +332,14 @@ HRESULT CIsochartMesh::BarycentricParameterization(
     nIterCount = 0;
     FAILURE_GOTO_END(
         (false != CSparseMatrix<double>::ConjugateGradient(
-            V,
-            A,
-            BV,
-            BC_MAX_ITERATION,
-            1e-8,
-            nIterCount) ? S_OK : E_FAIL));
+                      V,
+                      A,
+                      BV,
+                      BC_MAX_ITERATION,
+                      1e-8,
+                      nIterCount)
+             ? S_OK
+             : E_FAIL));
     if (nIterCount >= BC_MAX_ITERATION)
     {
         goto LEnd;

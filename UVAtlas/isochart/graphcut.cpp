@@ -50,7 +50,7 @@ HRESULT CGraphcut::SetWeights(NODEHANDLE hNode, float fSourceWeight, float fSink
     return S_OK;
 }
 
-HRESULT CGraphcut::CutGraph(float& fMaxflow)
+HRESULT CGraphcut::CutGraph(float &fMaxflow)
 {
     graph.ComputeMaxFlow();
     fMaxflow = graph.GetFlow();

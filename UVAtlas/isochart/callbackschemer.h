@@ -15,13 +15,13 @@ namespace Isochart
 {
 
     // CCallbackSchemer provides methods to simplify the callback implementation.
-    // Terms: 
-    // -Main Task: 
-    //	A task composed of several sub-tasks.Caller want to get the rate of 
+    // Terms:
+    // -Main Task:
+    //	A task composed of several sub-tasks.Caller want to get the rate of
     //	progress of main task.
-    // -Sub-Task:  
+    // -Sub-Task:
     //	Small tasks make up a main task. It's relatively easy to decide the total
-    //	work (approximate value)of a sub-task and the time proportion of the 
+    //	work (approximate value)of a sub-task and the time proportion of the
     //	sub-task in main task. The sum of time proportion of each sub-task composed
     //	main task must be 1.0
     //
@@ -29,7 +29,7 @@ namespace Isochart
     // -SetCallback()
     //	Set callback function passed by caller.
     // -InitCallbackAdapt()
-    //	Initialize a sub-task by indicating the total work, time proportion and 
+    //	Initialize a sub-task by indicating the total work, time proportion and
     //  complete percent of main task.
     // -UpdateCallbackAdapt()
     //  Update the total work which has been done in sub task; Check if caller want
@@ -43,33 +43,33 @@ namespace Isochart
     // 	-A main task A has 2 sub-tasks: B, C
     //  -B has nearly 200 steps, costs 35% time of A.
     //  -C has nearly 100 steps, costs 65% time of A.
-    //  To give callers the progress of A. The code is like following: 
+    //  To give callers the progress of A. The code is like following:
     //	1.1 InitCallbackAdapt(200, 0.35f, 0); // Init task B.
-    //  1.2 UpdateCallbackAdapt(1)...UpdateCallbackAdapt(1)... // Perform task B 
+    //  1.2 UpdateCallbackAdapt(1)...UpdateCallbackAdapt(1)... // Perform task B
     //  1.3 FinishWorkAdapt() //Finish task B
     //	2.1 InitCallbackAdapt(100, 0.65f, 0.35); // Init task C.
-    //  2.2 UpdateCallbackAdapt(1)...UpdateCallbackAdapt(1)... // Perform task C 
+    //  2.2 UpdateCallbackAdapt(1)...UpdateCallbackAdapt(1)... // Perform task C
     //  2.3 FinishWorkAdapt() //Finish task C
 
     class CCallbackSchemer
     {
     public:
-        CCallbackSchemer() :
-            m_pCallback(nullptr),
-            m_fCallbackFrequency(0.f),
-            m_dwTotalWork(0),
-            m_dwWorkDone(0),
-            m_dwNextCallback(0),
-            m_dwCallbackDelta(0),
-            m_dwWaitPoint(0),
-            m_dwWaitCount(0),
-            m_bIsWaitToFinish(false),
-            m_fPercentScale(0.f),
-            m_fBase(0.f),
-            m_dwTotalStage(0),
-            m_dwDoneStage(0),
-            m_fPercentOfAllTasks(0.f)
-        {}
+        CCallbackSchemer() : m_pCallback(nullptr),
+                             m_fCallbackFrequency(0.f),
+                             m_dwTotalWork(0),
+                             m_dwWorkDone(0),
+                             m_dwNextCallback(0),
+                             m_dwCallbackDelta(0),
+                             m_dwWaitPoint(0),
+                             m_dwWaitCount(0),
+                             m_bIsWaitToFinish(false),
+                             m_fPercentScale(0.f),
+                             m_fBase(0.f),
+                             m_dwTotalStage(0),
+                             m_dwDoneStage(0),
+                             m_fPercentOfAllTasks(0.f)
+        {
+        }
 
         void SetCallback(
             LPISOCHARTCALLBACK pCallback,
@@ -79,7 +79,6 @@ namespace Isochart
             unsigned int TotalStageCount,
             unsigned int DoneStageCount);
         void IncreaseDoneStage() { m_dwDoneStage++; }
-
 
         void InitCallBackAdapt(
             size_t dwTaskWork,
@@ -96,31 +95,29 @@ namespace Isochart
         float PercentInAllStage();
 
     private:
-
         LPISOCHARTCALLBACK m_pCallback; // Callback function
-        float m_fCallbackFrequency;// The frequency to call callback function.
+        float m_fCallbackFrequency;     // The frequency to call callback function.
 
-        size_t m_dwTotalWork;	// Steps of current sub-task.
-        size_t m_dwWorkDone;		// Steps have been completed in the sub-task.
-        size_t m_dwNextCallback;	// The next point to call callback function.
-        size_t m_dwCallbackDelta;// The frequence to call callback, indicate hwo 
-                                // many steps should be done before next callback
-        size_t m_dwWaitPoint;	// When sub-task reach this point, don't update the
-                                // rate of progress until FinishWorkAdapt 
-        size_t m_dwWaitCount;	// Work with m_dwWaitPoint. keep the frequence of 
-                                // calling callback, but not update rate of progress
-        bool m_bIsWaitToFinish;	// Inidicate sub-task has reached to wait point.
+        size_t m_dwTotalWork;     // Steps of current sub-task.
+        size_t m_dwWorkDone;      // Steps have been completed in the sub-task.
+        size_t m_dwNextCallback;  // The next point to call callback function.
+        size_t m_dwCallbackDelta; // The frequence to call callback, indicate hwo
+                                  // many steps should be done before next callback
+        size_t m_dwWaitPoint;     // When sub-task reach this point, don't update the
+                                  // rate of progress until FinishWorkAdapt
+        size_t m_dwWaitCount;     // Work with m_dwWaitPoint. keep the frequence of
+                                  // calling callback, but not update rate of progress
+        bool m_bIsWaitToFinish;   // Inidicate sub-task has reached to wait point.
 
-        float m_fPercentScale;	// One step of sub-task can complete how many work 
-                                //(in percent)of main work 
-        float m_fBase;	// The complete percent of main task before performing 
-                        //current sub-task.
+        float m_fPercentScale; // One step of sub-task can complete how many work
+                               //(in percent)of main work
+        float m_fBase;         // The complete percent of main task before performing
+                               // current sub-task.
 
         unsigned int m_dwTotalStage;
         unsigned int m_dwDoneStage;
 
         float m_fPercentOfAllTasks;
-
     };
 
     inline void CCallbackSchemer::SetCallback(
@@ -191,8 +188,10 @@ namespace Isochart
             return S_OK;
         }
 
-        if (fPercent > 1.0f) fPercent = 1.0f;
-        if (fPercent < 0.0f) fPercent = 0.0f;
+        if (fPercent > 1.0f)
+            fPercent = 1.0f;
+        if (fPercent < 0.0f)
+            fPercent = 0.0f;
 
         float fRealPercent = m_fBase + m_fPercentOfAllTasks * fPercent;
         fRealPercent = (float(m_dwDoneStage) * 1.0f) / float(m_dwTotalStage) + fRealPercent / float(m_dwTotalStage);
@@ -208,7 +207,7 @@ namespace Isochart
 
         bool bFire = false;
 
-        // Has reached to wait point, not update current progress, but still check 
+        // Has reached to wait point, not update current progress, but still check
         // if caller want to abort.
         if (m_bIsWaitToFinish)
         {
@@ -227,7 +226,7 @@ namespace Isochart
         {
             m_dwWorkDone += dwDone;
 
-            // if reach to the wait point,  set wait flag, initialize m_dwWaitCount 
+            // if reach to the wait point,  set wait flag, initialize m_dwWaitCount
             // to control the frequency to call callback function
             if (m_dwWorkDone >= m_dwWaitPoint)
             {
@@ -253,7 +252,6 @@ namespace Isochart
 
         return S_OK;
     }
-
 
     inline HRESULT CCallbackSchemer::CheckPointAdapt()
     {

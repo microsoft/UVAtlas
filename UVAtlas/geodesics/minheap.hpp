@@ -17,23 +17,22 @@ namespace Internal
     class ReverseComparison
     {
     public:
-        ReverseComparison() :
-            m_data{}
+        ReverseComparison() : m_data{}
         {
         }
-        ReverseComparison(const T& R)
+        ReverseComparison(const T &R)
         {
             m_data = R;
         }
 
-        ReverseComparison(const ReverseComparison&) = default;
-        ReverseComparison& operator=(const ReverseComparison&) = default;
+        ReverseComparison(const ReverseComparison &) = default;
+        ReverseComparison &operator=(const ReverseComparison &) = default;
 
-        bool operator>(const ReverseComparison& R)
+        bool operator>(const ReverseComparison &R)
         {
             return m_data < R.m_data;
         }
-        bool operator<(const ReverseComparison& R)
+        bool operator<(const ReverseComparison &R)
         {
             return m_data > R.m_data;
         }

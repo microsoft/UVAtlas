@@ -20,7 +20,7 @@
 
 namespace VBO
 {
-#pragma pack(push,1)
+#pragma pack(push, 1)
 
     struct header_t
     {

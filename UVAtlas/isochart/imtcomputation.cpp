@@ -28,12 +28,11 @@ namespace
         return a < 1e-12 && a > -1e-12;
     }
 
-
     static bool CheckIMTFromPerVertexSignalInput(
-        const XMFLOAT3* pV3d,
-        const float* pfSignalArray,
+        const XMFLOAT3 *pV3d,
+        const float *pfSignalArray,
         size_t dwSignalDimension,
-        FLOAT3* pfIMTArray)
+        FLOAT3 *pfIMTArray)
     {
         UNREFERENCED_PARAMETER(dwSignalDimension);
 
@@ -46,10 +45,10 @@ namespace
     }
 
     static bool CheckIMTFromTextureMapInput(
-        const XMFLOAT3* pV3d,	// [In] surface coordinates of face's vertices
-        const XMFLOAT2* pUV,	// [In] Texture coordinates of each vertices in the range of 0 to 1.0f
+        const XMFLOAT3 *pV3d, // [In] surface coordinates of face's vertices
+        const XMFLOAT2 *pUV,  // [In] Texture coordinates of each vertices in the range of 0 to 1.0f
         LPIMTSIGNALCALLBACK pfnGetSignal,
-        FLOAT3* pfIMTArray)
+        FLOAT3 *pfIMTArray)
     {
         if (!pV3d || !pUV || !pfIMTArray || !pfnGetSignal)
         {
@@ -60,10 +59,10 @@ namespace
     }
 
     static void ConvertToCanonicalIMT(
-        float* pfCanonicalIMT,
-        float* pfIMT,
-        const XMFLOAT3* pV3d,
-        const XMFLOAT2* pUV)
+        float *pfCanonicalIMT,
+        float *pfIMT,
+        const XMFLOAT3 *pV3d,
+        const XMFLOAT2 *pUV)
     {
         float fOldA = Cal2DTriangleArea(
             pUV, pUV + 1, pUV + 2);
@@ -84,7 +83,6 @@ namespace
             v2d + 2,
             axis);
 
-
         float fNewA = Cal2DTriangleArea(
             v2d, v2d + 1, v2d + 2);
 
@@ -99,19 +97,18 @@ namespace
             pUV + 2,
             pfIMT,
             nullptr);
-
     }
 
     static void CalTriangleIMTFromPerVertexSignal(
-        const XMFLOAT2* pv2D0,
-        const XMFLOAT2* pv2D1,
-        const XMFLOAT2* pv2D2,
+        const XMFLOAT2 *pv2D0,
+        const XMFLOAT2 *pv2D1,
+        const XMFLOAT2 *pv2D2,
         float f2D,
-        float* Ss,
-        float* St,
-        const float* pfSignalArray,
+        float *Ss,
+        float *St,
+        const float *pfSignalArray,
         size_t dwSignalDimension,
-        FLOAT3* pfIMTArray)
+        FLOAT3 *pfIMTArray)
     {
         // if the face's area is 0, the signal may change sharply (when different signal on 3 vertices),
         // for this condition, just specify the IMT to be INF
@@ -130,12 +127,14 @@ namespace
                 }
 
                 Ss[ii] = (q[0] * (pv2D1->y - pv2D2->y) +
-                    q[1] * (pv2D2->y - pv2D0->y) +
-                    q[2] * (pv2D0->y - pv2D1->y)) / f2D;
+                          q[1] * (pv2D2->y - pv2D0->y) +
+                          q[2] * (pv2D0->y - pv2D1->y)) /
+                         f2D;
 
                 St[ii] = (q[0] * (pv2D2->x - pv2D1->x) +
-                    q[1] * (pv2D0->x - pv2D2->x) +
-                    q[2] * (pv2D1->x - pv2D0->x)) / f2D;
+                          q[1] * (pv2D0->x - pv2D2->x) +
+                          q[2] * (pv2D1->x - pv2D0->x)) /
+                         f2D;
             }
 
             (*pfIMTArray)[0] = IsochartVectorDot(Ss, Ss, dwSignalDimension);
@@ -150,12 +149,11 @@ namespace
         double d3dArea,
         size_t dwMaxSplitLevel,
         float fMinVertexUvIDistance,
-        SUBFACE* pFace,
-        std::vector<XMFLOAT2>& vertList)
+        SUBFACE *pFace,
+        std::vector<XMFLOAT2> &vertList)
     {
         // 1. If enough depth has been arrived. Stop split.
-        if (dwMaxSplitLevel != 0
-            && pFace->dwDepth >= dwMaxSplitLevel)
+        if (dwMaxSplitLevel != 0 && pFace->dwDepth >= dwMaxSplitLevel)
         {
             return false;
         }
@@ -194,16 +192,16 @@ namespace
 
     // Split current face
     HRESULT SplitFace(
-        SUBFACE* pFace,
-        std::queue<SUBFACE*>& subFaceList,
-        std::vector<XMFLOAT2>& vertList)
+        SUBFACE *pFace,
+        std::queue<SUBFACE *> &subFaceList,
+        std::vector<XMFLOAT2> &vertList)
     {
         HRESULT hr = S_OK;
         XMFLOAT2 vNew;
 
         uint32_t dwNewIdx = static_cast<uint32_t>(vertList.size());
 
-        SUBFACE* pNewFace[4] = { nullptr, nullptr, nullptr, nullptr };
+        SUBFACE *pNewFace[4] = {nullptr, nullptr, nullptr, nullptr};
 
         // 1. Compute new vertices that split the original triangle into 4-sub triangles.
         try
@@ -211,13 +209,13 @@ namespace
             for (size_t ii = 0; ii < 3; ii++)
             {
                 XMStoreFloat2(&vNew,
-                    XMVectorDivide(
-                        XMVectorAdd(XMLoadFloat2(&vertList[pFace->dwVertIdx[ii]]), XMLoadFloat2(&vertList[pFace->dwVertIdx[(ii + 1) % 3]])),
-                        g_XMTwo));
+                              XMVectorDivide(
+                                  XMVectorAdd(XMLoadFloat2(&vertList[pFace->dwVertIdx[ii]]), XMLoadFloat2(&vertList[pFace->dwVertIdx[(ii + 1) % 3]])),
+                                  g_XMTwo));
                 vertList.push_back(vNew);
             }
         }
-        catch (std::bad_alloc&)
+        catch (std::bad_alloc &)
         {
             hr = E_OUTOFMEMORY;
             goto LEnd;
@@ -231,14 +229,13 @@ namespace
             {
                 hr = E_OUTOFMEMORY;
                 goto LEnd;
-
             }
 
             try
             {
                 subFaceList.push(pNewFace[ii]);
             }
-            catch (std::bad_alloc&)
+            catch (std::bad_alloc &)
             {
                 delete pNewFace[ii];
                 hr = E_OUTOFMEMORY;
@@ -291,21 +288,20 @@ namespace
     }
 }
 
-
 //-------------------------------------------------------------------------------------
 HRESULT Isochart::IMTFromPerVertexSignal(
-    const XMFLOAT3* pV3d,
-    const float* pfSignalArray,
+    const XMFLOAT3 *pV3d,
+    const float *pfSignalArray,
     size_t dwSignalDimension,
-    FLOAT3* pfIMTArray)
+    FLOAT3 *pfIMTArray)
 {
     HRESULT hr = S_OK;
 
     if (!CheckIMTFromPerVertexSignalInput(
-        pV3d,
-        pfSignalArray,
-        dwSignalDimension,
-        pfIMTArray))
+            pV3d,
+            pfSignalArray,
+            dwSignalDimension,
+            pfIMTArray))
     {
         return E_INVALIDARG;
     }
@@ -355,27 +351,26 @@ HRESULT Isochart::IMTFromPerVertexSignal(
     return hr;
 }
 
-
 //-------------------------------------------------------------------------------------
 HRESULT
 Isochart::IMTFromTextureMap(
-    const XMFLOAT3* pV3d,	// [In] surface coordinates of face's vertices
-    const XMFLOAT2* pUV,	// [In] Texture coordinates of each vertices in the range of 0 to 1.0f
-    size_t dwMaxSplitLevel,		// [In] Split into how many levels.
-    float fMinVertexUvIDistance,	// [In] smallest vertices distance, in pixel.
+    const XMFLOAT3 *pV3d,        // [In] surface coordinates of face's vertices
+    const XMFLOAT2 *pUV,         // [In] Texture coordinates of each vertices in the range of 0 to 1.0f
+    size_t dwMaxSplitLevel,      // [In] Split into how many levels.
+    float fMinVertexUvIDistance, // [In] smallest vertices distance, in pixel.
     size_t uPrimitiveId,
     size_t dwSignalDimension,
     LPIMTSIGNALCALLBACK pfnGetSignal,
-    void* lpTextureData,
-    FLOAT3* pfIMTArray)	// [Out] Result IMT
+    void *lpTextureData,
+    FLOAT3 *pfIMTArray) // [Out] Result IMT
 {
     HRESULT hr = S_OK;
 
     if (!CheckIMTFromTextureMapInput(
-        pV3d,
-        pUV,
-        pfnGetSignal,
-        pfIMTArray))
+            pV3d,
+            pUV,
+            pfnGetSignal,
+            pfIMTArray))
     {
         return E_INVALIDARG;
     }
@@ -398,8 +393,8 @@ Isochart::IMTFromTextureMap(
     // to avoid potential stack overflow, just using a queue to simulate the recursing process.
     double dTotalIMT[3];
     FLOAT3 tempIMT;
-    std::queue<SUBFACE*> subFaceIdxList;
-    std::vector<SUBFACE*> finalSubFaceIdxList;
+    std::queue<SUBFACE *> subFaceIdxList;
+    std::vector<SUBFACE *> finalSubFaceIdxList;
     std::vector<XMFLOAT2> vertList;
 
     double d3dArea = fabs(double(Cal3DTriangleArea(
@@ -425,13 +420,13 @@ Isochart::IMTFromTextureMap(
     {
         subFaceIdxList.push(pFace);
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         delete pFace;
         return E_OUTOFMEMORY;
     }
 
-    float* pfSignal = nullptr;
+    float *pfSignal = nullptr;
 
     pFace->dwDepth = 0;
     try
@@ -442,7 +437,7 @@ Isochart::IMTFromTextureMap(
             pFace->dwVertIdx[ii] = ii;
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         hr = E_OUTOFMEMORY;
         goto LEnd;
@@ -453,23 +448,23 @@ Isochart::IMTFromTextureMap(
     {
         assert(!subFaceIdxList.empty());
 
-        SUBFACE* pCurrFace = subFaceIdxList.front();
+        SUBFACE *pCurrFace = subFaceIdxList.front();
         subFaceIdxList.pop();
 
         // Need to split current face again?
         if (IsContinueSplit(
-            d2dArea,
-            d3dArea,
-            dwMaxSplitLevel,
-            fMinVertexUvIDistance,
-            pCurrFace,
-            vertList))
+                d2dArea,
+                d3dArea,
+                dwMaxSplitLevel,
+                fMinVertexUvIDistance,
+                pCurrFace,
+                vertList))
         {
             // Split current face
             if (FAILED(hr = SplitFace(
-                pCurrFace,
-                subFaceIdxList,
-                vertList)))
+                           pCurrFace,
+                           subFaceIdxList,
+                           vertList)))
             {
                 delete pCurrFace;
                 goto LEnd;
@@ -482,7 +477,7 @@ Isochart::IMTFromTextureMap(
             {
                 finalSubFaceIdxList.push_back(pCurrFace);
             }
-            catch (std::bad_alloc&)
+            catch (std::bad_alloc &)
             {
                 delete pCurrFace;
                 hr = E_OUTOFMEMORY;
@@ -519,11 +514,10 @@ Isochart::IMTFromTextureMap(
         pfSignal += dwSignalDimension;
     }
 
-
     dTotalIMT[0] = dTotalIMT[1] = dTotalIMT[2] = 0;
     for (size_t ii = 0; ii < finalSubFaceIdxList.size(); ii++)
     {
-        SUBFACE* pCurrFace = finalSubFaceIdxList[ii];
+        SUBFACE *pCurrFace = finalSubFaceIdxList[ii];
         // Compute IMT of current face
         pfSignal = pfTriangleSignal.get();
         for (size_t jj = 0; jj < 3; jj++)
@@ -556,13 +550,12 @@ Isochart::IMTFromTextureMap(
         delete pCurrFace;
     }
 
-
     for (size_t ii = 0; ii < IMT_DIM; ii++)
     {
         (*pfIMTArray)[ii] = static_cast<float>(double((*pfIMTArray)[ii]) / d3dArea);
     }
 
-    // 4. Convert to canonical IMT 
+    // 4. Convert to canonical IMT
     ConvertToCanonicalIMT(
         (*pfIMTArray), (*pfIMTArray), pV3d, pUV);
 
@@ -592,8 +585,6 @@ LEnd:
     return hr;
 }
 
-
-
 //////////////////////////////////////////////////////////////////////////////////////////
 namespace
 {
@@ -622,8 +613,7 @@ namespace
             result = pos - fmod(pos, gutter);
         }
 
-        return IsInZeroRangeDouble(pos - result - gutter) ?
-            pos : result;
+        return IsInZeroRangeDouble(pos - result - gutter) ? pos : result;
     }
 
     static inline double maxPos(
@@ -640,14 +630,13 @@ namespace
             result = pos + (gutter - fmod(pos, gutter));
         }
 
-        return IsInZeroRangeDouble(result - pos - gutter) ?
-            pos : result;
+        return IsInZeroRangeDouble(result - pos - gutter) ? pos : result;
     }
 
     static inline void GetBoundOnLine(
-        double* pLine,
-        double& minBound,
-        double& maxBound)
+        double *pLine,
+        double &minBound,
+        double &maxBound)
     {
         minBound = DBL_MAX;
         maxBound = -DBL_MAX;
@@ -668,15 +657,15 @@ namespace
         }
     }
     static void GetCoveredPixelsCount(
-        DOUBLEVECTOR2* pUV,
+        DOUBLEVECTOR2 *pUV,
         double fTexelLengthW,
         double fTexelLengthH,
-        DOUBLEVECTOR2& leftBottom,
-        uint32_t& dwRowLineCount,
-        uint32_t& dwColLineCount)
+        DOUBLEVECTOR2 &leftBottom,
+        uint32_t &dwRowLineCount,
+        uint32_t &dwColLineCount)
     {
-        DOUBLEVECTOR2 minV = { DBL_MAX, DBL_MAX };
-        DOUBLEVECTOR2 maxV = { -DBL_MAX, -DBL_MAX };
+        DOUBLEVECTOR2 minV = {DBL_MAX, DBL_MAX};
+        DOUBLEVECTOR2 maxV = {-DBL_MAX, -DBL_MAX};
 
         for (size_t ii = 0; ii < 3; ii++)
         {
@@ -716,20 +705,19 @@ namespace
     }
 
     static HRESULT ComputeAllIntersection(
-        DOUBLEVECTOR2* pUV,
+        DOUBLEVECTOR2 *pUV,
         double fTexelLengthW,
         double fTexelLengthH,
-        DOUBLEVECTOR2& leftBottom,
+        DOUBLEVECTOR2 &leftBottom,
         size_t dwRowCount,
         size_t dwColCount,
-        double* rgvVerticalIntersection,
-        double* rgvHorizonIntersection)
+        double *rgvVerticalIntersection,
+        double *rgvHorizonIntersection)
     {
         assert(rgvHorizonIntersection != nullptr);
         assert(rgvVerticalIntersection != nullptr);
 
         HRESULT hr = S_OK;
-
 
         for (size_t ii = 0; ii < dwRowCount * 3; ii++)
         {
@@ -776,10 +764,9 @@ namespace
             fy = (fx - v0.x) * (v1.y - v0.y) / (v1.x - v0.x) + v0.y;
             double fYDelta = (fTexelLengthW) * (v1.y - v0.y) / (v1.x - v0.x);
 
-
             uint32_t dwStart = intround((fx - leftBottom.x) / fTexelLengthW);
 
-            double* p =
+            double *p =
                 rgvVerticalIntersection + dwStart * 3 + ii;
             do
             {
@@ -828,7 +815,7 @@ namespace
 
             uint32_t dwStart = intround((fy - leftBottom.y) / fTexelLengthH);
 
-            double* p =
+            double *p =
                 rgvHorizonIntersection + dwStart * 3 + ii;
             do
             {
@@ -845,22 +832,21 @@ namespace
     }
 
     static bool IsPointInSquare(
-        DOUBLEVECTOR2& leftBottom,
+        DOUBLEVECTOR2 &leftBottom,
         double fEdgeLengthW,
         double fEdgeLengthH,
-        DOUBLEVECTOR2& point)
+        DOUBLEVECTOR2 &point)
     {
-        return
-            point.x >= leftBottom.x &&
-            point.y >= leftBottom.y &&
-            point.x <= leftBottom.x + fEdgeLengthW &&
-            point.y <= leftBottom.y + fEdgeLengthH;
+        return point.x >= leftBottom.x &&
+               point.y >= leftBottom.y &&
+               point.x <= leftBottom.x + fEdgeLengthW &&
+               point.y <= leftBottom.y + fEdgeLengthH;
     }
 
     static HRESULT GenerateAccumulationLines(
-        std::vector<DOUBLEVECTOR2>& keyPointList, // all key points on the lines, composite a convex polygon
-        std::vector<DOUBLEVECTOR2>& above, // above line when applying 2 times accumulation
-        std::vector<DOUBLEVECTOR2>& below)// below line when applying 2 times accumulation
+        std::vector<DOUBLEVECTOR2> &keyPointList, // all key points on the lines, composite a convex polygon
+        std::vector<DOUBLEVECTOR2> &above,        // above line when applying 2 times accumulation
+        std::vector<DOUBLEVECTOR2> &below)        // below line when applying 2 times accumulation
     {
         if (keyPointList.empty())
         {
@@ -888,8 +874,8 @@ namespace
         }
 
         // 1. Find the left most point
-        DOUBLEVECTOR2 leftMost = { DBL_MAX, DBL_MAX };
-        DOUBLEVECTOR2 rightMost = { -DBL_MAX, -DBL_MAX };
+        DOUBLEVECTOR2 leftMost = {DBL_MAX, DBL_MAX};
+        DOUBLEVECTOR2 rightMost = {-DBL_MAX, -DBL_MAX};
         DOUBLEVECTOR2 tempV;
         double fTemp;
 
@@ -899,7 +885,7 @@ namespace
             return E_OUTOFMEMORY;
         }
 
-        double* pTanList = tanList.get();
+        double *pTanList = tanList.get();
 
         uint32_t dwLeftMost = 0;
         for (size_t ii = 0; ii < keyPointList.size(); ii++)
@@ -971,8 +957,7 @@ namespace
             {
                 below.push_back(keyPointList[dwCur]);
                 dwCur++;
-            } while (dwCur < keyPointList.size()
-                && keyPointList[dwCur - 1].x < keyPointList[dwCur].x);
+            } while (dwCur < keyPointList.size() && keyPointList[dwCur - 1].x < keyPointList[dwCur].x);
 
             assert(keyPointList[dwCur - 1].x == rightMost.x);
             assert(keyPointList[dwCur - 1].y == rightMost.y);
@@ -992,7 +977,7 @@ namespace
                 }
             }
         }
-        catch (std::bad_alloc&)
+        catch (std::bad_alloc &)
         {
             return E_OUTOFMEMORY;
         }
@@ -1010,10 +995,10 @@ namespace
     }
 
     static bool CalculateLineParameters(
-        DOUBLEVECTOR2& v1,
-        DOUBLEVECTOR2& v2,
-        double& a,
-        double& b)
+        DOUBLEVECTOR2 &v1,
+        DOUBLEVECTOR2 &v2,
+        double &a,
+        double &b)
     {
 
         if (IsInZeroRangeDouble(v2.x - v1.x))
@@ -1028,7 +1013,7 @@ namespace
     }
 
     static uint32_t NextItegralPoint(
-        std::vector<DOUBLEVECTOR2>& line,
+        std::vector<DOUBLEVECTOR2> &line,
         uint32_t dwCur)
     {
         size_t dwNext = dwCur + 1;
@@ -1044,13 +1029,13 @@ namespace
     }
 
     static HRESULT Accumulation(
-        DOUBLEVECTOR2* corner,
-        float* pfSignal,
+        DOUBLEVECTOR2 *corner,
+        float *pfSignal,
         size_t dwSignalDimension,
-        std::vector<DOUBLEVECTOR2>& above, // above line when applying 2 times accumulation
-        std::vector<DOUBLEVECTOR2>& below,
+        std::vector<DOUBLEVECTOR2> &above, // above line when applying 2 times accumulation
+        std::vector<DOUBLEVECTOR2> &below,
         double IMTResult[],
-        double& dPieceArea)// below line when applying 2 times accumulation)
+        double &dPieceArea) // below line when applying 2 times accumulation)
     {
         HRESULT hr = S_OK;
 
@@ -1067,10 +1052,10 @@ namespace
             return E_OUTOFMEMORY;
         }
 
-        double* m1 = m.get();
-        double* m2 = m1 + dwSignalDimension;
-        double* m3 = m2 + dwSignalDimension;
-        double* m4 = m3 + dwSignalDimension;
+        double *m1 = m.get();
+        double *m2 = m1 + dwSignalDimension;
+        double *m3 = m2 + dwSignalDimension;
+        double *m4 = m3 + dwSignalDimension;
 
         /*
         // Following is a texel,
@@ -1189,7 +1174,8 @@ namespace
                     n1 * (uu2 - uu1) / 2 +
                     n0 * (u2 - u1);
 
-                if (fTemp < 0) fTemp = 0;//Theoritically, the result must larger than 0
+                if (fTemp < 0)
+                    fTemp = 0; // Theoritically, the result must larger than 0
                 IMTResult[0] += fTemp;
 
                 n3 = m3[ii] * m3[ii] * (a2 - a1);
@@ -1202,7 +1188,8 @@ namespace
                     n2 * (uuu2 - uuu1) / 3 +
                     n1 * (uu2 - uu1) / 2 +
                     n0 * (u2 - u1);
-                if (fTemp < 0) fTemp = 0; //Theoritically, the result must larger than 0
+                if (fTemp < 0)
+                    fTemp = 0; // Theoritically, the result must larger than 0
 
                 IMTResult[2] += fTemp;
 
@@ -1230,19 +1217,19 @@ namespace
 
     static HRESULT ComputeIMTOnPixel(
         double tempIMT[],
-        DOUBLEVECTOR2* pUV,
+        DOUBLEVECTOR2 *pUV,
         double fTexelLengthW,
         double fTexelLengthH,
         size_t dwRow,
-        double* rgvHorizonIntersection,
+        double *rgvHorizonIntersection,
         size_t dwCol,
-        double* rgvVerticalIntersection,
-        DOUBLEVECTOR2& leftBottom,
+        double *rgvVerticalIntersection,
+        DOUBLEVECTOR2 &leftBottom,
         size_t uPrimitiveId,
         size_t dwSignalDimension,
         LPIMTSIGNALCALLBACK pfnGetSignal,
-        void* lpTextureData,
-        double& dPieceArea)
+        void *lpTextureData,
+        double &dPieceArea)
     {
         HRESULT hr = S_OK;
 
@@ -1300,28 +1287,28 @@ namespace
                     minY,
                     maxY);
 
-                if (minX > corner[0].x&& minX < corner[1].x)
+                if (minX > corner[0].x && minX < corner[1].x)
                 {
                     p1.x = minX;
                     p1.y = corner[ii].y;
                     keyPointList.push_back(p1);
                 }
 
-                if (maxX > corner[0].x&& maxX < corner[1].x)
+                if (maxX > corner[0].x && maxX < corner[1].x)
                 {
                     p1.x = maxX;
                     p1.y = corner[ii].y;
                     keyPointList.push_back(p1);
                 }
 
-                if (minY > corner[0].y&& minY < corner[1].y)
+                if (minY > corner[0].y && minY < corner[1].y)
                 {
                     p1.x = corner[ii].x;
                     p1.y = minY;
                     keyPointList.push_back(p1);
                 }
 
-                if (maxY > corner[0].y&& maxY < corner[1].y)
+                if (maxY > corner[0].y && maxY < corner[1].y)
                 {
                     p1.x = corner[ii].x;
                     p1.y = maxY;
@@ -1329,12 +1316,11 @@ namespace
                 }
             }
 
-
             // Find the points belong to the triangle and inside the square
             for (size_t jj = 0; jj < 3; jj++)
             {
                 if (IsPointInSquare(
-                    corner[0], fTexelLengthW, fTexelLengthH, pUV[jj]))
+                        corner[0], fTexelLengthW, fTexelLengthH, pUV[jj]))
                 {
                     keyPointList.push_back(pUV[jj]);
                 }
@@ -1344,13 +1330,13 @@ namespace
                 return hr;
             }
         }
-        catch (std::bad_alloc&)
+        catch (std::bad_alloc &)
         {
             return E_OUTOFMEMORY;
         }
 
-        std::vector< DOUBLEVECTOR2 > above;
-        std::vector< DOUBLEVECTOR2 > below;
+        std::vector<DOUBLEVECTOR2> above;
+        std::vector<DOUBLEVECTOR2> below;
 
         FAILURE_RETURN(
             GenerateAccumulationLines(
@@ -1370,7 +1356,7 @@ namespace
             return E_OUTOFMEMORY;
         }
 
-        float* pfSignal = signalBase.get();
+        float *pfSignal = signalBase.get();
         for (size_t ii = 0; ii < 2; ii++)
         {
             c.y = float(corner[ii].y);
@@ -1405,22 +1391,21 @@ namespace
 
     struct IMTFloatArrayDescIn
     {
-        float* pTexture;
+        float *pTexture;
         size_t uHeight, uWidth, uStride;
     };
 }
 
-
 //-------------------------------------------------------------------------------------
 HRESULT
 Isochart::IMTFromTextureMapEx(
-    const XMFLOAT3* pV3d,	// [In] surface coordinates of face's vertices
-    const XMFLOAT2* pUV,	// [In] Texture coordinates of each vertices in the range of 0 to 1.0f
+    const XMFLOAT3 *pV3d, // [In] surface coordinates of face's vertices
+    const XMFLOAT2 *pUV,  // [In] Texture coordinates of each vertices in the range of 0 to 1.0f
     size_t uPrimitiveId,
     size_t dwSignalDimension,
     LPIMTSIGNALCALLBACK pfnGetSignal,
-    void* lpTextureData,
-    FLOAT3* pfIMTArray)	// [Out] Result IMT
+    void *lpTextureData,
+    FLOAT3 *pfIMTArray) // [Out] Result IMT
 {
     HRESULT hr = S_OK;
 
@@ -1441,8 +1426,8 @@ Isochart::IMTFromTextureMapEx(
         return S_OK;
     }
 
-    auto pTexDesc = reinterpret_cast<IMTFloatArrayDescIn*>(lpTextureData);
-    DOUBLEVECTOR2 leftBottom = { 0.0, 0.0 };
+    auto pTexDesc = reinterpret_cast<IMTFloatArrayDescIn *>(lpTextureData);
+    DOUBLEVECTOR2 leftBottom = {0.0, 0.0};
 
     double fTexelLengthW = (1.0 / double(pTexDesc->uWidth));
     double fTexelLengthH = (1.0 / double(pTexDesc->uHeight));
@@ -1471,14 +1456,14 @@ Isochart::IMTFromTextureMapEx(
     }
 
     if (FAILED(hr = ComputeAllIntersection(
-        uv,
-        fTexelLengthW,
-        fTexelLengthH,
-        leftBottom,
-        dwRowLineCount,
-        dwColLineCount,
-        rgvVerticalIntersection.get(),
-        rgvHorizonIntersection.get())))
+                   uv,
+                   fTexelLengthW,
+                   fTexelLengthH,
+                   leftBottom,
+                   dwRowLineCount,
+                   dwColLineCount,
+                   rgvVerticalIntersection.get(),
+                   rgvHorizonIntersection.get())))
     {
         return hr;
     }
@@ -1495,20 +1480,20 @@ Isochart::IMTFromTextureMapEx(
         for (size_t jj = 0; jj < dwColLineCount - 1; jj++)
         {
             if (FAILED(hr = ComputeIMTOnPixel(
-                tempIMT,
-                uv,
-                fTexelLengthW,
-                fTexelLengthH,
-                ii,
-                rgvHorizonIntersection.get(),
-                jj,
-                rgvVerticalIntersection.get(),
-                leftBottom,
-                uPrimitiveId,
-                dwSignalDimension,
-                pfnGetSignal,
-                lpTextureData,
-                dPieceArea)))
+                           tempIMT,
+                           uv,
+                           fTexelLengthW,
+                           fTexelLengthH,
+                           ii,
+                           rgvHorizonIntersection.get(),
+                           jj,
+                           rgvVerticalIntersection.get(),
+                           leftBottom,
+                           uPrimitiveId,
+                           dwSignalDimension,
+                           pfnGetSignal,
+                           lpTextureData,
+                           dPieceArea)))
             {
                 return hr;
             }

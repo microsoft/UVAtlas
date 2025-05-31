@@ -14,14 +14,13 @@
 
 using namespace GeodesicDist;
 
-CExactOneToAll::CExactOneToAll() :
-    m_pVertices(nullptr),
-    m_pIndices(nullptr),
-    m_pAdj(nullptr),
-    m_dwNumBytesPerVertex(0),
-    m_dwNumFaces(0),
-    m_dwNumVertices(0),
-    m_dwSrcVertexIdx(0)
+CExactOneToAll::CExactOneToAll() : m_pVertices(nullptr),
+                                   m_pIndices(nullptr),
+                                   m_pAdj(nullptr),
+                                   m_dwNumBytesPerVertex(0),
+                                   m_dwNumFaces(0),
+                                   m_dwNumVertices(0),
+                                   m_dwSrcVertexIdx(0)
 {
     m_EdgeWindowsHeap.SetManageMode(Isochart::AUTOMATIC);
 }
@@ -45,17 +44,13 @@ void CExactOneToAll::SetSrcVertexIdx(const uint32_t dwSrcVertexIdx)
 
     for (size_t i = 0; i < m_EdgeList.size(); ++i)
     {
-        Edge& thisEdge = m_EdgeList[i];
+        Edge &thisEdge = m_EdgeList[i];
 
         thisEdge.WindowsList.clear();
 
         if (!thisEdge.HasVertexIdx(dwSrcVertexIdx) &&
-            (
-            (thisEdge.pAdjFace0 && thisEdge.pAdjFace0->HasVertexIdx(dwSrcVertexIdx))
-                ||
-                (thisEdge.pAdjFace1 && thisEdge.pAdjFace1->HasVertexIdx(dwSrcVertexIdx))
-                )
-            )
+            ((thisEdge.pAdjFace0 && thisEdge.pAdjFace0->HasVertexIdx(dwSrcVertexIdx)) ||
+             (thisEdge.pAdjFace1 && thisEdge.pAdjFace1->HasVertexIdx(dwSrcVertexIdx))))
         {
             EdgeWindow tmpEdgeWindow;
 
@@ -81,7 +76,7 @@ void CExactOneToAll::SetSrcVertexIdx(const uint32_t dwSrcVertexIdx)
     m_VertexList[m_dwSrcVertexIdx].dGeoDistanceToSrc = 0;
 }
 
-void CExactOneToAll::AddWindowToHeapAndEdge(const EdgeWindow& WindowToAdd)
+void CExactOneToAll::AddWindowToHeapAndEdge(const EdgeWindow &WindowToAdd)
 {
     // add the new window to heap and the edge
     auto pItem = new TypeEdgeWindowsHeap::item_type(std::min(WindowToAdd.d0, WindowToAdd.d1) + WindowToAdd.dPseuSrcToSrcDistance, WindowToAdd);
@@ -108,7 +103,7 @@ void CExactOneToAll::AddWindowToHeapAndEdge(const EdgeWindow& WindowToAdd)
 }
 
 // pop off one window from the heap and unreference the corresponding one on the edge
-void CExactOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
+void CExactOneToAll::CutHeapTopData(EdgeWindow &EdgeWindowOut)
 {
     auto pItem = m_EdgeWindowsHeap.cutTop();
 
@@ -133,9 +128,9 @@ void CExactOneToAll::InternalRun()
 {
     DVector2 w0, w1, w2, e0, e1, e2;
     uint32_t dwFacePropagateTo, dwThirdPtIdxOnFacePropagateTo, dwEdgeIdxPropagateTo0, dwEdgeIdxPropagateTo1, dwPtE1Idx;
-    Face* pFacePropageteTo;
-    Edge* pEdge0, * pEdge1;
-    Vertex* pThridPtOnFacePropagateTo, * pPtE1;
+    Face *pFacePropageteTo;
+    Edge *pEdge0, *pEdge1;
+    Vertex *pThridPtOnFacePropagateTo, *pPtE1;
     DVector2 w0_to_e0_e2, w0_to_e1_e2, w1_to_e0_e2, w1_to_e1_e2;
     bool bW2W0OnE0E2, bW2W0OnE1E2, bW2W1OnE0E2, bW2W1OnE1E2;
 
@@ -158,7 +153,7 @@ void CExactOneToAll::InternalRun()
             continue;
         }
 
-        //pPtE0 = WindowToBePropagated.pMarkFromEdgeVertex;
+        // pPtE0 = WindowToBePropagated.pMarkFromEdgeVertex;
 
         dwFacePropagateTo = WindowToBePropagated.pEdge->GetAnotherFaceIdx(WindowToBePropagated.dwFaceIdxPropagatedFrom);
         pFacePropageteTo = &m_FaceList[dwFacePropagateTo];
@@ -183,7 +178,7 @@ void CExactOneToAll::InternalRun()
         w1.y = 0;
 
         // the parameterized pseudo source w2 may be computed by b0, b1, d1 and d0
-        //ComputeSrcPtFromb0b1d0d1( WindowToBePropagated.b0, WindowToBePropagated.b1, WindowToBePropagated.d0, WindowToBePropagated.d1, w2 ) ;
+        // ComputeSrcPtFromb0b1d0d1( WindowToBePropagated.b0, WindowToBePropagated.b1, WindowToBePropagated.d0, WindowToBePropagated.d1, w2 ) ;
 
         // however, in this improved version, it is stored directly
         w2 = WindowToBePropagated.dv2Src;
@@ -196,8 +191,8 @@ void CExactOneToAll::InternalRun()
             w1.x = e1.x;
         }
         ParameterizePt3ToPt2(*WindowToBePropagated.pMarkFromEdgeVertex,
-            *pPtE1,
-            *pThridPtOnFacePropagateTo, e2);
+                             *pPtE1,
+                             *pThridPtOnFacePropagateTo, e2);
         e2.y = -e2.y;
 
         GetCommonPointOf2Lines(e0, e2, w2, w0, w0_to_e0_e2, bW2W0OnE0E2);
@@ -299,7 +294,7 @@ void CExactOneToAll::InternalRun()
             }
             if (w1.x == e1.x)
             {
-                tmpWindow0.b1 = pEdge1->dEdgeLength;  //SqrtWithAssert( SquredD2Dist( e1, e2 ) ) ;
+                tmpWindow0.b1 = pEdge1->dEdgeLength; // SqrtWithAssert( SquredD2Dist( e1, e2 ) ) ;
                 tmpWindow0.d1 = sqrt(SquredD2Dist(e1, w2));
             }
             else
@@ -330,7 +325,7 @@ void CExactOneToAll::InternalRun()
                 tmpWindow0.d0 = pEdge0->dEdgeLength;
                 tmpWindow0.d1 = sqrt(SquredD2Dist(w0_to_e1_e2, e0));
                 tmpWindow0.SetMarkFromEdgeVertexIdx(m_VertexList, dwThirdPtIdxOnFacePropagateTo);
-                //ParameterizePt2ToPt2( e2, e1, e0, tmpWindow0.dv2Src ) ;
+                // ParameterizePt2ToPt2( e2, e1, e0, tmpWindow0.dv2Src ) ;
                 ParameterizePt3ToPt2(*pThridPtOnFacePropagateTo, *pPtE1, *WindowToBePropagated.pMarkFromEdgeVertex, tmpWindow0.dv2Src);
 
                 tmpWindow0.ksi = WindowToBePropagated.ksi;
@@ -346,14 +341,14 @@ void CExactOneToAll::InternalRun()
                 {
                     pThridPtOnFacePropagateTo->bShadowBoundary = true;
 
-                    Edge* pBridgeEdge = pEdge0;
-                    Face* pShadowFace = pBridgeEdge->GetAnotherFace(dwFacePropagateTo);
+                    Edge *pBridgeEdge = pEdge0;
+                    Face *pShadowFace = pBridgeEdge->GetAnotherFace(dwFacePropagateTo);
                     uint32_t dwShadowFace = pBridgeEdge->GetAnotherFaceIdx(dwFacePropagateTo);
-                    Edge* pShadowEdge = pShadowFace->GetOpposingEdge(WindowToBePropagated.dwMarkFromEdgeVertexIdx);
+                    Edge *pShadowEdge = pShadowFace->GetOpposingEdge(WindowToBePropagated.dwMarkFromEdgeVertexIdx);
                     uint32_t dwShadowEdge = pShadowFace->GetOpposingEdgeIdx(WindowToBePropagated.dwMarkFromEdgeVertexIdx);
 
                     uint32_t dwThisShadowVertex = dwThirdPtIdxOnFacePropagateTo;
-                    Vertex* pNextShadowVertex = pShadowEdge->GetAnotherVertex(dwThirdPtIdxOnFacePropagateTo);
+                    Vertex *pNextShadowVertex = pShadowEdge->GetAnotherVertex(dwThirdPtIdxOnFacePropagateTo);
 
                     std::vector<uint32_t> shadowEdges;
                     std::vector<uint32_t> shadowFaces;
@@ -365,7 +360,7 @@ void CExactOneToAll::InternalRun()
                         if (pNextShadowVertex == pThridPtOnFacePropagateTo ||
                             pNextShadowVertex->bShadowBoundary /*||
                             pBridgeEdge->IsBoundary()*/
-                            )
+                        )
                             break;
 
                         pBridgeEdge = pShadowFace->GetOpposingEdge(dwThisShadowVertex);
@@ -381,12 +376,11 @@ void CExactOneToAll::InternalRun()
                     }
 
                     if (pNextShadowVertex != pThridPtOnFacePropagateTo &&
-                        (pNextShadowVertex->bShadowBoundary || pBridgeEdge->IsBoundary())
-                        )
+                        (pNextShadowVertex->bShadowBoundary || pBridgeEdge->IsBoundary()))
                     {
                         for (size_t v = 0; v < shadowEdges.size(); ++v)
                         {
-                            //EdgeWindow newWindow ;
+                            // EdgeWindow newWindow ;
 
                             tmpWindow0.SetEdgeIdx(m_EdgeList, shadowEdges[v]);
                             tmpWindow0.SetFaceIdxPropagatedFrom(m_FaceList, shadowFaces[v]);
@@ -425,7 +419,7 @@ void CExactOneToAll::InternalRun()
             }
             if (w0.x == e0.x)
             {
-                tmpWindow0.b1 = pEdge0->dEdgeLength; //SqrtWithAssert( SquredD2Dist( e0, e2 ) ) ;
+                tmpWindow0.b1 = pEdge0->dEdgeLength; // SqrtWithAssert( SquredD2Dist( e0, e2 ) ) ;
                 tmpWindow0.d1 = sqrt(SquredD2Dist(e0, w2));
             }
             else
@@ -471,15 +465,15 @@ void CExactOneToAll::InternalRun()
                 {
                     pThridPtOnFacePropagateTo->bShadowBoundary = true;
 
-                    Edge* pBridgeEdge = pEdge1;
-                    Face* pShadowFace = pBridgeEdge->GetAnotherFace(dwFacePropagateTo);
+                    Edge *pBridgeEdge = pEdge1;
+                    Face *pShadowFace = pBridgeEdge->GetAnotherFace(dwFacePropagateTo);
                     uint32_t dwShadowFace = pBridgeEdge->GetAnotherFaceIdx(dwFacePropagateTo);
                     uint32_t dwE1 = WindowToBePropagated.pEdge->GetAnotherVertexIdx(WindowToBePropagated.dwMarkFromEdgeVertexIdx);
-                    Edge* pShadowEdge = pShadowFace->GetOpposingEdge(dwE1);
+                    Edge *pShadowEdge = pShadowFace->GetOpposingEdge(dwE1);
                     uint32_t dwShadowEdge = pShadowFace->GetOpposingEdgeIdx(dwE1);
 
                     uint32_t dwThisShadowVertex = dwThirdPtIdxOnFacePropagateTo;
-                    Vertex* pNextShadowVertex = pShadowEdge->GetAnotherVertex(dwThirdPtIdxOnFacePropagateTo);
+                    Vertex *pNextShadowVertex = pShadowEdge->GetAnotherVertex(dwThirdPtIdxOnFacePropagateTo);
 
                     std::vector<uint32_t> shadowEdges;
                     std::vector<uint32_t> shadowFaces;
@@ -491,7 +485,7 @@ void CExactOneToAll::InternalRun()
                         if (pNextShadowVertex == pThridPtOnFacePropagateTo ||
                             pNextShadowVertex->bShadowBoundary /*||
                             pBridgeEdge->IsBoundary()*/
-                            )
+                        )
                             break;
 
                         pBridgeEdge = pShadowFace->GetOpposingEdge(dwThisShadowVertex);
@@ -507,12 +501,11 @@ void CExactOneToAll::InternalRun()
                     }
 
                     if (pNextShadowVertex != pThridPtOnFacePropagateTo &&
-                        (pNextShadowVertex->bShadowBoundary || pBridgeEdge->IsBoundary())
-                        )
+                        (pNextShadowVertex->bShadowBoundary || pBridgeEdge->IsBoundary()))
                     {
                         for (size_t v = 0; v < shadowEdges.size(); ++v)
                         {
-                            //EdgeWindow newWindow ;
+                            // EdgeWindow newWindow ;
 
                             tmpWindow0.SetEdgeIdx(m_EdgeList, shadowEdges[v]);
                             tmpWindow0.SetFaceIdxPropagatedFrom(m_FaceList, shadowFaces[v]);
@@ -546,12 +539,12 @@ void CExactOneToAll::InternalRun()
             {
                 for (size_t j = 0; j < m_VertexList[i].edgesAdj.size(); ++j)
                 {
-                    Edge* pEdge;
+                    Edge *pEdge;
                     pEdge = m_VertexList[i].edgesAdj[j];
 
                     for (size_t l = 0; l < pEdge->WindowsList.size(); ++l)
                     {
-                        EdgeWindow& theWindow = pEdge->WindowsList[l].theWindow;
+                        EdgeWindow &theWindow = pEdge->WindowsList[l].theWindow;
 
                         if (theWindow.dwMarkFromEdgeVertexIdx == i)
                         {
@@ -573,7 +566,7 @@ void CExactOneToAll::InternalRun()
                         }
                         else
                         {
-                            Vertex* pAnotherPt = &m_VertexList[i];
+                            Vertex *pAnotherPt = &m_VertexList[i];
                             if (theWindow.b1 > (theWindow.pEdge->dEdgeLength - pAnotherPt->dLengthOfWindowEdgeToThisVertex))
                             {
                                 pAnotherPt->dLengthOfWindowEdgeToThisVertex = theWindow.pEdge->dEdgeLength - theWindow.b1;
@@ -597,7 +590,7 @@ void CExactOneToAll::InternalRun()
     }
 }
 
-void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
+void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow *pNewEdgeWindow)
 {
     std::vector<EdgeWindow> NewWindowsList;
     NewWindowsList.push_back(*pNewEdgeWindow);
@@ -624,13 +617,12 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
             auto pExistingWindowItem =
                 new TypeEdgeWindowsHeap::item_type(
                     std::min(pNewEdgeWindow->pEdge->WindowsList[i].theWindow.d0, pNewEdgeWindow->pEdge->WindowsList[i].theWindow.d1) + pNewEdgeWindow->pEdge->WindowsList[i].theWindow.dPseuSrcToSrcDistance,
-                    pNewEdgeWindow->pEdge->WindowsList[i].theWindow
-                );
+                    pNewEdgeWindow->pEdge->WindowsList[i].theWindow);
 
             // the copy of current window on edge is then tested with the new window for intersection
             // after this test, the copy is possibly changed
             IntersectWindow(&pExistingWindowItem->m_data,
-                pNewEdgeWindow, &bExistingWindowChanged, &bNewWindowChanged, &bExistingWindowNotAvailable, &bNewWindowNotAvailable);
+                            pNewEdgeWindow, &bExistingWindowChanged, &bNewWindowChanged, &bExistingWindowNotAvailable, &bNewWindowNotAvailable);
 
             if (m_NewExistingWindow.b1 - m_NewExistingWindow.b0 > 0) // m_NewExistingWindow is modified in IntersectWindow
                 WindowToBeInserted = m_NewExistingWindow;
@@ -644,7 +636,7 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
             bool bDontDelete;
             bDontDelete = false;
 
-            // after the intersection operation, if the existing window has been changed, 
+            // after the intersection operation, if the existing window has been changed,
             // remove the old one from the heap (if it is in heap) and update the one on edge
             if (bExistingWindowChanged)
             {
@@ -652,7 +644,7 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
                 if (pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem)
                 {
                     // get the item in heap and remove it from the heap
-                    TypeEdgeWindowsHeap::item_type* pHeapItem = pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem;
+                    TypeEdgeWindowsHeap::item_type *pHeapItem = pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem;
 
                     m_EdgeWindowsHeap.remove(pHeapItem);
                     delete pHeapItem;
@@ -670,7 +662,7 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
                     else
                     {
                         // we set a flag here, that this window on edge is to be removed
-                        pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem = reinterpret_cast<TypeEdgeWindowsHeap::item_type*>(FLAG_INVALID_SIZE_T);
+                        pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem = reinterpret_cast<TypeEdgeWindowsHeap::item_type *>(FLAG_INVALID_SIZE_T);
                     }
                 }
                 else
@@ -681,7 +673,7 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
                         pNewEdgeWindow->pEdge->WindowsList[i].theWindow = pExistingWindowItem->m_data;
                     }
                     else
-                        pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem = reinterpret_cast<TypeEdgeWindowsHeap::item_type*>(FLAG_INVALID_SIZE_T);
+                        pNewEdgeWindow->pEdge->WindowsList[i].pHeapItem = reinterpret_cast<TypeEdgeWindowsHeap::item_type *>(FLAG_INVALID_SIZE_T);
                 }
             }
 
@@ -726,7 +718,7 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
                 }
             }
 
-            Vertex* pAnotherPt = WindowToBeInserted.pEdge->GetAnotherVertex(WindowToBeInserted.dwMarkFromEdgeVertexIdx);
+            Vertex *pAnotherPt = WindowToBeInserted.pEdge->GetAnotherVertex(WindowToBeInserted.dwMarkFromEdgeVertexIdx);
             if (pAnotherPt != nullptr && (WindowToBeInserted.b1 > (WindowToBeInserted.pEdge->dEdgeLength - 0.01)))
             {
                 if ((WindowToBeInserted.d1 + WindowToBeInserted.dPseuSrcToSrcDistance) < pAnotherPt->dGeoDistanceToSrc)
@@ -740,7 +732,7 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
 
         // after intersect the new window with all the existing windows on edge, if the new window is still available
         // add it to the edge and heap
-        if (!bNewWindowNotAvailable/*pNewEdgeWindow->b0 < pNewEdgeWindow->b1*/)
+        if (!bNewWindowNotAvailable /*pNewEdgeWindow->b0 < pNewEdgeWindow->b1*/)
         {
             auto pNewWindowItem = new TypeEdgeWindowsHeap::item_type(std::min(pNewEdgeWindow->d0, pNewEdgeWindow->d1) + pNewEdgeWindow->dPseuSrcToSrcDistance, *pNewEdgeWindow);
 
@@ -759,7 +751,7 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
                 }
             }
 
-            Vertex* pAnotherPt = pNewEdgeWindow->pEdge->GetAnotherVertex(pNewEdgeWindow->dwMarkFromEdgeVertexIdx);
+            Vertex *pAnotherPt = pNewEdgeWindow->pEdge->GetAnotherVertex(pNewEdgeWindow->dwMarkFromEdgeVertexIdx);
             if (pAnotherPt && (pNewEdgeWindow->b1 > (pNewEdgeWindow->pEdge->dEdgeLength - 0.01)))
             {
                 if ((pNewEdgeWindow->d1 + pNewEdgeWindow->dPseuSrcToSrcDistance) < pAnotherPt->dGeoDistanceToSrc)
@@ -776,12 +768,12 @@ void CExactOneToAll::ProcessNewWindow(_In_ EdgeWindow* pNewEdgeWindow)
 }
 
 // [see "intersection of overlapping windows" of the paper]
-void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
-    _In_ EdgeWindow* pNewWindow,
-    bool* pExistingWindowChanged,
-    bool* pNewWindowChanged,
-    bool* pExistingWindowNotAvailable,
-    bool* pNewWindowNotAvailable)
+void CExactOneToAll::IntersectWindow(_In_ EdgeWindow *pExistingWindow,
+                                     _In_ EdgeWindow *pNewWindow,
+                                     bool *pExistingWindowChanged,
+                                     bool *pNewWindowChanged,
+                                     bool *pExistingWindowNotAvailable,
+                                     bool *pNewWindowNotAvailable)
 {
     memset(&m_NewExistingWindow, 0, sizeof(EdgeWindow));
     memset(&m_AnotherNewWindow, 0, sizeof(EdgeWindow));
@@ -797,7 +789,7 @@ void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
 
     // although the existing window and the new window are on the same edge of the mesh,
     // their b0 may count from different edge vertices (out from the two edge vertex)
-    // if this is the case, adjust so that both window's b0 count from the same edge vertex 
+    // if this is the case, adjust so that both window's b0 count from the same edge vertex
 
     // also, after this if statement, all the windows on this edge should be count from the same vertex of edge (because the new window will be adjusted correspond to all the existing one)
     if (pExistingWindow->dwMarkFromEdgeVertexIdx != pNewWindow->dwMarkFromEdgeVertexIdx)
@@ -850,8 +842,8 @@ void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
 
     const double dErrorOverlapLength = 0.00001;
 
-    // the new window is within the existing window    
-    if (pNewWindow->b0 > pExistingWindow->b0&& pNewWindow->b1 < pExistingWindow->b1)
+    // the new window is within the existing window
+    if (pNewWindow->b0 > pExistingWindow->b0 && pNewWindow->b1 < pExistingWindow->b1)
     {
         if (pNewWindow->b0 - pExistingWindow->b0 > dErrorOverlapLength)
         {
@@ -883,8 +875,8 @@ void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
         }
     }
 
-    // the existing window is within the new window    
-    if (pExistingWindow->b0 > pNewWindow->b0&& pExistingWindow->b1 < pNewWindow->b1)
+    // the existing window is within the new window
+    if (pExistingWindow->b0 > pNewWindow->b0 && pExistingWindow->b1 < pNewWindow->b1)
     {
         if (pExistingWindow->b0 - pNewWindow->b0 > dErrorOverlapLength)
         {
@@ -916,7 +908,7 @@ void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
         }
     }
 
-    // the position of the intersection's start point 
+    // the position of the intersection's start point
     // there are two possibilities:
     // the intersection starts from pExistingWindow->b0 or
     // the intersection starts from pNewWindow->b0
@@ -924,21 +916,21 @@ void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
     bool bStartFromNewWindowB0 = false;
 
     // intersection is from pNewWindow->b0 up to length IntersectionLength
-    if (pNewWindow->b0 > pExistingWindow->b0&& pNewWindow->b0 < pExistingWindow->b1)
+    if (pNewWindow->b0 > pExistingWindow->b0 && pNewWindow->b0 < pExistingWindow->b1)
     {
         IntersectionStart = pNewWindow->b0;
         bStartFromNewWindowB0 = true;
     }
 
     // intersection is from pExistingWindow->b0 up to length IntersectionLength
-    else if (pExistingWindow->b0 > pNewWindow->b0&& pExistingWindow->b0 < pNewWindow->b1)
+    else if (pExistingWindow->b0 > pNewWindow->b0 && pExistingWindow->b0 < pNewWindow->b1)
     {
         IntersectionStart = pExistingWindow->b0;
         bStartFromNewWindowB0 = false;
     }
     else
 
-        // pNewWindow->b0 == pExistingWindow->b0
+    // pNewWindow->b0 == pExistingWindow->b0
     {
         IntersectionStart = pNewWindow->b0;
         bStartFromNewWindowB0 = true;
@@ -951,7 +943,7 @@ void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
     }
 
     // we consider this to be an error overlap, if the overlap is too small
-    if (IntersectionLength > 0 && IntersectionLength <= dErrorOverlapLength/*0*/)
+    if (IntersectionLength > 0 && IntersectionLength <= dErrorOverlapLength /*0*/)
     {
         // we adjust the extent of the new window to eliminate the overlap
         if (bStartFromNewWindowB0)
@@ -984,11 +976,11 @@ void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
 
     bool bNoSolution = false;
 
-    bNoSolution = true;  // force no solution, in reality, this produces very good results and also reduces process time
+    bNoSolution = true; // force no solution, in reality, this produces very good results and also reduces process time
 
     if (bNoSolution)
     {
-        // whether the distance function of the new window is larger than that of the existing window everywhere in the intersection        
+        // whether the distance function of the new window is larger than that of the existing window everywhere in the intersection
         if ((sqrt(SquredD2Dist(DVector2(IntersectionStart + IntersectionLength / 2, 0), NewWindowSrc)) + pNewWindow->dPseuSrcToSrcDistance) >
             (sqrt(SquredD2Dist(DVector2(IntersectionStart + IntersectionLength / 2, 0), ExistingWindowSrc)) + pExistingWindow->dPseuSrcToSrcDistance))
         {
@@ -1005,7 +997,7 @@ void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
                 pNewWindow->b1 -= IntersectionLength;
                 if (pNewWindow->b1 <= pNewWindow->b0)
                 {
-                    //assert(false) ;
+                    // assert(false) ;
                     *pNewWindowNotAvailable = true;
                     *pNewWindowChanged = true;
 
@@ -1021,7 +1013,7 @@ void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
                 pNewWindow->b0 += IntersectionLength;
                 if (pNewWindow->b0 >= pNewWindow->b1)
                 {
-                    //assert(false) ;
+                    // assert(false) ;
                     *pNewWindowNotAvailable = true;
                     *pNewWindowChanged = true;
 
@@ -1035,7 +1027,7 @@ void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
             *pNewWindowChanged = true;
         }
         else
-            // the distance function of the existing window is larger than that of the new window everywhere in the intersection
+        // the distance function of the existing window is larger than that of the new window everywhere in the intersection
         {
             if (pNewWindow->b0 == pExistingWindow->b0 && pNewWindow->b1 == pExistingWindow->b1)
             {
@@ -1050,7 +1042,7 @@ void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
                 pExistingWindow->b1 -= IntersectionLength;
                 if (pExistingWindow->b1 <= pExistingWindow->b0)
                 {
-                    //assert(false) ;
+                    // assert(false) ;
                     *pExistingWindowNotAvailable = true;
                     *pExistingWindowChanged = true;
                 }
@@ -1064,7 +1056,7 @@ void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
                 pExistingWindow->b0 += IntersectionLength;
                 if (pExistingWindow->b0 >= pExistingWindow->b1)
                 {
-                    //assert(false) ;
+                    // assert(false) ;
                     *pExistingWindowNotAvailable = true;
                     *pExistingWindowChanged = true;
                 }
@@ -1078,9 +1070,9 @@ void CExactOneToAll::IntersectWindow(_In_ EdgeWindow* pExistingWindow,
     }
 }
 
-void CExactOneToAll::GenerateWindowsAroundSaddleOrBoundaryVertex(const EdgeWindow& iwindow,
-    const uint32_t dwSaddleOrBoundaryVertexId,
-    std::vector<EdgeWindow>& WindowsOut)
+void CExactOneToAll::GenerateWindowsAroundSaddleOrBoundaryVertex(const EdgeWindow &iwindow,
+                                                                 const uint32_t dwSaddleOrBoundaryVertexId,
+                                                                 std::vector<EdgeWindow> &WindowsOut)
 {
     WindowsOut.clear();
 
@@ -1096,8 +1088,7 @@ void CExactOneToAll::GenerateWindowsAroundSaddleOrBoundaryVertex(const EdgeWindo
         tmpWindow.b1 = tmpWindow.pEdge->dEdgeLength;
         tmpWindow.d0 = sqrt(SquredD3Dist(*tmpWindow.pEdge->pVertex0, m_VertexList[dwSaddleOrBoundaryVertexId]));
         tmpWindow.d1 = sqrt(SquredD3Dist(*tmpWindow.pEdge->pVertex1, m_VertexList[dwSaddleOrBoundaryVertexId]));
-        tmpWindow.dPseuSrcToSrcDistance = (iwindow.dwMarkFromEdgeVertexIdx == dwSaddleOrBoundaryVertexId ? iwindow.d0 : iwindow.d1)
-            + iwindow.dPseuSrcToSrcDistance;
+        tmpWindow.dPseuSrcToSrcDistance = (iwindow.dwMarkFromEdgeVertexIdx == dwSaddleOrBoundaryVertexId ? iwindow.d0 : iwindow.d1) + iwindow.dPseuSrcToSrcDistance;
         ParameterizePt3ToPt2(*tmpWindow.pEdge->pVertex0, *tmpWindow.pEdge->pVertex1, m_VertexList[dwSaddleOrBoundaryVertexId], tmpWindow.dv2Src);
 
         tmpWindow.ksi = iwindow.ksi;

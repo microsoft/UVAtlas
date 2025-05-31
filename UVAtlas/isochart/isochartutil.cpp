@@ -18,7 +18,7 @@ namespace
     static inline bool CalculateOverlappedSegmentsIntersection(
         float a0, float a1,
         float a3, float a4,
-        float& result)
+        float &result)
     {
         result = 0;
 
@@ -47,7 +47,6 @@ namespace
         }
 
         return true;
-
     }
 
     // Check if two lines : (x0, y0), (x1,y1) and (x3,y3), (x4, y4) intersect
@@ -57,11 +56,11 @@ namespace
     // ask fT and fS
     // If two lines intersect, fT and fS must between 0.0 and 1.0
     static void CalculateSegmentsIntersection(
-        const XMFLOAT2& p0, const XMFLOAT2& p1,	// Two ports of segment 1
-        const XMFLOAT2& p3, const XMFLOAT2& p4,	// Two ports of segment 2
-        XMFLOAT2& intersection,
-        float& fT,
-        float& fS)
+        const XMFLOAT2 &p0, const XMFLOAT2 &p1, // Two ports of segment 1
+        const XMFLOAT2 &p3, const XMFLOAT2 &p4, // Two ports of segment 2
+        XMFLOAT2 &intersection,
+        float &fT,
+        float &fS)
     {
         float x0, x1, x3, x4;
         float y0, y1, y3, y4;
@@ -78,7 +77,7 @@ namespace
         x4 = p4.x;
         y4 = p4.y;
 
-        fT = -2.0f;	// Set fT and fS to a value out of the range [0.0, 1.0]
+        fT = -2.0f; // Set fT and fS to a value out of the range [0.0, 1.0]
         fS = -2.0f;
 
         // if line degenerates into point, return
@@ -96,11 +95,11 @@ namespace
         if (IsInZeroRange(x3 - x4))
         {
             // Logically,  y4 - y3 must not be zero here. or else the function will return before
-            // run to here.  Using assert here only for check the potential error 
-            // (such as Stack Overflow), and tell the readers why we need not  defend 
+            // run to here.  Using assert here only for check the potential error
+            // (such as Stack Overflow), and tell the readers why we need not  defend
             // devide-zero exception, when using y4 - y3 or y3 - y4 as denominator
             // The other assert(!IsInZeroRange(...)) in the function also have the same
-            // target as this. 
+            // target as this.
             assert(!IsInZeroRange(y4 - y3));
 
             if (IsInZeroRange(x0 - x1))
@@ -118,12 +117,12 @@ namespace
                 {
                     intersection.x = x0;
                     if (!CalculateOverlappedSegmentsIntersection(
-                        y0, y1, y3, y4, intersection.y))
+                            y0, y1, y3, y4, intersection.y))
                     {
                         return;
                     }
-                    //y0 + fT*(y1-y0) = intersection.y
-                    //y3 + fS*(y4-y3) = intersection.y
+                    // y0 + fT*(y1-y0) = intersection.y
+                    // y3 + fS*(y4-y3) = intersection.y
 
                     fT = (intersection.y - y0) / (y1 - y0);
                     fS = (intersection.y - y3) / (y4 - y3);
@@ -148,7 +147,7 @@ namespace
             if (IsInZeroRange(y0 - y1))
             {
                 // x0 + fT*(x1 - x0) = x3 + fS*(x4 - x3) = x
-                // y0 = y3 = y			
+                // y0 = y3 = y
                 assert(!IsInZeroRange(x0 - x1));
 
                 if (!IsInZeroRange(y3 - y0))
@@ -159,13 +158,13 @@ namespace
                 {
                     intersection.y = y0;
                     if (!CalculateOverlappedSegmentsIntersection(
-                        x0, x1, x3, x4, intersection.x))
+                            x0, x1, x3, x4, intersection.x))
                     {
                         return;
                     }
 
-                    // x0 + fT*(x1 - x0) = intersection.x 
-                    // x3 + fS*(x4 - x3) = intersection.x 
+                    // x0 + fT*(x1 - x0) = intersection.x
+                    // x3 + fS*(x4 - x3) = intersection.x
                     fT = (intersection.x - x0) / (x1 - x0);
                     fS = (intersection.x - x3) / (x4 - x3);
 
@@ -175,7 +174,7 @@ namespace
             else // y0 != y1
             {
                 // x0 + fT*(x1 - x0) = x3 + fS*(x4 - x3) = x
-                // y0 + fT*(y1 - y0) = y3 = y	
+                // y0 + fT*(y1 - y0) = y3 = y
 
                 fT = (y3 - y0) / (y1 - y0);
                 intersection.x = x0 + fT * (x1 - x0);
@@ -214,7 +213,6 @@ namespace
 
             fT = (intersection.x - x0) / (x1 - x0);
             return;
-
         }
         else
         {
@@ -247,21 +245,20 @@ namespace
             v2[0] /= fLength;
             v2[1] /= fLength;
 
-            // 2. Two lines are parallel. 
-            if (fabsf(v1[0] * v2[1] - v1[1] * v2[0])
-                < ISOCHART_ZERO_EPS / 2.0f)
+            // 2. Two lines are parallel.
+            if (fabsf(v1[0] * v2[1] - v1[1] * v2[0]) < ISOCHART_ZERO_EPS / 2.0f)
             {
                 v1[0] = (x3 - x0) / (x1 - x0);
                 v1[1] = (y3 - y0) / (y1 - y0);
 
-                if (!IsInZeroRange(v1[0] - v1[1]))//Two lines are not overlapped, return
+                if (!IsInZeroRange(v1[0] - v1[1])) // Two lines are not overlapped, return
                 {
                     return;
                 }
-                else //Calculate intersection of overlapped lines
+                else // Calculate intersection of overlapped lines
                 {
                     if (!CalculateOverlappedSegmentsIntersection(
-                        x0, x1, x3, x4, intersection.x))
+                            x0, x1, x3, x4, intersection.x))
                     {
                         return;
                     }
@@ -295,11 +292,11 @@ namespace
 }
 
 bool Isochart::IsochartIsSegmentsIntersect(
-    const XMFLOAT2& p0,
-    const XMFLOAT2& p1,
-    const XMFLOAT2& p3,
-    const XMFLOAT2& p4,
-    XMFLOAT2* pIntersection)
+    const XMFLOAT2 &p0,
+    const XMFLOAT2 &p1,
+    const XMFLOAT2 &p3,
+    const XMFLOAT2 &p4,
+    XMFLOAT2 *pIntersection)
 {
     XMFLOAT2 intersection;
     float fS, fT;
@@ -308,7 +305,7 @@ bool Isochart::IsochartIsSegmentsIntersect(
         p0, p1, p3, p4, intersection, fS, fT);
 
     float epsion2 = ISOCHART_ZERO_EPS * ISOCHART_ZERO_EPS;
-    if (fS > -epsion2 && fS<epsion2 + 1 && fT>-epsion2 && fT < epsion2 + 1)
+    if (fS > -epsion2 && fS < epsion2 + 1 && fT > -epsion2 && fT < epsion2 + 1)
     {
         if (pIntersection)
         {
@@ -321,10 +318,10 @@ bool Isochart::IsochartIsSegmentsIntersect(
 }
 
 float Isochart::CalL2SquaredStretchLowBoundOnFace(
-    const float* pMT,
+    const float *pMT,
     float fFace3DArea,
     float fMaxDistortionRate,
-    float* fRotMatrix)
+    float *fRotMatrix)
 {
     assert(!IsInZeroRange2(fMaxDistortionRate));
     if (fRotMatrix)
@@ -364,15 +361,12 @@ float Isochart::CalL2SquaredStretchLowBoundOnFace(
     float a10 = IMT[1];
     float a11 = IMT[2] - d1;
 
-
-
-    //assert(IsInZeroRange(a00/a01 - a10/a11));
+    // assert(IsInZeroRange(a00/a01 - a10/a11));
 
     float b00 = IMT[0] - d2;
     float b01 = IMT[1];
     float b10 = IMT[1];
     float b11 = IMT[2] - d2;
-
 
     // Solve the optical tansform maxtrix
     float v1[2];
@@ -414,8 +408,7 @@ float Isochart::CalL2SquaredStretchLowBoundOnFace(
         v2[1] = -b10 / delta2;
     }
 
-
-    //assert(IsInZeroRange(v1[0]*v2[0]+v1[1]*v2[1]));
+    // assert(IsInZeroRange(v1[0]*v2[0]+v1[1]*v2[1]));
     /*
     v1[0] /= IsochartSqrtf(a01*a01 + a00*a00);
     v1[1] /= IsochartSqrtf(a01*a01 + a00*a00);
@@ -423,8 +416,8 @@ float Isochart::CalL2SquaredStretchLowBoundOnFace(
     v2[0] /= IsochartSqrtf(b01*b01 + b00*b00);
     v2[1] /= IsochartSqrtf(b01*b01 + b00*b00);*/
 
-    //assert(IsInZeroRange(v1[0]*v1[0] + v2[0]*v2[0]-1));
-    //assert(IsInZeroRange(v1[1]*v1[1] + v2[1]*v2[1]-1));
+    // assert(IsInZeroRange(v1[0]*v1[0] + v2[0]*v2[0]-1));
+    // assert(IsInZeroRange(v1[1]*v1[1] + v2[1]*v2[1]-1));
     float m0 = v1[0] * v1[0] * d1 + v2[0] * v2[0] * d2;
     float m1 = v1[0] * v1[1] * d1 + v2[0] * v2[1] * d2;
     float m2 = v1[1] * v1[1] * d1 + v2[1] * v2[1] * d2;
@@ -454,9 +447,9 @@ float Isochart::CalL2SquaredStretchLowBoundOnFace(
         fRotMatrix[3] = a0 / delta;
     }
 
-    //float fTestStretch0 = (IMT[0]+IMT[2])/2;
-    //float fTesttretch1 = IsochartSqrtf(d1*d2);
-    //float fTestStretch2 = IMT[0]*IMT[2] - IMT[1]*IMT[1];
+    // float fTestStretch0 = (IMT[0]+IMT[2])/2;
+    // float fTesttretch1 = IsochartSqrtf(d1*d2);
+    // float fTestStretch2 = IMT[0]*IMT[2] - IMT[1]*IMT[1];
 
     float fSigStretch = ((a0 * a0 + a2 * a2) * m0 + 2 * (a0 * a1 + a2 * a3) * m1 + (a1 * a1 + a3 * a3) * m2) / 2;
     float fGeoStretch = (d * d + 1 / (d * d)) * fFace3DArea;
@@ -466,7 +459,7 @@ float Isochart::CalL2SquaredStretchLowBoundOnFace(
 }
 
 float Isochart::CombineSigAndGeoStretch(
-    const float* pMT,
+    const float *pMT,
     float fSigStretch,
     float fGeoStretch)
 {

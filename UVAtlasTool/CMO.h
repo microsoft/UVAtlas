@@ -20,7 +20,6 @@
 
 #include <cstdint>
 
-
 namespace VSD3DStarter
 {
     // .CMO files
@@ -82,15 +81,15 @@ namespace VSD3DStarter
     //      }
     // }
 
-#pragma pack(push,1)
+#pragma pack(push, 1)
 
     struct Material
     {
-        DirectX::XMFLOAT4   Ambient;
-        DirectX::XMFLOAT4   Diffuse;
-        DirectX::XMFLOAT4   Specular;
-        float               SpecularPower;
-        DirectX::XMFLOAT4   Emissive;
+        DirectX::XMFLOAT4 Ambient;
+        DirectX::XMFLOAT4 Diffuse;
+        DirectX::XMFLOAT4 Specular;
+        float SpecularPower;
+        DirectX::XMFLOAT4 Emissive;
         DirectX::XMFLOAT4X4 UVTransform;
     };
 
@@ -158,16 +157,16 @@ namespace VSD3DStarter
 #pragma pack(pop)
 
     const Material s_defMaterial =
-    {
-        { 0.2f, 0.2f, 0.2f, 1.f },
-        { 0.8f, 0.8f, 0.8f, 1.f },
-        { 0.0f, 0.0f, 0.0f, 1.f },
-        1.f,
-        { 0.0f, 0.0f, 0.0f, 1.0f },
-        { 1.f, 0.f, 0.f, 0.f,
-          0.f, 1.f, 0.f, 0.f,
-          0.f, 0.f, 1.f, 0.f,
-          0.f, 0.f, 0.f, 1.f },
+        {
+            {0.2f, 0.2f, 0.2f, 1.f},
+            {0.8f, 0.8f, 0.8f, 1.f},
+            {0.0f, 0.0f, 0.0f, 1.f},
+            1.f,
+            {0.0f, 0.0f, 0.0f, 1.0f},
+            {1.f, 0.f, 0.f, 0.f,
+             0.f, 1.f, 0.f, 0.f,
+             0.f, 0.f, 1.f, 0.f,
+             0.f, 0.f, 0.f, 1.f},
     };
 } // namespace
 

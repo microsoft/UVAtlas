@@ -54,20 +54,21 @@ namespace Isochart
 
         struct Node;
         struct Edge;
+
     private:
         size_t m_nodeNumber;
 
     public:
         bool InitGraphCut(
-            size_t nNodes,     // expected node number
+            size_t nNodes, // expected node number
             size_t nEdges, //
             size_t nDegree);
         // reserve the memory for nodes and edges
         // for better memory performance
         void ReserveMemory(
-            size_t nNodes,          // expected node number
-            size_t nEdges = 0,      // 0 means  node number * nDegree
-            size_t nDegree = 6);    // expected out degree of each node
+            size_t nNodes,       // expected node number
+            size_t nEdges = 0,   // 0 means  node number * nDegree
+            size_t nDegree = 6); // expected out degree of each node
 
         // reset the whole graph, rebuild graph by addnode and addedge
         void Reset()
@@ -159,9 +160,7 @@ namespace Isochart
         {
         public:
             Node()
-                : capacity(0), resident(0)
-                , parent_node(no_parent), parent_edge(no_parent)
-                , m_iFlag(0), depth(0)
+                : capacity(0), resident(0), parent_node(no_parent), parent_edge(no_parent), m_iFlag(0), depth(0)
             {
                 edges.reserve(m_expect_degree);
             }
@@ -175,11 +174,11 @@ namespace Isochart
             void set_to_s() { m_iFlag = TO_S; }
             void set_to_t() { m_iFlag = TO_T; }
             void set_free() { m_iFlag = FREE; }
-            bool to_s()    const { return m_iFlag == TO_S; }
-            bool to_t()    const { return m_iFlag == TO_T; }
+            bool to_s() const { return m_iFlag == TO_S; }
+            bool to_t() const { return m_iFlag == TO_T; }
             bool is_free() const { return m_iFlag == FREE; }
 
-            bool on_same_tree(const Node& q) const
+            bool on_same_tree(const Node &q) const
             {
                 return !is_free() && (m_iFlag == q.m_iFlag);
             }
@@ -211,7 +210,7 @@ namespace Isochart
             void set_parent_edge(edge_id n) { parent_edge = n; }
             edge_id get_parent_edge() const { return parent_edge; }
 
-            void next_level_of(const Node& n)
+            void next_level_of(const Node &n)
             {
                 depth = n.depth + 1;
             }
@@ -221,14 +220,13 @@ namespace Isochart
             static size_t m_expect_degree;
 
         protected:
-            node_id parent_node;    // parent node on the tree
-            edge_id parent_edge;    // the edge to parent node. always s->t
+            node_id parent_node; // parent node on the tree
+            edge_id parent_edge; // the edge to parent node. always s->t
 
         private:
             typedef int FLAG;
             FLAG m_iFlag;
-            int depth;   // distanst to either s or t
-
+            int depth; // distanst to either s or t
 
             static const FLAG FREE = 0;
             static const FLAG TO_S = 1;
@@ -242,9 +240,9 @@ namespace Isochart
         // they can be accessed by reverse_edge function
         struct Edge
         {
-            cap_type cap;    // capacity
-            cap_type res;    // resident
-            node_id n0, n1;   // the node_id, edge is from n0 to n1
+            cap_type cap;   // capacity
+            cap_type res;   // resident
+            node_id n0, n1; // the node_id, edge is from n0 to n1
         };
 
         // reverse direction is accessed by odd and even transition

@@ -19,15 +19,15 @@ namespace Isochart
     /////////////////////////////////////////////////////////////
 
     inline float CIsochartMesh::CaculateUVDistanceSquare(
-        DirectX::XMFLOAT2& v0,
-        DirectX::XMFLOAT2& v1) const
+        DirectX::XMFLOAT2 &v0,
+        DirectX::XMFLOAT2 &v1) const
     {
         return (v0.x - v1.x) * (v0.x - v1.x) + (v0.y - v1.y) * (v0.y - v1.y);
     }
 
     // Calculate a face's area in the U-V space.
     inline float CIsochartMesh::CalculateUVFaceArea(
-        ISOCHARTFACE& face) const
+        ISOCHARTFACE &face) const
     {
         return CalculateUVFaceArea(
             m_pVerts[face.dwVertexID[0]].uv,
@@ -37,9 +37,9 @@ namespace Isochart
 
     // Caculate face area using cross multiplication
     inline float CIsochartMesh::CalculateUVFaceArea(
-        DirectX::XMFLOAT2& v0,
-        DirectX::XMFLOAT2& v1,
-        DirectX::XMFLOAT2& v2) const
+        DirectX::XMFLOAT2 &v0,
+        DirectX::XMFLOAT2 &v1,
+        DirectX::XMFLOAT2 &v2) const
     {
         float fA = ((v1.x - v0.x) * (v2.y - v0.y) - (v2.x - v0.x) * (v1.y - v0.y)) / 2;
 
@@ -56,7 +56,7 @@ namespace Isochart
     {
         float fChart2DArea = 0;
 
-        ISOCHARTFACE* pFace = m_pFaces;
+        ISOCHARTFACE *pFace = m_pFaces;
         for (size_t i = 0; i < m_dwFaceNumber; i++)
         {
             fChart2DArea += CalculateUVFaceArea(*pFace);
@@ -71,7 +71,7 @@ namespace Isochart
     {
         float fChart3DArea = 0;
 
-        ISOCHARTFACE* pFace = m_pFaces;
+        ISOCHARTFACE *pFace = m_pFaces;
         for (size_t i = 0; i < m_dwFaceNumber; i++)
         {
             fChart3DArea += m_baseInfo.pfFaceAreaArray[pFace->dwIDInRootMesh];
@@ -82,15 +82,15 @@ namespace Isochart
 
     // Check if parameterization cause some edge overlapping.
     inline HRESULT CIsochartMesh::IsParameterizationOverlapping(
-        CIsochartMesh* pMesh,
-        bool& bIsOverlapping)
+        CIsochartMesh *pMesh,
+        bool &bIsOverlapping)
     {
 
-        ISOCHARTEDGE* pEdge1 = nullptr;
-        ISOCHARTEDGE* pEdge2 = nullptr;
+        ISOCHARTEDGE *pEdge1 = nullptr;
+        ISOCHARTEDGE *pEdge2 = nullptr;
 
         // Collect all boundary edges
-        std::vector<ISOCHARTEDGE*> boundaryEdgeList;
+        std::vector<ISOCHARTEDGE *> boundaryEdgeList;
 
         try
         {
@@ -103,7 +103,7 @@ namespace Isochart
                 }
             }
         }
-        catch (std::bad_alloc&)
+        catch (std::bad_alloc &)
         {
             return E_OUTOFMEMORY;
         }
@@ -119,25 +119,21 @@ namespace Isochart
 
                 // if two edges connect together, although they have
                 // intersection, it's not counted as overlapping
-                if (pEdge1->dwVertexID[0] == pEdge2->dwVertexID[0]
-                    || pEdge1->dwVertexID[0] == pEdge2->dwVertexID[1]
-                    || pEdge1->dwVertexID[1] == pEdge2->dwVertexID[0]
-                    || pEdge1->dwVertexID[1] == pEdge2->dwVertexID[1])
+                if (pEdge1->dwVertexID[0] == pEdge2->dwVertexID[0] || pEdge1->dwVertexID[0] == pEdge2->dwVertexID[1] || pEdge1->dwVertexID[1] == pEdge2->dwVertexID[0] || pEdge1->dwVertexID[1] == pEdge2->dwVertexID[1])
                 {
                     continue;
                 }
                 // If two edges doesn't connect together, but have
                 // intersection, overlapping occurs.
                 if (IsochartIsSegmentsIntersect(
-                    pMesh->m_pVerts[pEdge1->dwVertexID[0]].uv,
-                    pMesh->m_pVerts[pEdge1->dwVertexID[1]].uv,
-                    pMesh->m_pVerts[pEdge2->dwVertexID[0]].uv,
-                    pMesh->m_pVerts[pEdge2->dwVertexID[1]].uv))
+                        pMesh->m_pVerts[pEdge1->dwVertexID[0]].uv,
+                        pMesh->m_pVerts[pEdge1->dwVertexID[1]].uv,
+                        pMesh->m_pVerts[pEdge2->dwVertexID[0]].uv,
+                        pMesh->m_pVerts[pEdge2->dwVertexID[1]].uv))
                 {
                     bIsOverlapping = true;
                     return S_OK;
                 }
-
             }
         }
 
@@ -145,10 +141,9 @@ namespace Isochart
         return S_OK;
     }
 
-
     // Calculate the Euclid distance between to vertex on original mesh.
     inline float CIsochartMesh::CalculateVextexDistance(
-        ISOCHARTVERTEX& v0, ISOCHARTVERTEX& v1) const
+        ISOCHARTVERTEX &v0, ISOCHARTVERTEX &v1) const
     {
         using namespace DirectX;
 
@@ -164,17 +159,15 @@ namespace Isochart
     // ( In our algorithm, origin alwasy the first vertex of face)
     inline void CIsochartMesh::Vertex3DTo2D(
         uint32_t dwFaceIDInRootMesh,
-        const DirectX::XMFLOAT3* pOrg,
-        const DirectX::XMFLOAT3* p3D,
-        DirectX::XMFLOAT2* p2D)
+        const DirectX::XMFLOAT3 *pOrg,
+        const DirectX::XMFLOAT3 *p3D,
+        DirectX::XMFLOAT2 *p2D)
     {
         using namespace DirectX;
 
-        XMFLOAT3* pAxisX
-            = m_baseInfo.pFaceCanonicalParamAxis
-            + 2 * dwFaceIDInRootMesh;
+        XMFLOAT3 *pAxisX = m_baseInfo.pFaceCanonicalParamAxis + 2 * dwFaceIDInRootMesh;
 
-        XMFLOAT3* pAxisY = pAxisX + 1;
+        XMFLOAT3 *pAxisY = pAxisX + 1;
 
         XMVECTOR tempVector = XMVectorSubtract(XMLoadFloat3(p3D), XMLoadFloat3(pOrg));
         p2D->x = XMVectorGetX(XMVector3Dot(tempVector, XMLoadFloat3(pAxisX)));
@@ -184,8 +177,8 @@ namespace Isochart
     // Caculate the signal length of two vertices in one 3D face
     // See more detail of this algorithm in [SGSH02]
     inline float CIsochartMesh::CalculateSignalLengthOnOneFace(
-        DirectX::XMFLOAT3* p3D0,
-        DirectX::XMFLOAT3* p3D1,
+        DirectX::XMFLOAT3 *p3D0,
+        DirectX::XMFLOAT3 *p3D1,
         uint32_t dwFaceID)
     {
         using namespace DirectX;
@@ -195,13 +188,13 @@ namespace Isochart
             return 0;
         }
 
-        ISOCHARTFACE* pFace = m_pFaces + dwFaceID;
+        ISOCHARTFACE *pFace = m_pFaces + dwFaceID;
 
         // 1. Calculate the 2-D reflection of 2 3D vertex
-        ISOCHARTVERTEX* pVertex =
+        ISOCHARTVERTEX *pVertex =
             m_pVerts + pFace->dwVertexID[0];
 
-        XMFLOAT3* pOrg =
+        XMFLOAT3 *pOrg =
             m_baseInfo.pVertPosition + pVertex->dwIDInRootMesh;
 
         XMFLOAT2 v2d0;
@@ -219,12 +212,9 @@ namespace Isochart
         float fDeltaX = v2d1.x - v2d0.x;
         float fDeltaY = v2d1.y - v2d0.y;
 
-        const FLOAT3* pIMT = m_baseInfo.pfIMTArray + pFace->dwIDInRootMesh;
+        const FLOAT3 *pIMT = m_baseInfo.pfIMTArray + pFace->dwIDInRootMesh;
         float fLength;
-        fLength
-            = (*pIMT)[0] * fDeltaX * fDeltaX
-            + (*pIMT)[2] * fDeltaY * fDeltaY
-            + 2 * (*pIMT)[1] * fDeltaX * fDeltaY;
+        fLength = (*pIMT)[0] * fDeltaX * fDeltaX + (*pIMT)[2] * fDeltaY * fDeltaY + 2 * (*pIMT)[1] * fDeltaX * fDeltaY;
 
         fLength = IsochartSqrtf(fLength);
         return fLength;
@@ -234,8 +224,8 @@ namespace Isochart
     // are involved, individually caculate edge's signal length on the two
     // faces and use average.
     inline float CIsochartMesh::CalculateEdgeSignalLength(
-        DirectX::XMFLOAT3* p3D0,
-        DirectX::XMFLOAT3* p3D1,
+        DirectX::XMFLOAT3 *p3D0,
+        DirectX::XMFLOAT3 *p3D1,
         uint32_t dwAdjacentFaceID0,
         uint32_t dwAdjacentFaceID1)
     {
@@ -258,19 +248,18 @@ namespace Isochart
         }
     }
 
-    inline float CIsochartMesh::CalculateEdgeSignalLength(ISOCHARTEDGE& edge)
+    inline float CIsochartMesh::CalculateEdgeSignalLength(ISOCHARTEDGE &edge)
     {
         assert(INVALID_FACE_ID != edge.dwFaceID[0]);
 
         assert(
-            (INVALID_FACE_ID == edge.dwFaceID[1] && edge.bIsBoundary)
-            || (INVALID_FACE_ID != edge.dwFaceID[1] || edge.bIsBoundary));
+            (INVALID_FACE_ID == edge.dwFaceID[1] && edge.bIsBoundary) || (INVALID_FACE_ID != edge.dwFaceID[1] || edge.bIsBoundary));
 
         float fTestLength = 0;
-        DirectX::XMFLOAT3* pv0 =
+        DirectX::XMFLOAT3 *pv0 =
             m_baseInfo.pVertPosition + m_pVerts[edge.dwVertexID[0]].dwIDInRootMesh;
 
-        DirectX::XMFLOAT3* pv1 =
+        DirectX::XMFLOAT3 *pv1 =
             m_baseInfo.pVertPosition + m_pVerts[edge.dwVertexID[1]].dwIDInRootMesh;
 
         fTestLength = CalculateEdgeSignalLength(
@@ -284,7 +273,7 @@ namespace Isochart
     {
         for (size_t i = 0; i < m_dwEdgeNumber; i++)
         {
-            ISOCHARTEDGE& edge = m_edges[i];
+            ISOCHARTEDGE &edge = m_edges[i];
             edge.fLength = CalculateVextexDistance(
                 m_pVerts[edge.dwVertexID[0]], m_pVerts[edge.dwVertexID[1]]);
 
@@ -300,9 +289,9 @@ namespace Isochart
     }
 
     inline void Rotate2DPoint(
-        DirectX::XMFLOAT2& uvOut,
-        const DirectX::XMFLOAT2& uvIn,
-        const DirectX::XMFLOAT2& center,
+        DirectX::XMFLOAT2 &uvOut,
+        const DirectX::XMFLOAT2 &uvIn,
+        const DirectX::XMFLOAT2 &center,
         float fSin,
         float fCos)
     {
@@ -317,12 +306,12 @@ namespace Isochart
 
     // Rotate chart around origin
     inline void CIsochartMesh::RotateChart(
-        const DirectX::XMFLOAT2& center, float fAngle) const
+        const DirectX::XMFLOAT2 &center, float fAngle) const
     {
         float fCos = cosf(fAngle);
         float fSin = sinf(fAngle);
 
-        ISOCHARTVERTEX* pVertex = m_pVerts;
+        ISOCHARTVERTEX *pVertex = m_pVerts;
         for (size_t i = 0; i < m_dwVertNumber; i++)
         {
             Rotate2DPoint(
@@ -334,16 +323,16 @@ namespace Isochart
 
     // Rotate chart boundary, get bounding box
     inline void CIsochartMesh::GetRotatedChartBoundingBox(
-        const DirectX::XMFLOAT2& center,
+        const DirectX::XMFLOAT2 &center,
         float fAngle,
-        DirectX::XMFLOAT2& minBound,
-        DirectX::XMFLOAT2& maxBound) const
+        DirectX::XMFLOAT2 &minBound,
+        DirectX::XMFLOAT2 &maxBound) const
     {
         minBound.x = minBound.y = FLT_MAX;
         maxBound.x = maxBound.y = -FLT_MAX;
 
         DirectX::XMFLOAT2 tempCoordinate;
-        ISOCHARTVERTEX* pVertex = m_pVerts;
+        ISOCHARTVERTEX *pVertex = m_pVerts;
 
         float fCos = cosf(fAngle);
         float fSin = sinf(fAngle);
@@ -376,8 +365,8 @@ namespace Isochart
     // Get the minial bounding box of current chart
     inline void CIsochartMesh::CalculateChartMinimalBoundingBox(
         size_t dwRotationCount,
-        DirectX::XMFLOAT2& minBound,
-        DirectX::XMFLOAT2& maxBound) const
+        DirectX::XMFLOAT2 &minBound,
+        DirectX::XMFLOAT2 &maxBound) const
     {
         using namespace DirectX;
 
@@ -394,7 +383,7 @@ namespace Isochart
 
         for (size_t ii = 0; ii < m_dwVertNumber; ii++)
         {
-            const XMFLOAT2& uv = m_pVerts[ii].uv;
+            const XMFLOAT2 &uv = m_pVerts[ii].uv;
             minBound.x = std::min(uv.x, minBound.x);
             minBound.y = std::min(uv.y, minBound.y);
 
@@ -408,7 +397,7 @@ namespace Isochart
         fMinRectArea = IsochartBoxArea(minBound, maxBound);
         fMinAngle = 0;
 
-        //To calculate bounding box, only need to rotate with in PI/2 around the chart's center
+        // To calculate bounding box, only need to rotate with in PI/2 around the chart's center
         for (size_t dwRotID = 1; dwRotID < dwRotationCount; dwRotID++)
         {
             float fAngle = float(dwRotID) * XM_PI / float(dwRotationCount * 2);
@@ -432,9 +421,9 @@ namespace Isochart
         }
     }
 
-    inline CIsochartMesh* CIsochartMesh::CreateNewChart(
-        VERTEX_ARRAY& vertList,
-        std::vector<uint32_t>& faceList,
+    inline CIsochartMesh *CIsochartMesh::CreateNewChart(
+        VERTEX_ARRAY &vertList,
+        std::vector<uint32_t> &faceList,
         bool bIsSubChart) const
     {
         auto pChart = new (std::nothrow) CIsochartMesh(m_baseInfo, m_callbackSchemer, m_IsochartEngine);
@@ -443,7 +432,7 @@ namespace Isochart
             return nullptr;
         }
 
-        pChart->m_pFather = const_cast<CIsochartMesh*>(this);
+        pChart->m_pFather = const_cast<CIsochartMesh *>(this);
         pChart->m_bVertImportanceDone = m_bVertImportanceDone;
         pChart->m_bIsSubChart = bIsSubChart;
         pChart->m_fBoxDiagLen = m_fBoxDiagLen;
@@ -455,7 +444,7 @@ namespace Isochart
 
         if (!pChart->m_pVerts || !pChart->m_pFaces)
         {
-            delete pChart; // vertex and face buffer will be deleted
+            delete pChart;  // vertex and face buffer will be deleted
             return nullptr; // in destructor.
         }
 
@@ -466,8 +455,8 @@ namespace Isochart
             return nullptr;
         }
 
-        ISOCHARTVERTEX* pOldVertex = nullptr;
-        ISOCHARTVERTEX* pNewVertex = pChart->m_pVerts;
+        ISOCHARTVERTEX *pOldVertex = nullptr;
+        ISOCHARTVERTEX *pNewVertex = pChart->m_pVerts;
         for (uint32_t i = 0; i < pChart->m_dwVertNumber; i++)
         {
             pOldVertex = vertList[i];
@@ -480,10 +469,10 @@ namespace Isochart
             pNewVertex++;
         }
 
-        ISOCHARTFACE* pNewFace = pChart->m_pFaces;
+        ISOCHARTFACE *pNewFace = pChart->m_pFaces;
         for (uint32_t i = 0; i < pChart->m_dwFaceNumber; i++)
         {
-            ISOCHARTFACE* pOldFace = m_pFaces + faceList[i];
+            ISOCHARTFACE *pOldFace = m_pFaces + faceList[i];
             pNewFace->dwID = i;
             pNewFace->dwIDInRootMesh = pOldFace->dwIDInRootMesh;
             pNewFace->dwIDInFatherMesh = pOldFace->dwID;
@@ -500,7 +489,7 @@ namespace Isochart
     }
 
     inline HRESULT CIsochartMesh::MoveTwoValueToHead(
-        std::vector<uint32_t>& list,
+        std::vector<uint32_t> &list,
         uint32_t dwIdx1,
         uint32_t dwIdx2)
     {

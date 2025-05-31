@@ -13,29 +13,25 @@ namespace Isochart
 {
 #ifdef UVATLAS_USE_EIGEN
 
-    template<class TYPE>
+    template <class TYPE>
     class CSymmetricMatrix
     {
     public:
         using value_type = TYPE;
 
-        _Success_(return)
-            static bool
-            GetEigen(
-                size_t dwDimension,
-                _In_reads_(dwDimension* dwDimension) const value_type* pMatrix,
-                _Out_writes_(dwMaxRange) value_type* pEigenValue,
-                _Out_writes_(dwDimension* dwMaxRange) value_type* pEigenVector,
-                size_t dwMaxRange,
-                float epsilon = 1e-10f)
+        _Success_(return) static bool GetEigen(
+            size_t dwDimension,
+            _In_reads_(dwDimension *dwDimension) const value_type *pMatrix,
+            _Out_writes_(dwMaxRange) value_type *pEigenValue,
+            _Out_writes_(dwDimension *dwMaxRange) value_type *pEigenVector,
+            size_t dwMaxRange,
+            float epsilon = 1e-10f)
         {
             // Check arguments.
             if (!pMatrix || !pEigenValue || !pEigenVector)
                 return false;
 
-            if (dwDimension < dwMaxRange
-                || dwMaxRange == 0
-                || dwDimension == 0)
+            if (dwDimension < dwMaxRange || dwMaxRange == 0 || dwDimension == 0)
             {
                 return false;
             }
@@ -56,18 +52,16 @@ namespace Isochart
                     // Construct matrix operation object using the wrapper class DenseSymMatProd.
                     Spectra::DenseSymMatProd<value_type> op(matrix);
                     // Construct eigen solver object, requesting the largest dwMaxRange eigenvalues
-                    Spectra::SymEigsSolver< Spectra::DenseSymMatProd<value_type> > eigs(
+                    Spectra::SymEigsSolver<Spectra::DenseSymMatProd<value_type>> eigs(
                         op,
                         static_cast<int>(dwMaxRange),
                         // Convergence speed, higher is faster with more memory usage, recommended to be at least 2x nev, must be <= dimension.
-                        static_cast<int>(std::min(dwMaxRange * 2, dwDimension))
-                    );
+                        static_cast<int>(std::min(dwMaxRange * 2, dwDimension)));
                     eigs.init();
                     const auto numConverged = eigs.compute(
-                        Spectra::SortRule::LargestAlge,  // Sort by descending eigenvalues.
+                        Spectra::SortRule::LargestAlge, // Sort by descending eigenvalues.
                         maxIterations,
-                        epsilon
-                    );
+                        epsilon);
 
                     if (numConverged >= static_cast<int>(dwMaxRange) && eigs.info() == Spectra::CompInfo::Successful)
                     {
@@ -80,7 +74,7 @@ namespace Isochart
                         DPF(0, "Spectra::SymEigsSolver failed with info() == %d, numConverged == %d, dwDimension == %d, dwMaxRange == %d", eigs.info(), numConverged, dwDimension, dwMaxRange);
                     }
                 }
-                catch (const std::exception& ex)
+                catch (const std::exception &ex)
                 {
                     DPF(0, "Spectra::SymEigsSolver threw an exception with what() == \"%s\", dwDimension == %d, dwMaxRange == %d", ex.what(), dwDimension, dwMaxRange);
                 }
@@ -118,7 +112,7 @@ namespace Isochart
 #pragma clang diagnostic ignored "-Wdouble-promotion"
 #endif
 
-    template<class TYPE>
+    template <class TYPE>
     class CSymmetricMatrix
     {
     public:
@@ -167,23 +161,19 @@ namespace Isochart
         }
 
     public:
-        _Success_(return)
-            static bool
-            GetEigen(
-                size_t dwDimension,
-                _In_reads_(dwDimension * dwDimension) const value_type* pMatrix,
-                _Out_writes_(dwMaxRange) value_type* pEigenValue,
-                _Out_writes_(dwDimension * dwMaxRange) value_type* pEigenVector,
-                size_t dwMaxRange,
-                value_type epsilon = 1.0e-6f)
+        _Success_(return) static bool GetEigen(
+            size_t dwDimension,
+            _In_reads_(dwDimension *dwDimension) const value_type *pMatrix,
+            _Out_writes_(dwMaxRange) value_type *pEigenValue,
+            _Out_writes_(dwDimension *dwMaxRange) value_type *pEigenVector,
+            size_t dwMaxRange,
+            value_type epsilon = 1.0e-6f)
         {
             // 1. check argument
             if (!pMatrix || !pEigenValue || !pEigenVector)
                 return false;
 
-            if (dwDimension < dwMaxRange
-                || dwMaxRange == 0
-                || dwDimension == 0)
+            if (dwDimension < dwMaxRange || dwMaxRange == 0 || dwDimension == 0)
             {
                 return false;
             }
@@ -193,17 +183,17 @@ namespace Isochart
             if (!tmp)
                 return false;
 
-            value_type* pInitialMatrix = tmp.get();                                 // dwDimension * dwDimension
-            value_type* pSubDiagVec = pInitialMatrix + (dwDimension * dwDimension); // dwDimension
-            value_type* pU = pSubDiagVec + dwDimension;                             // dwDimension
-            value_type* pP = pU + dwDimension;                                      // dwDimension
-            value_type* pValues = pP + dwDimension;                                 // dwDimension
+            value_type *pInitialMatrix = tmp.get();                                 // dwDimension * dwDimension
+            value_type *pSubDiagVec = pInitialMatrix + (dwDimension * dwDimension); // dwDimension
+            value_type *pU = pSubDiagVec + dwDimension;                             // dwDimension
+            value_type *pP = pU + dwDimension;                                      // dwDimension
+            value_type *pValues = pP + dwDimension;                                 // dwDimension
 
-            std::unique_ptr<value_type * []> rowHeader(new (std::nothrow) value_type * [dwDimension]);
+            std::unique_ptr<value_type *[]> rowHeader(new (std::nothrow) value_type *[dwDimension]);
             if (!rowHeader)
                 return false;
 
-            value_type** pRowHeader = rowHeader.get();
+            value_type **pRowHeader = rowHeader.get();
 
             VectorZero(pSubDiagVec, dwDimension);
             VectorAssign(pInitialMatrix, pMatrix, dwDimension * dwDimension);
@@ -245,12 +235,12 @@ namespace Isochart
                     VectorScale(pU, scale, i);
                     h = VectorDot(pU, pU, i);
 
-                    //value_type shift = pValues[i - 1];
+                    // value_type shift = pValues[i - 1];
                     auto g = (pU[i - 1] < 0) ? value_type(-IsochartSqrt(h)) : value_type(IsochartSqrt(h));
 
                     pSubDiagVec[i] = -(total * g); // i element of sub-diagonal vector
-                    h += pU[i - 1] * g; // h = |u|*|u|/2
-                    pU[i - 1] += g; // u(i-1) = u(i-1) + |g|
+                    h += pU[i - 1] * g;            // h = |u|*|u|/2
+                    pU[i - 1] += g;                // u(i-1) = u(i-1) + |g|
 
                     VectorZero(pP, i);
                     // compute p = A * u / H, Used property of symmetric Matrix
@@ -311,7 +301,7 @@ namespace Isochart
             // Q(0) = Q = P(0) * Q(1)
 
             // Here used :
-            //P*Q = ( 1 - u* u'/H)Q
+            // P*Q = ( 1 - u* u'/H)Q
             //= Q - u * u' * Q / H   ( 2n*n multiplication )
             //= Q - (u/H) * (u' * Q); ( n*n +n multiplication )
             for (size_t i = 0; i < dwDimension - 1; i++)
@@ -323,7 +313,7 @@ namespace Isochart
 
                 if (fabs(pU[currentDim]) > epsilon)
                 {
-                    //Q - (u/H) * (u' * Q); ( n*n +n multiplication )
+                    // Q - (u/H) * (u' * Q); ( n*n +n multiplication )
                     for (size_t j = 0; j < currentDim; j++)
                     {
                         value_type delta = 0.0;
@@ -337,8 +327,7 @@ namespace Isochart
                         {
                             pRowHeader[k][j] -=
                                 delta *
-                                pRowHeader[k][currentDim]
-                                / pU[currentDim];
+                                pRowHeader[k][currentDim] / pU[currentDim];
                         }
                     }
                 }
@@ -403,8 +392,7 @@ namespace Isochart
                         value_type a = 1;
                         value_type b = -(pValues[j] + pValues[j + 1]);
                         value_type c =
-                            pValues[j] * pValues[j + 1]
-                            - pSubDiagVec[j] * pSubDiagVec[j];
+                            pValues[j] * pValues[j + 1] - pSubDiagVec[j] * pSubDiagVec[j];
 
                         auto bc = value_type(IsochartSqrt(b * b - 4 * a * c));
                         value_type ks = (-b + bc) / 2;
@@ -443,32 +431,25 @@ namespace Isochart
                         lastS = pSubDiagVec[n - 1] / tt;
 
                         lastqq =
-                            lastS * lastS * pValues[n - 1]
-                            + lastC * lastC * pValues[n]
-                            + 2 * lastS * lastC * pSubDiagVec[n - 1];
+                            lastS * lastS * pValues[n - 1] + lastC * lastC * pValues[n] + 2 * lastS * lastC * pSubDiagVec[n - 1];
                         lastpp =
-                            lastS * lastS * pValues[n]
-                            + lastC * lastC * pValues[n - 1]
-                            - 2 * lastS * lastC * pSubDiagVec[n - 1];
+                            lastS * lastS * pValues[n] + lastC * lastC * pValues[n - 1] - 2 * lastS * lastC * pSubDiagVec[n - 1];
                         lastpq =
-                            (lastC * lastC - lastS * lastS) * pSubDiagVec[n - 1]
-                            + lastS * lastC * (pValues[n - 1] - pValues[n]);
+                            (lastC * lastC - lastS * lastS) * pSubDiagVec[n - 1] + lastS * lastC * (pValues[n - 1] - pValues[n]);
 
                         // Because d[n-1], e[n-1] will continue to be changed in next
                         // step, only change d[n] here
                         pValues[n] = value_type(lastqq);
 
                         // Multiply current rotoation matrix to the finial orthogonal matrix,
-                        //which stores the eigenvectors
+                        // which stores the eigenvectors
                         for (size_t l = 0; l < dwDimension; l++)
                         {
                             value_type tempItem = pRowHeader[l][n];
                             pRowHeader[l][n] = value_type(
-                                lastS * pRowHeader[l][n - 1]
-                                + lastC * tempItem);
+                                lastS * pRowHeader[l][n - 1] + lastC * tempItem);
                             pRowHeader[l][n - 1] = value_type(
-                                lastC * pRowHeader[l][n - 1]
-                                - lastS * tempItem);
+                                lastC * pRowHeader[l][n - 1] - lastS * tempItem);
                         }
                         // If need restore tridiagonal form
                         if (n > j + 1)
@@ -479,7 +460,7 @@ namespace Isochart
                             // Each step, compute a new "extra" value.
                             extra = lastS * pSubDiagVec[n - 2];
                             assert(n > 1);
-                            size_t  next;
+                            size_t next;
                             for (size_t k = n - 1; k > j; k--)
                             {
                                 next = k - 1;
@@ -491,18 +472,13 @@ namespace Isochart
                                 pSubDiagVec[next + 1] = value_type(lastC * lastpq + lastS * extra);
 
                                 pValues[next + 1] = value_type(
-                                    lastS * lastS * pValues[next]
-                                    + lastC * lastC * lastpp
-                                    + 2 * lastS * lastC * pSubDiagVec[next]);
+                                    lastS * lastS * pValues[next] + lastC * lastC * lastpp + 2 * lastS * lastC * pSubDiagVec[next]);
 
                                 lastpq =
-                                    (lastC * lastC - lastS * lastS) * pSubDiagVec[next]
-                                    + lastS * lastC * (pValues[next] - lastpp);
+                                    (lastC * lastC - lastS * lastS) * pSubDiagVec[next] + lastS * lastC * (pValues[next] - lastpp);
 
                                 lastpp =
-                                    lastS * lastS * lastpp
-                                    + lastC * lastC * pValues[next]
-                                    - 2 * lastS * lastC * pSubDiagVec[next];
+                                    lastS * lastS * lastpp + lastC * lastC * pValues[next] - 2 * lastS * lastC * pSubDiagVec[next];
 
                                 if (next > 0)
                                     extra = lastS * pSubDiagVec[next - 1];
@@ -511,11 +487,9 @@ namespace Isochart
                                 {
                                     value_type tempItem = pRowHeader[l][next + 1];
                                     pRowHeader[l][next + 1] = value_type(
-                                        lastS * pRowHeader[l][next]
-                                        + lastC * tempItem);
+                                        lastS * pRowHeader[l][next] + lastC * tempItem);
                                     pRowHeader[l][next] = value_type(
-                                        lastC * pRowHeader[l][next]
-                                        - lastS * tempItem);
+                                        lastC * pRowHeader[l][next] - lastS * tempItem);
                                 }
                             }
                         }

@@ -14,11 +14,11 @@
 using namespace GeodesicDist;
 
 // this does the same job of CExactOneToAll::CutHeapTopData, except that, this does the window merging in addition
-void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
+void CApproximateOneToAll::CutHeapTopData(EdgeWindow &EdgeWindowOut)
 {
     for (;;)
     {
-        TypeEdgeWindowsHeap::item_type* pItem = m_EdgeWindowsHeap.cutTop();
+        TypeEdgeWindowsHeap::item_type *pItem = m_EdgeWindowsHeap.cutTop();
 
         uint32_t dwIdxSelf = FLAG_INVALIDDWORD;
         for (size_t i = 0; i < pItem->m_data.pEdge->WindowsList.size(); ++i)
@@ -38,11 +38,12 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
             }
 
             // in pWindowLeft and pWindowRight, one is the the popped off window itself, the other one is the possible found adjacent window
-            EdgeWindow* pWindowLeft = &(pItem->m_data);
-            EdgeWindow* pWindowRight = &(pItem->m_data.pEdge->WindowsList[i].theWindow);
+            EdgeWindow *pWindowLeft = &(pItem->m_data);
+            EdgeWindow *pWindowRight = &(pItem->m_data.pEdge->WindowsList[i].theWindow);
 
             if ((pWindowLeft->b0 == pWindowRight->b1 || pWindowLeft->b1 == pWindowRight->b0) /*&&
-                 (pWindowLeft->dwFaceIdxPropagatedFrom == pWindowRight->dwFaceIdxPropagatedFrom)*/)
+                 (pWindowLeft->dwFaceIdxPropagatedFrom == pWindowRight->dwFaceIdxPropagatedFrom)*/
+            )
             {
                 // found an adjacent window
 
@@ -58,7 +59,7 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
 
                 if (fabs(D1 - D0) < DBL_EPSILON)
                 {
-                    continue;	// prevent divide-by-zero on very narrow windows
+                    continue; // prevent divide-by-zero on very narrow windows
                 }
 
                 double alpha = (b1pie - b0pie) / (D1 - D0);
@@ -70,7 +71,7 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
                 DVector2 ptRes;
                 bool bTmp;
                 GetCommonPointOf2Lines(pWindowLeft->dv2Src, DVector2(pWindowLeft->b0, 0),
-                    pWindowRight->dv2Src, DVector2(pWindowRight->b1, 0), ptRes, bTmp);
+                                       pWindowRight->dv2Src, DVector2(pWindowRight->b1, 0), ptRes, bTmp);
 
                 double sigma = DBL_MAX;
                 DVector2 spie;
@@ -118,7 +119,7 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
                 DVector3Cross(DVector3(Q0), DVector3(P0), tmpv0);
                 DVector3Cross(DVector3(Q1), DVector3(P1), tmpv1);
 
-                // spietmp.y must < ptRes.y (if ptRes exists, which means two line segments passed into the following GetCommonPointOf2Lines are not parallel, and ptRes.y is positive)				
+                // spietmp.y must < ptRes.y (if ptRes exists, which means two line segments passed into the following GetCommonPointOf2Lines are not parallel, and ptRes.y is positive)
                 bTmp = true;
                 if ((ptRes.x < DBL_MAX) && (ptRes.y > 0))
                 {
@@ -135,7 +136,7 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
 
                 if (sigma == DBL_MAX)
                 {
-                    // this adjacent window cannot fulfill all the criteria listed in the paper, continue to try the next window on edge                
+                    // this adjacent window cannot fulfill all the criteria listed in the paper, continue to try the next window on edge
                     continue;
                 }
 
@@ -278,7 +279,7 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
                     break;
 
                     default:
-                    break;
+                        break;
                     }
 
                     if (tmpdif > diflargest)
@@ -291,7 +292,7 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
                 double ksi;
                 ksi = std::max(pWindowRight->ksi, pWindowLeft->ksi) + diflargest;
 
-                //double	ksi = 0.0;
+                // double	ksi = 0.0;
 
                 if (ksi / Dp < 0.01 && diflargest / Dp < 0.01 * 0.1)
                 {
@@ -319,7 +320,7 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
                         --dwIdxSelf;
                     }
 
-                    EdgeWindow* pTheWindow = &(pItem->m_data.pEdge->WindowsList[dwIdxSelf].theWindow);
+                    EdgeWindow *pTheWindow = &(pItem->m_data.pEdge->WindowsList[dwIdxSelf].theWindow);
 
                     pTheWindow->b0 = b0pie;
                     pTheWindow->b1 = b1pie;
@@ -341,7 +342,7 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
                     m_EdgeWindowsHeap.insert(pItem->m_data.pEdge->WindowsList[dwIdxSelf].pHeapItem);
                     delete pItem;
 
-                    // continue to pop the next window in heap and test whether any merge is possible                    
+                    // continue to pop the next window in heap and test whether any merge is possible
                     goto l_outter_while_again;
                 }
             }
@@ -369,7 +370,6 @@ void CApproximateOneToAll::CutHeapTopData(EdgeWindow& EdgeWindowOut)
 
         return;
 
-    l_outter_while_again:
-        ;
+    l_outter_while_again:;
     }
 }

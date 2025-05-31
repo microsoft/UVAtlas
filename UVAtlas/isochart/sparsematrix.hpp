@@ -11,7 +11,7 @@
 
 namespace Isochart
 {
-    template<class TYPE>
+    template <class TYPE>
     class CVector : public std::vector<TYPE>
     {
     public:
@@ -27,8 +27,8 @@ namespace Isochart
     public:
         template <class T>
         static T dot(
-            const CVector<T>& v1,
-            const CVector<T>& v2)
+            const CVector<T> &v1,
+            const CVector<T> &v2)
         {
             assert(v1.size() == v2.size());
 
@@ -42,9 +42,9 @@ namespace Isochart
 
         template <class T>
         static bool subtract(
-            CVector<T>& destVec,
-            const CVector<T>& v1,
-            const CVector<T>& v2)
+            CVector<T> &destVec,
+            const CVector<T> &v1,
+            const CVector<T> &v2)
         {
             assert(v1.size() == v2.size());
 
@@ -52,7 +52,7 @@ namespace Isochart
             {
                 destVec.resize(v1.size());
             }
-            catch (std::bad_alloc&)
+            catch (std::bad_alloc &)
             {
                 return false;
             }
@@ -65,9 +65,9 @@ namespace Isochart
 
         template <class T>
         static bool addTogether(
-            CVector<T>& destVec,
-            const CVector<T>& v1,
-            const CVector<T>& v2)
+            CVector<T> &destVec,
+            const CVector<T> &v1,
+            const CVector<T> &v2)
         {
             assert(v1.size() == v2.size());
 
@@ -75,7 +75,7 @@ namespace Isochart
             {
                 destVec.resize(v1.size());
             }
-            catch (std::bad_alloc&)
+            catch (std::bad_alloc &)
             {
                 return false;
             }
@@ -87,13 +87,13 @@ namespace Isochart
         }
 
         template <class T>
-        static bool assign(CVector<T>& dest, const CVector<T>& src)
+        static bool assign(CVector<T> &dest, const CVector<T> &src)
         {
             try
             {
                 dest.resize(src.size());
             }
-            catch (std::bad_alloc&)
+            catch (std::bad_alloc &)
             {
                 return false;
             }
@@ -103,13 +103,13 @@ namespace Isochart
 
         template <class T>
         static bool scale(
-            CVector<T>& dest, const CVector<T>& src, T scaleFactor)
+            CVector<T> &dest, const CVector<T> &src, T scaleFactor)
         {
             try
             {
                 dest.resize(src.size());
             }
-            catch (std::bad_alloc&)
+            catch (std::bad_alloc &)
             {
                 return false;
             }
@@ -122,15 +122,14 @@ namespace Isochart
 
         template <class T>
         static T length(
-            const CVector<T>& v1)
+            const CVector<T> &v1)
         {
             T result = dot<T>(v1, v1);
             return result < 0 ? 0 : static_cast<T>(sqrt(result));
         }
-
     };
 
-    template<class TYPE>
+    template <class TYPE>
     class CSparseMatrix
     {
     public:
@@ -144,6 +143,7 @@ namespace Isochart
         public:
             pos_type colIdx;
             value_type value;
+
         public:
             RowItem()
             {
@@ -161,13 +161,14 @@ namespace Isochart
         {
         private:
             std::vector<RowItem> m_items;
+
         public:
             void Clear() { m_items.clear(); }
 
             size_type size() const { return m_items.size(); }
 
-            RowItem& operator [] (const pos_type col) { return m_items[col]; }
-            const RowItem& operator [] (const pos_type col)const { return m_items[col]; }
+            RowItem &operator[](const pos_type col) { return m_items[col]; }
+            const RowItem &operator[](const pos_type col) const { return m_items[col]; }
 
             size_type insert(const pos_type _col, const value_type _value)
             {
@@ -181,14 +182,14 @@ namespace Isochart
                     {
                         m_items.push_back(item);
                     }
-                    catch (std::bad_alloc&)
+                    catch (std::bad_alloc &)
                     {
                         return NOT_IN_MATRIX;
                     }
                 }
                 else
                 {
-                    RowItem& item = m_items[idx];
+                    RowItem &item = m_items[idx];
                     item.value = _value;
                 }
                 return idx;
@@ -204,14 +205,14 @@ namespace Isochart
                         RowItem item(_col, delta);
                         m_items.push_back(item);
                     }
-                    catch (std::bad_alloc&)
+                    catch (std::bad_alloc &)
                     {
                         return false;
                     }
                 }
                 else
                 {
-                    RowItem& item = m_items[idx];
+                    RowItem &item = m_items[idx];
                     item.value += delta;
                 }
                 return true;
@@ -226,7 +227,7 @@ namespace Isochart
                 }
                 else
                 {
-                    RowItem& item = m_items[idx];
+                    RowItem &item = m_items[idx];
                     return item.value;
                 }
             }
@@ -243,7 +244,6 @@ namespace Isochart
                 }
                 return NOT_IN_MATRIX;
             }
-
         };
 
     public:
@@ -262,7 +262,7 @@ namespace Isochart
             {
                 m_rows.resize(_rowCount);
             }
-            catch (std::bad_alloc&)
+            catch (std::bad_alloc &)
             {
                 return false;
             }
@@ -270,12 +270,12 @@ namespace Isochart
             return true;
         }
 
-        Row& getRow(pos_type rowIdx)
+        Row &getRow(pos_type rowIdx)
         {
             return m_rows[rowIdx];
         }
 
-        const Row& getRow(pos_type rowIdx) const
+        const Row &getRow(pos_type rowIdx) const
         {
             return m_rows[rowIdx];
         }
@@ -283,7 +283,7 @@ namespace Isochart
         bool setItem(pos_type rowIdx, pos_type colIdx, value_type value)
         {
             assert(rowIdx < rowCount() && colIdx < colCount());
-            Row& row = getRow(rowIdx);
+            Row &row = getRow(rowIdx);
             if (row.insert(colIdx, value) == NOT_IN_MATRIX)
             {
                 return false;
@@ -294,33 +294,32 @@ namespace Isochart
         value_type getItem(pos_type rowIdx, pos_type colIdx)
         {
             assert(rowIdx < rowCount() && colIdx < colCount());
-            Row& row = getRow(rowIdx);
+            Row &row = getRow(rowIdx);
             return row.getCol(colIdx);
         }
-
 
         bool increase(pos_type rowIdx, pos_type colIdx, value_type delta)
         {
             assert(rowIdx < rowCount() && colIdx < colCount());
-            Row& row = getRow(rowIdx);
+            Row &row = getRow(rowIdx);
             if (!row.increase(colIdx, delta))
             {
                 return false;
             }
             return true;
-
         }
+
     private:
         std::vector<Row> m_rows;
         size_type m_colCount;
 
     public:
         // v' = A * v
-        template<class T>
+        template <class T>
         static bool Mat_Mul_Vec(
-            CVector<T>& destVec,
-            const CSparseMatrix<T>& srcMat,
-            const CVector<T>& srcVec)
+            CVector<T> &destVec,
+            const CSparseMatrix<T> &srcMat,
+            const CVector<T> &srcVec)
         {
             assert(srcMat.colCount() == srcVec.size());
 
@@ -328,7 +327,7 @@ namespace Isochart
             {
                 destVec.resize(srcMat.rowCount());
             }
-            catch (std::bad_alloc&)
+            catch (std::bad_alloc &)
             {
                 return false;
             }
@@ -337,11 +336,11 @@ namespace Isochart
             {
                 destVec[ii] = 0;
 
-                const Row& row = srcMat.getRow(ii);
+                const Row &row = srcMat.getRow(ii);
 
                 for (size_type jj = 0; jj < row.size(); jj++)
                 {
-                    const RowItem& item = row[jj];
+                    const RowItem &item = row[jj];
                     assert(item.colIdx < srcMat.colCount());
                     destVec[ii] += item.value * srcVec[item.colIdx];
                 }
@@ -350,11 +349,11 @@ namespace Isochart
         }
 
         // v' = A^T * v
-        template<class T>
+        template <class T>
         static bool Mat_Trans_Mul_Vec(
-            CVector<T>& destVec,
-            const CSparseMatrix<T>& srcMat,
-            const CVector<T>& srcVec)
+            CVector<T> &destVec,
+            const CSparseMatrix<T> &srcMat,
+            const CVector<T> &srcVec)
         {
             assert(srcMat.rowCount() == srcVec.size());
 
@@ -362,7 +361,7 @@ namespace Isochart
             {
                 destVec.resize(srcMat.colCount());
             }
-            catch (std::bad_alloc&)
+            catch (std::bad_alloc &)
             {
                 return false;
             }
@@ -370,11 +369,11 @@ namespace Isochart
             destVec.setZero();
             for (size_type ii = 0; ii < srcMat.rowCount(); ii++)
             {
-                const Row& row = srcMat.getRow(ii);
+                const Row &row = srcMat.getRow(ii);
 
                 for (size_type jj = 0; jj < row.size(); jj++)
                 {
-                    const RowItem& item = row[jj];
+                    const RowItem &item = row[jj];
                     assert(item.colIdx < srcMat.colCount());
                     destVec[item.colIdx] += item.value * srcVec[ii];
                 }
@@ -383,10 +382,10 @@ namespace Isochart
         }
 
         // A' = A^T * A
-        template<class T>
+        template <class T>
         static bool Mat_Trans_MUL_Mat(
-            CSparseMatrix<T>& destMat,
-            const CSparseMatrix<T>& srcMat)
+            CSparseMatrix<T> &destMat,
+            const CSparseMatrix<T> &srcMat)
         {
             if (!destMat.resize(srcMat.colCount(), srcMat.colCount()))
             {
@@ -395,18 +394,18 @@ namespace Isochart
 
             for (size_type ii = 0; ii < srcMat.rowCount(); ii++)
             {
-                const Row& row = srcMat.getRow(ii);
+                const Row &row = srcMat.getRow(ii);
 
                 for (size_type jj = 0; jj < row.size(); jj++)
                 {
-                    const RowItem& item1 = row[jj];
+                    const RowItem &item1 = row[jj];
                     for (size_type kk = 0; kk < row.size(); kk++)
                     {
-                        const RowItem& item2 = row[kk];
+                        const RowItem &item2 = row[kk];
                         if (!destMat.increase(
-                            item1.colIdx,
-                            item2.colIdx,
-                            item1.value * item2.value))
+                                item1.colIdx,
+                                item2.colIdx,
+                                item1.value * item2.value))
                         {
                             return false;
                         }
@@ -418,11 +417,11 @@ namespace Isochart
         }
 
         // v' = (A^T*A)*v
-        template<class T>
+        template <class T>
         static bool Mat_SYMM_MUL_Vec(
-            CVector<T>& destVec,
-            const CSparseMatrix<T>& srcMat,
-            const CVector<T>& srcVec)
+            CVector<T> &destVec,
+            const CSparseMatrix<T> &srcMat,
+            const CVector<T> &srcVec)
         {
             assert(srcMat.colCount() == srcVec.size());
 
@@ -445,14 +444,14 @@ namespace Isochart
             return true;
         }
 
-        template<class T>
+        template <class T>
         static bool ConjugateGradient(
-            CVector<T>& X,
-            const CSparseMatrix<T>& A,
-            const CVector<T>& B,
+            CVector<T> &X,
+            const CSparseMatrix<T> &A,
+            const CVector<T> &B,
             size_type maxIteration,
             T epsilon,
-            size_type& iter)
+            size_type &iter)
         {
             if (X.size() != A.colCount())
             {
@@ -460,7 +459,7 @@ namespace Isochart
                 {
                     X.resize(A.colCount());
                 }
-                catch (std::bad_alloc&)
+                catch (std::bad_alloc &)
                 {
                     return false;
                 }
@@ -548,7 +547,5 @@ namespace Isochart
             }
             return true;
         }
-
     };
 }
-

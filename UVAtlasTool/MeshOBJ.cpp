@@ -37,7 +37,7 @@ using namespace DirectX;
 
 namespace
 {
-    std::wstring ProcessTextureFileName(const wchar_t* inName, bool dds)
+    std::wstring ProcessTextureFileName(const wchar_t *inName, bool dds)
     {
         if (!inName || !*inName)
             return std::wstring();
@@ -59,9 +59,9 @@ namespace
 
 //--------------------------------------------------------------------------------------
 HRESULT LoadFromOBJ(
-    const wchar_t* szFilename,
-    std::unique_ptr<Mesh>& inMesh,
-    std::vector<Mesh::Material>& inMaterial,
+    const wchar_t *szFilename,
+    std::unique_ptr<Mesh> &inMesh,
+    std::vector<Mesh::Material> &inMaterial,
     bool ccw,
     bool dds)
 {
@@ -80,24 +80,24 @@ HRESULT LoadFromOBJ(
         return E_FAIL;
 
     hr = inMesh->SetIndexData(wfReader.indices.size() / 3, wfReader.indices.data(),
-        wfReader.attributes.empty() ? nullptr : wfReader.attributes.data());
+                              wfReader.attributes.empty() ? nullptr : wfReader.attributes.data());
     if (FAILED(hr))
         return hr;
 
     static const D3D11_INPUT_ELEMENT_DESC s_vboLayout[] =
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    };
+        {
+            {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+            {"NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+            {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+        };
 
     static const D3D11_INPUT_ELEMENT_DESC s_vboLayoutAlt[] =
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-    };
+        {
+            {"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+            {"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0},
+        };
 
-    const D3D11_INPUT_ELEMENT_DESC* layout = s_vboLayout;
+    const D3D11_INPUT_ELEMENT_DESC *layout = s_vboLayout;
     size_t nDecl = std::size(s_vboLayout);
 
     if (!wfReader.hasNormals && !wfReader.hasTexcoords)
@@ -132,7 +132,7 @@ HRESULT LoadFromOBJ(
         inMaterial.clear();
         inMaterial.reserve(wfReader.materials.size());
 
-        for (const auto& it : wfReader.materials)
+        for (const auto &it : wfReader.materials)
         {
             Mesh::Material mtl = {};
 
@@ -167,7 +167,8 @@ HRESULT LoadFromOBJ(
 
 //--------------------------------------------------------------------------------------
 _Use_decl_annotations_
-HRESULT Mesh::ExportToOBJ(const wchar_t* szFileName, size_t nMaterials, const Material* materials) const
+    HRESULT
+    Mesh::ExportToOBJ(const wchar_t *szFileName, size_t nMaterials, const Material *materials) const
 {
     if (!szFileName)
         return E_INVALIDARG;
@@ -180,7 +181,9 @@ HRESULT Mesh::ExportToOBJ(const wchar_t* szFileName, size_t nMaterials, const Ma
     if (!os)
         return E_FAIL;
 
-    os << L"# " << szFileName << std::endl << L"#" << std::endl << std::endl;
+    os << L"# " << szFileName << std::endl
+       << L"#" << std::endl
+       << std::endl;
 
     ExportToOBJ(os, nMaterials, materials);
 
@@ -189,8 +192,7 @@ HRESULT Mesh::ExportToOBJ(const wchar_t* szFileName, size_t nMaterials, const Ma
     return (os.bad()) ? E_FAIL : S_OK;
 }
 
-_Use_decl_annotations_
-void Mesh::ExportToOBJ(std::wostream& os, size_t nMaterials, const Material* materials) const
+_Use_decl_annotations_ void Mesh::ExportToOBJ(std::wostream &os, size_t nMaterials, const Material *materials) const
 {
     os.imbue(std::locale::classic());
 
