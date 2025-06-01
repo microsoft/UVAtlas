@@ -16,7 +16,7 @@ using namespace Isochart;
 #include "SymmetricMatrix.hpp"
 
 CIsoMap::CIsoMap()
-    :m_dwMatrixDimension(0),
+    : m_dwMatrixDimension(0),
     m_dwCalculatedDimension(0),
     m_dwPrimaryDimension(0),
     m_pfMatrixB(nullptr),
@@ -24,15 +24,14 @@ CIsoMap::CIsoMap()
     m_pfEigenVector(nullptr),
     m_pfAvgSquaredDstColumn(nullptr),
     m_fSumOfEigenValue(0)
-{
-}
+{}
 
 CIsoMap::~CIsoMap()
 {
     Clear();
 }
 
-HRESULT CIsoMap::Init(size_t dwDimension, float* pGeodesicMatrix)
+HRESULT CIsoMap::Init(size_t dwDimension, float *pGeodesicMatrix)
 {
     Clear();
     assert(pGeodesicMatrix != nullptr);
@@ -44,7 +43,7 @@ HRESULT CIsoMap::Init(size_t dwDimension, float* pGeodesicMatrix)
     m_pfMatrixB = pGeodesicMatrix;
     m_dwMatrixDimension = dwDimension;
 
-    float* pRow = m_pfMatrixB;
+    float *pRow = m_pfMatrixB;
     for (size_t i = 0; i < m_dwMatrixDimension; i++)
     {
         for (size_t j = 0; j < m_dwMatrixDimension; j++)
@@ -61,7 +60,7 @@ HRESULT CIsoMap::Init(size_t dwDimension, float* pGeodesicMatrix)
         return E_OUTOFMEMORY;
     }
 
-    float* pfAverage = average.get();
+    float *pfAverage = average.get();
 
     m_pfAvgSquaredDstColumn = new (std::nothrow) float[m_dwMatrixDimension];
     if (!m_pfAvgSquaredDstColumn)
@@ -127,7 +126,7 @@ HRESULT CIsoMap::Init(size_t dwDimension, float* pGeodesicMatrix)
 
 HRESULT CIsoMap::ComputeLargestEigen(
     size_t dwSelectedDimension,
-    size_t& dwCalculatedDimension)
+    size_t &dwCalculatedDimension)
 {
     assert(m_pfMatrixB != nullptr);
     _Analysis_assume_(m_pfMatrixB != nullptr);
@@ -169,9 +168,7 @@ HRESULT CIsoMap::ComputeLargestEigen(
     dwCalculatedDimension = 0;
     for (size_t i = 0; i < dwSelectedDimension; i++)
     {
-        if (m_pfEigenValue[i] < ISOCHART_ZERO_EPS
-            || (i > 0 && m_pfEigenValue[i]
-                < m_pfEigenValue[i - 1] * ISOCHART_ZERO_EPS && m_pfEigenValue[i])) // BUGBUG -Wfloat-conversion!?!
+        if (m_pfEigenValue[i] < ISOCHART_ZERO_EPS || (i > 0 && m_pfEigenValue[i] < m_pfEigenValue[i - 1] * ISOCHART_ZERO_EPS && m_pfEigenValue[i])) // BUGBUG -Wfloat-conversion!?!
         {
             break;
         }
@@ -191,7 +188,7 @@ HRESULT CIsoMap::ComputeLargestEigen(
 
 HRESULT CIsoMap::GetPrimaryEnergyDimension(
     float fEnergyPercent,
-    size_t& dwPrimaryEnergyDimension)
+    size_t &dwPrimaryEnergyDimension)
 {
     if (IsInZeroRange(m_fSumOfEigenValue))
     {
@@ -208,9 +205,7 @@ HRESULT CIsoMap::GetPrimaryEnergyDimension(
 
     float fPrecision = m_pfEigenValue[0] + m_pfEigenValue[1];
 
-
-    while (fPrecision < 0.99f * m_fSumOfEigenValue
-        && dwDestineDimension < m_dwCalculatedDimension)
+    while (fPrecision < 0.99f * m_fSumOfEigenValue && dwDestineDimension < m_dwCalculatedDimension)
     {
         fPrecision += m_pfEigenValue[dwDestineDimension];
         dwDestineDimension++;
@@ -224,19 +219,17 @@ HRESULT CIsoMap::GetPrimaryEnergyDimension(
         return E_OUTOFMEMORY;
     }
 
-    float* pfEigenValueRatio = eigenValueRatio.get();
+    float *pfEigenValueRatio = eigenValueRatio.get();
 
     for (size_t i = 0; i < dwDestineDimension - 1; i++)
     {
-        pfEigenValueRatio[i]
-            = IsochartSqrtf(m_pfEigenValue[i]) - IsochartSqrtf(m_pfEigenValue[i + 1]);
+        pfEigenValueRatio[i] = IsochartSqrtf(m_pfEigenValue[i]) - IsochartSqrtf(m_pfEigenValue[i + 1]);
     }
 
     size_t dwAccumulateDimension = 2;
     fPrecision = m_pfEigenValue[0] + m_pfEigenValue[1];
 
-    while (fPrecision < m_fSumOfEigenValue * fEnergyPercent
-        && dwAccumulateDimension < dwDestineDimension)
+    while (fPrecision < m_fSumOfEigenValue * fEnergyPercent && dwAccumulateDimension < dwDestineDimension)
     {
         fPrecision += m_pfEigenValue[dwAccumulateDimension];
         dwAccumulateDimension++;
@@ -278,19 +271,18 @@ HRESULT CIsoMap::GetPrimaryEnergyDimension(
     return S_OK;
 }
 
-
-bool CIsoMap::GetDestineVectors(size_t dwPrimaryEigenDimension, float* pfDestCoord)
+bool CIsoMap::GetDestineVectors(size_t dwPrimaryEigenDimension, float *pfDestCoord)
 {
     if (dwPrimaryEigenDimension > m_dwMatrixDimension)
     {
         return false;
     }
 
-    float* fpEigenVector = m_pfEigenVector;
+    float *fpEigenVector = m_pfEigenVector;
 
     for (size_t i = 0; i < dwPrimaryEigenDimension; i++)
     {
-        //assert(m_pfEigenValue[i] >= 0);
+        // assert(m_pfEigenValue[i] >= 0);
         if (m_pfEigenValue[i] < 0)
             m_pfEigenValue[i] = 0;
 
@@ -304,7 +296,6 @@ bool CIsoMap::GetDestineVectors(size_t dwPrimaryEigenDimension, float* pfDestCoo
     }
     return true;
 }
-
 
 void CIsoMap::Clear()
 {

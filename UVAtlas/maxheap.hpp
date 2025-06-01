@@ -35,30 +35,24 @@ namespace Isochart
 
         weight_type m_weight;
         data_type m_data;
+
     private:
         pos_type m_position;
 
     public:
         CMaxHeapItem()
-            : m_weight(0)
-            , m_data{}
-            , m_position(NOT_IN_HEAP)
-        {
-        }
+            : m_weight(0), m_data{}, m_position(NOT_IN_HEAP)
+        {}
 
         CMaxHeapItem(weight_type weight, data_type data)
-            : m_weight(weight)
-            , m_data(data)
-            , m_position(NOT_IN_HEAP)
-        {
-        }
+            : m_weight(weight), m_data(data), m_position(NOT_IN_HEAP)
+        {}
 
-        CMaxHeapItem(const CMaxHeapItem& item)
-            : m_weight(item.m_weight)
-            , m_data(item.m_data) //Shallow copy here!
-            , m_position(item.m_position)
-        {
-        }
+        CMaxHeapItem(const CMaxHeapItem &item)
+            : m_weight(item.m_weight), m_data(item.m_data) // Shallow copy here!
+            ,
+            m_position(item.m_position)
+        {}
 
         pos_type getPos() const
         {
@@ -80,8 +74,7 @@ namespace Isochart
         typedef CMaxHeapItem<weight_type, data_type> item_type;
 
         CMaxHeap() : m_bAutoMangeMemory(false), m_size(0)
-        {
-        }
+        {}
         CMaxHeap(size_t size) : m_bAutoMangeMemory(false), m_size(0)
         {
             m_items.reserve(size);
@@ -105,13 +98,13 @@ namespace Isochart
                 m_items.resize(newsize);
                 return true;
             }
-            catch (std::bad_alloc&)
+            catch (std::bad_alloc &)
             {
                 return false;
             }
         }
 
-        bool insert(item_type* pItem)
+        bool insert(item_type *pItem)
         {
             if (!pItem)
             {
@@ -128,7 +121,7 @@ namespace Isochart
                 {
                     m_items.push_back(pItem);
                 }
-                catch (std::bad_alloc&)
+                catch (std::bad_alloc &)
                 {
                     return false;
                 }
@@ -147,7 +140,7 @@ namespace Isochart
             {
                 return false;
             }
-            item_type* pNewItem = new (std::nothrow) item_type;
+            item_type *pNewItem = new (std::nothrow) item_type;
             if (!pNewItem)
             {
                 return false;
@@ -160,17 +153,17 @@ namespace Isochart
 
         data_type cutTopData()
         {
-            item_type* pTop = removeAt(0);
+            item_type *pTop = removeAt(0);
             if (!pTop)
             {
-#ifdef __clang__
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
-#endif
+            #ifdef __clang__
+            #pragma clang diagnostic push
+            #pragma clang diagnostic ignored "-Wzero-as-null-pointer-constant"
+            #endif
                 return 0;
-#ifdef __clang__
-#pragma clang diagnostic pop
-#endif
+            #ifdef __clang__
+            #pragma clang diagnostic pop
+            #endif
             }
 
             data_type data = pTop->m_data;
@@ -178,7 +171,7 @@ namespace Isochart
             return data;
         }
 
-        void update(item_type* pItem, weight_type newweight)
+        void update(item_type *pItem, weight_type newweight)
         {
             if (!pItem)
             {
@@ -201,11 +194,11 @@ namespace Isochart
             }
         }
 
-        item_type* cutTop()
+        item_type *cutTop()
         {
             return removeAt(0);
         }
-        item_type* remove(item_type* pItem)
+        item_type *remove(item_type *pItem)
         {
             pos_type i = pItem->getPos();
 
@@ -233,9 +226,9 @@ namespace Isochart
                 m_bAutoMangeMemory = false;
             }
         }
-    private:
 
-        item_type* removeAt(pos_type i)
+    private:
+        item_type *removeAt(pos_type i)
         {
             if (m_size == 0 || i >= m_size)
             {
@@ -335,7 +328,7 @@ namespace Isochart
         }
 
     private:
-        std::vector< item_type* > m_items;
+        std::vector<item_type *> m_items;
         bool m_bAutoMangeMemory;
         size_t m_size;
     };

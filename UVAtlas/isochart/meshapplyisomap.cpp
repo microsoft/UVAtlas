@@ -43,7 +43,7 @@ namespace
 // See more detail in section 5 of [Kun04]
 HRESULT CIsochartMesh::CalculateLandmarkVertices(
     size_t dwMinLandmarkNumber,
-    size_t& dwLandmarkNumber)
+    size_t &dwLandmarkNumber)
 {
     assert(m_pVerts != nullptr);
     assert(m_bVertImportanceDone);
@@ -54,7 +54,7 @@ HRESULT CIsochartMesh::CalculateLandmarkVertices(
         return E_OUTOFMEMORY;
     }
 
-    uint32_t* pdwLandmark = landmark.get();
+    uint32_t *pdwLandmark = landmark.get();
 
     for (uint32_t i = 0; i < m_dwVertNumber; i++)
     {
@@ -68,17 +68,16 @@ HRESULT CIsochartMesh::CalculateLandmarkVertices(
 
         for (size_t i = 0; i < m_dwVertNumber - 1; i++)
         {
-            ISOCHARTVERTEX* pVertex1 = m_pVerts + pdwLandmark[i];
+            ISOCHARTVERTEX *pVertex1 = m_pVerts + pdwLandmark[i];
 
             if (pVertex1->nImportanceOrder != MUST_RESERVE)
             {
                 int nCurrentMax = pVertex1->nImportanceOrder;
                 for (size_t j = i + 1; j < m_dwVertNumber; j++)
                 {
-                    ISOCHARTVERTEX* pVertex2 = m_pVerts + pdwLandmark[j];
+                    ISOCHARTVERTEX *pVertex2 = m_pVerts + pdwLandmark[j];
 
-                    if (pVertex2->nImportanceOrder == MUST_RESERVE
-                        || nCurrentMax < pVertex2->nImportanceOrder)
+                    if (pVertex2->nImportanceOrder == MUST_RESERVE || nCurrentMax < pVertex2->nImportanceOrder)
                     {
                         nCurrentMax = pVertex2->nImportanceOrder;
                         std::swap(pdwLandmark[i], pdwLandmark[j]);
@@ -94,11 +93,7 @@ HRESULT CIsochartMesh::CalculateLandmarkVertices(
             dwLandmarkNumber++;
 
             // if we have found enough landmark, stop iteration.
-            if (m_pVerts[pdwLandmark[dwLandmarkNumber - 1]].nImportanceOrder > 0
-                && dwLandmarkNumber >= dwMinLandmarkNumber
-                && dwLandmarkNumber > 2
-                && m_pVerts[pdwLandmark[dwLandmarkNumber - 1]].nImportanceOrder
-                != m_pVerts[pdwLandmark[dwLandmarkNumber - 2]].nImportanceOrder)
+            if (m_pVerts[pdwLandmark[dwLandmarkNumber - 1]].nImportanceOrder > 0 && dwLandmarkNumber >= dwMinLandmarkNumber && dwLandmarkNumber > 2 && m_pVerts[pdwLandmark[dwLandmarkNumber - 1]].nImportanceOrder != m_pVerts[pdwLandmark[dwLandmarkNumber - 2]].nImportanceOrder)
             {
                 break;
             }
@@ -117,7 +112,7 @@ HRESULT CIsochartMesh::CalculateLandmarkVertices(
     {
         m_landmarkVerts.resize(dwLandmarkNumber);
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -152,7 +147,7 @@ HRESULT CIsochartMesh::InitOneToAllEngine()
         // init vertex list in ONE_TO_ALL_ENGINE
         for (size_t i = 0; i < m_dwVertNumber; ++i)
         {
-            Vertex& thisVertex = ONE_TO_ALL_ENGINE.m_VertexList[i];
+            Vertex &thisVertex = ONE_TO_ALL_ENGINE.m_VertexList[i];
 
             thisVertex.x = double(m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh].x);
             thisVertex.y = double(m_baseInfo.pVertPosition[m_pVerts[i].dwIDInRootMesh].y);
@@ -163,7 +158,7 @@ HRESULT CIsochartMesh::InitOneToAllEngine()
         // init edge list in ONE_TO_ALL_ENGINE
         for (size_t i = 0; i < m_dwEdgeNumber; ++i)
         {
-            Edge& thisEdge = ONE_TO_ALL_ENGINE.m_EdgeList[i];
+            Edge &thisEdge = ONE_TO_ALL_ENGINE.m_EdgeList[i];
 
             thisEdge.dwVertexIdx0 = m_edges[i].dwVertexID[0];
             thisEdge.pVertex0 = &ONE_TO_ALL_ENGINE.m_VertexList[thisEdge.dwVertexIdx0];
@@ -184,7 +179,7 @@ HRESULT CIsochartMesh::InitOneToAllEngine()
         // init face list in ONE_TO_ALL_ENGINE
         for (size_t i = 0; i < m_dwFaceNumber; ++i)
         {
-            Face& thisFace = ONE_TO_ALL_ENGINE.m_FaceList[i];
+            Face &thisFace = ONE_TO_ALL_ENGINE.m_FaceList[i];
 
             thisFace.dwEdgeIdx0 = m_pFaces[i].dwEdgeID[0];
             thisFace.pEdge0 = &ONE_TO_ALL_ENGINE.m_EdgeList[thisFace.dwEdgeIdx0];
@@ -213,7 +208,7 @@ HRESULT CIsochartMesh::InitOneToAllEngine()
             thisFace.pVertex2->facesAdj.push_back(&thisFace);
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -224,9 +219,9 @@ HRESULT CIsochartMesh::InitOneToAllEngine()
 // For each vertex in landmark list, compute geodesic distance from
 // this vertex to all other vertices in the same chart.
 HRESULT CIsochartMesh::CalculateGeodesicDistance(
-    std::vector<uint32_t>& vertList,
-    float* pfVertCombineDistance,
-    float* pfVertGeodesicDistance) const
+    std::vector<uint32_t> &vertList,
+    float *pfVertCombineDistance,
+    float *pfVertGeodesicDistance) const
 {
     if (vertList.empty())
     {
@@ -241,36 +236,26 @@ HRESULT CIsochartMesh::CalculateGeodesicDistance(
     if (
         (
             // if the geodesic algorithm selection field of the isochart option is DEFAULT, check whether suitable to apply the new algorithm
-        (
             (
-            (m_IsochartEngine.m_dwOptions & OPTIONMASK_ISOCHART_GEODESIC)
-                ==
-                (ISOCHARTOPTION::DEFAULT & OPTIONMASK_ISOCHART_GEODESIC)
-                )
-            &&
-            (m_baseInfo.dwFaceCount < LIMIT_FACENUM_USENEWGEODIST)
-            )
-            ||
+                (
+                    (m_IsochartEngine.m_dwOptions & OPTIONMASK_ISOCHART_GEODESIC) ==
+                    (ISOCHARTOPTION::DEFAULT & OPTIONMASK_ISOCHART_GEODESIC)) &&
+                (m_baseInfo.dwFaceCount < LIMIT_FACENUM_USENEWGEODIST)) ||
 
             // or the user forces to use the new algorithm
             (
-                m_IsochartEngine.m_dwOptions & ISOCHARTOPTION::GEODESIC_QUALITY
-                )
-            )
-        &&
+                m_IsochartEngine.m_dwOptions & ISOCHARTOPTION::GEODESIC_QUALITY)) &&
 
         // anyway, if IMT is specified, use the old geodesic distance algorithm, because currently the new geodesic distance algorithm does not support IMT
         (
             !bIsSignalDistance &&
             m_dwVertNumber > 0 &&
-            m_dwFaceNumber > 0
-            )
-        )
+            m_dwFaceNumber > 0))
     {
-        const_cast<CIsochartMesh*>(this)->InitOneToAllEngine();
+        const_cast<CIsochartMesh *>(this)->InitOneToAllEngine();
     }
 
-    float* pfTempGeodesicDistance = nullptr;
+    float *pfTempGeodesicDistance = nullptr;
     if (!pfVertGeodesicDistance)
     {
         pfTempGeodesicDistance = new (std::nothrow) float[dwVertLandNumber * m_dwVertNumber];
@@ -284,8 +269,8 @@ HRESULT CIsochartMesh::CalculateGeodesicDistance(
         pfTempGeodesicDistance = pfVertGeodesicDistance;
     }
 
-    float* pCombineDistanceToOneLandmark = pfVertCombineDistance;
-    float* pGeodesicDstanceToOneLandmark = pfTempGeodesicDistance;
+    float *pCombineDistanceToOneLandmark = pfVertCombineDistance;
+    float *pGeodesicDstanceToOneLandmark = pfTempGeodesicDistance;
     for (size_t i = 0; i < dwVertLandNumber; i++)
     {
         if (FAILED(hr = CalculateGeodesicDistanceToVertex(
@@ -294,7 +279,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistance(
         {
             if (pfVertGeodesicDistance != pfTempGeodesicDistance)
             {
-                delete[]pfTempGeodesicDistance;
+                delete[] pfTempGeodesicDistance;
             }
             return hr;
         }
@@ -336,36 +321,31 @@ HRESULT CIsochartMesh::CalculateGeodesicDistance(
 
             if (pfVertCombineDistance && bIsSignalDistance)
             {
-                pfVertCombineDistance[dwIndex1]
-                    = pfVertCombineDistance[dwIndex2]
-                    = std::min<float>(
-                        pfVertCombineDistance[dwIndex1],
-                        pfVertCombineDistance[dwIndex2]);
+                pfVertCombineDistance[dwIndex1] = pfVertCombineDistance[dwIndex2] = std::min<float>(
+                    pfVertCombineDistance[dwIndex1],
+                    pfVertCombineDistance[dwIndex2]);
             }
 
             if (pfVertGeodesicDistance)
             {
-                pfVertGeodesicDistance[dwIndex1]
-                    = pfVertGeodesicDistance[dwIndex2]
-                    = std::min<float>(
-                        pfVertGeodesicDistance[dwIndex1],
-                        pfVertGeodesicDistance[dwIndex2]);
+                pfVertGeodesicDistance[dwIndex1] = pfVertGeodesicDistance[dwIndex2] = std::min<float>(
+                    pfVertGeodesicDistance[dwIndex1],
+                    pfVertGeodesicDistance[dwIndex2]);
             }
         }
     }
 
     if (pfVertGeodesicDistance != pfTempGeodesicDistance)
     {
-        delete[]pfTempGeodesicDistance;
+        delete[] pfTempGeodesicDistance;
     }
 
     return S_OK;
-
 }
 
 void CIsochartMesh::CombineGeodesicAndSignalDistance(
-    float* pfSignalDistance,
-    const float* pfGeodesicDistance,
+    float *pfSignalDistance,
+    const float *pfGeodesicDistance,
     size_t dwVertLandNumber) const
 {
     assert(pfSignalDistance != nullptr);
@@ -389,14 +369,12 @@ void CIsochartMesh::CombineGeodesicAndSignalDistance(
 
     if (fAverageSignalDifference > ISOCHART_ZERO_EPS)
     {
-        float fRatio
-            = fAverageGeodesicDifference / fAverageSignalDifference;
+        float fRatio = fAverageGeodesicDifference / fAverageSignalDifference;
 
         for (size_t ii = 0; ii < dwDistanceCount; ii++)
         {
             pfSignalDistance[ii] =
-                pfGeodesicDistance[ii] * (1 - fSignalWeight)
-                + fRatio * pfSignalDistance[ii] * fSignalWeight;
+                pfGeodesicDistance[ii] * (1 - fSignalWeight) + fRatio * pfSignalDistance[ii] * fSignalWeight;
         }
     }
     else
@@ -406,31 +384,26 @@ void CIsochartMesh::CombineGeodesicAndSignalDistance(
 }
 
 void CIsochartMesh::UpdateAdjacentVertexGeodistance(
-    ISOCHARTVERTEX* pCurrentVertex,
-    ISOCHARTVERTEX* pAdjacentVertex,
-    const ISOCHARTEDGE& edgeBetweenVertex,
-    bool* pbVertProcessed,
+    ISOCHARTVERTEX *pCurrentVertex,
+    ISOCHARTVERTEX *pAdjacentVertex,
+    const ISOCHARTEDGE &edgeBetweenVertex,
+    bool *pbVertProcessed,
     bool bIsSignalDistance) const
 {
     assert(pCurrentVertex != nullptr);
     assert(pAdjacentVertex != nullptr);
     assert(pbVertProcessed != nullptr);
 
-    if (pAdjacentVertex->fGeodesicDistance
-        > (pCurrentVertex->fGeodesicDistance
-            + edgeBetweenVertex.fLength))
+    if (pAdjacentVertex->fGeodesicDistance > (pCurrentVertex->fGeodesicDistance + edgeBetweenVertex.fLength))
     {
         pAdjacentVertex->fGeodesicDistance =
-            (pCurrentVertex->fGeodesicDistance
-                + edgeBetweenVertex.fLength);
+            (pCurrentVertex->fGeodesicDistance + edgeBetweenVertex.fLength);
 
         if (bIsSignalDistance)
         {
             pAdjacentVertex->fSignalDistance =
-                pCurrentVertex->fSignalDistance
-                + edgeBetweenVertex.fSignalLength;
+                pCurrentVertex->fSignalDistance + edgeBetweenVertex.fSignalLength;
         }
-
     }
 
     for (size_t k = 0; k < 2; k++)
@@ -443,7 +416,7 @@ void CIsochartMesh::UpdateAdjacentVertexGeodistance(
 
         assert(!(k == 1 && edgeBetweenVertex.bIsBoundary));
 
-        ISOCHARTVERTEX* pOppositeVertex = m_pVerts + edgeBetweenVertex.dwOppositVertID[k];
+        ISOCHARTVERTEX *pOppositeVertex = m_pVerts + edgeBetweenVertex.dwOppositVertID[k];
 
         if (pbVertProcessed[pOppositeVertex->dwID])
         {
@@ -469,7 +442,7 @@ void CIsochartMesh::UpdateAdjacentVertexGeodistance(
 HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertex(
     uint32_t dwSourceVertID,
     bool bIsSignalDistance,
-    uint32_t* pdwFarestPeerVertID) const
+    uint32_t *pdwFarestPeerVertID) const
 {
     HRESULT hr =
         CalculateGeodesicDistanceToVertexKS98(dwSourceVertID, bIsSignalDistance, pdwFarestPeerVertID);
@@ -479,33 +452,23 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertex(
     if (
         (
             // if the geodesic algorithm selection field of the isochart option is DEFAULT, check whether suitable to apply the new algorithm
-        (
             (
-            (m_IsochartEngine.m_dwOptions & OPTIONMASK_ISOCHART_GEODESIC)
-                ==
-                (ISOCHARTOPTION::DEFAULT & OPTIONMASK_ISOCHART_GEODESIC)
-                )
-            &&
-            (m_baseInfo.dwFaceCount < LIMIT_FACENUM_USENEWGEODIST)
-            )
-            ||
+                (
+                    (m_IsochartEngine.m_dwOptions & OPTIONMASK_ISOCHART_GEODESIC) ==
+                    (ISOCHARTOPTION::DEFAULT & OPTIONMASK_ISOCHART_GEODESIC)) &&
+                (m_baseInfo.dwFaceCount < LIMIT_FACENUM_USENEWGEODIST)) ||
 
             // or the user forces to use the new algorithm
             (
-                m_IsochartEngine.m_dwOptions & ISOCHARTOPTION::GEODESIC_QUALITY
-                )
-            )
-        &&
+                m_IsochartEngine.m_dwOptions & ISOCHARTOPTION::GEODESIC_QUALITY)) &&
 
         // anyway, if IMT is specified, use the old geodesic distance algorithm, because currently the new geodesic distance algorithm does not support IMT
         (
             !bIsSignalDistance &&
             m_dwVertNumber > 0 &&
-            m_dwFaceNumber > 0
-            )
-        )
+            m_dwFaceNumber > 0))
     {
-        hr = const_cast<CIsochartMesh*>(this)->CalculateGeodesicDistanceToVertexNewGeoDist(dwSourceVertID, pdwFarestPeerVertID);
+        hr = const_cast<CIsochartMesh *>(this)->CalculateGeodesicDistanceToVertexNewGeoDist(dwSourceVertID, pdwFarestPeerVertID);
     }
 
     return hr;
@@ -513,14 +476,14 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertex(
 
 HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexNewGeoDist(
     uint32_t dwSourceVertID,
-    uint32_t* pdwFarestPeerVertID)
+    uint32_t *pdwFarestPeerVertID)
 {
     try
     {
         ONE_TO_ALL_ENGINE.SetSrcVertexIdx(dwSourceVertID);
         ONE_TO_ALL_ENGINE.Run();
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -552,7 +515,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexNewGeoDist(
 HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexKS98(
     uint32_t dwSourceVertID,
     bool bIsSignalDistance,
-    uint32_t* pdwFarestPeerVertID) const
+    uint32_t *pdwFarestPeerVertID) const
 {
     uint32_t dwFarestVertID = 0;
 
@@ -573,7 +536,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexKS98(
     auto pHeapItem = heapItem.get();
 
     // 1. Init the distance to source of each vertex
-    ISOCHARTVERTEX* pCurrentVertex = m_pVerts;
+    ISOCHARTVERTEX *pCurrentVertex = m_pVerts;
     for (size_t i = 0; i < m_dwVertNumber; i++)
     {
         pCurrentVertex->fGeodesicDistance = FLT_MAX;
@@ -602,7 +565,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexKS98(
     // to other vertices.
     for (size_t i = 0; i < m_dwVertNumber; i++)
     {
-        CMaxHeapItem<float, uint32_t>* pTop;
+        CMaxHeapItem<float, uint32_t> *pTop;
         pTop = heap.cutTop();
         if (!pTop)
         {
@@ -618,7 +581,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexKS98(
         for (size_t j = 0; j < pCurrentVertex->edgeAdjacent.size(); j++)
         {
             uint32_t dwAdjacentVertID;
-            const ISOCHARTEDGE& edge = m_edges[pCurrentVertex->edgeAdjacent[j]];
+            const ISOCHARTEDGE &edge = m_edges[pCurrentVertex->edgeAdjacent[j]];
 
             if (edge.dwVertexID[0] == pCurrentVertex->dwID)
             {
@@ -634,12 +597,11 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexKS98(
                 continue;
             }
 
-            ISOCHARTVERTEX* pAdjacentVertex = m_pVerts + dwAdjacentVertID;
+            ISOCHARTVERTEX *pAdjacentVertex = m_pVerts + dwAdjacentVertID;
 
             UpdateAdjacentVertexGeodistance(
                 pCurrentVertex, pAdjacentVertex,
                 edge, pbVertProcessed.get(), bIsSignalDistance);
-
         }
 
         // 4.2 Update heap according to 4.1 step.
@@ -651,7 +613,7 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexKS98(
                 continue;
             }
 
-            ISOCHARTVERTEX* pAdjacentVertex = m_pVerts + dwAdjacentID;
+            ISOCHARTVERTEX *pAdjacentVertex = m_pVerts + dwAdjacentID;
             if (pHeapItem[dwAdjacentID].isItemInHeap())
             {
                 heap.update(pHeapItem + dwAdjacentID,
@@ -679,9 +641,9 @@ HRESULT CIsochartMesh::CalculateGeodesicDistanceToVertexKS98(
 }
 
 void CIsochartMesh::CalculateGeodesicDistanceABC(
-    ISOCHARTVERTEX* pVertexA,
-    ISOCHARTVERTEX* pVertexB,
-    ISOCHARTVERTEX* pVertexC) const
+    ISOCHARTVERTEX *pVertexA,
+    ISOCHARTVERTEX *pVertexB,
+    ISOCHARTVERTEX *pVertexC) const
 {
     XMVECTOR v[3];
     float u = pVertexB->fGeodesicDistance - pVertexA->fGeodesicDistance;
@@ -724,7 +686,7 @@ void CIsochartMesh::CalculateGeodesicDistanceABC(
 
     float fT = b * (t - u) / t;
 
-    if (fCosTheta > ISOCHART_ZERO_EPS&& fT > a / fCosTheta)
+    if (fCosTheta > ISOCHART_ZERO_EPS && fT > a / fCosTheta)
     {
         return;
     }
@@ -738,25 +700,21 @@ void CIsochartMesh::CalculateGeodesicDistanceABC(
     {
         pVertexC->fGeodesicDistance = pVertexA->fGeodesicDistance + t;
     }
-
-
 }
-
-
 
 // Calculate Geodesic Matrix for landmarks
 void CIsochartMesh::CalculateGeodesicMatrix(
-    std::vector<uint32_t>& vertList,
-    const float* pfVertGeodesicDistance,
-    float* pfGeodesicMatrix) const
+    std::vector<uint32_t> &vertList,
+    const float *pfVertGeodesicDistance,
+    float *pfGeodesicMatrix) const
 {
     assert(pfVertGeodesicDistance != nullptr);
     assert(pfGeodesicMatrix != nullptr);
 
     size_t dwVertLandNumber = vertList.size();
 
-    const float* pDistanceToOneLandmark = pfVertGeodesicDistance;
-    float* pfGeodesicColumn = pfGeodesicMatrix;
+    const float *pDistanceToOneLandmark = pfVertGeodesicDistance;
+    float *pfGeodesicColumn = pfGeodesicMatrix;
     for (size_t i = 0; i < dwVertLandNumber; i++)
     {
         for (size_t j = 0; j < dwVertLandNumber; j++)
@@ -772,8 +730,7 @@ void CIsochartMesh::CalculateGeodesicMatrix(
     {
         for (size_t j = i; j < dwVertLandNumber; j++)
         {
-            assert(pfGeodesicMatrix[i * dwVertLandNumber + j]
-                == pfGeodesicMatrix[j * dwVertLandNumber + i]);
+            assert(pfGeodesicMatrix[i * dwVertLandNumber + j] == pfGeodesicMatrix[j * dwVertLandNumber + i]);
         }
     }
 #endif
@@ -784,10 +741,10 @@ void CIsochartMesh::CalculateGeodesicMatrix(
 // Compute n-dimension embeddings of all vertices which are not landmark, using
 // algorithm in section 4 of [Kun04]
 HRESULT CIsochartMesh::CalculateVertMappingCoord(
-    const float* pfVertGeodesicDistance,
+    const float *pfVertGeodesicDistance,
     size_t dwLandmarkNumber,
     size_t dwPrimaryEigenDimension,
-    float* pfVertMappingCoord)	// If not nullptr, store dwPrimaryEigenDimension
+    float *pfVertMappingCoord)  // If not nullptr, store dwPrimaryEigenDimension
                                 // coordinates of each vertex in it.Not Only
                                 // store UV coordinate in vertex
 {
@@ -810,23 +767,22 @@ HRESULT CIsochartMesh::CalculateVertMappingCoord(
         return E_OUTOFMEMORY;
     }
 
-    float* pfLandmarkCoords = landmarkCoords.get();
+    float *pfLandmarkCoords = landmarkCoords.get();
 
     if (!m_isoMap.GetDestineVectors(dwPrimaryEigenDimension, pfLandmarkCoords))
     {
         return HRESULT_E_INVALID_DATA;
     }
 
-    float* pfCoord = pfLandmarkCoords;
-    ISOCHARTVERTEX* pVertex = nullptr;
+    float *pfCoord = pfLandmarkCoords;
+    ISOCHARTVERTEX *pVertex = nullptr;
     for (size_t i = 0; i < dwLandmarkNumber; i++)
     {
         pVertex = m_pVerts + m_landmarkVerts[i];
         if (pfVertMappingCoord)
         {
             memcpy(
-                pfVertMappingCoord
-                + (m_landmarkVerts[i]) * dwPrimaryEigenDimension,
+                pfVertMappingCoord + (m_landmarkVerts[i]) * dwPrimaryEigenDimension,
                 pfCoord,
                 dwPrimaryEigenDimension * sizeof(float));
         }
@@ -837,13 +793,13 @@ HRESULT CIsochartMesh::CalculateVertMappingCoord(
         pfCoord += dwPrimaryEigenDimension;
     }
 
-    const float* pfAverage = m_isoMap.GetAverageColumn();
+    const float *pfAverage = m_isoMap.GetAverageColumn();
 
     pVertex = m_pVerts;
 
-    //Beacause pfLandmarkCoords is no longer used. Here reuse the buffer for
-    //other work. Just reduce additional memory allocation.
-    float* fVectorWeight = pfLandmarkCoords;
+    // Beacause pfLandmarkCoords is no longer used. Here reuse the buffer for
+    // other work. Just reduce additional memory allocation.
+    float *fVectorWeight = pfLandmarkCoords;
 
     pfCoord = pfLandmarkCoords + dwLandmarkNumber;
     for (size_t i = 0; i < m_dwVertNumber; i++)
@@ -854,7 +810,7 @@ HRESULT CIsochartMesh::CalculateVertMappingCoord(
             continue;
         }
 
-        const float* pfDistance = pfVertGeodesicDistance;
+        const float *pfDistance = pfVertGeodesicDistance;
 
         for (size_t j = 0; j < dwLandmarkNumber; j++)
         {
@@ -870,12 +826,11 @@ HRESULT CIsochartMesh::CalculateVertMappingCoord(
         for (size_t k = 0; k < dwPrimaryEigenDimension; k++)
         {
             pfCoord[k] = 0;
-            const float* fEigenVector = m_isoMap.GetEigenVector() + k * dwLandmarkNumber;
+            const float *fEigenVector = m_isoMap.GetEigenVector() + k * dwLandmarkNumber;
 
             for (size_t j = 0; j < dwLandmarkNumber; j++)
             {
                 pfCoord[k] += fVectorWeight[j] * fEigenVector[j];
-
             }
             pfCoord[k] /= IsochartSqrtf(m_isoMap.GetEigenValue()[k]) * 2;
         }
@@ -889,7 +844,7 @@ HRESULT CIsochartMesh::CalculateVertMappingCoord(
     // Make the parameterization on the right plane
     uint32_t dwPositiveFaceNumber = 0;
 
-    ISOCHARTFACE* pFace = m_pFaces;
+    ISOCHARTFACE *pFace = m_pFaces;
     for (size_t i = 0; i < m_dwFaceNumber; i++)
     {
         XMFLOAT3 vec1(m_pVerts[pFace->dwVertexID[1]].uv.x - m_pVerts[pFace->dwVertexID[0]].uv.x,

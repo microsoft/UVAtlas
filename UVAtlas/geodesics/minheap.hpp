@@ -17,23 +17,21 @@ namespace Internal
     class ReverseComparison
     {
     public:
-        ReverseComparison() :
-            m_data{}
-        {
-        }
-        ReverseComparison(const T& R)
+        ReverseComparison() : m_data{}
+        {}
+        ReverseComparison(const T &R)
         {
             m_data = R;
         }
 
-        ReverseComparison(const ReverseComparison&) = default;
-        ReverseComparison& operator=(const ReverseComparison&) = default;
+        ReverseComparison(const ReverseComparison &) = default;
+        ReverseComparison &operator=(const ReverseComparison &) = default;
 
-        bool operator>(const ReverseComparison& R)
+        bool operator>(const ReverseComparison &R)
         {
             return m_data < R.m_data;
         }
-        bool operator<(const ReverseComparison& R)
+        bool operator<(const ReverseComparison &R)
         {
             return m_data > R.m_data;
         }
@@ -46,5 +44,4 @@ namespace Internal
 // the CMinHeap is actually a CMaxHeap, except the first template parameter is wrapped by ReverseComparison
 template <class Ty1, class Ty2>
 class CMinHeap : public Isochart::CMaxHeap<Internal::ReverseComparison<Ty1>, Ty2>
-{
-};
+{};

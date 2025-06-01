@@ -47,7 +47,7 @@ public:
 
     HRESULT Validate(_In_ DirectX::VALIDATE_FLAGS flags, _In_opt_ std::wstring* msgs) const noexcept;
 
-    HRESULT Clean(std::vector<uint32_t>& dups, _In_ bool breakBowties = false) noexcept;
+    HRESULT Clean(std::vector<uint32_t> &dups, _In_ bool breakBowties = false) noexcept;
 
     HRESULT GenerateAdjacency(_In_ float epsilon) noexcept;
 
@@ -55,13 +55,13 @@ public:
 
     HRESULT ComputeTangentFrame(_In_ bool bitangents) noexcept;
 
-    HRESULT UpdateFaces(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t* indices) noexcept;
+    HRESULT UpdateFaces(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t *indices) noexcept;
 
-    HRESULT UpdateAttributes(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t* attributes) noexcept;
+    HRESULT UpdateAttributes(_In_ size_t nFaces, _In_reads_(nFaces * 3) const uint32_t *attributes) noexcept;
 
-    HRESULT UpdateUVs(_In_ size_t nVerts, _In_reads_(nVerts) const DirectX::XMFLOAT2* uvs, bool keepOriginal) noexcept;
+    HRESULT UpdateUVs(_In_ size_t nVerts, _In_reads_(nVerts) const DirectX::XMFLOAT2 *uvs, bool keepOriginal) noexcept;
 
-    HRESULT VertexRemap(_In_reads_(nNewVerts) const uint32_t* remap, _In_ size_t nNewVerts) noexcept;
+    HRESULT VertexRemap(_In_reads_(nNewVerts) const uint32_t *remap, _In_ size_t nNewVerts) noexcept;
 
     HRESULT ReverseWinding() noexcept;
 
@@ -116,8 +116,7 @@ public:
             diffuseColor{},
             specularColor{},
             emissiveColor{}
-        {
-        }
+        {}
 
         Material(
             const wchar_t* iname,
@@ -138,8 +137,7 @@ public:
             specularColor(specular),
             emissiveColor(emissive),
             texture(txtname)
-        {
-        }
+        {}
     };
 
     HRESULT ExportToOBJ(const wchar_t* szFileName, _In_ size_t nMaterials, _In_reads_opt_(nMaterials) const Material* materials) const;

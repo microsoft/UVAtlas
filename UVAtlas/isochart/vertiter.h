@@ -14,7 +14,7 @@ namespace Isochart
     class CVertIter
     {
     public:
-        CVertIter(const uint32_t* rgdwAdjacency);
+        CVertIter(const uint32_t *rgdwAdjacency);
         bool Init(uint32_t dwFaceID, uint32_t dwVertIdx, size_t dwTotoalFaceCount);
         uint32_t GetNextFace();
         bool HasNextFace();
@@ -27,7 +27,7 @@ namespace Isochart
         uint32_t GetPrevVertIdx() { return m_dwPrevVertIdx; }
 
     private:
-        const uint32_t* m_rgdwAdjacency;
+        const uint32_t *m_rgdwAdjacency;
         uint32_t m_dwCurrentFaceID;
         uint32_t m_dwCurrentVertIdx;
         uint32_t m_dwPrevFaceID;
