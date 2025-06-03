@@ -132,18 +132,32 @@
 #include "UVAtlas.h"
 
 #ifdef _DEBUG
-extern void __cdecl UVAtlasDebugPrintf(unsigned int lvl, _In_z_ _Printf_format_string_ const char* szFormat, ...);
+extern void __cdecl UVAtlasDebugPrintf(unsigned int lvl, _In_z_ _Printf_format_string_ const char *szFormat, ...);
 #define DPF UVAtlasDebugPrintf
 #else
 #define DPF(...)
 #endif
 
 #ifndef SAFE_DELETE_ARRAY
-#define SAFE_DELETE_ARRAY(p) { if(p) { delete[] (p);   (p)=nullptr; } }
+#define SAFE_DELETE_ARRAY(p) \
+    {                        \
+        if (p)               \
+        {                    \
+            delete[] (p);    \
+            (p) = nullptr;   \
+        }                    \
+    }
 #endif
 
 #ifndef SAFE_RELEASE
-#define SAFE_RELEASE(p)      { if(p) { (p)->Release(); (p)=nullptr; } }
+#define SAFE_RELEASE(p)     \
+    {                       \
+        if (p)              \
+        {                   \
+            (p)->Release(); \
+            (p) = nullptr;  \
+        }                   \
+    }
 #endif
 
 // HRESULT_FROM_WIN32(ERROR_ARITHMETIC_OVERFLOW)

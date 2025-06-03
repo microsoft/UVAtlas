@@ -28,7 +28,7 @@ void CMaxFlow::ReserveMemory(size_t nNodes, size_t nEdges, size_t nDegree)
     }
 
     nodes.reserve(nNodes);
-    edges.reserve(nEdges * 2);  // bi-directional edges, hence *2
+    edges.reserve(nEdges * 2); // bi-directional edges, hence *2
 }
 
 bool CMaxFlow::InitGraphCut(size_t nNodes, size_t nEdges, size_t nDegree)
@@ -45,9 +45,9 @@ bool CMaxFlow::InitGraphCut(size_t nNodes, size_t nEdges, size_t nDegree)
     try
     {
         nodes.resize(nNodes);
-        edges.reserve(nEdges * 2);// bi-directional edges, hence *2
+        edges.reserve(nEdges * 2); // bi-directional edges, hence *2
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return false;
     }
@@ -75,7 +75,7 @@ void CMaxFlow::AddEdge(
 {
     // add a new edge, assign to n0 and weight c01
     edges.push_back(Edge());
-    Edge& e0 = edges.back();
+    Edge &e0 = edges.back();
     edge_id eid0 = edge_id(edges.size() - 1);
     e0.cap = e0.res = c01;
     nodes[size_t(n0)].edges.push_back(eid0);
@@ -86,7 +86,7 @@ void CMaxFlow::AddEdge(
 
     // add a new edge, assign to n1 and weight c10
     edges.push_back(Edge());
-    Edge& e1 = edges.back();
+    Edge &e1 = edges.back();
     edge_id eid1 = edge_id(edges.size() - 1);
     e1.cap = e1.res = c10;
     nodes[size_t(n1)].edges.push_back(eid1);
@@ -118,16 +118,15 @@ void CMaxFlow::ResetResident()
 // set a t-links capacity
 void CMaxFlow::SetTweights(node_id id, cap_type sw, cap_type tw)
 {
-    Node& n = nodes[size_t(id)];
+    Node &n = nodes[size_t(id)];
     n.resident = n.capacity = sw - tw;
     current_flow += std::min(sw, tw);
-
 }
 
 // initialize the graph so that the algorithm can run
 void CMaxFlow::Initialization()
 {
-    // assume the residual has been reset        
+    // assume the residual has been reset
 
     std::queue<node_id> empty1;
     orphan_list.swap(empty1);
@@ -139,7 +138,7 @@ void CMaxFlow::Initialization()
     {
         // initialize each node
         // assume capacity and resident has benn assigned
-        Node& n = nodes[size_t(k)];
+        Node &n = nodes[size_t(k)];
 
         // connect the node to either s or t node, or free
         if (n.resident > 0)
@@ -172,27 +171,29 @@ bool CMaxFlow::FindAugmentPath()
         // get the active node from queue
         const node_id nid = active_list.front();
         active_list.pop();
-        Node& n = nodes[size_t(nid)];
+        Node &n = nodes[size_t(nid)];
 
         // in case n has been in active list twice
         // the second time, n may be free
-        if (n.is_free()) continue;
+        if (n.is_free())
+            continue;
 
         // iterator all edges from n
         for (size_t i = 0; i < n.edges.size(); i++)
         {
             const edge_id eid_nm = n.edges[i];
-            const Edge& e_nm = edges[size_t(eid_nm)];
+            const Edge &e_nm = edges[size_t(eid_nm)];
 
             // find the n1 end
             const node_id mid = e_nm.n1;
-            Node& m = nodes[size_t(mid)];
+            Node &m = nodes[size_t(mid)];
 
             // if node n is connecting to source tree
             if (n.to_s())
             {
                 // if m is in tree of source, ignore it
-                if (m.to_s()) continue;
+                if (m.to_s())
+                    continue;
 
                 // if res from n to m is positive, i.e. can flow
                 if (e_nm.res > 0)
@@ -226,10 +227,11 @@ bool CMaxFlow::FindAugmentPath()
                 assert(n.to_t());
 
                 // if m is on same tree, ignore it
-                if (m.to_t()) continue;
+                if (m.to_t())
+                    continue;
 
                 // if res from m to n is positive, i.e. can flow
-                const Edge& e_mn = edges[size_t(reverse_edge(eid_nm))];
+                const Edge &e_mn = edges[size_t(reverse_edge(eid_nm))];
                 if (e_mn.res > 0)
                 {
                     // if node m is to_s, we found a path
@@ -265,18 +267,18 @@ void CMaxFlow::trace_current_path(node_id n_to_s, node_id m_to_t, edge_id eid_nm
     current_path.clear();
 
     //// insert the edge from n to m
-    //Node& nn = nodes[n_to_s];
-    //edge_id the_eid = invalid_edge_id();
-    //for (size_t k = 0; k < nn.edges.size(); k ++)
+    // Node& nn = nodes[n_to_s];
+    // edge_id the_eid = invalid_edge_id();
+    // for (size_t k = 0; k < nn.edges.size(); k ++)
     //{
-    //    const edge_id eid = nn.edges[k];
-    //    const Edge& e = edges[eid];
-    //    if (e.n1 == m_to_t)
-    //    {
-    //        the_eid = eid;
-    //        break;
-    //    }
-    //}
+    //     const edge_id eid = nn.edges[k];
+    //     const Edge& e = edges[eid];
+    //     if (e.n1 == m_to_t)
+    //     {
+    //         the_eid = eid;
+    //         break;
+    //     }
+    // }
     edge_id the_eid = eid_nm;
     assert(the_eid != invalid_edge_id() && edges[size_t(the_eid)].res > 0);
     current_path.push_back(the_eid);
@@ -285,7 +287,7 @@ void CMaxFlow::trace_current_path(node_id n_to_s, node_id m_to_t, edge_id eid_nm
     node_id qn = n_to_s;
     for (;;)
     {
-        const Node& node_qn = nodes[size_t(qn)];
+        const Node &node_qn = nodes[size_t(qn)];
         assert(node_qn.to_s());
         const node_id pm = node_qn.get_parent_node();
 
@@ -308,7 +310,7 @@ void CMaxFlow::trace_current_path(node_id n_to_s, node_id m_to_t, edge_id eid_nm
     node_id pm = m_to_t;
     for (;;)
     {
-        const Node& node_pm = nodes[size_t(pm)];
+        const Node &node_pm = nodes[size_t(pm)];
         assert(node_pm.to_t());
         qn = node_pm.get_parent_node();
 
@@ -326,7 +328,6 @@ void CMaxFlow::trace_current_path(node_id n_to_s, node_id m_to_t, edge_id eid_nm
         // move to next point
         pm = qn;
     }
-
 }
 
 // augment the path and find orphans
@@ -336,21 +337,21 @@ void CMaxFlow::AugmentCurrentPath()
     assert(!current_path.empty());
 
     // find two end point
-    Node& ns = nodes[size_t(ns_id)];
+    Node &ns = nodes[size_t(ns_id)];
     assert(ns.resident > 0);
 
-    Node& mt = nodes[size_t(mt_id)];
+    Node &mt = nodes[size_t(mt_id)];
     assert(mt.resident < 0);
 
     cap_type bottleneck = std::min(ns.resident, -mt.resident);
 
-    // find the bottleneck        
+    // find the bottleneck
 
     for (size_t i = 0; i < current_path.size(); i++)
     {
         // get the edge
         const edge_id eid = current_path[i];
-        Edge& e = edges[size_t(eid)];
+        Edge &e = edges[size_t(eid)];
         bottleneck = std::min(bottleneck, e.res);
     }
 
@@ -379,16 +380,16 @@ void CMaxFlow::AugmentCurrentPath()
     {
         // get the edge
         const edge_id eid = current_path[i];
-        Edge& e = edges[size_t(eid)];                   // e: p->q
-        Edge& er = edges[size_t(reverse_edge(eid))];    // er: q->p
+        Edge &e = edges[size_t(eid)];                // e: p->q
+        Edge &er = edges[size_t(reverse_edge(eid))]; // er: q->p
         e.res -= bottleneck;
         er.res += bottleneck;
 
         // if the edge is saturated
         if (e.res == 0)
         {
-            Node& p = nodes[size_t(e.n0)];
-            Node& q = nodes[size_t(e.n1)];
+            Node &p = nodes[size_t(e.n0)];
+            Node &q = nodes[size_t(e.n1)];
 
             // add an orphan
             if (p.to_s() && q.to_s())
@@ -409,14 +410,16 @@ void CMaxFlow::AugmentCurrentPath()
 
 bool CMaxFlow::connecting_to_st(node_id qid) const
 {
-    if (nodes[size_t(qid)].is_free()) return false;
+    if (nodes[size_t(qid)].is_free())
+        return false;
 
     for (;;)
     {
-        const Node& q = nodes[size_t(qid)];
+        const Node &q = nodes[size_t(qid)];
 
         node_id pid = q.get_parent_node();
-        if (pid == no_parent) return false;
+        if (pid == no_parent)
+            return false;
 
         if (pid == node_s || pid == node_t)
         {
@@ -436,7 +439,7 @@ void CMaxFlow::AdoptOrphans()
     {
         node_id pid = orphan_list.front();
         orphan_list.pop();
-        Node& p = nodes[size_t(pid)];
+        Node &p = nodes[size_t(pid)];
 
         // find a parent_node
         node_id candidate_parent_node = invalid_node_id();
@@ -447,15 +450,15 @@ void CMaxFlow::AdoptOrphans()
         // if not, we should collect parents from s or t.
         assert(p.resident == 0);
 
-        //if (p.resident > 0)
+        // if (p.resident > 0)
         //{
-        //    candidate_parent_node = node_s;
-        //}
-        //else if (p.resident < 0)
+        //     candidate_parent_node = node_s;
+        // }
+        // else if (p.resident < 0)
         //{
-        //    candidate_parent_node = node_t;
-        //}
-        //else
+        //     candidate_parent_node = node_t;
+        // }
+        // else
         {
             int best_depth = 0;
             for (size_t k = 0; k < p.edges.size(); k++)
@@ -464,7 +467,7 @@ void CMaxFlow::AdoptOrphans()
 
                 // q is a neighbor node
                 node_id qid = edges[size_t(eid_pq)].n1;
-                const Node& q = nodes[size_t(qid)];
+                const Node &q = nodes[size_t(qid)];
 
                 if (p.on_same_tree(q))
                 {
@@ -472,17 +475,19 @@ void CMaxFlow::AdoptOrphans()
                     {
                         // find the edge from q to p
                         edge_id eid_qp = reverse_edge(eid_pq);
-                        const Edge& eqp = edges[size_t(eid_qp)];
+                        const Edge &eqp = edges[size_t(eid_qp)];
 
                         // if can not flow from q to p, ignore it
-                        if (eqp.res == 0) continue;
+                        if (eqp.res == 0)
+                            continue;
                     }
                     else if (p.to_t() && q.to_t())
                     {
-                        const Edge& epq = edges[size_t(eid_pq)];
+                        const Edge &epq = edges[size_t(eid_pq)];
 
                         // if can not flow from p to q, ignore it
-                        if (epq.res == 0) continue;
+                        if (epq.res == 0)
+                            continue;
                     }
 
                     // must not be on an orphan tree
@@ -504,15 +509,15 @@ void CMaxFlow::AdoptOrphans()
         // if we find a parent_node, adopte the orphan
         if (candidate_parent_node != invalid_node_id())
         {
-            //if (candidate_parent_node == node_s)
+            // if (candidate_parent_node == node_s)
             //{
-            //    p.set_parent_to_s();
-            //}
-            //else if (candidate_parent_node == node_t)
+            //     p.set_parent_to_s();
+            // }
+            // else if (candidate_parent_node == node_t)
             //{
-            //    p.set_parent_to_t();
-            //}
-            //else
+            //     p.set_parent_to_t();
+            // }
+            // else
             {
                 // set the new parent_node of p
                 p.set_parent_node(candidate_parent_node);
@@ -529,7 +534,7 @@ void CMaxFlow::AdoptOrphans()
 
                 // q is a neighbor node
                 node_id qid = edges[size_t(eid_pq)].n1;
-                Node& q = nodes[size_t(qid)];
+                Node &q = nodes[size_t(qid)];
 
                 // p and q must to same tree
                 if (p.on_same_tree(q))

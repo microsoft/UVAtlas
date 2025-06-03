@@ -11,8 +11,12 @@
 
 #include "isochartconfig.h"
 
-#define FAILURE_RETURN(x) if (FAILED( hr =(x))) return hr
-#define FAILURE_GOTO_END(x) if (FAILED( hr =(x))) goto LEnd
+#define FAILURE_RETURN(x) \
+    if (FAILED(hr = (x))) \
+    return hr
+#define FAILURE_GOTO_END(x) \
+    if (FAILED(hr = (x)))   \
+    goto LEnd
 
 namespace Isochart
 {
@@ -23,11 +27,11 @@ namespace Isochart
 
     // Check if to segments intersect together.
     bool IsochartIsSegmentsIntersect(
-        const DirectX::XMFLOAT2& p0,
-        const DirectX::XMFLOAT2& p1,
-        const DirectX::XMFLOAT2& p3,
-        const DirectX::XMFLOAT2& p4,
-        DirectX::XMFLOAT2* pIntersection = nullptr);
+        const DirectX::XMFLOAT2 &p0,
+        const DirectX::XMFLOAT2 &p1,
+        const DirectX::XMFLOAT2 &p3,
+        const DirectX::XMFLOAT2 &p4,
+        DirectX::XMFLOAT2 *pIntersection = nullptr);
 
     // Check if a float value is near zero.
     inline bool IsInZeroRange(
@@ -41,7 +45,6 @@ namespace Isochart
     {
         return ((a >= -ISOCHART_ZERO_EPS2) && (a <= ISOCHART_ZERO_EPS2));
     }
-
 
     inline float IsochartSqrtf(float a)
     {
@@ -61,11 +64,10 @@ namespace Isochart
         return sqrt(a);
     }
 
-
     inline float Cal3DTriangleArea(
-        const DirectX::XMFLOAT3* pv0,
-        const DirectX::XMFLOAT3* pv1,
-        const DirectX::XMFLOAT3* pv2)
+        const DirectX::XMFLOAT3 *pv0,
+        const DirectX::XMFLOAT3 *pv1,
+        const DirectX::XMFLOAT3 *pv2)
     {
         using namespace DirectX;
 
@@ -77,26 +79,25 @@ namespace Isochart
     }
 
     inline float Cal2DTriangleArea(
-        const DirectX::XMFLOAT2& v0,
-        const DirectX::XMFLOAT2& v1,
-        const DirectX::XMFLOAT2& v2)
+        const DirectX::XMFLOAT2 &v0,
+        const DirectX::XMFLOAT2 &v1,
+        const DirectX::XMFLOAT2 &v2)
     {
-        return  ((v1.x - v0.x) * (v2.y - v0.y) - (v2.x - v0.x) * (v1.y - v0.y)) / 2;
+        return ((v1.x - v0.x) * (v2.y - v0.y) - (v2.x - v0.x) * (v1.y - v0.y)) / 2;
     }
 
-
     inline float Cal2DTriangleArea(
-        const DirectX::XMFLOAT2* pv0,
-        const DirectX::XMFLOAT2* pv1,
-        const DirectX::XMFLOAT2* pv2)
+        const DirectX::XMFLOAT2 *pv0,
+        const DirectX::XMFLOAT2 *pv1,
+        const DirectX::XMFLOAT2 *pv2)
     {
-        return  ((pv1->x - pv0->x) * (pv2->y - pv0->y) - (pv2->x - pv0->x) * (pv1->y - pv0->y)) / 2;
+        return ((pv1->x - pv0->x) * (pv2->y - pv0->y) - (pv2->x - pv0->x) * (pv1->y - pv0->y)) / 2;
     }
 
     inline float IsochartVertexToEdgeDistance2D(
-        DirectX::XMFLOAT2& rVertex,
-        DirectX::XMFLOAT2& rEdgeVertex0,
-        DirectX::XMFLOAT2& rEdgeVertex1)
+        DirectX::XMFLOAT2 &rVertex,
+        DirectX::XMFLOAT2 &rEdgeVertex0,
+        DirectX::XMFLOAT2 &rEdgeVertex1)
     {
         using namespace DirectX;
 
@@ -139,8 +140,8 @@ namespace Isochart
     }
 
     inline float IsochartBoxArea(
-        DirectX::XMFLOAT2& minBound,
-        DirectX::XMFLOAT2& maxBound)
+        DirectX::XMFLOAT2 &minBound,
+        DirectX::XMFLOAT2 &maxBound)
     {
         float fDeltaX = maxBound.x - minBound.x;
         float fDeltaY = maxBound.y - minBound.y;
@@ -149,22 +150,22 @@ namespace Isochart
     }
 
     inline float CalculateZOfVec3Cross(
-        const DirectX::XMFLOAT3* pV1,
-        const DirectX::XMFLOAT3* pV2)
+        const DirectX::XMFLOAT3 *pV1,
+        const DirectX::XMFLOAT3 *pV2)
     {
         return pV1->x * pV2->y - pV1->y * pV2->x;
     }
 
     inline float CalculateZOfVec2Cross(
-        const DirectX::XMFLOAT2* pV1,
-        const DirectX::XMFLOAT2* pV2)
+        const DirectX::XMFLOAT2 *pV1,
+        const DirectX::XMFLOAT2 *pV2)
     {
         return pV1->x * pV2->y - pV1->y * pV2->x;
     }
 
     inline float IsochartVectorDot(
-        float* v1,
-        float* v2,
+        float *v1,
+        float *v2,
         size_t dwDimension)
     {
         float fResult = 0;
@@ -177,13 +178,13 @@ namespace Isochart
     }
 
     inline void IsochartCaculateCanonicalCoordinates(
-        const DirectX::XMFLOAT3* pv3D0,
-        const DirectX::XMFLOAT3* pv3D1,
-        const DirectX::XMFLOAT3* pv3D2,
-        DirectX::XMFLOAT2* pv2D0,
-        DirectX::XMFLOAT2* pv2D1,
-        DirectX::XMFLOAT2* pv2D2,
-        DirectX::XMFLOAT3* pAxis)
+        const DirectX::XMFLOAT3 *pv3D0,
+        const DirectX::XMFLOAT3 *pv3D1,
+        const DirectX::XMFLOAT3 *pv3D2,
+        DirectX::XMFLOAT2 *pv2D0,
+        DirectX::XMFLOAT2 *pv2D1,
+        DirectX::XMFLOAT2 *pv2D2,
+        DirectX::XMFLOAT3 *pAxis)
     {
         using namespace DirectX;
 
@@ -229,11 +230,10 @@ namespace Isochart
         XMStoreFloat2(pv2D2, v2D2);
     }
 
-
     inline void GetIMTOnCanonicalFace(
-        const float* pMT,
+        const float *pMT,
         const float f3D,
-        float* pIMT)
+        float *pIMT)
     {
         assert(pIMT != nullptr && pMT != nullptr);
 
@@ -245,15 +245,15 @@ namespace Isochart
 
     inline void Compute2DtoNDPartialDerivatives(
         float fNew2DArea,
-        const DirectX::XMFLOAT2* pv2D0,
-        const DirectX::XMFLOAT2* pv2D1,
-        const DirectX::XMFLOAT2* pv2D2,
-        __in_ecount(dwDimensonN) const float* pfND0,
-        __in_ecount(dwDimensonN) const float* pfND1,
-        __in_ecount(dwDimensonN) const float* pfND2,
+        const DirectX::XMFLOAT2 *pv2D0,
+        const DirectX::XMFLOAT2 *pv2D1,
+        const DirectX::XMFLOAT2 *pv2D2,
+        __in_ecount(dwDimensonN) const float *pfND0,
+        __in_ecount(dwDimensonN) const float *pfND1,
+        __in_ecount(dwDimensonN) const float *pfND2,
         size_t dwDimensonN,
-        __out_ecount(dwDimensonN) float* Ss,
-        __out_ecount(dwDimensonN) float* St)
+        __out_ecount(dwDimensonN) float *Ss,
+        __out_ecount(dwDimensonN) float *St)
     {
         assert(!IsInZeroRange2(fNew2DArea));
 
@@ -268,12 +268,13 @@ namespace Isochart
             {
                 Ss[ii] = (q[0] * (pv2D1->y - pv2D2->y) +
                     q[1] * (pv2D2->y - pv2D0->y) +
-                    q[2] * (pv2D0->y - pv2D1->y)) / (fNew2DArea * 2);
+                    q[2] * (pv2D0->y - pv2D1->y)) /
+                    (fNew2DArea * 2);
 
                 St[ii] = (q[0] * (pv2D2->x - pv2D1->x) +
                     q[1] * (pv2D0->x - pv2D2->x) +
-                    q[2] * (pv2D1->x - pv2D0->x)) / (fNew2DArea * 2);
-
+                    q[2] * (pv2D1->x - pv2D0->x)) /
+                    (fNew2DArea * 2);
             }
             else
             {
@@ -291,19 +292,17 @@ namespace Isochart
         return;
     }
 
-
-
     inline void AffineIMTOn2D(
         float fNew2DArea,
-        const DirectX::XMFLOAT2* pNewUv0,
-        const DirectX::XMFLOAT2* pNewUv1,
-        const DirectX::XMFLOAT2* pNewUv2,
-        __out_ecount(IMT_DIM) float* pNewIMT,
-        const DirectX::XMFLOAT2* pOldUv0,
-        const DirectX::XMFLOAT2* pOldUv1,
-        const DirectX::XMFLOAT2* pOldUv2,
-        __in_ecount(IMT_DIM) const float* pOldIMT,
-        float* pGeo)
+        const DirectX::XMFLOAT2 *pNewUv0,
+        const DirectX::XMFLOAT2 *pNewUv1,
+        const DirectX::XMFLOAT2 *pNewUv2,
+        __out_ecount(IMT_DIM) float *pNewIMT,
+        const DirectX::XMFLOAT2 *pOldUv0,
+        const DirectX::XMFLOAT2 *pOldUv1,
+        const DirectX::XMFLOAT2 *pOldUv2,
+        __in_ecount(IMT_DIM) const float *pOldIMT,
+        float *pGeo)
     {
         using namespace DirectX;
 
@@ -322,12 +321,12 @@ namespace Isochart
             pNewUv0,
             pNewUv1,
             pNewUv2,
-            reinterpret_cast<const float*>(pOldUv0),
-            reinterpret_cast<const float*>(pOldUv1),
-            reinterpret_cast<const float*>(pOldUv2),
+            reinterpret_cast<const float *>(pOldUv0),
+            reinterpret_cast<const float *>(pOldUv1),
+            reinterpret_cast<const float *>(pOldUv2),
             2,
-            reinterpret_cast<float*>(&Ss),
-            reinterpret_cast<float*>(&St));
+            reinterpret_cast<float *>(&Ss),
+            reinterpret_cast<float *>(&St));
 
         if (pGeo)
         {
@@ -341,23 +340,23 @@ namespace Isochart
         float oldIMT[IMT_DIM];
         memcpy(oldIMT, pOldIMT, IMT_DIM * sizeof(float));
 
-#if PIECEWISE_CONSTANT_IMT
+    #if PIECEWISE_CONSTANT_IMT
         pNewIMT[0] =
             Ss.x * Ss.x * oldIMT[0] + Ss.y * Ss.y * oldIMT[2] + 2 * Ss.x * Ss.y * oldIMT[1];
         pNewIMT[2] =
             St.x * St.x * oldIMT[0] + St.y * St.y * oldIMT[2] + 2 * St.x * St.y * oldIMT[1];
         pNewIMT[1] =
             Ss.x * St.x * oldIMT[0] + Ss.y * St.y * oldIMT[2] + (Ss.x * St.y + Ss.y * St.x) * oldIMT[1];
-#else
-#endif
+    #else
+    #endif
 
         return;
     }
 
     inline void TransformUV(
-        DirectX::XMFLOAT2& newUv,
-        const DirectX::XMFLOAT2& oldUv,
-        const float* pMatrix)
+        DirectX::XMFLOAT2 &newUv,
+        const DirectX::XMFLOAT2 &oldUv,
+        const float *pMatrix)
     {
         float u = pMatrix[0] * oldUv.x + pMatrix[1] * oldUv.y;
         float v = pMatrix[2] * oldUv.x + pMatrix[3] * oldUv.y;
@@ -368,24 +367,23 @@ namespace Isochart
     }
 
     inline void SetAllIMTValue(
-        __out_ecount(IMT_DIM) float* pIMT,
+        __out_ecount(IMT_DIM) float *pIMT,
         float fValue)
     {
         for (size_t ii = 0; ii < IMT_DIM; ii++)
         {
             pIMT[ii] = fValue;
         }
-
     }
 
     float CalL2SquaredStretchLowBoundOnFace(
-        const float* pMT,
+        const float *pMT,
         float fFace3DArea,
         float fMaxDistortionRate,
-        float* fRotMatrix);
+        float *fRotMatrix);
 
     float CombineSigAndGeoStretch(
-        const float* pMT,
+        const float *pMT,
         float fSigStretch,
         float fGeoStretch);
 }

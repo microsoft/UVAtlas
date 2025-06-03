@@ -60,8 +60,8 @@
 #define TOOL_VERSION UVATLAS_VERSION
 #include "CmdLineHelpers.h"
 
-//Uncomment to add support for OpenEXR (.exr)
-//#define USE_OPENEXR
+// Uncomment to add support for OpenEXR (.exr)
+// #define USE_OPENEXR
 
 #ifdef USE_OPENEXR
 // See <https://github.com/Microsoft/DirectXTex/wiki/Adding-OpenEXR> for details
@@ -148,7 +148,6 @@ namespace
         XMFLOAT3(0.5f, 0.5f, 0.75f),
         XMFLOAT3(0.5f, 0.5f, 1.0f),
     };
-
 
     //////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////////
@@ -248,22 +247,22 @@ namespace
         { nullptr,                      0 }
     };
 
-    const SValue<uint32_t> g_vertexNormalFormats[] =
+    const SValue<DXGI_FORMAT> g_vertexNormalFormats[] =
     {
         { L"float3",    DXGI_FORMAT_R32G32B32_FLOAT },
         { L"float16_4", DXGI_FORMAT_R16G16B16A16_FLOAT },
         { L"r11g11b10", DXGI_FORMAT_R11G11B10_FLOAT },
-        { nullptr,      0 }
+        { nullptr,      DXGI_FORMAT_UNKNOWN }
     };
 
-    const SValue<uint32_t> g_vertexUVFormats[] =
+    const SValue<DXGI_FORMAT> g_vertexUVFormats[] =
     {
         { L"float2",    DXGI_FORMAT_R32G32_FLOAT },
         { L"float16_2", DXGI_FORMAT_R16G16_FLOAT },
-        { nullptr,      0 }
+        { nullptr,      DXGI_FORMAT_UNKNOWN }
     };
 
-    const SValue<uint32_t> g_vertexColorFormats[] =
+    const SValue<DXGI_FORMAT> g_vertexColorFormats[] =
     {
         { L"bgra",      DXGI_FORMAT_B8G8R8A8_UNORM },
         { L"rgba",      DXGI_FORMAT_R8G8B8A8_UNORM },
@@ -271,7 +270,7 @@ namespace
         { L"float16_4", DXGI_FORMAT_R16G16B16A16_FLOAT },
         { L"rgba_10",   DXGI_FORMAT_R10G10B10A2_UNORM },
         { L"r11g11b10", DXGI_FORMAT_R11G11B10_FLOAT },
-        { nullptr,      0 }
+        { nullptr,      DXGI_FORMAT_UNKNOWN }
     };
 
     enum MESH_CODEC : uint32_t
@@ -510,7 +509,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 }
             }
 
-            switch(dwOption)
+            switch (dwOption)
             {
             case 0:
                 wprintf(L"ERROR: Unknown option: `%ls`\n\nUse %ls --help\n", pArg, g_ToolName);
@@ -631,9 +630,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
 
             case OPT_MAXSTRETCH:
-                if (swscanf_s(pValue, L"%f", &maxStretch) != 1
-                    || maxStretch < 0.f
-                    || maxStretch > 1.f)
+                if (swscanf_s(pValue, L"%f", &maxStretch) != 1 || maxStretch < 0.f || maxStretch > 1.f)
                 {
                     wprintf(L"Invalid value specified with -st (%ls)\n", pValue);
                     return 1;
@@ -641,8 +638,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
 
             case OPT_GUTTER:
-                if (swscanf_s(pValue, L"%f", &gutter) != 1
-                    || gutter < 0.f)
+                if (swscanf_s(pValue, L"%f", &gutter) != 1 || gutter < 0.f)
                 {
                     wprintf(L"Invalid value specified with -g (%ls)\n", pValue);
                     return 1;
@@ -809,33 +805,30 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
 
             case OPT_VERT_NORMAL_FORMAT:
-                normalFormat = static_cast<DXGI_FORMAT>(LookupByName(pValue, g_vertexNormalFormats));
+                normalFormat = LookupByName(pValue, g_vertexNormalFormats);
                 if (!normalFormat)
                 {
-                    wprintf(L"Invalid value specified with -fn (%ls)\n", pValue);
-                    wprintf(L"\n");
+                    wprintf(L"Invalid value specified with -fn (%ls)\n\n", pValue);
                     PrintUsage();
                     return 1;
                 }
                 break;
 
             case OPT_VERT_UV_FORMAT:
-                uvFormat = static_cast<DXGI_FORMAT>(LookupByName(pValue, g_vertexUVFormats));
+                uvFormat = LookupByName(pValue, g_vertexUVFormats);
                 if (!uvFormat)
                 {
-                    wprintf(L"Invalid value specified with -fuv (%ls)\n", pValue);
-                    wprintf(L"\n");
+                    wprintf(L"Invalid value specified with -fuv (%ls)\n\n", pValue);
                     PrintUsage();
                     return 1;
                 }
                 break;
 
             case OPT_VERT_COLOR_FORMAT:
-                colorFormat = static_cast<DXGI_FORMAT>(LookupByName(pValue, g_vertexColorFormats));
+                colorFormat = LookupByName(pValue, g_vertexColorFormats);
                 if (!colorFormat)
                 {
-                    wprintf(L"Invalid value specified with -fc (%ls)\n", pValue);
-                    wprintf(L"\n");
+                    wprintf(L"Invalid value specified with -fc (%ls)\n\n", pValue);
                     PrintUsage();
                     return 1;
                 }
@@ -865,7 +858,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         {
             const size_t count = conversion.size();
             std::filesystem::path path(pArg);
-            SearchForFiles(path.make_preferred(), conversion, (dwOptions& (UINT64_C(1) << OPT_RECURSIVE)) != 0, nullptr);
+            SearchForFiles(path.make_preferred(), conversion, (dwOptions & (UINT64_C(1) << OPT_RECURSIVE)) != 0, nullptr);
             if (conversion.size() <= count)
             {
                 wprintf(L"No matching files found for %ls\n", pArg);
@@ -1072,8 +1065,10 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             hr = inMesh->ComputeNormals(flags);
             if (FAILED(hr))
             {
-                wprintf(L"\nERROR: Failed computing normals (flags:%X, %08X%ls)\n", static_cast<unsigned int>(flags),
-                    static_cast<unsigned int>(hr), GetErrorDesc(hr));
+                wprintf(L"\nERROR: Failed computing normals (flags:%X, %08X%ls)\n",
+                    static_cast<unsigned int>(flags),
+                    static_cast<unsigned int>(hr),
+                    GetErrorDesc(hr));
                 return 1;
             }
         }
@@ -1125,12 +1120,12 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 {
                     hr = LoadFromHDRFile(texFile.c_str(), nullptr, iimage);
                 }
-#ifdef USE_OPENEXR
+            #ifdef USE_OPENEXR
                 else if (_wcsicmp(ext.c_str(), L".exr") == 0)
                 {
                     hr = LoadFromEXRFile(texFile.c_str(), nullptr, iimage);
                 }
-#endif
+            #endif
                 else
                 {
                     hr = LoadFromWICFile(texFile.c_str(), WIC_FLAGS_NONE, nullptr, iimage);
@@ -1142,7 +1137,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 }
                 else
                 {
-                    const Image* img = iimage.GetImage(0, 0, 0);
+                    const Image *img = iimage.GetImage(0, 0, 0);
 
                     ScratchImage floatImage;
                     if (img->format != DXGI_FORMAT_R32G32B32A32_FLOAT)
@@ -1173,7 +1168,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
                         hr = UVAtlasComputeIMTFromTexture(inMesh->GetPositionBuffer(), inMesh->GetTexCoordBuffer(), nVerts,
                             inMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, nFaces,
-                            reinterpret_cast<const float*>(img->pixels), img->width, img->height,
+                            reinterpret_cast<const float *>(img->pixels), img->width, img->height,
                             UVATLAS_IMT_DEFAULT, UVAtlasCallback, IMTData.get());
                         if (FAILED(hr))
                         {
@@ -1186,8 +1181,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             }
             else
             {
-                const wchar_t* szChannel = L"*unknown*";
-                const float* pSignal = nullptr;
+                const wchar_t *szChannel = L"*unknown*";
+                const float *pSignal = nullptr;
                 size_t signalDim = 0;
                 size_t signalStride = 0;
                 switch (perVertex)
@@ -1196,7 +1191,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                     szChannel = L"normals";
                     if (inMesh->GetNormalBuffer())
                     {
-                        pSignal = reinterpret_cast<const float*>(inMesh->GetNormalBuffer());
+                        pSignal = reinterpret_cast<const float *>(inMesh->GetNormalBuffer());
                         signalDim = 3;
                         signalStride = sizeof(XMFLOAT3);
                     }
@@ -1206,7 +1201,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                     szChannel = L"vertex colors";
                     if (inMesh->GetColorBuffer())
                     {
-                        pSignal = reinterpret_cast<const float*>(inMesh->GetColorBuffer());
+                        pSignal = reinterpret_cast<const float *>(inMesh->GetColorBuffer());
                         signalDim = 4;
                         signalStride = sizeof(XMFLOAT4);
                     }
@@ -1216,7 +1211,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                     szChannel = L"texture coordinates";
                     if (inMesh->GetTexCoordBuffer())
                     {
-                        pSignal = reinterpret_cast<const float*>(inMesh->GetTexCoordBuffer());
+                        pSignal = reinterpret_cast<const float *>(inMesh->GetTexCoordBuffer());
                         signalDim = 2;
                         signalStride = sizeof(XMFLOAT2);
                     }
@@ -1298,7 +1293,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         assert(facePartitioning.size() == nFaces);
         assert(vertexRemapArray.size() == vb.size());
 
-        hr = inMesh->UpdateFaces(nFaces, reinterpret_cast<const uint32_t*>(ib.data()));
+        hr = inMesh->UpdateFaces(nFaces, reinterpret_cast<const uint32_t *>(ib.data()));
         if (FAILED(hr))
         {
             wprintf(L"\nERROR: Failed applying atlas indices (%08X%ls)\n", static_cast<unsigned int>(hr), GetErrorDesc(hr));
@@ -1314,16 +1309,16 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
         nVerts = vb.size();
 
-#ifdef _DEBUG
+    #ifdef _DEBUG
         std::wstring msgs;
         hr = inMesh->Validate(VALIDATE_DEFAULT, &msgs);
         if (!msgs.empty())
         {
             wprintf(L"\nWARNING: \n%ls\n", msgs.c_str());
         }
-#endif
+    #endif
 
-        // Copy isochart UVs into mesh
+            // Copy isochart UVs into mesh
         {
             std::unique_ptr<XMFLOAT2[]> texcoord(new (std::nothrow) XMFLOAT2[nVerts]);
             if (!texcoord)
@@ -1398,7 +1393,8 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
             hr = inMesh->ReverseWinding();
             if (FAILED(hr))
             {
-                wprintf(L"\nERROR: Failed reversing winding (%08X%ls)\n", static_cast<unsigned int>(hr), GetErrorDesc(hr));
+                wprintf(L"\nERROR: Failed reversing winding (%08X%ls)\n",
+                    static_cast<unsigned int>(hr), GetErrorDesc(hr));
                 return 1;
             }
         }
@@ -1415,7 +1411,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         }
         else
         {
-            switch(fileType)
+            switch (fileType)
             {
             case CODEC_VBO:
                 wcscpy_s(outputExt, L".vbo");
@@ -1434,7 +1430,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
                 break;
             }
 
-            outputFile = curpath.stem().native();
+            outputFile.assign(curpath.stem());
             outputFile.append(outputExt);
         }
 
@@ -1498,8 +1494,7 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
         else if (!_wcsicmp(outputExt, L".obj") || !_wcsicmp(outputExt, L"._obj"))
         {
             std::wstring mtlFilename;
-            if ((dwOptions & (UINT64_C(1) << OPT_COLOR_MESH))
-                && !inMaterial.empty())
+            if ((dwOptions & (UINT64_C(1) << OPT_COLOR_MESH)) && !inMaterial.empty())
             {
                 mtlFilename = curpath.stem().native();
                 mtlFilename.append(L"_charts");
@@ -1540,13 +1535,14 @@ int __cdecl wmain(_In_ int argc, _In_z_count_(argc) wchar_t* argv[])
 
                 os.imbue(std::locale::classic());
 
-                for (const auto& mtl : inMaterial)
+                for (const auto &mtl : inMaterial)
                 {
                     // Minimal material output.
                     os << L"newmtl " << mtl.name << std::endl;
                     os << L"illum 1" << std::endl;
                     os << L"Ka " << mtl.ambientColor.x << L" " << mtl.ambientColor.y << L" " << mtl.ambientColor.z << std::endl;
-                    os << L"Kd " << mtl.diffuseColor.x << L" " << mtl.diffuseColor.y << L" " << mtl.diffuseColor.z << std::endl << std::endl;
+                    os << L"Kd " << mtl.diffuseColor.x << L" " << mtl.diffuseColor.y << L" " << mtl.diffuseColor.z << std::endl
+                        << std::endl;
                 }
 
                 os.close();

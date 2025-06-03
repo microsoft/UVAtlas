@@ -12,12 +12,12 @@
 #ifdef _WIN32
 #ifdef _GAMING_XBOX_SCARLETT
 #pragma warning(push)
-#pragma warning(disable: 5204 5249)
+#pragma warning(disable : 5204 5249)
 #include <d3d12_xs.h>
 #pragma warning(pop)
 #elif defined(_GAMING_XBOX)
 #pragma warning(push)
-#pragma warning(disable: 5204)
+#pragma warning(disable : 5204)
 #include <d3d12_x.h>
 #pragma warning(pop)
 #elif defined(_XBOX_ONE) && defined(_TITLE)
@@ -46,20 +46,19 @@
 
 #if defined(_WIN32) && defined(UVATLAS_EXPORT)
 #ifdef __GNUC__
-#define UVATLAS_API __attribute__ ((dllexport))
+#define UVATLAS_API __attribute__((dllexport))
 #else
 #define UVATLAS_API __declspec(dllexport)
 #endif
 #elif defined(_WIN32) && defined(UVATLAS_IMPORT)
 #ifdef __GNUC__
-#define UVATLAS_API __attribute__ ((dllimport))
+#define UVATLAS_API __attribute__((dllimport))
 #else
 #define UVATLAS_API __declspec(dllimport)
 #endif
 #else
 #define UVATLAS_API
 #endif
-
 
 namespace DirectX
 {
@@ -163,29 +162,29 @@ namespace DirectX
     //                 number of charts needed to create an atlas.
 
     UVATLAS_API HRESULT __cdecl UVAtlasCreate(
-        _In_reads_(nVerts)                  const XMFLOAT3* positions,
-        _In_                                size_t nVerts,
+        _In_reads_(nVerts) const XMFLOAT3 *positions,
+        _In_ size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
-        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void* indices,
-        _In_                                DXGI_FORMAT indexFormat,
-        _In_                                size_t nFaces,
-        _In_                                size_t maxChartNumber,
-        _In_                                float maxStretch,
-        _In_                                size_t width,
-        _In_                                size_t height,
-        _In_                                float gutter,
-        _In_reads_(nFaces * 3)                const uint32_t* adjacency,
-        _In_reads_opt_(nFaces * 3)            const uint32_t* falseEdgeAdjacency,
-        _In_reads_opt_(nFaces * 3)            const float* pIMTArray,
-        _In_                                std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        _In_                                float callbackFrequency,
-        _In_                                UVATLAS options,
-        _Inout_ std::vector<UVAtlasVertex>& vMeshOutVertexBuffer,
-        _Inout_ std::vector<uint8_t>& vMeshOutIndexBuffer,
-        _Inout_opt_ std::vector<uint32_t>* pvFacePartitioning = nullptr,
-        _Inout_opt_ std::vector<uint32_t>* pvVertexRemapArray = nullptr,
-        _Out_opt_                           float* maxStretchOut = nullptr,
-        _Out_opt_                           size_t* numChartsOut = nullptr);
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
+        _In_ DXGI_FORMAT indexFormat,
+        _In_ size_t nFaces,
+        _In_ size_t maxChartNumber,
+        _In_ float maxStretch,
+        _In_ size_t width,
+        _In_ size_t height,
+        _In_ float gutter,
+        _In_reads_(nFaces * 3) const uint32_t *adjacency,
+        _In_reads_opt_(nFaces * 3) const uint32_t *falseEdgeAdjacency,
+        _In_reads_opt_(nFaces * 3) const float *pIMTArray,
+        _In_ std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
+        _In_ float callbackFrequency,
+        _In_ UVATLAS options,
+        _Inout_ std::vector<UVAtlasVertex> &vMeshOutVertexBuffer,
+        _Inout_ std::vector<uint8_t> &vMeshOutIndexBuffer,
+        _Inout_opt_ std::vector<uint32_t> *pvFacePartitioning = nullptr,
+        _Inout_opt_ std::vector<uint32_t> *pvVertexRemapArray = nullptr,
+        _Out_opt_ float *maxStretchOut = nullptr,
+        _Out_opt_ size_t *numChartsOut = nullptr);
 
     // This has the same exact arguments as Create, except that it does not perform the
     // final packing step. This method allows one to get a partitioning out, and possibly
@@ -212,42 +211,41 @@ namespace DirectX
     //
 
     UVATLAS_API HRESULT __cdecl UVAtlasPartition(
-        _In_reads_(nVerts)          const XMFLOAT3* positions,
-        _In_                        size_t nVerts,
+        _In_reads_(nVerts) const XMFLOAT3 *positions,
+        _In_ size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
-        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void* indices,
-        _In_                        DXGI_FORMAT indexFormat,
-        _In_                        size_t nFaces,
-        _In_                        size_t maxChartNumber,
-        _In_                        float maxStretch,
-        _In_reads_(nFaces * 3)      const uint32_t* adjacency,
-        _In_reads_opt_(nFaces * 3)  const uint32_t* falseEdgeAdjacency,
-        _In_reads_opt_(nFaces * 3)  const float* pIMTArray,
-        _In_                        std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        _In_                        float callbackFrequency,
-        _In_                        UVATLAS options,
-        _Inout_                     std::vector<UVAtlasVertex>& vMeshOutVertexBuffer,
-        _Inout_                     std::vector<uint8_t>& vMeshOutIndexBuffer,
-        _Inout_opt_                 std::vector<uint32_t>* pvFacePartitioning,
-        _Inout_opt_                 std::vector<uint32_t>* pvVertexRemapArray,
-        _Inout_                     std::vector<uint32_t>& vPartitionResultAdjacency,
-        _Out_opt_                   float* maxStretchOut = nullptr,
-        _Out_opt_                   size_t* numChartsOut = nullptr);
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
+        _In_ DXGI_FORMAT indexFormat,
+        _In_ size_t nFaces,
+        _In_ size_t maxChartNumber,
+        _In_ float maxStretch,
+        _In_reads_(nFaces * 3) const uint32_t *adjacency,
+        _In_reads_opt_(nFaces * 3) const uint32_t *falseEdgeAdjacency,
+        _In_reads_opt_(nFaces * 3) const float *pIMTArray,
+        _In_ std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
+        _In_ float callbackFrequency,
+        _In_ UVATLAS options,
+        _Inout_ std::vector<UVAtlasVertex> &vMeshOutVertexBuffer,
+        _Inout_ std::vector<uint8_t> &vMeshOutIndexBuffer,
+        _Inout_opt_ std::vector<uint32_t> *pvFacePartitioning,
+        _Inout_opt_ std::vector<uint32_t> *pvVertexRemapArray,
+        _Inout_ std::vector<uint32_t> &vPartitionResultAdjacency,
+        _Out_opt_ float *maxStretchOut = nullptr,
+        _Out_opt_ size_t *numChartsOut = nullptr);
 
     // This takes the face partitioning result from Partition and packs it into an
     // atlas of the given size. pPartitionResultAdjacency should be derived from
     // the adjacency returned from the partition step.
     UVATLAS_API HRESULT __cdecl UVAtlasPack(
-        _Inout_                 std::vector<UVAtlasVertex>& vMeshVertexBuffer,
-        _Inout_                 std::vector<uint8_t>& vMeshIndexBuffer,
-        _In_                    DXGI_FORMAT indexFormat,
-        _In_                    size_t width,
-        _In_                    size_t height,
-        _In_                    float gutter,
-        _In_                    const std::vector<uint32_t>& vPartitionResultAdjacency,
-        _In_                    std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        _In_                    float callbackFrequency);
-
+        _Inout_ std::vector<UVAtlasVertex> &vMeshVertexBuffer,
+        _Inout_ std::vector<uint8_t> &vMeshIndexBuffer,
+        _In_ DXGI_FORMAT indexFormat,
+        _In_ size_t width,
+        _In_ size_t height,
+        _In_ float gutter,
+        _In_ const std::vector<uint32_t> &vPartitionResultAdjacency,
+        _In_ std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
+        _In_ float callbackFrequency);
 
     //============================================================================
     //
@@ -278,17 +276,17 @@ namespace DirectX
     // pIMTArray        - An array of 3 * nFaces floats for the result
 
     UVATLAS_API HRESULT __cdecl UVAtlasComputeIMTFromPerVertexSignal(
-        _In_reads_(nVerts)                  const XMFLOAT3* positions,
-        _In_                                size_t nVerts,
+        _In_reads_(nVerts) const XMFLOAT3 *positions,
+        _In_ size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
-        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void* indices,
-        _In_                                DXGI_FORMAT indexFormat,
-        _In_                                size_t nFaces,
-        _In_reads_(signalStride* nVerts)     const float* pVertexSignal,
-        _In_                                size_t signalDimension,
-        _In_                                size_t signalStride,
-        _In_                                std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        _Out_writes_(nFaces * 3)            float* pIMTArray);
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
+        _In_ DXGI_FORMAT indexFormat,
+        _In_ size_t nFaces,
+        _In_reads_(signalStride *nVerts) const float *pVertexSignal,
+        _In_ size_t signalDimension,
+        _In_ size_t signalStride,
+        _In_ std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
+        _Out_writes_(nFaces * 3) float *pIMTArray);
 
     // This function is used to calculate the IMT from data that varies over the
     // surface of the mesh (generally at a higher frequency than vertex data).
@@ -308,20 +306,20 @@ namespace DirectX
     // userData        - A pointer that will be passed in to the callback.
     // pIMTArray        - An array of 3 * nFaces floats for the result
     UVATLAS_API HRESULT __cdecl UVAtlasComputeIMTFromSignal(
-        _In_reads_(nVerts)                  const XMFLOAT3* positions,
-        _In_reads_(nVerts)                  const XMFLOAT2* texcoords,
-        _In_                                size_t nVerts,
+        _In_reads_(nVerts) const XMFLOAT3 *positions,
+        _In_reads_(nVerts) const XMFLOAT2 *texcoords,
+        _In_ size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
-        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void* indices,
-        _In_                                DXGI_FORMAT indexFormat,
-        _In_                                size_t nFaces,
-        _In_                                size_t signalDimension,
-        _In_                                float maxUVDistance,
-        _In_                                std::function<HRESULT __cdecl(const DirectX::XMFLOAT2* uv, size_t primitiveID, size_t signalDimension, void* userData, float* signalOut)>
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
+        _In_ DXGI_FORMAT indexFormat,
+        _In_ size_t nFaces,
+        _In_ size_t signalDimension,
+        _In_ float maxUVDistance,
+        _In_ std::function<HRESULT __cdecl(const DirectX::XMFLOAT2 *uv, size_t primitiveID, size_t signalDimension, void *userData, float *signalOut)>
         signalCallback,
-        _In_opt_                            void* userData,
-        _In_                                std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        _Out_writes_(nFaces * 3)            float* pIMTArray);
+        _In_opt_ void *userData,
+        _In_ std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
+        _Out_writes_(nFaces * 3) float *pIMTArray);
 
     // This function is used to calculate the IMT from texture data. Given a texture
     // that maps over the surface of the mesh, the algorithm computes the IMT for
@@ -333,19 +331,19 @@ namespace DirectX
     // options          - Combination of one or more UVATLAS_IMT flags.
     // pIMTArray        - An array of 3 * nFaces floats for the result
     UVATLAS_API HRESULT __cdecl UVAtlasComputeIMTFromTexture(
-        _In_reads_(nVerts)                  const XMFLOAT3* positions,
-        _In_reads_(nVerts)                  const XMFLOAT2* texcoords,
-        _In_                                size_t nVerts,
+        _In_reads_(nVerts) const XMFLOAT3 *positions,
+        _In_reads_(nVerts) const XMFLOAT2 *texcoords,
+        _In_ size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
-        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void* indices,
-        _In_                                DXGI_FORMAT indexFormat,
-        _In_                                size_t nFaces,
-        _In_reads_(width* height * 4)          const float* pTexture,
-        _In_                                size_t width,
-        _In_                                size_t height,
-        _In_                                UVATLAS_IMT options,
-        _In_                                std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        _Out_writes_(nFaces * 3)            float* pIMTArray);
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
+        _In_ DXGI_FORMAT indexFormat,
+        _In_ size_t nFaces,
+        _In_reads_(width *height * 4) const float *pTexture,
+        _In_ size_t width,
+        _In_ size_t height,
+        _In_ UVATLAS_IMT options,
+        _In_ std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
+        _Out_writes_(nFaces * 3) float *pIMTArray);
 
     // This function is very similar to UVAtlasComputeIMTFromTexture, but it can
     // calculate higher dimensional values than 4.
@@ -358,21 +356,21 @@ namespace DirectX
     // options          - Combination of one or more UVATLAS_IMT flags
     // pIMTArray        - An array of 3 * nFaces floats for the result
     UVATLAS_API HRESULT __cdecl UVAtlasComputeIMTFromPerTexelSignal(
-        _In_reads_(nVerts)                      const XMFLOAT3* positions,
-        _In_reads_(nVerts)                      const XMFLOAT2* texcoords,
-        _In_                                    size_t nVerts,
+        _In_reads_(nVerts) const XMFLOAT3 *positions,
+        _In_reads_(nVerts) const XMFLOAT2 *texcoords,
+        _In_ size_t nVerts,
         _When_(indexFormat == DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint16_t)))
-        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void* indices,
-        _In_                                    DXGI_FORMAT indexFormat,
-        _In_                                    size_t nFaces,
-        _In_reads_(width* height* nComponents)    const float* pTexelSignal,
-        _In_                                    size_t width,
-        _In_                                    size_t height,
-        _In_                                    size_t signalDimension,
-        _In_                                    size_t nComponents,
-        _In_                                    UVATLAS_IMT options,
-        _In_                                    std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
-        _Out_writes_(nFaces * 3)                float* pIMTArray);
+        _When_(indexFormat != DXGI_FORMAT_R16_UINT, _In_reads_bytes_(nFaces * 3 * sizeof(uint32_t))) const void *indices,
+        _In_ DXGI_FORMAT indexFormat,
+        _In_ size_t nFaces,
+        _In_reads_(width *height *nComponents) const float *pTexelSignal,
+        _In_ size_t width,
+        _In_ size_t height,
+        _In_ size_t signalDimension,
+        _In_ size_t nComponents,
+        _In_ UVATLAS_IMT options,
+        _In_ std::function<HRESULT __cdecl(float percentComplete)> statusCallBack,
+        _Out_writes_(nFaces * 3) float *pIMTArray);
 
     // This function is for applying the a vertex remap array from UVAtlasCreate/UVAtlasPartition to a vertex buffer
     //
@@ -380,20 +378,21 @@ namespace DirectX
     // vbout        - This is the output vertex buffer and is nNewVerts*stride in size
     // nNewVerts    - This should be >= nVerts
     UVATLAS_API HRESULT __cdecl UVAtlasApplyRemap(
-        _In_reads_bytes_(nVerts* stride)        const void* vbin,
-        _In_                                    size_t stride,
-        _In_                                    size_t nVerts,
-        _In_                                    size_t nNewVerts,
-        _In_reads_(nNewVerts)                   const uint32_t* vertexRemap,
-        _Out_writes_bytes_(nNewVerts* stride)   void* vbout) noexcept;
+        _In_reads_bytes_(nVerts *stride) const void *vbin,
+        _In_ size_t stride,
+        _In_ size_t nVerts,
+        _In_ size_t nNewVerts,
+        _In_reads_(nNewVerts) const uint32_t *vertexRemap,
+        _Out_writes_bytes_(nNewVerts *stride) void *vbout) noexcept;
 
 #ifdef __clang__
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-dynamic-exception-spec"
+#pragma clang diagnostic ignored "-Wextra-semi-stmt"
 #endif
 
-    DEFINE_ENUM_FLAG_OPERATORS(UVATLAS_IMT)
-    DEFINE_ENUM_FLAG_OPERATORS(UVATLAS)
+    DEFINE_ENUM_FLAG_OPERATORS(UVATLAS_IMT);
+    DEFINE_ENUM_FLAG_OPERATORS(UVATLAS);
 
 #ifdef __clang__
 #pragma clang diagnostic pop

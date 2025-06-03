@@ -7,61 +7,61 @@
 // http://go.microsoft.com/fwlink/?LinkID=512686
 //-------------------------------------------------------------------------------------
 
-/*
-    [Levy 2002]Levy, B. Pettjean, S., Ray, N.,And Mallet, J.-L. 2002
-    Least squares conformal maps for automatic texture atlas generation.
-    In Processings of SIGGRAPH 2002. 362-371.
-
-    [SGSH02] SANDER P., GORTLER S., SNYDER J., HOPPE H.:
-    Signal-specialized parameterization
-    In Proceedings of Eurographics Workshop on Rendering 2002(2002)
-
-    Algorithm Introduction:
-
-    The packing algorithm is an extension of the "Tetris" algroithm in
-    [Levy 2002]. In "Tetris", charts can only be introducted from the top;
-    isochart introduces them from the top, bottom, left or right sides.
-
-    This packing algroithm keeps track of the current "borders" of atlas
-    for each of the four directions, given all the charts introduced so far.
-
-    Specified the desired atlas width and height, packing performs the
-    following steps:
-        (1) Align all charts to their longest axis.
-        (2) Rescale charts
-        (3) For each chart:
-            - Choose the direction pair in which to add the chart
-              The rule is try to keep atlas width/height ratio.
-            - Insert the chart into the atlas
-              From the direction pair of the previous step, choose the
-              single direction that wastes the least space.
-            - Merge the new chart and old atlas border for next iteration.
-
-    Terms:
-    Radial direction:
-        Direction that the chart is packed into atlas. E.g. when packing
-        a chart from left or right side, radial direction is along X axis,
-        otherwise, it's along Y axis.
-
-    Tangent direction:
-        Tangent direction is the counterpart of radial direction.
-        When packing a chart along radial direction. the chart can move
-        along a corresponding tangent direction to find the best place.
-        If radial direction is along X axis then tangent direction is
-        along Y coordinate.
-
-                                Tangent
-                              --------->
-                                   |
-                                   | Radial
-                                   |
-                                   V
-                        |-------------------|
-                        |                   |   Radial    |
-                        |        Atlas      | <-----------| Tangent
-                        |                   |             |
-                        --------------------|             V
-*/
+//
+//  [Levy 2002]Levy, B. Pettjean, S., Ray, N.,And Mallet, J.-L. 2002
+//  Least squares conformal maps for automatic texture atlas generation.
+//  In Processings of SIGGRAPH 2002. 362-371.
+//
+//  [SGSH02] SANDER P., GORTLER S., SNYDER J., HOPPE H.:
+//  Signal-specialized parameterization
+//  In Proceedings of Eurographics Workshop on Rendering 2002(2002)
+//
+//  Algorithm Introduction:
+//
+//  The packing algorithm is an extension of the "Tetris" algroithm in
+//  [Levy 2002]. In "Tetris", charts can only be introducted from the top;
+//  isochart introduces them from the top, bottom, left or right sides.
+//
+//  This packing algroithm keeps track of the current "borders" of atlas
+//  for each of the four directions, given all the charts introduced so far.
+//
+//  Specified the desired atlas width and height, packing performs the
+//  following steps:
+//      (1) Align all charts to their longest axis.
+//      (2) Rescale charts
+//      (3) For each chart:
+//          - Choose the direction pair in which to add the chart
+//            The rule is try to keep atlas width/height ratio.
+//          - Insert the chart into the atlas
+//            From the direction pair of the previous step, choose the
+//            single direction that wastes the least space.
+//          - Merge the new chart and old atlas border for next iteration.
+//
+//  Terms:
+//  Radial direction:
+//      Direction that the chart is packed into atlas. E.g. when packing
+//      a chart from left or right side, radial direction is along X axis,
+//      otherwise, it's along Y axis.
+//
+//  Tangent direction:
+//      Tangent direction is the counterpart of radial direction.
+//      When packing a chart along radial direction. the chart can move
+//      along a corresponding tangent direction to find the best place.
+//      If radial direction is along X axis then tangent direction is
+//      along Y coordinate.
+//
+//                                Tangent
+//                              --------->
+//                                   |
+//                                   | Radial
+//                                   |
+//                                   V
+//                        |-------------------|
+//                        |                   |   Radial    |
+//                        |        Atlas      | <-----------| Tangent
+//                        |                   |             |
+//                        --------------------|             V
+//
 
 #include "pch.h"
 #include "isochartmesh.h"
@@ -72,9 +72,11 @@
 // axis = XAxis, return v.x
 // axis = YAxis, return v.y
 // axis = ZAxis, return v.z
-#define VECTOR_ITEM(v, axis) ((reinterpret_cast<float*>(v))[axis])
-#define VECTOR_CHANGE_ITEM(v1, v2, axis, op, value) \
-    {((reinterpret_cast<float*>(v1))[axis]) = ((reinterpret_cast<const float*>(v2))[axis]) op value;}
+#define VECTOR_ITEM(v, axis) ((reinterpret_cast<float *>(v))[axis])
+#define VECTOR_CHANGE_ITEM(v1, v2, axis, op, value)                                                      \
+    {                                                                                                    \
+        ((reinterpret_cast<float *>(v1))[axis]) = ((reinterpret_cast<const float *>(v2))[axis])op value; \
+    }
 
 #define CONTROL_SEARCH_BY_STEP_COUNT 1
 
@@ -98,8 +100,8 @@ namespace
     constexpr size_t SEARCH_STEP_LENGTH = 2;
     constexpr size_t SEARCH_STEP_COUNT = 120;
 
-    //Based on experiment, when gutter = 2, Width = 512, Height = 512, the space rate of
-    // finial UV-atlas.
+    // Based on experiment, when gutter = 2, Width = 512, Height = 512, the space rate of
+    //  finial UV-atlas.
     constexpr float STANDARD_UV_SIZE = 512;
     constexpr float STANDARD_GUTTER = 2;
 
@@ -118,30 +120,28 @@ namespace Isochart
     struct PACKINGINFO
     {
         // pfVertUV and pStandardUV store temporary coordinates
-        XMFLOAT2* pVertUV;
+        XMFLOAT2 *pVertUV;
 
         // The uv coordinates of chart when its left-bottom corner be moved to origin
-        XMFLOAT2* pStandardUV;
+        XMFLOAT2 *pStandardUV;
 
-        XMFLOAT2* pStandardVirtualCorner;
+        XMFLOAT2 *pStandardVirtualCorner;
 
         // chart's widths and heights after rotations
         float fUVWidth[CHART_ROTATION_NUMBER];
         float fUVHeight[CHART_ROTATION_NUMBER];
 
-        VERTEX_ARRAY topBorder[CHART_ROTATION_NUMBER]; // Top border vertices
+        VERTEX_ARRAY topBorder[CHART_ROTATION_NUMBER];    // Top border vertices
         VERTEX_ARRAY bottomBorder[CHART_ROTATION_NUMBER]; // Bottom border vertices
-        VERTEX_ARRAY leftBorder[CHART_ROTATION_NUMBER]; // Left border vertices
-        VERTEX_ARRAY rightBorder[CHART_ROTATION_NUMBER];// Right border vertices
+        VERTEX_ARRAY leftBorder[CHART_ROTATION_NUMBER];   // Left border vertices
+        VERTEX_ARRAY rightBorder[CHART_ROTATION_NUMBER];  // Right border vertices
 
-        PACKINGINFO() :
-            pVertUV(nullptr),
+        PACKINGINFO() : pVertUV(nullptr),
             pStandardUV(nullptr),
             pStandardVirtualCorner(nullptr),
             fUVWidth{},
             fUVHeight{}
-        {
-        }
+        {}
         ~PACKINGINFO()
         {
             SAFE_DELETE_ARRAY(pVertUV)
@@ -153,17 +153,17 @@ namespace Isochart
     // Store the information of current atlas.
     struct ATLASINFO
     {
-        float fBoxTop; // Current top coordinate of atlas
-        float fBoxBottom;// Current bottom coordinate of atlas
-        float fBoxLeft;// Current left coordinate of atlas
-        float fBoxRight;// Current right coordinate of atlas
+        float fBoxTop;    // Current top coordinate of atlas
+        float fBoxBottom; // Current bottom coordinate of atlas
+        float fBoxLeft;   // Current left coordinate of atlas
+        float fBoxRight;  // Current right coordinate of atlas
 
         float fPixelLength; // Length of one pixel
-        float fGutter;  // Minimal distance between two charts
+        float fGutter;      // Minimal distance between two charts
         // It has same unit as fPixelLen.
-        float fPackedChartArea; // Current Packed chart Area
+        float fPackedChartArea;    // Current Packed chart Area
         float fExpectedAtlasWidth; // The expected width of atlas, the same unit as fPixelLen
-        float fWidthHeightRatio; // Ratio of width and height of finial atlas.
+        float fWidthHeightRatio;   // Ratio of width and height of finial atlas.
 
         // Atlas top, bottom, left and right borders.
         // When inserting a chart into the atlas, it shouldn't enter the
@@ -183,9 +183,9 @@ namespace
     enum VertexLocation
     {
         RightToBorder, // On the right side of a border
-        LeftToBorder, // On the left side of a border
-        AboveBorder, // On the upside of a border
-        BelowBorder, // Under a border
+        LeftToBorder,  // On the left side of a border
+        AboveBorder,   // On the upside of a border
+        BelowBorder,   // Under a border
         NotDefined
     };
 
@@ -193,10 +193,10 @@ namespace
     const size_t PACKING_DIRECTION_NUMBER = 4;
     enum PackingDirection
     {
-        FromRight = 0, // From right side of current atlas, adding a new chart
-        FromLeft = 1,  // Form left side of current atlas, adding a new chart
-        FromTop = 2,   // From top side of current atlas, adding a new chart
-        FromBottom = 3,// Packing chart under current atlas, adding a new chart
+        FromRight = 0,  // From right side of current atlas, adding a new chart
+        FromLeft = 1,   // Form left side of current atlas, adding a new chart
+        FromTop = 2,    // From top side of current atlas, adding a new chart
+        FromBottom = 3, // Packing chart under current atlas, adding a new chart
     };
 
     enum Axis
@@ -213,11 +213,11 @@ namespace
 {
     static HRESULT MergeBorders(
         PackingDirection direction,
-        VERTEX_ARRAY& atlasBorder,
-        VERTEX_ARRAY& chartBorder);
+        VERTEX_ARRAY &atlasBorder,
+        VERTEX_ARRAY &chartBorder);
 
     static void FreeAditionalVertices(
-        ATLASINFO& atlasInfo)
+        ATLASINFO &atlasInfo)
     {
         for (size_t ii = 0; ii < atlasInfo.virtualCornerVertices.size(); ii++)
         {
@@ -228,12 +228,12 @@ namespace
     }
 
     static HRESULT AddNewCornerVertices(
-        ATLASINFO& atlasInfo,
-        uint32_t& dwBeginPos,
-        ISOCHARTVERTEX* pLeft,
-        ISOCHARTVERTEX* pRight,
-        ISOCHARTVERTEX* pTop,
-        ISOCHARTVERTEX* pBottom)
+        ATLASINFO &atlasInfo,
+        uint32_t &dwBeginPos,
+        ISOCHARTVERTEX *pLeft,
+        ISOCHARTVERTEX *pRight,
+        ISOCHARTVERTEX *pTop,
+        ISOCHARTVERTEX *pBottom)
     {
 
         auto pAdditional = new (std::nothrow) ISOCHARTVERTEX[4];
@@ -246,9 +246,9 @@ namespace
         {
             atlasInfo.virtualCornerVertices.push_back(pAdditional);
         }
-        catch (std::bad_alloc&)
+        catch (std::bad_alloc &)
         {
-            delete[]pAdditional;
+            delete[] pAdditional;
             return E_OUTOFMEMORY;
         }
 
@@ -281,14 +281,13 @@ namespace
     }
 
     static HRESULT AddBoundingBoxBorder(
-        ATLASINFO& atlasInfo,
-        PACKINGINFO& packingInfo,
+        ATLASINFO &atlasInfo,
+        PACKINGINFO &packingInfo,
         size_t dwRotationID,
-        ISOCHARTVERTEX* pLeft,
-        ISOCHARTVERTEX* pRight,
-        ISOCHARTVERTEX* pTop,
-        ISOCHARTVERTEX* pBottom
-    )
+        ISOCHARTVERTEX *pLeft,
+        ISOCHARTVERTEX *pRight,
+        ISOCHARTVERTEX *pTop,
+        ISOCHARTVERTEX *pBottom)
     {
         HRESULT hr = S_OK;
 
@@ -311,7 +310,7 @@ namespace
             }
         }
 
-        ISOCHARTVERTEX* pAdd = atlasInfo.virtualCornerVertices[dwIdx];
+        ISOCHARTVERTEX *pAdd = atlasInfo.virtualCornerVertices[dwIdx];
 
         packingInfo.topBorder[dwRotationID].clear();
         packingInfo.bottomBorder[dwRotationID].clear();
@@ -336,7 +335,7 @@ namespace
             packingInfo.rightBorder[dwRotationID].push_back(pAdd + 3);
             packingInfo.rightBorder[dwRotationID].push_back(pAdd + 1);
         }
-        catch (std::bad_alloc&)
+        catch (std::bad_alloc &)
         {
             return E_OUTOFMEMORY;
         }
@@ -348,20 +347,20 @@ namespace
     // The length is in pixel. SEARCH_STEP_COUNT is also considered.
     inline size_t GetSearchStepLength(size_t dwPixelCount)
     {
-#if CONTROL_SEARCH_BY_STEP_COUNT
+    #if CONTROL_SEARCH_BY_STEP_COUNT
         return std::max(SEARCH_STEP_LENGTH, dwPixelCount / SEARCH_STEP_COUNT);
-#else
+    #else
         return SEARCH_STEP_LENGTH;
-#endif
+    #endif
     }
 
     // Create two extreme vertices
     // One has maximal x, y coordinate
     // One has minimum x, y coordinate
     inline void UpdateMinMaxVertex(
-        XMFLOAT2& currentVertex,
-        XMFLOAT2& minVec,
-        XMFLOAT2& maxVec)
+        XMFLOAT2 &currentVertex,
+        XMFLOAT2 &minVec,
+        XMFLOAT2 &maxVec)
     {
         if (currentVertex.x > maxVec.x)
         {
@@ -382,8 +381,8 @@ namespace
     }
 
     void AdjustCornerBorder(
-        ISOCHARTVERTEX* pCorderBorder,
-        ISOCHARTVERTEX* pChartVert,
+        ISOCHARTVERTEX *pCorderBorder,
+        ISOCHARTVERTEX *pChartVert,
         size_t dwVertNumber)
     {
         XMFLOAT2 minVec(FLT_MAX, FLT_MAX);
@@ -407,7 +406,6 @@ namespace
         pCorderBorder[3].uv.y = minVec.y;
     }
 
-
     // The following 3 functions are grouped.
     // (1) FindCoreespondSegmentsOfBorders
     // (2) FindVertexRangeStartOnBorder
@@ -425,7 +423,7 @@ namespace
     // Binary searching to find a vertex on the border. The vertex's coordinate in TangentAxis
     // is largest in all vertices whose coordinates in TangentAxis are smaller than target.
     static inline size_t FindVertexRangeStartOnBorder(
-        VERTEX_ARRAY& aBorder,
+        VERTEX_ARRAY &aBorder,
         float target,
         Axis TangentAxis)
     {
@@ -435,22 +433,20 @@ namespace
         size_t low = 0;
         size_t hi = dwBorderSize - 1;
 
-        do {
+        do
+        {
             dwBorderStart = (low + hi) >> 1;
-            if (VECTOR_ITEM(&aBorder[dwBorderStart]->uv, TangentAxis)
-                == target)
+            if (VECTOR_ITEM(&aBorder[dwBorderStart]->uv, TangentAxis) == target)
             {
                 while (dwBorderStart > 0 &&
-                    VECTOR_ITEM(&aBorder[dwBorderStart - 1]->uv, TangentAxis)
-                    == target)
+                    VECTOR_ITEM(&aBorder[dwBorderStart - 1]->uv, TangentAxis) == target)
                 {
                     dwBorderStart--;
                 }
                 break;
             }
 
-            if (VECTOR_ITEM(&aBorder[dwBorderStart]->uv, TangentAxis)
-                < target)
+            if (VECTOR_ITEM(&aBorder[dwBorderStart]->uv, TangentAxis) < target)
             {
                 low = dwBorderStart + 1;
             }
@@ -462,13 +458,13 @@ namespace
                 }
                 hi = dwBorderStart - 1;
             }
-        } while (low <= hi);
+        }
+        while (low <= hi);
 
         if (low > hi)
         {
             assert(
-                VECTOR_ITEM(&aBorder[low]->uv, TangentAxis)
-                >=
+                VECTOR_ITEM(&aBorder[low]->uv, TangentAxis) >=
                 VECTOR_ITEM(&aBorder[hi]->uv, TangentAxis));
 
             dwBorderStart = hi;
@@ -479,7 +475,7 @@ namespace
     // Searching along the border, finding a vertex whose coordinate in TangentAxis is the
     // smallest in all vertices whose coordinate in TangentAxis is larger than target.
     static inline size_t FindVertexRangeEndOnBorder(
-        VERTEX_ARRAY& aBorder,
+        VERTEX_ARRAY &aBorder,
         size_t dwBorderStart,
         float target,
         Axis TangentAxis)
@@ -488,8 +484,7 @@ namespace
         size_t dwBorderSize = aBorder.size();
 
         while (dwBorderEnd < dwBorderSize &&
-            VECTOR_ITEM(&aBorder[dwBorderEnd]->uv, TangentAxis)
-            <= target)
+            VECTOR_ITEM(&aBorder[dwBorderEnd]->uv, TangentAxis) <= target)
         {
             dwBorderEnd++;
         }
@@ -504,12 +499,12 @@ namespace
 
     //
     inline static bool FindCorrespondSegmentsOfBorders(
-        VERTEX_ARRAY& aBorder1,
-        VERTEX_ARRAY& aBorder2,
-        size_t& dwBorder1Start,
-        size_t& dwBorder1End,
-        size_t& dwBorder2Start,
-        size_t& dwBorder2End,
+        VERTEX_ARRAY &aBorder1,
+        VERTEX_ARRAY &aBorder2,
+        size_t &dwBorder1Start,
+        size_t &dwBorder1End,
+        size_t &dwBorder2Start,
+        size_t &dwBorder2End,
         Axis TangentAxis)
     {
         dwBorder1Start = dwBorder1End = 0;
@@ -523,9 +518,8 @@ namespace
 
         // 1.  If 2 Borders have no correspond segments, return directly.
         if (VECTOR_ITEM(&aBorder1[0]->uv, TangentAxis) >
-            VECTOR_ITEM(&aBorder2[BorderSize2 - 1]->uv, TangentAxis)
-            || VECTOR_ITEM(&aBorder1[BorderSize1 - 1]->uv, TangentAxis)
-            < VECTOR_ITEM(&aBorder2[0]->uv, TangentAxis))
+            VECTOR_ITEM(&aBorder2[BorderSize2 - 1]->uv, TangentAxis) ||
+            VECTOR_ITEM(&aBorder1[BorderSize1 - 1]->uv, TangentAxis) < VECTOR_ITEM(&aBorder2[0]->uv, TangentAxis))
         {
             return false;
         }
@@ -552,8 +546,7 @@ namespace
         }
 
         // 3. Calculate the correspond end vertices of 2 borders.
-        if (VECTOR_ITEM(&aBorder1[BorderSize1 - 1]->uv, TangentAxis)
-            <= VECTOR_ITEM(&aBorder2[BorderSize2 - 1]->uv, TangentAxis))
+        if (VECTOR_ITEM(&aBorder1[BorderSize1 - 1]->uv, TangentAxis) <= VECTOR_ITEM(&aBorder2[BorderSize2 - 1]->uv, TangentAxis))
         {
             dwBorder1End = BorderSize1 - 1;
             dwBorder2End =
@@ -576,16 +569,15 @@ namespace
         return true;
     }
 
-
     // 1. Judge that the vertex is on which side of the border.
     // 2. Calculate the distance from the vertex to the border.
     inline static VertexLocation CalculateVertexLocationToBorder(
-        VERTEX_ARRAY& aBorder, // a vertical Border.
+        VERTEX_ARRAY &aBorder, // a vertical Border.
         size_t dwBorderStart,
         size_t dwBorderEnd,
-        XMFLOAT2& point,// a vertex
-        float fGutter, // the min distance between two sub-chart
-        float& fDistance, // the distance from the vertex to the Border.
+        XMFLOAT2 &point,  // a vertex
+        float fGutter,    // the min distance between two sub-chart
+        float &fDistance, // the distance from the vertex to the Border.
         Axis TangentAxis)
     {
         VertexLocation higherPosition;
@@ -684,8 +676,7 @@ namespace
             if (IsInZeroRange(VECTOR_ITEM(&biasVector, TangentAxis)))
             {
                 float fMin, fMax;
-                if (VECTOR_ITEM(&aBorder[i]->uv, RadialAxis)
-            > VECTOR_ITEM(&aBorder[i - 1]->uv, RadialAxis))
+                if (VECTOR_ITEM(&aBorder[i]->uv, RadialAxis) > VECTOR_ITEM(&aBorder[i - 1]->uv, RadialAxis))
                 {
                     fMax = VECTOR_ITEM(&aBorder[i]->uv, RadialAxis);
                     fMin = VECTOR_ITEM(&aBorder[i - 1]->uv, RadialAxis);
@@ -714,11 +705,7 @@ namespace
             {
                 // (y-y[i-1]) / (y[i]-y[i-1]) = (x-x[i-1]) / (x[i]-x[i-1])
                 fIntersection =
-                    VECTOR_ITEM(&aBorder[i - 1]->uv, RadialAxis)
-                    + VECTOR_ITEM(&biasVector, RadialAxis)
-                    * (VECTOR_ITEM(&point, TangentAxis) -
-                        VECTOR_ITEM(&aBorder[i - 1]->uv, TangentAxis))
-                    / VECTOR_ITEM(&biasVector, TangentAxis);
+                    VECTOR_ITEM(&aBorder[i - 1]->uv, RadialAxis) + VECTOR_ITEM(&biasVector, RadialAxis) * (VECTOR_ITEM(&point, TangentAxis) - VECTOR_ITEM(&aBorder[i - 1]->uv, TangentAxis)) / VECTOR_ITEM(&biasVector, TangentAxis);
 
                 /*
                 // this calculation sometimes provides bad answers.  Instead, just add fGutter * sqrt(2)
@@ -759,8 +746,8 @@ namespace
     // Rotate vertex in clockwise direction, Because we only care the relative position of each
     // vertex, no need to add center back.
     inline static void RotateVertexAroundCenter(
-        XMFLOAT2& vertexOut,
-        const XMFLOAT2& vertexIn,
+        XMFLOAT2 &vertexOut,
+        const XMFLOAT2 &vertexIn,
         float fcenterX,
         float fcenterY,
         float fSin,
@@ -776,10 +763,10 @@ namespace
     // check if border 2 is on the clockwise direction of border 1. After finding to borders,
     // this function is used to judge the role of these 2 borders.
     static bool IsB2OnClockwiseDirOfB1AtBegin(
-        VERTEX_ARRAY& border1,
-        VERTEX_ARRAY& border2,
-        bool& bIsDecided,
-        float& fDotValue)
+        VERTEX_ARRAY &border1,
+        VERTEX_ARRAY &border2,
+        bool &bIsDecided,
+        float &fDotValue)
     {
         assert(border1[0] == border2[0]);
         assert(border1.size() > 1);
@@ -794,11 +781,11 @@ namespace
         size_t j = 1;
         float fZ = 0;
 
-        ISOCHARTVERTEX* pOrigin = border1[0];
+        ISOCHARTVERTEX *pOrigin = border1[0];
         do
         {
-            ISOCHARTVERTEX* pVertex1 = border1[i];
-            ISOCHARTVERTEX* pVertex2 = border2[j];
+            ISOCHARTVERTEX *pVertex1 = border1[i];
+            ISOCHARTVERTEX *pVertex2 = border2[j];
 
             XMVECTOR vv1 = XMVectorSet(
                 pVertex1->uv.x - pOrigin->uv.x,
@@ -827,9 +814,7 @@ namespace
                 XMStoreFloat3(&v1, vv1);
                 XMStoreFloat3(&v2, vv2);
 
-                if (IsInZeroRange(v1.x) && IsInZeroRange(v2.x)
-                    && fabsf(v1.y) > 0.1f && fabsf(v2.y) > 0.1f
-                    && v1.y * v2.y < 0)
+                if (IsInZeroRange(v1.x) && IsInZeroRange(v2.x) && fabsf(v1.y) > 0.1f && fabsf(v2.y) > 0.1f && v1.y * v2.y < 0)
                 {
                     if (v1.y > v2.y)
                     {
@@ -841,9 +826,7 @@ namespace
                     }
                 }
 
-                if (IsInZeroRange(v1.y) && IsInZeroRange(v2.y)
-                    && fabsf(v1.x) > 0.1f && fabsf(v2.x) > 0.1f
-                    && v1.x * v2.x < 0)
+                if (IsInZeroRange(v1.y) && IsInZeroRange(v2.y) && fabsf(v1.x) > 0.1f && fabsf(v2.x) > 0.1f && v1.x * v2.x < 0)
                 {
                     if (v1.x < v2.x)
                     {
@@ -887,7 +870,8 @@ namespace
             {
                 break;
             }
-        } while (i < border1.size() && j < border2.size());
+        }
+        while (i < border1.size() && j < border2.size());
 
         if (fZ > ISOCHART_ZERO_EPS)
         {
@@ -904,12 +888,11 @@ namespace
         }
     }
 
-
     static bool IsB1OnClockwiseDirOfB2AtEnd(
-        VERTEX_ARRAY& border1,
-        VERTEX_ARRAY& border2,
-        bool& bIsDecided,
-        float& fDotValue)
+        VERTEX_ARRAY &border1,
+        VERTEX_ARRAY &border2,
+        bool &bIsDecided,
+        float &fDotValue)
     {
         assert(border1[border1.size() - 1] ==
             border2[border2.size() - 1]);
@@ -926,11 +909,11 @@ namespace
         size_t i = border1.size() - 2;
         size_t j = border2.size() - 2;
         float fZ = 0;
-        ISOCHARTVERTEX* pOrigin = border1[border1.size() - 1];
+        ISOCHARTVERTEX *pOrigin = border1[border1.size() - 1];
         for (;;)
         {
-            ISOCHARTVERTEX* pVertex1 = border1[i];
-            ISOCHARTVERTEX* pVertex2 = border2[j];
+            ISOCHARTVERTEX *pVertex1 = border1[i];
+            ISOCHARTVERTEX *pVertex2 = border2[j];
 
             XMVECTOR vv1 = XMVectorSet(
                 pVertex1->uv.x - pOrigin->uv.x,
@@ -959,9 +942,7 @@ namespace
                 XMStoreFloat3(&v1, vv1);
                 XMStoreFloat3(&v2, vv2);
 
-                if (IsInZeroRange(v1.x) && IsInZeroRange(v2.x)
-                    && fabsf(v1.y) > 0.1f && fabsf(v2.y) > 0.1f
-                    && v1.y * v2.y < 0)
+                if (IsInZeroRange(v1.x) && IsInZeroRange(v2.x) && fabsf(v1.y) > 0.1f && fabsf(v2.y) > 0.1f && v1.y * v2.y < 0)
                 {
                     if (v1.y > v2.y)
                     {
@@ -973,9 +954,7 @@ namespace
                     }
                 }
 
-                if (IsInZeroRange(v1.y) && IsInZeroRange(v2.y)
-                    && fabsf(v1.x) > 0.1f && fabsf(v2.x) > 0.1f
-                    && v1.x * v2.x < 0)
+                if (IsInZeroRange(v1.y) && IsInZeroRange(v2.y) && fabsf(v1.x) > 0.1f && fabsf(v2.x) > 0.1f && v1.x * v2.x < 0)
                 {
                     if (v1.x < v2.x)
                     {
@@ -996,22 +975,30 @@ namespace
                 if (f1 < f2)
                 {
                     pOrigin = border1[i];
-                    if (i > 0) i--;
-                    else break;
+                    if (i > 0)
+                        i--;
+                    else
+                        break;
                 }
                 else if (f1 > f2)
                 {
                     pOrigin = border2[j];
-                    if (j > 0) j--;
-                    else break;
+                    if (j > 0)
+                        j--;
+                    else
+                        break;
                 }
                 else
                 {
-                    if (i > 0) i--;
-                    else break;
+                    if (i > 0)
+                        i--;
+                    else
+                        break;
 
-                    if (j > 0) j--;
-                    else break;
+                    if (j > 0)
+                        j--;
+                    else
+                        break;
                     pOrigin = border1[i];
                 }
             }
@@ -1046,7 +1033,7 @@ namespace
     static HRESULT RemoveRedundantVerticesInBorders(
         bool bHorizontal,
         bool bLowerBoder,
-        VERTEX_ARRAY& border)
+        VERTEX_ARRAY &border)
     {
         HRESULT hr = S_OK;
 
@@ -1127,7 +1114,7 @@ namespace
                 }
             }
         }
-        catch (std::bad_alloc&)
+        catch (std::bad_alloc &)
         {
             return E_OUTOFMEMORY;
         }
@@ -1143,8 +1130,7 @@ namespace
             float r2 = VECTOR_ITEM(&border[ii]->uv, RadialAxis);
             float r3 = VECTOR_ITEM(&border[ii + 1]->uv, RadialAxis);
 
-            if (fabsf(t1 - t2) < ISOCHART_ZERO_EPS
-                && fabsf(t3 - t2) < ISOCHART_ZERO_EPS)
+            if (fabsf(t1 - t2) < ISOCHART_ZERO_EPS && fabsf(t3 - t2) < ISOCHART_ZERO_EPS)
             {
                 if ((r1 >= r2 && r2 >= r3) || (r1 <= r2 && r2 <= r3))
                 {
@@ -1166,8 +1152,8 @@ namespace
 
     // When adding a chart to atlas, moving it from origin to a candidate iposition.
     inline static void MoveChartToNewPosition(
-        VERTEX_ARRAY& newChartBorder,
-        const XMFLOAT2* pOrigUV,
+        VERTEX_ARRAY &newChartBorder,
+        const XMFLOAT2 *pOrigUV,
         Axis TangentAxis,
         Axis RadialAxis,
         float fTangentDelta,
@@ -1195,8 +1181,7 @@ namespace
         // Two additional vertices on each end of the border. These vertices used to guarantee
         // gutter between charts.
         newChartBorder[0]->uv = newChartBorder[1]->uv;
-        newChartBorder[dwNewChartBorderSize - 1]->uv
-            = newChartBorder[dwNewChartBorderSize - 2]->uv;
+        newChartBorder[dwNewChartBorderSize - 1]->uv = newChartBorder[dwNewChartBorderSize - 2]->uv;
 
         VECTOR_CHANGE_ITEM(
             &newChartBorder[0]->uv,
@@ -1217,17 +1202,17 @@ namespace
         VertexLocation invalidatlasLocationAgainstChart,
         VertexLocation invalidChartLocationAgainstAtlas,
         bool bPackingFromLowerPlace,
-        VERTEX_ARRAY& newChartBorder,
+        VERTEX_ARRAY &newChartBorder,
         size_t newChartBorderStart,
         size_t newChartBorderEnd,
-        VERTEX_ARRAY& atlasBorder,
+        VERTEX_ARRAY &atlasBorder,
         size_t atlasBorderStart,
         size_t atlasBorderEnd,
         Axis TangentAxis,
         Axis RadialAxis,
         float fGutter,
-        float& fMinDistance,
-        float& fBetweenArea)
+        float &fMinDistance,
+        float &fBetweenArea)
     {
         float fDistance;
         VertexLocation location;
@@ -1315,8 +1300,8 @@ namespace
 
     inline static void UpdateOptimalPosition(
         bool bPackingFromLowerPlace,
-        ATLASINFO& atlasInfo,
-        VERTEX_ARRAY& atlasBorder,
+        ATLASINFO &atlasInfo,
+        VERTEX_ARRAY &atlasBorder,
         float fAtlasNearChartExtreme,
         float fAtlasAwayChartExtreme,
         float fAtlasTangentMaxExtreme,
@@ -1329,9 +1314,9 @@ namespace
         float fRadialDelta,
         float fMinDistance,
         float fBetweenArea,
-        XMFLOAT2& resultOrg,
-        float& fMinAreaLost,
-        float& fMiniBetweenArea)
+        XMFLOAT2 &resultOrg,
+        float &fMinAreaLost,
+        float &fMiniBetweenArea)
     {
         float fRealRadialDelta = fRadialDelta;
         float fNewAtlasRadialExtreme;
@@ -1397,15 +1382,15 @@ namespace
     // Find chart packing position from a special direction.
     inline static HRESULT FindChartPosition(
         PackingDirection direction,
-        ATLASINFO& atlasInfo,
-        PACKINGINFO* pPackingInfo,
+        ATLASINFO &atlasInfo,
+        PACKINGINFO *pPackingInfo,
         size_t dwRotationID,
-        XMFLOAT2& resultOrg,
-        float& fBetweenArea,
-        float& fAreaLost)
+        XMFLOAT2 &resultOrg,
+        float &fBetweenArea,
+        float &fAreaLost)
     {
-        VERTEX_ARRAY* pAtlasBorder = nullptr;
-        VERTEX_ARRAY* pChartBorder = nullptr;
+        VERTEX_ARRAY *pAtlasBorder = nullptr;
+        VERTEX_ARRAY *pChartBorder = nullptr;
 
         Axis TangentAxis = YAxis;
         Axis RadialAxis = XAxis;
@@ -1491,10 +1476,10 @@ namespace
             return E_FAIL;
         }
 
-        VERTEX_ARRAY& atlasBorder = *pAtlasBorder;
-        VERTEX_ARRAY& chartBorder = *pChartBorder;
+        VERTEX_ARRAY &atlasBorder = *pAtlasBorder;
+        VERTEX_ARRAY &chartBorder = *pChartBorder;
 
-        XMFLOAT2* pOrigUV = pPackingInfo->pStandardUV;
+        XMFLOAT2 *pOrigUV = pPackingInfo->pStandardUV;
         // Border is composite with virtual vertices
         if (chartBorder[0]->dwIDInRootMesh == INVALID_VERT_ID)
         {
@@ -1536,7 +1521,7 @@ namespace
             newChartBorder.insert(newChartBorder.end(), chartBorder.cbegin(), chartBorder.cend());
             newChartBorder.push_back(&endExtraVertex);
         }
-        catch (std::bad_alloc&)
+        catch (std::bad_alloc &)
         {
             return E_OUTOFMEMORY;
         }
@@ -1564,8 +1549,7 @@ namespace
             if (dwTangentLenInPixel > 1)
             {
                 fTangentDelta =
-                    fMinTangentPosition + float((i + dwTangentLenInPixel / 2) % dwTangentLenInPixel)
-                    * fTangentRange / float(dwTangentLenInPixel - 1);
+                    fMinTangentPosition + float((i + dwTangentLenInPixel / 2) % dwTangentLenInPixel) * fTangentRange / float(dwTangentLenInPixel - 1);
             }
             else
             {
@@ -1653,7 +1637,7 @@ namespace
         size_t dwRotationId,
 
         XMFLOAT2 dirOrg[],
-        XMFLOAT2& currentOrg,
+        XMFLOAT2 &currentOrg,
 
         float fDirMinAreaLost[],
         float fAreaLost,
@@ -1661,10 +1645,7 @@ namespace
         float fMinBetweenArea[],
         float fBetweenArea)
     {
-        if ((fabsf(fDirMinAreaLost[dwPackingDirection] - fAreaLost)
-            < ISOCHART_ZERO_EPS
-            && fBetweenArea < fMinBetweenArea[dwPackingDirection])
-            || fDirMinAreaLost[dwPackingDirection] > fAreaLost)
+        if ((fabsf(fDirMinAreaLost[dwPackingDirection] - fAreaLost) < ISOCHART_ZERO_EPS && fBetweenArea < fMinBetweenArea[dwPackingDirection]) || fDirMinAreaLost[dwPackingDirection] > fAreaLost)
         {
             fMinBetweenArea[dwPackingDirection] = fBetweenArea;
             fDirMinAreaLost[dwPackingDirection] = fAreaLost;
@@ -1676,8 +1657,8 @@ namespace
     // Initialize atlas
     // It should be called before adding the first chart into empty atlas
     static HRESULT Initializeatlas(
-        ATLASINFO& atlasInfo,
-        PACKINGINFO& packingInfo,
+        ATLASINFO &atlasInfo,
+        PACKINGINFO &packingInfo,
         size_t dwMinRotationId)
     {
         assert(dwMinRotationId < CHART_ROTATION_NUMBER);
@@ -1697,7 +1678,7 @@ namespace
             atlasInfo.currentRightBorder.insert(atlasInfo.currentRightBorder.end(),
                 packingInfo.rightBorder[dwMinRotationId].cbegin(), packingInfo.rightBorder[dwMinRotationId].cend());
         }
-        catch (std::bad_alloc&)
+        catch (std::bad_alloc &)
         {
             return E_OUTOFMEMORY;
         }
@@ -1712,8 +1693,8 @@ namespace
     // Merge chart borders to current atlas borders in one direction.
     inline static HRESULT MergeBorders(
         PackingDirection direction,
-        VERTEX_ARRAY& atlasBorder,
-        VERTEX_ARRAY& chartBorder)
+        VERTEX_ARRAY &atlasBorder,
+        VERTEX_ARRAY &chartBorder)
     {
         Axis TangentAxis = XAxis;
         Axis RadialAxis = XAxis;
@@ -1730,37 +1711,37 @@ namespace
         switch (direction)
         {
         case FromRight:
-        {
-            discardLocation = LeftToBorder;
-            TangentAxis = YAxis; // y
-            RadialAxis = XAxis; // x
-            bPackingFromLowerPlace = false;
-            break;
-        }
+            {
+                discardLocation = LeftToBorder;
+                TangentAxis = YAxis; // y
+                RadialAxis = XAxis;  // x
+                bPackingFromLowerPlace = false;
+                break;
+            }
         case FromLeft:
-        {
-            discardLocation = RightToBorder;
-            TangentAxis = YAxis; // y
-            RadialAxis = XAxis; // x
-            bPackingFromLowerPlace = true;
-            break;
-        }
+            {
+                discardLocation = RightToBorder;
+                TangentAxis = YAxis; // y
+                RadialAxis = XAxis;  // x
+                bPackingFromLowerPlace = true;
+                break;
+            }
         case FromTop:
-        {
-            discardLocation = BelowBorder;
-            TangentAxis = XAxis; // x
-            RadialAxis = YAxis; // y
-            bPackingFromLowerPlace = false;
-            break;
-        }
+            {
+                discardLocation = BelowBorder;
+                TangentAxis = XAxis; // x
+                RadialAxis = YAxis;  // y
+                bPackingFromLowerPlace = false;
+                break;
+            }
         case FromBottom:
-        {
-            discardLocation = AboveBorder;
-            TangentAxis = XAxis; // x
-            RadialAxis = YAxis; // y
-            bPackingFromLowerPlace = true;
-            break;
-        }
+            {
+                discardLocation = AboveBorder;
+                TangentAxis = XAxis; // x
+                RadialAxis = YAxis;  // y
+                bPackingFromLowerPlace = true;
+                break;
+            }
         default:
             assert(false);
             break;
@@ -1847,7 +1828,6 @@ namespace
                         fDistance,
                         TangentAxis);
 
-
                     if (location != discardLocation)
                     {
                         tempBorder.push_back(atlasBorder[ii]);
@@ -1895,7 +1875,7 @@ namespace
                         else
                         {
                             tempBorder.push_back(chartBorder[jj]);
-                            //assert(fRadia1 != fRadia2);
+                            // assert(fRadia1 != fRadia2);
                         }
                     }
                     else
@@ -1911,7 +1891,7 @@ namespace
                         else
                         {
                             tempBorder.push_back(chartBorder[jj]);
-                            //assert(fRadia1 != fRadia2);
+                            // assert(fRadia1 != fRadia2);
                         }
                     }
                     dwAtlasBorderStart = ii;
@@ -1934,9 +1914,8 @@ namespace
             atlasBorder.clear();
 
             atlasBorder.insert(atlasBorder.end(), tempBorder.cbegin(), tempBorder.cend());
-
         }
-        catch (std::bad_alloc&)
+        catch (std::bad_alloc &)
         {
             return E_OUTOFMEMORY;
         }
@@ -1946,9 +1925,9 @@ namespace
 
     // Update atlas each time after adding a new chart
     static HRESULT UpdateAtlas(
-        ATLASINFO& atlasInfo,
-        PACKINGINFO& packingInfo,
-        XMFLOAT2& newOrg,
+        ATLASINFO &atlasInfo,
+        PACKINGINFO &packingInfo,
+        XMFLOAT2 &newOrg,
         size_t dwMinRotationId)
     {
         HRESULT hr = S_OK;
@@ -1964,15 +1943,13 @@ namespace
             atlasInfo.fBoxLeft = newOrg.x;
         }
 
-        if (newOrg.y + packingInfo.fUVHeight[dwMinRotationId]
-        > atlasInfo.fBoxTop)
+        if (newOrg.y + packingInfo.fUVHeight[dwMinRotationId] > atlasInfo.fBoxTop)
         {
             atlasInfo.fBoxTop =
                 newOrg.y + packingInfo.fUVHeight[dwMinRotationId];
         }
 
-        if (newOrg.x + packingInfo.fUVWidth[dwMinRotationId]
-        > atlasInfo.fBoxRight)
+        if (newOrg.x + packingInfo.fUVWidth[dwMinRotationId] > atlasInfo.fBoxRight)
         {
             atlasInfo.fBoxRight =
                 newOrg.x + packingInfo.fUVWidth[dwMinRotationId];
@@ -2013,15 +1990,15 @@ namespace
 
 #ifdef _DEBUG
 static void BruteForceFoldChecking(
-    ISOCHARTMESH_ARRAY& chartList)
+    ISOCHARTMESH_ARRAY &chartList)
 {
-    const CBaseMeshInfo& baseInfo = chartList[0]->GetBaseMeshInfo();
+    const CBaseMeshInfo &baseInfo = chartList[0]->GetBaseMeshInfo();
 
     for (size_t ii = 0; ii < chartList.size() - 1; ii++)
     {
-        auto& edgeList1 = chartList[ii]->GetEdgesList();
-        ISOCHARTVERTEX* pVertList1 = chartList[ii]->GetVertexBuffer();
-        ISOCHARTFACE* pFaceList1 = chartList[ii]->GetFaceBuffer();
+        auto &edgeList1 = chartList[ii]->GetEdgesList();
+        ISOCHARTVERTEX *pVertList1 = chartList[ii]->GetVertexBuffer();
+        ISOCHARTFACE *pFaceList1 = chartList[ii]->GetFaceBuffer();
 
         bool bFoundFold = false;
         if (edgeList1.size() < 1)
@@ -2030,23 +2007,20 @@ static void BruteForceFoldChecking(
         }
         for (size_t jj = 0; jj < edgeList1.size() - 1; jj++)
         {
-            ISOCHARTEDGE& edge1 = edgeList1[jj];
-            const XMFLOAT2& v1 = pVertList1[edge1.dwVertexID[0]].uv;
-            const XMFLOAT2& v2 = pVertList1[edge1.dwVertexID[1]].uv;
+            ISOCHARTEDGE &edge1 = edgeList1[jj];
+            const XMFLOAT2 &v1 = pVertList1[edge1.dwVertexID[0]].uv;
+            const XMFLOAT2 &v2 = pVertList1[edge1.dwVertexID[1]].uv;
 
             for (size_t kk = jj + 1; kk < edgeList1.size(); kk++)
             {
-                ISOCHARTEDGE& edge2 = edgeList1[kk];
+                ISOCHARTEDGE &edge2 = edgeList1[kk];
 
-                if (edge1.dwVertexID[0] == edge2.dwVertexID[0]
-                    || edge1.dwVertexID[0] == edge2.dwVertexID[1]
-                    || edge1.dwVertexID[1] == edge2.dwVertexID[0]
-                    || edge1.dwVertexID[1] == edge2.dwVertexID[1])
+                if (edge1.dwVertexID[0] == edge2.dwVertexID[0] || edge1.dwVertexID[0] == edge2.dwVertexID[1] || edge1.dwVertexID[1] == edge2.dwVertexID[0] || edge1.dwVertexID[1] == edge2.dwVertexID[1])
                 {
                     continue;
                 }
-                const XMFLOAT2& v3 = pVertList1[edge2.dwVertexID[0]].uv;
-                const XMFLOAT2& v4 = pVertList1[edge2.dwVertexID[1]].uv;
+                const XMFLOAT2 &v3 = pVertList1[edge2.dwVertexID[0]].uv;
+                const XMFLOAT2 &v4 = pVertList1[edge2.dwVertexID[1]].uv;
 
                 bool bIsIntersect = IsochartIsSegmentsIntersect(v1, v2, v3, v4);
                 if (bIsIntersect)
@@ -2057,16 +2031,20 @@ static void BruteForceFoldChecking(
                     XMVECTOR vv4 = XMLoadFloat2(&v4);
 
                     XMVECTOR vv5 = XMVectorSubtract(vv1, vv3);
-                    if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5)))) continue;
+                    if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5))))
+                        continue;
 
                     vv5 = XMVectorSubtract(vv1, vv4);
-                    if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5)))) continue;
+                    if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5))))
+                        continue;
 
                     vv5 = XMVectorSubtract(vv2, vv3);
-                    if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5)))) continue;
+                    if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5))))
+                        continue;
 
                     vv5 = XMVectorSubtract(vv2, vv4);
-                    if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5)))) continue;
+                    if (IsInZeroRange(XMVectorGetX(XMVector2Length(vv5))))
+                        continue;
 
                     size_t dwFaceRootID =
                         pFaceList1[edge1.dwFaceID[0]].dwIDInRootMesh;
@@ -2114,35 +2092,36 @@ static void BruteForceFoldChecking(
 }
 
 static void BruteForceOverlappingChecking(
-    ISOCHARTMESH_ARRAY& chartList)
+    ISOCHARTMESH_ARRAY &chartList)
 {
-    if (chartList.size() < 1) return;
+    if (chartList.size() < 1)
+        return;
 
     for (size_t ii = 0; ii < chartList.size() - 1; ii++)
     {
-        auto& edgeList1 = chartList[ii]->GetEdgesList();
-        ISOCHARTVERTEX* pVertList1 = chartList[ii]->GetVertexBuffer();
+        auto &edgeList1 = chartList[ii]->GetEdgesList();
+        ISOCHARTVERTEX *pVertList1 = chartList[ii]->GetVertexBuffer();
 
         for (size_t jj = ii + 1; jj < chartList.size(); jj++)
         {
-            auto& edgeList2 = chartList[jj]->GetEdgesList();
-            ISOCHARTVERTEX* pVertList2 = chartList[jj]->GetVertexBuffer();
+            auto &edgeList2 = chartList[jj]->GetEdgesList();
+            ISOCHARTVERTEX *pVertList2 = chartList[jj]->GetVertexBuffer();
 
             for (size_t m = 0; m < edgeList1.size(); m++)
             {
-                ISOCHARTEDGE& edge1 = edgeList1[m];
+                ISOCHARTEDGE &edge1 = edgeList1[m];
                 if (!edge1.bIsBoundary)
                 {
                     continue;
                 }
-                const XMFLOAT2& v1 = pVertList1[edge1.dwVertexID[0]].uv;
-                const XMFLOAT2& v2 = pVertList1[edge1.dwVertexID[1]].uv;
+                const XMFLOAT2 &v1 = pVertList1[edge1.dwVertexID[0]].uv;
+                const XMFLOAT2 &v2 = pVertList1[edge1.dwVertexID[1]].uv;
                 for (size_t n = 0; n < edgeList2.size(); n++)
                 {
-                    ISOCHARTEDGE& edge2 = edgeList2[n];
+                    ISOCHARTEDGE &edge2 = edgeList2[n];
 
-                    const XMFLOAT2& v3 = pVertList2[edge2.dwVertexID[0]].uv;
-                    const XMFLOAT2& v4 = pVertList2[edge2.dwVertexID[1]].uv;
+                    const XMFLOAT2 &v3 = pVertList2[edge2.dwVertexID[0]].uv;
+                    const XMFLOAT2 &v4 = pVertList2[edge2.dwVertexID[1]].uv;
 
                     bool bIsIntersect = IsochartIsSegmentsIntersect(v1, v2, v3, v4);
                     if (bIsIntersect)
@@ -2171,11 +2150,11 @@ static void BruteForceOverlappingChecking(
 #endif
 
 HRESULT CIsochartMesh::PackingCharts(
-    ISOCHARTMESH_ARRAY& chartList,
+    ISOCHARTMESH_ARRAY &chartList,
     size_t dwWidth,
     size_t dwHeight,
     float gutter,
-    CCallbackSchemer& callbackSchemer)
+    CCallbackSchemer &callbackSchemer)
 {
     HRESULT hr = S_OK;
 
@@ -2201,7 +2180,7 @@ HRESULT CIsochartMesh::PackingCharts(
     // 2. Packing each chart.
     for (size_t iteration = 0; iteration < chartList.size(); iteration++)
     {
-        CIsochartMesh* pChart = chartList[iteration];
+        CIsochartMesh *pChart = chartList[iteration];
         // Adding one chart into current atlas.
         hr = PackingOneChart(pChart, atlasInfo, iteration);
         if (FAILED(hr))
@@ -2217,9 +2196,7 @@ HRESULT CIsochartMesh::PackingCharts(
         }
     }
 
-    DPF(3, "Area lost rate is : %f", double(1 - atlasInfo.fPackedChartArea /
-        ((atlasInfo.fBoxRight - atlasInfo.fBoxLeft) *
-        (atlasInfo.fBoxTop - atlasInfo.fBoxBottom))));
+    DPF(3, "Area lost rate is : %f", double(1 - atlasInfo.fPackedChartArea / ((atlasInfo.fBoxRight - atlasInfo.fBoxLeft) * (atlasInfo.fBoxTop - atlasInfo.fBoxBottom))));
 
     // 3. Normalize the atlas to [0.0, 1.0]
     NormalizeAtlas(chartList, atlasInfo);
@@ -2243,7 +2220,7 @@ LEnd:
 ///////////////////////////////////////////////////////////////////////////
 // Estimate Pixel Length
 static float EstimatePixelLength(
-    ISOCHARTMESH_ARRAY& chartList,
+    ISOCHARTMESH_ARRAY &chartList,
     float fTotalArea,
     size_t dwWidth,
     size_t dwHeight,
@@ -2261,10 +2238,9 @@ static float EstimatePixelLength(
     float fChartShortenLength =
         (fBaseGutter * (fGutter / STANDARD_GUTTER) - fBaseGutter) / 2;
 
-
     for (size_t i = 0; i < chartList.size(); i++)
     {
-        PACKINGINFO* pPackInfo = chartList[i]->GetPackingInfoBuffer();
+        PACKINGINFO *pPackInfo = chartList[i]->GetPackingInfoBuffer();
         if (IsInZeroRange(pPackInfo->fUVHeight[0]))
         {
             continue;
@@ -2281,7 +2257,7 @@ static float EstimatePixelLength(
 }
 
 float CIsochartMesh::GuranteeSmallestChartArea(
-    ISOCHARTMESH_ARRAY& chartList)
+    ISOCHARTMESH_ARRAY &chartList)
 {
     float fTotalArea = CalculateAllPackingChartsArea(chartList);
 
@@ -2302,11 +2278,11 @@ float CIsochartMesh::GuranteeSmallestChartArea(
 // 4. Adjust chart UV-area
 // 5. Initialize atlas information structure
 HRESULT CIsochartMesh::PreparePacking(
-    ISOCHARTMESH_ARRAY& chartList,
+    ISOCHARTMESH_ARRAY &chartList,
     size_t dwWidth,
     size_t dwHeight,
     float gutter,
-    ATLASINFO& atlasInfo)
+    ATLASINFO &atlasInfo)
 {
     assert(dwWidth > 0);
     assert(dwHeight > 0);
@@ -2357,7 +2333,7 @@ HRESULT CIsochartMesh::PreparePacking(
 }
 
 HRESULT CIsochartMesh::CreateChartsPackingBuffer(
-    ISOCHARTMESH_ARRAY& chartList)
+    ISOCHARTMESH_ARRAY &chartList)
 {
     for (size_t i = 0; i < chartList.size(); i++)
     {
@@ -2373,7 +2349,7 @@ HRESULT CIsochartMesh::CreateChartsPackingBuffer(
 }
 
 void CIsochartMesh::DestroyChartsPackingBuffer(
-    ISOCHARTMESH_ARRAY& chartList)
+    ISOCHARTMESH_ARRAY &chartList)
 {
     for (size_t i = 0; i < chartList.size(); i++)
     {
@@ -2413,14 +2389,13 @@ void CIsochartMesh::DestroyPakingInfoBuffer()
     m_pPackingInfo = nullptr;
 }
 
-PACKINGINFO* CIsochartMesh::GetPackingInfoBuffer() const
+PACKINGINFO *CIsochartMesh::GetPackingInfoBuffer() const
 {
     return m_pPackingInfo;
 }
 
-
 float CIsochartMesh::CalculateAllPackingChartsArea(
-    ISOCHARTMESH_ARRAY& chartList)
+    ISOCHARTMESH_ARRAY &chartList)
 {
     float fTotalArea = 0;
     for (size_t i = 0; i < chartList.size(); i++)
@@ -2434,11 +2409,11 @@ float CIsochartMesh::CalculateAllPackingChartsArea(
 
 // Rotate charts to make their bounding box have longest height.
 void CIsochartMesh::AlignChartsWithLongestAxis(
-    ISOCHARTMESH_ARRAY& chartList)
+    ISOCHARTMESH_ARRAY &chartList)
 {
     for (size_t i = 0; i < chartList.size(); i++)
     {
-        CIsochartMesh* pChart = chartList[i];
+        CIsochartMesh *pChart = chartList[i];
         pChart->AlignUVWithLongestAxis();
     }
 }
@@ -2446,7 +2421,7 @@ void CIsochartMesh::AlignChartsWithLongestAxis(
 // Rotate a chart to make its bounding box has longest height
 void CIsochartMesh::AlignUVWithLongestAxis() const
 {
-    ISOCHARTVERTEX* pVertex1 = nullptr;
+    ISOCHARTVERTEX *pVertex1 = nullptr;
     XMFLOAT2 minVec;
     XMFLOAT2 maxVec;
     CalculateChartMinimalBoundingBox(
@@ -2458,7 +2433,7 @@ void CIsochartMesh::AlignUVWithLongestAxis() const
 
     // 4. Set the left-bottom corner of bounding box to be origin.
     pVertex1 = m_pVerts;
-    XMFLOAT2* pUV = m_pPackingInfo->pVertUV;
+    XMFLOAT2 *pUV = m_pPackingInfo->pVertUV;
     for (size_t i = 0; i < m_dwVertNumber; i++)
     {
         pVertex1->uv.x -= minVec.x;
@@ -2472,10 +2447,10 @@ void CIsochartMesh::AlignUVWithLongestAxis() const
 // Sort the charts in decreasing order by chart area.
 namespace
 {
-    int CompareChart(const void* chart1, const void* chart2)
+    int CompareChart(const void *chart1, const void *chart2)
     {
-        auto pChart1 = *reinterpret_cast<const CIsochartMesh* const*>(chart1);
-        auto pChart2 = *reinterpret_cast<const CIsochartMesh* const*>(chart2);
+        auto pChart1 = *reinterpret_cast<const CIsochartMesh *const *>(chart1);
+        auto pChart2 = *reinterpret_cast<const CIsochartMesh *const *>(chart2);
 
         auto pPackingInfo1 = pChart1->GetPackingInfoBuffer();
         auto pPackingInfo2 = pChart2->GetPackingInfoBuffer();
@@ -2495,15 +2470,15 @@ namespace
 }
 
 void CIsochartMesh::SortCharts(
-    ISOCHARTMESH_ARRAY& chartList)
+    ISOCHARTMESH_ARRAY &chartList)
 {
     std::sort(chartList.begin(), chartList.end(), CompareChart);
 }
 
 // Add One Chart into atlas
 HRESULT CIsochartMesh::PackingOneChart(
-    CIsochartMesh* pChart,
-    ATLASINFO& atlasInfo,
+    CIsochartMesh *pChart,
+    ATLASINFO &atlasInfo,
     size_t dwIteration)
 {
     HRESULT hr = S_OK;
@@ -2583,7 +2558,7 @@ HRESULT CIsochartMesh::PackingOneChart(
     // 3.2 Add charts into current atlas
     else
     {
-        ISOCHARTVERTEX* pVex;
+        ISOCHARTVERTEX *pVex;
 
         atlasInfo.fPackedChartArea += pChart->m_fChart2DArea;
 
@@ -2598,12 +2573,11 @@ HRESULT CIsochartMesh::PackingOneChart(
             (atlasInfo.fBoxTop - atlasInfo.fBoxBottom) * atlasInfo.fWidthHeightRatio;
 
         // 3.1.1 Need to add chart in horizon direction to increase width of atlas
-        if (atlasInfo.fExpectedAtlasWidth
-        > atlasInfo.fBoxRight - atlasInfo.fBoxLeft)
+        if (atlasInfo.fExpectedAtlasWidth > atlasInfo.fBoxRight - atlasInfo.fBoxLeft)
         {
             for (size_t i = 0; i < CHART_ROTATION_NUMBER; i++)
             {
-                ISOCHARTVERTEX* pOneBorderVertex = pPackingInfo->leftBorder[i][1];
+                ISOCHARTVERTEX *pOneBorderVertex = pPackingInfo->leftBorder[i][1];
                 if (INVALID_VERT_ID == pOneBorderVertex->dwIDInRootMesh)
                 {
                     for (size_t j = 0; j < 4; j++)
@@ -2622,7 +2596,7 @@ HRESULT CIsochartMesh::PackingOneChart(
                     }
                 }
 
-                //Try packing from right
+                // Try packing from right
                 FAILURE_RETURN(
                     FindChartPosition(
                         FromRight,
@@ -2644,7 +2618,7 @@ HRESULT CIsochartMesh::PackingOneChart(
                     fMinBetweenArea,
                     fBetweenArea);
 
-                //Try packing from left
+                // Try packing from left
                 FAILURE_RETURN(
                     FindChartPosition(
                         FromLeft,
@@ -2673,7 +2647,7 @@ HRESULT CIsochartMesh::PackingOneChart(
         {
             for (size_t i = 0; i < CHART_ROTATION_NUMBER; i++)
             {
-                ISOCHARTVERTEX* pOneBorderVertex = pPackingInfo->topBorder[i][1];
+                ISOCHARTVERTEX *pOneBorderVertex = pPackingInfo->topBorder[i][1];
                 if (INVALID_VERT_ID == pOneBorderVertex->dwIDInRootMesh)
                 {
                     for (size_t j = 0; j < 4; j++)
@@ -2692,7 +2666,7 @@ HRESULT CIsochartMesh::PackingOneChart(
                     }
                 }
 
-                //Try packing from top
+                // Try packing from top
                 FAILURE_RETURN(
                     FindChartPosition(
                         FromTop,
@@ -2714,7 +2688,7 @@ HRESULT CIsochartMesh::PackingOneChart(
                     fMinBetweenArea,
                     fBetweenArea);
 
-                //Try packing from bottom
+                // Try packing from bottom
                 FAILURE_RETURN(
                     FindChartPosition(
                         FromBottom,
@@ -2774,8 +2748,7 @@ HRESULT CIsochartMesh::PackingOneChart(
             pVex++;
         }
 
-        ISOCHARTVERTEX* pOneBorderVertex
-            = pPackingInfo->leftBorder[dwDirMinRotationId[dwPackDirection]][1];
+        ISOCHARTVERTEX *pOneBorderVertex = pPackingInfo->leftBorder[dwDirMinRotationId[dwPackDirection]][1];
         if (INVALID_VERT_ID == pOneBorderVertex->dwIDInRootMesh)
         {
             pVex = pChart->GetVertexBuffer();
@@ -2798,7 +2771,7 @@ HRESULT CIsochartMesh::PackingOneChart(
 }
 
 // Packing chart with zero area to origin
-void CIsochartMesh::PackingZeroAreaChart(CIsochartMesh* pChart)
+void CIsochartMesh::PackingZeroAreaChart(CIsochartMesh *pChart)
 {
     assert(pChart != nullptr);
     for (size_t i = 0; i < pChart->m_dwVertNumber; i++)
@@ -2811,23 +2784,22 @@ void CIsochartMesh::PackingZeroAreaChart(CIsochartMesh* pChart)
 
 // Calculate borders of chart in each rotate direction.
 HRESULT CIsochartMesh::CalculateChartBordersOfAllDirection(
-    ATLASINFO& atlasInfo)
+    ATLASINFO &atlasInfo)
 {
     HRESULT hr = S_OK;
 
     VERTEX_ARRAY border1;
     VERTEX_ARRAY border2;
 
-
     for (size_t dwRotationCount = 0;
         dwRotationCount < CHART_ROTATION_NUMBER;
         dwRotationCount++)
     {
         // 1. Rotate the Chart by a special angle
-        ISOCHARTVERTEX* pLeftVertex = nullptr;  // Left most vertex
-        ISOCHARTVERTEX* pRightVertex = nullptr; // Right most vertex
-        ISOCHARTVERTEX* pTopVertex = nullptr;   // Top most vertex
-        ISOCHARTVERTEX* pBottomVertex = nullptr;// Bottom most vertex
+        ISOCHARTVERTEX *pLeftVertex = nullptr;   // Left most vertex
+        ISOCHARTVERTEX *pRightVertex = nullptr;  // Right most vertex
+        ISOCHARTVERTEX *pTopVertex = nullptr;    // Top most vertex
+        ISOCHARTVERTEX *pBottomVertex = nullptr; // Bottom most vertex
 
         RotateChartAroundCenter(
             dwRotationCount,
@@ -2846,10 +2818,10 @@ HRESULT CIsochartMesh::CalculateChartBordersOfAllDirection(
         // 3. Calculate chart borders in current direction
         FAILURE_RETURN(
             CalculateChartBorders(
-                true,  // Calculate horizontal borders (top & bottom)
+                true, // Calculate horizontal borders (top & bottom)
                 m_pPackingInfo->bottomBorder[dwRotationCount],
                 m_pPackingInfo->topBorder[dwRotationCount],
-                pLeftVertex, // From left most vertex
+                pLeftVertex,  // From left most vertex
                 pRightVertex, // scan to right most vertex
                 border1,
                 border2,
@@ -2881,51 +2853,46 @@ HRESULT CIsochartMesh::CalculateChartBordersOfAllDirection(
         }
 
         // 4. Check if the horizon and the vertical is valid.
-#ifdef _DEBUG
-        VERTEX_ARRAY& topBorder = m_pPackingInfo->topBorder[dwRotationCount];
-        VERTEX_ARRAY& bottomBorder = m_pPackingInfo->bottomBorder[dwRotationCount];
-        VERTEX_ARRAY& leftBorder = m_pPackingInfo->leftBorder[dwRotationCount];
-        VERTEX_ARRAY& rightBorder = m_pPackingInfo->rightBorder[dwRotationCount];
+    #ifdef _DEBUG
+        VERTEX_ARRAY &topBorder = m_pPackingInfo->topBorder[dwRotationCount];
+        VERTEX_ARRAY &bottomBorder = m_pPackingInfo->bottomBorder[dwRotationCount];
+        VERTEX_ARRAY &leftBorder = m_pPackingInfo->leftBorder[dwRotationCount];
+        VERTEX_ARRAY &rightBorder = m_pPackingInfo->rightBorder[dwRotationCount];
 
         for (size_t i = 0; i < topBorder.size() - 1; i++)
         {
             assert(
-                topBorder[i]->uv.x
-                <= topBorder[i + 1]->uv.x);
+                topBorder[i]->uv.x <= topBorder[i + 1]->uv.x);
         }
         for (size_t i = 0; i < bottomBorder.size() - 1; i++)
         {
             assert(
-                bottomBorder[i]->uv.x
-                <= bottomBorder[i + 1]->uv.x);
+                bottomBorder[i]->uv.x <= bottomBorder[i + 1]->uv.x);
         }
 
         for (size_t i = 0; i < leftBorder.size() - 1; i++)
         {
             assert(
-                leftBorder[i]->uv.y
-                <= leftBorder[i + 1]->uv.y);
+                leftBorder[i]->uv.y <= leftBorder[i + 1]->uv.y);
         }
 
         for (size_t i = 0; i < rightBorder.size() - 1; i++)
         {
-            assert(rightBorder[i]->uv.y
-                <= rightBorder[i + 1]->uv.y);
+            assert(rightBorder[i]->uv.y <= rightBorder[i + 1]->uv.y);
         }
-#endif
+    #endif
     }
     return S_OK;
 }
-
 
 // Rotate chart and align left-bottom corner of chart's bounding box to origin
 void CIsochartMesh::RotateChartAroundCenter(
     size_t dwRotationId,
     bool bOnlyRotateBoundaries, // Only need to rotate boundary vertex
-    ISOCHARTVERTEX** ppLeftMostVertex,
-    ISOCHARTVERTEX** ppRightMostVertex,
-    ISOCHARTVERTEX** ppTopMostVertex,
-    ISOCHARTVERTEX** ppBottomMostVertex)
+    ISOCHARTVERTEX **ppLeftMostVertex,
+    ISOCHARTVERTEX **ppRightMostVertex,
+    ISOCHARTVERTEX **ppTopMostVertex,
+    ISOCHARTVERTEX **ppBottomMostVertex)
 {
     float fCos = g_PackingCosTable[dwRotationId];
     float fSin = g_PackingSinTable[dwRotationId];
@@ -2966,7 +2933,7 @@ void CIsochartMesh::RotateChartAroundCenter(
     minVec.x = minVec.y = FLT_MAX;
     maxVec.x = maxVec.y = -FLT_MAX;
 
-    ISOCHARTVERTEX* pVertex = m_pVerts;
+    ISOCHARTVERTEX *pVertex = m_pVerts;
     size_t dwLeft = 0, dwRight = 0, dwTop = 0, dwBottom = 0;
     for (size_t i = 0; i < m_dwVertNumber; i++)
     {
@@ -3026,7 +2993,7 @@ void CIsochartMesh::RotateChartAroundCenter(
         dwBottom = dwRight;
     }
 
-    //d.
+    // d.
     if (m_pVerts[dwTop].uv.y == m_pVerts[dwRight].uv.y)
     {
         dwTop = dwRight;
@@ -3068,25 +3035,24 @@ void CIsochartMesh::RotateChartAroundCenter(
     }
 }
 
-
 // Calculate horizontal or vertical borders of a chart in one
 // rotation direction
 HRESULT CIsochartMesh::CalculateChartBorders(
     bool bHorizontal,
-    VERTEX_ARRAY& lowerBorder, // border with lower radial coordinates
-    VERTEX_ARRAY& higherBorder,// border with higher radial coordinates
-    ISOCHARTVERTEX* pStartVertex,
-    ISOCHARTVERTEX* pEndVertex,
-    VERTEX_ARRAY& workBorder1,
-    VERTEX_ARRAY& workBorder2,
-    bool& bCanDecide)
+    VERTEX_ARRAY &lowerBorder,  // border with lower radial coordinates
+    VERTEX_ARRAY &higherBorder, // border with higher radial coordinates
+    ISOCHARTVERTEX *pStartVertex,
+    ISOCHARTVERTEX *pEndVertex,
+    VERTEX_ARRAY &workBorder1,
+    VERTEX_ARRAY &workBorder2,
+    bool &bCanDecide)
 {
     HRESULT hr = S_OK;
 
     // 1. Find the first one of the two boundary edges connecting to
     // start vertex
     uint32_t dwFirstBoundaryIndex = 0;
-    ISOCHARTEDGE* pBoundaryEdge = nullptr;
+    ISOCHARTEDGE *pBoundaryEdge = nullptr;
     for (size_t i = 0; i < pStartVertex->edgeAdjacent.size(); i++)
     {
         pBoundaryEdge = &(m_edges[pStartVertex->edgeAdjacent[i]]);
@@ -3143,12 +3109,10 @@ HRESULT CIsochartMesh::CalculateChartBorders(
 
     float fDotValue1 = 1.0f, fDotValue2 = 1.0f;
     bool bCanDecide1 = false, bCanDecide2 = false;
-    bool bFirstBorderOutside
-        = IsB2OnClockwiseDirOfB1AtBegin(
-            workBorder1, workBorder2, bCanDecide1, fDotValue1);
-    bool bSecondBorderInSide
-        = !IsB1OnClockwiseDirOfB2AtEnd(
-            workBorder1, workBorder2, bCanDecide2, fDotValue2);
+    bool bFirstBorderOutside = IsB2OnClockwiseDirOfB1AtBegin(
+        workBorder1, workBorder2, bCanDecide1, fDotValue1);
+    bool bSecondBorderInSide = !IsB1OnClockwiseDirOfB2AtEnd(
+        workBorder1, workBorder2, bCanDecide2, fDotValue2);
 
     if (!bCanDecide1 || !bCanDecide2)
     {
@@ -3156,8 +3120,7 @@ HRESULT CIsochartMesh::CalculateChartBorders(
         return hr;
     }
 
-    if ((bFirstBorderOutside && !bSecondBorderInSide)
-        || (!bFirstBorderOutside && bSecondBorderInSide))
+    if ((bFirstBorderOutside && !bSecondBorderInSide) || (!bFirstBorderOutside && bSecondBorderInSide))
     {
         DPF(1, "Dot value 1 = %f, Dot value 2 = %f", double(fDotValue1), double(fDotValue2));
         if (fabsf(fDotValue1) < 0.1f && fabsf(fDotValue2) > 0.9f)
@@ -3205,7 +3168,7 @@ HRESULT CIsochartMesh::CalculateChartBorders(
             }
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -3222,18 +3185,18 @@ HRESULT CIsochartMesh::CalculateChartBorders(
 
 // Scan along  boundary edges of chart to find borders.
 HRESULT CIsochartMesh::ScanAlongBoundayEdges(
-    ISOCHARTVERTEX* pStartVertex,
-    ISOCHARTVERTEX* pEndVertex,
-    ISOCHARTEDGE* pStartEdge,
-    VERTEX_ARRAY& scanVertexList)
+    ISOCHARTVERTEX *pStartVertex,
+    ISOCHARTVERTEX *pEndVertex,
+    ISOCHARTEDGE *pStartEdge,
+    VERTEX_ARRAY &scanVertexList)
 {
     try
     {
-        ISOCHARTEDGE* pBoundaryEdge = pStartEdge;
+        ISOCHARTEDGE *pBoundaryEdge = pStartEdge;
 
         scanVertexList.push_back(pStartVertex);
 
-        ISOCHARTVERTEX* pVertex = pStartVertex;
+        ISOCHARTVERTEX *pVertex = pStartVertex;
 
         while (pVertex != pEndVertex)
         {
@@ -3248,10 +3211,10 @@ HRESULT CIsochartMesh::ScanAlongBoundayEdges(
 
             scanVertexList.push_back(pVertex);
 
-            ISOCHARTEDGE* pScanEdge = nullptr;
+            ISOCHARTEDGE *pScanEdge = nullptr;
             for (size_t j = 0; j < pVertex->edgeAdjacent.size(); j++)
             {
-                ISOCHARTEDGE* pTempEdge = &(m_edges[pVertex->edgeAdjacent[j]]);
+                ISOCHARTEDGE *pTempEdge = &(m_edges[pVertex->edgeAdjacent[j]]);
                 if (pTempEdge->bIsBoundary && pTempEdge != pBoundaryEdge)
                 {
                     if (pScanEdge)
@@ -3277,7 +3240,7 @@ HRESULT CIsochartMesh::ScanAlongBoundayEdges(
             pBoundaryEdge = pScanEdge;
         }
     }
-    catch (std::bad_alloc&)
+    catch (std::bad_alloc &)
     {
         return E_OUTOFMEMORY;
     }
@@ -3292,7 +3255,7 @@ void CIsochartMesh::RotateBordersAroundCenter(
     float fCos = g_PackingCosTable[dwRotationId];
     float fSin = g_PackingSinTable[dwRotationId];
 
-    ISOCHARTVERTEX* pVertex;
+    ISOCHARTVERTEX *pVertex;
 
     for (size_t i = 0; i < m_pPackingInfo->topBorder[dwRotationId].size(); i++)
     {
@@ -3368,11 +3331,10 @@ void CIsochartMesh::RotateBordersAroundCenter(
     }
 }
 
-
 // Normalize atlas
 void CIsochartMesh::NormalizeAtlas(
-    ISOCHARTMESH_ARRAY& chartList,
-    ATLASINFO& atlasInfo)
+    ISOCHARTMESH_ARRAY &chartList,
+    ATLASINFO &atlasInfo)
 {
     float fScaleW = 0;
     float fScaleH = 0;
@@ -3396,8 +3358,8 @@ void CIsochartMesh::NormalizeAtlas(
 
     for (size_t i = 0; i < chartList.size(); i++)
     {
-        CIsochartMesh* pChart = chartList[i];
-        ISOCHARTVERTEX* pVertex = pChart->m_pVerts;
+        CIsochartMesh *pChart = chartList[i];
+        ISOCHARTVERTEX *pVertex = pChart->m_pVerts;
         for (size_t j = 0; j < pChart->m_dwVertNumber; j++)
         {
             pVertex->uv.x = (pVertex->uv.x - atlasInfo.fBoxLeft) / fScaleW;
@@ -3445,7 +3407,7 @@ void CIsochartMesh::ScaleTo3DArea()
 // Scale each chart to get the smallest stretch
 // See more details of algorithm in [SGSH02]:4.6 section
 void CIsochartMesh::OptimizeAtlasSignalStretch(
-    ISOCHARTMESH_ARRAY& chartList)
+    ISOCHARTMESH_ARRAY &chartList)
 {
     if (chartList.size() < 2)
     {
@@ -3459,7 +3421,7 @@ void CIsochartMesh::OptimizeAtlasSignalStretch(
 
     for (size_t i = 0; i < chartList.size(); i++)
     {
-        CIsochartMesh* pChart = chartList[i];
+        CIsochartMesh *pChart = chartList[i];
         pChart->m_fChart2DArea = pChart->CalculateChart2DArea();
         fTotal2DArea += pChart->m_fChart2DArea;
 
@@ -3476,7 +3438,7 @@ void CIsochartMesh::OptimizeAtlasSignalStretch(
 
     for (size_t i = 0; i < chartList.size(); i++)
     {
-        CIsochartMesh* pChart = chartList[i];
+        CIsochartMesh *pChart = chartList[i];
         float fScale;
 
         if (IsInZeroRange(pChart->m_fChart2DArea))
@@ -3486,8 +3448,8 @@ void CIsochartMesh::OptimizeAtlasSignalStretch(
         else
         {
             fScale = IsochartSqrtf(
-                (pChart->m_fParamStretchL2 + ShiftError) / pChart->m_fChart2DArea)
-                / fTotal;
+                (pChart->m_fParamStretchL2 + ShiftError) / pChart->m_fChart2DArea) /
+                fTotal;
             fScale *= fTotal2DArea;
             fScale = IsochartSqrtf(fScale);
         }
@@ -3502,7 +3464,7 @@ void CIsochartMesh::OptimizeAtlasSignalStretch(
 // of chart too.
 void CIsochartMesh::ScaleChart(float fScale)
 {
-    ISOCHARTVERTEX* pVertex = m_pVerts;
+    ISOCHARTVERTEX *pVertex = m_pVerts;
 
     if (IsInZeroRange(fScale - 1.0f))
     {

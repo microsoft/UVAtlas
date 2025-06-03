@@ -11,12 +11,11 @@
 
 #include "ExactOneToAll.h"
 
-
 namespace GeodesicDist
 {
     class CApproximateOneToAll : public CExactOneToAll
     {
     private:
-        void CutHeapTopData(EdgeWindow& EdgeWindowOut) override;
+        void CutHeapTopData(EdgeWindow &EdgeWindowOut) override;
     };
 }

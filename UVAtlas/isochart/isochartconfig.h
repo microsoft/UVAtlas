@@ -16,15 +16,15 @@ namespace Isochart
     ////////////////////////////////////////////////////////////////////
 
 #define PARAM_TURN_ON_LSCM 0 // Turn on LSCM during parition
-#define MERGE_TURN_ON_LSCM 0// Turn on LSCM during merge
+#define MERGE_TURN_ON_LSCM 0 // Turn on LSCM during merge
 
-//Perform LSCM only when the input stretch is larger than the criteria
+    // Perform LSCM only when the input stretch is larger than the criteria
     constexpr float SMALL_STRETCH_TO_TURNON_LSCM = 0.95f;
 
-#define PARAM_TURN_ON_BARYCENTRIC 1	// Turn on barycenteric method during partition
-#define MERGE_TURN_ON_BARYCENTRIC 1	// Turn on barycenteric method during merge
+#define PARAM_TURN_ON_BARYCENTRIC 1 // Turn on barycenteric method during partition
+#define MERGE_TURN_ON_BARYCENTRIC 1 // Turn on barycenteric method during merge
 
-    //Perform Barycentric method only when the input stretch is larger than the criteria
+    // Perform Barycentric method only when the input stretch is larger than the criteria
     constexpr float SMALL_STRETCH_TO_TURNON_BARY = 0.95f;
 
     ////////////////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ namespace Isochart
     // The minimal number of vertices in simplified mesh.
 
     // Here is a trade-off:
-    // More vertices left caused more accurate parameterization, but 
+    // More vertices left caused more accurate parameterization, but
     // also more time cost.
     // 80 is based on examination of Kun
     constexpr size_t MIN_PM_VERT_NUMBER = 85;
@@ -58,13 +58,13 @@ namespace Isochart
 // 1 means:
 // IMT stands for piecewise linear signal reconstruction. ( 6 different coefficient )
 
-// Note: 
+// Note:
 // Now, we ony support piecewise constant imt now, so this marco must be 1
 // we may support Piewise linear imt in future.
-#define PIECEWISE_CONSTANT_IMT 1 
+#define PIECEWISE_CONSTANT_IMT 1
 
 #if PIECEWISE_CONSTANT_IMT
-    constexpr size_t IMT_DIM = 3;  // Piecewise constant imt
+    constexpr size_t IMT_DIM = 3; // Piecewise constant imt
 #else
     constexpr size_t IMT_DIM = 6; // Piecewise linear imt
 #endif
@@ -74,11 +74,11 @@ namespace Isochart
 ////////////////////////////////////////////////////////////////////
 
 // According to the experiemnt, parameterization with overlapping is
-// not easy to be corrected during  L^2 geometic optimization. 
+// not easy to be corrected during  L^2 geometic optimization.
 
 // 1 means:
 // Overlapping checking will perform before
-// L^2 geometic optimize. 
+// L^2 geometic optimize.
 
 // 0 means:
 // Don't check overlapping
@@ -92,8 +92,8 @@ namespace Isochart
     // Using the combination of dihedral angle and stretch difference.
 #define OPT_3D_BIPARTITION_BOUNDARY_BY_ANGLE 1
 
-// When optimize chart by signal, just amplify the geometric stretch criteria
-// to give more freedom when moving vertices
+    // When optimize chart by signal, just amplify the geometric stretch criteria
+    // to give more freedom when moving vertices
     constexpr float POW_OF_IMT_GEO_L2_STRETCH = 0.2f;
 
     // 1 means :
@@ -102,22 +102,22 @@ namespace Isochart
     // Always optimize current chart
 #define OPT_CHART_L2_STRETCH_ONCE 1
 
-// This parameter is used to control the signal stretch optimization. If we don't want to get 
-// too large triangles, just set this parameter to a value in the range of 0 to 1.
+    // This parameter is used to control the signal stretch optimization. If we don't want to get
+    // too large triangles, just set this parameter to a value in the range of 0 to 1.
     constexpr float FACE_MIN_L2_STRETCH = 0.0f;
 
-    //Using the optimal scaling method given by John Synder can generate too large or too small
-    //charts, the too large charts will waste large space, too small charts can easily give trouble
-    // to mip map.
+    // Using the optimal scaling method given by John Synder can generate too large or too small
+    // charts, the too large charts will waste large space, too small charts can easily give trouble
+    //  to mip map.
     constexpr float OPTIMAL_SCALE_FACTOR = 2.5f;
 
     // Optimize L^n Stretch
-    constexpr size_t INFINITE_VERTICES_OPTIMIZE_COUNT = 12; //Times to optimize all infinite vertices
-    constexpr size_t RAND_OPTIMIZE_INFINIT_COUNT = 12; // Times to randomly optimize one vertex 
+    constexpr size_t INFINITE_VERTICES_OPTIMIZE_COUNT = 12; // Times to optimize all infinite vertices
+    constexpr size_t RAND_OPTIMIZE_INFINIT_COUNT = 12;      // Times to randomly optimize one vertex
 
     // Optimize signal L^2 Stretch
-    constexpr size_t L2_PREV_OPTIMIZESIG_COUNT = 6;	//Times to optimize all vertices before optimize whole charts.
-    constexpr size_t L2_POST_OPTIMIZESIG_COUNT = 4;	//Times to optimize all vertices after optimize who charts
+    constexpr size_t L2_PREV_OPTIMIZESIG_COUNT = 6; // Times to optimize all vertices before optimize whole charts.
+    constexpr size_t L2_POST_OPTIMIZESIG_COUNT = 4; // Times to optimize all vertices after optimize who charts
     constexpr size_t RAND_OPTIMIZE_L2_COUNT = 9;
 
     // Optimize geometric L^2 stretch. For the boundary vertices, using L^n stretch optimization

@@ -47,7 +47,7 @@ namespace Isochart
             float fSourceWeight,
             float fSinkWeight);
 
-        HRESULT CutGraph(float& fMaxflow);
+        HRESULT CutGraph(float &fMaxflow);
 
         bool IsInSourceDomain(
             NODEHANDLE hNode);
@@ -66,8 +66,6 @@ namespace Isochart
             float fWeight;
         };
 
-
         CMaxFlow graph;
-
     };
 }

@@ -13,7 +13,6 @@
 #include "callbackschemer.h"
 #include "maxheap.hpp"
 
-
 namespace Isochart
 {
     class CCallbackSchemer;
@@ -27,15 +26,15 @@ namespace Isochart
 
         // IIsochartEngine
         HRESULT Initialize(
-            const void* pVertexArray,
+            const void *pVertexArray,
             size_t VertexCount,
             size_t VertexStride,
             DXGI_FORMAT IndexFormat,
-            const void* pFaceIndexArray,
+            const void *pFaceIndexArray,
             size_t FaceCount,
-            const FLOAT3* pIMTArray,
-            const uint32_t* pOriginalAjacency,
-            const uint32_t* pSplitHint,
+            const FLOAT3 *pIMTArray,
+            const uint32_t *pOriginalAjacency,
+            const uint32_t *pSplitHint,
             unsigned int dwOptions) noexcept override;
 
         HRESULT Free() noexcept override;
@@ -43,19 +42,19 @@ namespace Isochart
         HRESULT Partition(
             size_t MaxChartNumber,
             float Stretch,
-            size_t& ChartNumberOut,
-            float& MaxChartStretchOut,
-            uint32_t* pFaceAttributeIDOut) noexcept override;
+            size_t &ChartNumberOut,
+            float &MaxChartStretchOut,
+            uint32_t *pFaceAttributeIDOut) noexcept override;
 
         HRESULT Pack(
             size_t Width,
             size_t Height,
             float Gutter,
-            const void* pOrigIndexBuffer,
-            std::vector<DirectX::UVAtlasVertex>* pvVertexArrayOut,
-            std::vector<uint8_t>* pvFaceIndexArrayOut,
-            std::vector<uint32_t>* pvVertexRemapArrayOut,
-            _In_opt_ std::vector<uint32_t>* pvAttributeID) noexcept override;
+            const void *pOrigIndexBuffer,
+            std::vector<DirectX::UVAtlasVertex> *pvVertexArrayOut,
+            std::vector<uint8_t> *pvFaceIndexArrayOut,
+            std::vector<uint32_t> *pvVertexRemapArrayOut,
+            _In_opt_ std::vector<uint32_t> *pvAttributeID) noexcept override;
 
         HRESULT SetCallback(
             LPISOCHARTCALLBACK pCallback,
@@ -66,18 +65,18 @@ namespace Isochart
             unsigned int DoneStageCount) noexcept override;
 
         HRESULT ExportPartitionResult(
-            std::vector<DirectX::UVAtlasVertex>* pvVertexArrayOut,
-            std::vector<uint8_t>* pvFaceIndexArrayOut,
-            std::vector<uint32_t>* pvVertexRemapArrayOut,
-            std::vector<uint32_t>* pvAttributeIDOut,
-            std::vector<uint32_t>* pvAdjacencyOut) noexcept override;
+            std::vector<DirectX::UVAtlasVertex> *pvVertexArrayOut,
+            std::vector<uint8_t> *pvFaceIndexArrayOut,
+            std::vector<uint32_t> *pvVertexRemapArrayOut,
+            std::vector<uint32_t> *pvAttributeIDOut,
+            std::vector<uint32_t> *pvAdjacencyOut) noexcept override;
 
         HRESULT InitializePacking(
-            std::vector<DirectX::UVAtlasVertex>* pvVertexBuffer,
+            std::vector<DirectX::UVAtlasVertex> *pvVertexBuffer,
             size_t VertexCount,
-            std::vector<uint8_t>* pvFaceIndexBuffer,
+            std::vector<uint8_t> *pvFaceIndexBuffer,
             size_t FaceCount,
-            const uint32_t* pdwFaceAdjacentArrayIn) noexcept override;
+            const uint32_t *pdwFaceAdjacentArrayIn) noexcept override;
 
         HRESULT CreateEngineMutex();
 
@@ -98,103 +97,102 @@ namespace Isochart
 
         // Internal initialization
         HRESULT InitializeBaseInfo(
-            const void* pfVertexArray,
+            const void *pfVertexArray,
             size_t dwVertexCount,
             size_t dwVertexStride,
             DXGI_FORMAT IndexFormat,
-            const void* pdwFaceIndexArray,
+            const void *pdwFaceIndexArray,
             size_t dwFaceCount,
-            const FLOAT3* pfIMTArray,
-            const uint32_t* pdwOriginalAjacency,
-            const uint32_t* pdwSplitHint);
+            const FLOAT3 *pfIMTArray,
+            const uint32_t *pdwOriginalAjacency,
+            const uint32_t *pdwSplitHint);
 
         bool IsMaxChartNumberValid(
             size_t MaxChartNumber);
 
         HRESULT ApplyInitEngine(
-            CBaseMeshInfo& baseInfo,
+            CBaseMeshInfo &baseInfo,
             DXGI_FORMAT IndexFormat,
-            const void* pFaceIndexArray,
+            const void *pFaceIndexArray,
             bool bIsForPartition);
 
         // Internal partiton
         HRESULT InitializeCurrentChartHeap();
         HRESULT AddChildrenToCurrentChartHeap(
-            CIsochartMesh* pChart);
+            CIsochartMesh *pChart);
 
         HRESULT PartitionByGlobalAvgL2Stretch(
             size_t MaxChartNumber,
             float Stretch,
-            size_t& ChartNumberOut,
-            float& MaxChartStretchOut,
-            uint32_t* pFaceAttributeIDOut);
-#ifdef _OPENMP
+            size_t &ChartNumberOut,
+            float &MaxChartStretchOut,
+            uint32_t *pFaceAttributeIDOut);
+    #ifdef _OPENMP
         HRESULT ParameterizeChartsInHeapParallelized(
             bool bFirstTime,
             size_t MaxChartNumber);
-#else
+    #else
         HRESULT ParameterizeChartsInHeap(
             bool bFirstTime,
             size_t MaxChartNumber);
-#endif
+    #endif
         HRESULT GenerateNewChartsToParameterize();
 
         HRESULT OptimizeParameterizedCharts(
             float Stretch,
-            float& fFinalGeoAvgL2Stretch);
+            float &fFinalGeoAvgL2Stretch);
 
         float GetCurrentStretchCriteria();
 
         // ExportXXXX
         HRESULT ExportCurrentCharts(
-            std::vector<CIsochartMesh*>& finalChartList,
-            uint32_t* pFaceAttributeIDOut);
+            std::vector<CIsochartMesh *> &finalChartList,
+            uint32_t *pFaceAttributeIDOut);
 
         HRESULT ExportIsochartResult(
-            std::vector<CIsochartMesh*>& finalChartList,
-            std::vector<DirectX::UVAtlasVertex>* pvVertexArrayOut,
-            std::vector<uint8_t>* pvFaceIndexArrayOut,
-            std::vector<uint32_t>* pvVertexRemapArrayOut,
-            std::vector<uint32_t>* pvAttributeIDOut,
-            std::vector<uint32_t>* pvAdjacencyOut);
+            std::vector<CIsochartMesh *> &finalChartList,
+            std::vector<DirectX::UVAtlasVertex> *pvVertexArrayOut,
+            std::vector<uint8_t> *pvFaceIndexArrayOut,
+            std::vector<uint32_t> *pvVertexRemapArrayOut,
+            std::vector<uint32_t> *pvAttributeIDOut,
+            std::vector<uint32_t> *pvAdjacencyOut);
 
         template <typename IndexType>
         void ExportPackResultToOrgMesh(
-            IndexType* pOrigIndex,
-            std::vector<CIsochartMesh*>& finalChartList);
-
+            IndexType *pOrigIndex,
+            std::vector<CIsochartMesh *> &finalChartList);
 
         HRESULT PrepareExportBuffers(
-            std::vector<CIsochartMesh*>& finalChartList,
-            DXGI_FORMAT& outFormat,
-            std::vector<uint32_t>& notUsedVertList,
-            std::vector<DirectX::UVAtlasVertex>* pvVertexArrayOut,
-            std::vector<uint8_t>* pvFaceIndexArrayOut,
-            std::vector<uint32_t>* pvVertexRemapArrayOut,
-            std::vector<uint32_t>* pvAttributeIDOut,
-            std::vector<uint32_t>* pvAdjacencyOut);
+            std::vector<CIsochartMesh *> &finalChartList,
+            DXGI_FORMAT &outFormat,
+            std::vector<uint32_t> &notUsedVertList,
+            std::vector<DirectX::UVAtlasVertex> *pvVertexArrayOut,
+            std::vector<uint8_t> *pvFaceIndexArrayOut,
+            std::vector<uint32_t> *pvVertexRemapArrayOut,
+            std::vector<uint32_t> *pvAttributeIDOut,
+            std::vector<uint32_t> *pvAdjacencyOut);
 
         HRESULT FillExportVertexBuffer(
-            std::vector<CIsochartMesh*>& finalChartList,
-            std::vector<uint32_t>& notUsedVertList,
-            std::vector<DirectX::UVAtlasVertex>* pvVertexBuffer,
-            std::vector<uint32_t>* pvMapBuffer);
+            std::vector<CIsochartMesh *> &finalChartList,
+            std::vector<uint32_t> &notUsedVertList,
+            std::vector<DirectX::UVAtlasVertex> *pvVertexBuffer,
+            std::vector<uint32_t> *pvMapBuffer);
 
         template <class INDEXTYPE>
         HRESULT FillExportFaceIndexBuffer(
-            std::vector<CIsochartMesh*>& finalChartList,
-            std::vector<uint8_t>* pvFaceBuffer);
+            std::vector<CIsochartMesh *> &finalChartList,
+            std::vector<uint8_t> *pvFaceBuffer);
 
         HRESULT FillExportFaceAttributeBuffer(
-            std::vector<CIsochartMesh*>& finalChartList,
-            std::vector<uint32_t>* pvAttributeBuffer);
+            std::vector<CIsochartMesh *> &finalChartList,
+            std::vector<uint32_t> *pvAttributeBuffer);
 
         HRESULT FillExportFaceAdjacencyBuffer(
-            std::vector<CIsochartMesh*>& finalChartList,
-            std::vector<uint32_t>* pvAdjacencyBuffer);
+            std::vector<CIsochartMesh *> &finalChartList,
+            std::vector<uint32_t> *pvAdjacencyBuffer);
 
         void AssignUVCoordinate(
-            std::vector<CIsochartMesh*>& finalChartList);
+            std::vector<CIsochartMesh *> &finalChartList);
         // ReleaseXXXX
         // There are 3 chart-sets in isochart engine: Init, Current, Final
         // (1). Charts in "Current Set" must not in "Final Set" and vice versa
@@ -218,7 +216,7 @@ namespace Isochart
 
         HRESULT TryEnterExclusiveSection();
 
-        void  LeaveExclusiveSection();
+        void LeaveExclusiveSection();
 
         // Indicate whether to consider IMT
         bool IsIMTSpecified() const
@@ -234,24 +232,24 @@ namespace Isochart
         CCallbackSchemer m_callbackSchemer;
 
         // The charts to be partitioned
-        CMaxHeap<float, CIsochartMesh*> m_currentChartHeap;
+        CMaxHeap<float, CIsochartMesh *> m_currentChartHeap;
 
         // The charts not to be partitioned anymore
-        std::vector<CIsochartMesh*> m_finalChartList;
+        std::vector<CIsochartMesh *> m_finalChartList;
 
         // The charts generated by Initialize()
-        std::vector<CIsochartMesh*> m_initChartList;
+        std::vector<CIsochartMesh *> m_initChartList;
 
         float fExpectAvgL2SquaredStretch;
         size_t dwExpectChartCount;
 
-        EngineState m_state;	// Indicate internal state.
+        EngineState m_state; // Indicate internal state.
 
-#ifdef _WIN32
+    #ifdef _WIN32
         HANDLE m_hMutex;
-#else
+    #else
         std::mutex m_mutex;
-#endif
+    #endif
 
         unsigned int m_dwOptions;
 
@@ -264,13 +262,13 @@ namespace Isochart
 
     // Check Initialize parameters
     bool CheckInitializeParameters(
-        const void* pVertexArray,
+        const void *pVertexArray,
         size_t VertexCount,
         size_t VertexStride,
         DXGI_FORMAT IndexFormat,
-        const void* pFaceIndexArray,
+        const void *pFaceIndexArray,
         size_t FaceCount,
-        const FLOAT3* pIMTArray,
+        const FLOAT3 *pIMTArray,
         unsigned int dwOptions);
 
     // Check Partition parameters
@@ -278,19 +276,19 @@ namespace Isochart
         size_t MaxChartNumber,
         size_t FaceCount,
         float Stretch,
-        size_t* pChartNumberOut,
-        float* pMaxStretchOut,
-        uint32_t* pFaceAttributeIDOut);
+        size_t *pChartNumberOut,
+        float *pMaxStretchOut,
+        uint32_t *pFaceAttributeIDOut);
 
     // Check Pack parameters
     bool CheckPackParameters(
         size_t Width,
         size_t Height,
         float Gutter,
-        std::vector<DirectX::UVAtlasVertex>* pvVertexArrayOut,
-        std::vector<uint8_t>* pvFaceIndexArrayOut,
-        std::vector<uint32_t>* pvVertexRemapArrayOut,
-        std::vector<uint32_t>* pvAttributeIDOut);
+        std::vector<DirectX::UVAtlasVertex> *pvVertexArrayOut,
+        std::vector<uint8_t> *pvFaceIndexArrayOut,
+        std::vector<uint32_t> *pvVertexRemapArrayOut,
+        std::vector<uint32_t> *pvAttributeIDOut);
 
     // Check SetCallback parameters
     bool CheckSetCallbackParameters(
@@ -298,25 +296,24 @@ namespace Isochart
         float Frequency);
 
     bool CheckExportPartitionResultParameters(
-        std::vector<DirectX::UVAtlasVertex>* pvVertexArrayOut,
-        std::vector<uint8_t>* pvFaceIndexArrayOut,
-        std::vector<uint32_t>* pvVertexRemapArrayOut,
-        std::vector<uint32_t>* pvAttributeIDOut,
-        std::vector<uint32_t>* pvAdjacencyOut);
-
+        std::vector<DirectX::UVAtlasVertex> *pvVertexArrayOut,
+        std::vector<uint8_t> *pvFaceIndexArrayOut,
+        std::vector<uint32_t> *pvVertexRemapArrayOut,
+        std::vector<uint32_t> *pvAttributeIDOut,
+        std::vector<uint32_t> *pvAdjacencyOut);
 
     bool CheckInitializePackingParameters(
-        std::vector<DirectX::UVAtlasVertex>* pvVertexBuffer,
+        std::vector<DirectX::UVAtlasVertex> *pvVertexBuffer,
         size_t VertexCount,
-        std::vector<uint8_t>* pvFaceIndexBuffer,
+        std::vector<uint8_t> *pvFaceIndexBuffer,
         size_t FaceCount,
-        const uint32_t* pdwFaceAdjacentArrayIn);
+        const uint32_t *pdwFaceAdjacentArrayIn);
 
     bool CheckIMTOptimizeParameters(
-        std::vector<DirectX::UVAtlasVertex>* pvVertexBuffer,
+        std::vector<DirectX::UVAtlasVertex> *pvVertexBuffer,
         size_t VertexCount,
-        std::vector<uint8_t>* pvFaceIndexBuffer,
+        std::vector<uint8_t> *pvFaceIndexBuffer,
         size_t FaceCount,
-        const FLOAT3* pIMTArray);
+        const FLOAT3 *pIMTArray);
 
 }
