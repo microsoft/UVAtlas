@@ -42,7 +42,7 @@
 
 #include <DirectXMath.h>
 
-#define UVATLAS_VERSION 190
+#define UVATLAS_VERSION 191
 
 #if defined(_WIN32) && defined(UVATLAS_EXPORT)
 #ifdef __GNUC__
