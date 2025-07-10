@@ -10,6 +10,8 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 * Reformat source using updated .editorconfig settings and general lint cleanup
 * Minor code review
 * CMake project updates
+* uvatlastool:
+  * Updated for July 2025 DirectXTex & DirectXMesh releases
 
 ### March 26, 2025
 * Retired support for Windows 7 and Windows 8.0
