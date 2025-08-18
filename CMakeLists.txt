@@ -42,6 +42,8 @@ option(DISABLE_MSVC_ITERATOR_DEBUGGING "Disable iterator debugging in Debug conf
 
 option(ENABLE_CODE_ANALYSIS "Use Static Code Analysis on build" OFF)
 
+option(ENABLE_CODE_PROFILING "Build for profiling" OFF)
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -323,6 +325,13 @@ elseif(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
       message(STATUS "Building with Code Analysis (PREFIX)")
       foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
         target_compile_options(${t} PRIVATE /analyze /WX)
+      endforeach()
+    endif()
+
+    if(ENABLE_CODE_PROFILING)
+      message(STATUS "Building with /PROFILE")
+      foreach(t IN LISTS TOOL_EXES ITEMS ${PROJECT_NAME})
+        target_link_options(${t} PRIVATE /profile)
       endforeach()
     endif()
 
