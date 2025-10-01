@@ -68,6 +68,8 @@ FOR SECURITY ADVISORIES, see [GitHub](https://github.com/microsoft/UVAtlas/secur
 
 For a full change history, see [CHANGELOG.md](https://github.com/microsoft/UVAtlas/blob/main/CHANGELOG.md).
 
+* The CMake projects require 3.21 or later. VS 2019 users will need to install a standalone version of CMake 3.21 or later and add it to their PATH.
+
 * Starting with the March 2025 release, Windows 7 and Windows 8.0 support has been retired.
 
 * Starting with the December 2020 release, this library makes use of typed enum bitmask flags per the recommendation of the _C++ Standard_ section _17.5.2.1.3 Bitmask types_. This is consistent with Direct3D 12's use of the ``DEFINE_ENUM_FLAG_OPERATORS`` macro. This may have _breaking change_ impacts to client code:
