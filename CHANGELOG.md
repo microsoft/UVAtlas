@@ -6,6 +6,10 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
+### October 27, 2025
+* Minor code review
+* CMake project update to use 3.21 minimum
+
 ### July 9, 2025
 * Reformat source using updated .editorconfig settings and general lint cleanup
 * Minor code review
