@@ -6,7 +6,7 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 
 ## Release History
 
-### October 27, 2025
+### October 29, 2025
 * Minor code review
 * CMake project update to use 3.21 minimum
 * uvatlastool:
