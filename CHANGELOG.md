@@ -9,6 +9,7 @@ Release available for download on [GitHub](https://github.com/microsoft/UVAtlas/
 ### October 29, 2025
 * Minor code review
 * CMake project update to use 3.21 minimum
+* Removed ARM64 from VS 2019 projects
 * uvatlastool:
   * Updated for October 2025 DirectXTex & DirectXMesh releases
 
