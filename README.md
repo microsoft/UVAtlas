@@ -6,13 +6,15 @@ http://go.microsoft.com/fwlink/?LinkID=512686
 
 Copyright (c) Microsoft Corporation.
 
-## July 9, 2025
+## October 29, 2025
 
 This package contains UVAtlas, a shared source library for creating and packing an isochart texture atlas.
 
 This code is designed to build with Visual Studio 2019 (16.11), Visual Studio 2022, clang for Windows v12 or later, or MinGW 12.2. Use of the Windows 10 May 2020 Update SDK ([19041](https://walbourn.github.io/windows-10-may-2020-update-sdk/)) or later is required for Visual Studio. It can also be built for Windows Subsystem for Linux using GCC 11 or later.
 
 These components are designed to work without requiring any content from the legacy DirectX SDK. For details, see [Where is the DirectX SDK?](https://aka.ms/dxsdk).
+
+_This library is in maintenance mode and is provided as-is. New feature development has ceased, but critical bug fixes and updates to support new toolchains and dependencies may still be made._
 
 ## Directory Layout
 
