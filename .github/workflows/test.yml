@@ -28,6 +28,7 @@ on:
       - build/*.props
       - build/*.ps1
       - build/*.xml
+  workflow_dispatch: {}
 
 env:
   DIRECTXMESH_MEDIA_PATH: ${{ github.workspace }}/Media
