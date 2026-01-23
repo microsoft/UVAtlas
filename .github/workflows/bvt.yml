@@ -28,6 +28,7 @@ on:
       - build/*.props
       - build/*.ps1
       - build/*.xml
+  workflow_dispatch: {}
 
 permissions:
   contents: read
