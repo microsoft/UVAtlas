@@ -1,0 +1,8 @@
+name: microsoft-github-uvatlas inventory config
+description: Inventory-as-code configuration for the uvatlas repository
+resource: repository
+configuration:
+  inventoryConfig:
+    schemaVersion: 0
+    publishInventory: false
+    areasOnly: true
