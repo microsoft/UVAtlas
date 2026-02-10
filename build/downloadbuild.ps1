@@ -53,7 +53,7 @@ try
 }
 catch
 {
-    Write-Error "##[error]Build $BuildId not found!" -ErrorAction Continue
+    Write-Error "##[error]Build $BuildId not found!" -ErrorAction Stop
 }
 
 $ProgressPreference = 'SilentlyContinue'
@@ -83,7 +83,7 @@ foreach ($artifact in $responseamd64) {
     }
     catch
     {
-        Write-Error "##[error]Failed to download $artifactName!" -ErrorAction Continue
+        Write-Error "##[error]Failed to download $artifactName!" -ErrorAction Stop
     }
 
     try
@@ -93,7 +93,7 @@ foreach ($artifact in $responseamd64) {
     }
     catch
     {
-        Write-Error "##[error]Failed to extract $artifactName!" -ErrorAction Continue
+        Write-Error "##[error]Failed to extract $artifactName!" -ErrorAction Stop
     }
 }
 
