@@ -14,7 +14,7 @@ This code is designed to build with Visual Studio 2019 (16.11), Visual Studio 20
 
 These components are designed to work without requiring any content from the legacy DirectX SDK. For details, see [Where is the DirectX SDK?](https://aka.ms/dxsdk).
 
-_This library is in maintenance mode and is provided as-is. New feature development has ceased, but critical bug fixes and updates to support new toolchains and dependencies may still be made._
+_This project is 'archived'. It is still available for use for legacy projects or when using older developer education materials, but use of it for new projects is not recommended._
 
 ## Directory Layout
 
