@@ -3,6 +3,10 @@
 
 cmake_minimum_required (VERSION 3.21)
 
+if(POLICY CMP0162)
+   cmake_policy(SET CMP0162 NEW)
+endif()
+
 set(UVATLAS_VERSION 1.9.2)
 
 project (UVAtlas
@@ -113,6 +117,10 @@ set(LIBRARY_SOURCES
     UVAtlas/isochart/Vis_Maxflow.h
 )
 
+add_library(${PROJECT_NAME})
+
+target_sources(${PROJECT_NAME} PRIVATE ${LIBRARY_HEADERS} ${LIBRARY_SOURCES})
+
 if(WIN32 AND BUILD_SHARED_LIBS)
   message(STATUS "Build library as a DLL")
 
@@ -120,7 +128,7 @@ if(WIN32 AND BUILD_SHARED_LIBS)
       "${CMAKE_CURRENT_SOURCE_DIR}/build/UVAtlas.rc.in"
       "${CMAKE_CURRENT_BINARY_DIR}/UVAtlas.rc" @ONLY)
 
-  add_library(${PROJECT_NAME} SHARED ${LIBRARY_SOURCES} ${LIBRARY_HEADERS} "${CMAKE_CURRENT_BINARY_DIR}/UVAtlas.rc")
+  target_sources(${PROJECT_NAME} PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/UVAtlas.rc")
 
   target_compile_definitions(${PROJECT_NAME} PRIVATE UVATLAS_EXPORT)
   target_compile_definitions(${PROJECT_NAME} INTERFACE UVATLAS_IMPORT)
@@ -128,8 +136,6 @@ if(WIN32 AND BUILD_SHARED_LIBS)
   if(XBOX_CONSOLE_TARGET MATCHES "scarlett|xboxone")
     target_link_libraries(${PROJECT_NAME} PRIVATE xgameplatform.lib)
   endif()
-else()
-  add_library (${PROJECT_NAME} ${LIBRARY_SOURCES} ${LIBRARY_HEADERS})
 endif()
 
 source_group(inc REGULAR_EXPRESSION UVAtlas/inc/*.*)
